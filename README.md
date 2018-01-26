@@ -9,3 +9,8 @@
 * Define the **GraphQL schema** with the brand new [SDL _(Schema Definition Language)_](https://github.com/facebook/graphql/blob/master/spec/Section%203%20--%20Type%20System.md).
 * **Performance oriented:** Performance is the core of our work.
 * **Simple is better than complex:** Built with [the Zen of Python](https://www.python.org/dev/peps/pep-0020/#id3) in mind. No over-engineering.
+
+This lib depends on libgraphqlparser (in submodule in this repository).
+
+You need to build and install this libgraphqlparser binary on your system before using this.
+See [here](https://github.com/graphql/libgraphqlparser) for more details.
