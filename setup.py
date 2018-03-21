@@ -36,7 +36,8 @@ setup(
         'cython',
         'uvloop',
         'cffi',
-        'python-rapidjson'
+        'python-rapidjson',
+        'lark-parser',
     ],
     tests_require=tests_require,
     extras_require={

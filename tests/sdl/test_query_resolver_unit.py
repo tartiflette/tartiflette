@@ -1,5 +1,6 @@
+from unittest.mock import Mock
+
 import pytest
-from mock import Mock
 
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 from tartiflette.sdl.query_resolver import QueryResolver
