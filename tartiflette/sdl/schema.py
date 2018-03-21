@@ -124,6 +124,14 @@ class GraphQLSchema(GraphQLBaseObject):
         # TODO: Check stuff, call update_schema after each new definition ?
         self._gql_types[value.name] = value
 
+    def get_resolver(self, name: str) -> Optional[callable]:
+        try:
+            field = self.get_field_by_name(name)
+            return field.resolver
+        except ValueError:
+            pass
+        return None
+
     def get_field_by_name(self, name: str) -> Optional[GraphQLFieldDefinition]:
         name_parts = name.split('.')
         if len(name_parts) == 1:
@@ -154,6 +162,7 @@ class GraphQLSchema(GraphQLBaseObject):
 
         :return: None
         """
+        # TODO: To do :)
         pass
 
     def validate_schema(self) -> bool:
@@ -168,20 +177,20 @@ class GraphQLSchema(GraphQLBaseObject):
             self._validate_object_follow_interfaces,
             self._validate_schema_root_types_exist,
             self._validate_non_empty_object,
+            # TODO: Validate custom Scalar has an implementation
+            # TODO: Validate Enum: a key should not use other NamedTypes or
+            # reserved words
+            # TODO: Validate Union: cannot contain itself. Maybe validate also
+            # that a union can only contain "real" types (not abstract nor
+            # composite) & check the Specs
+            # TODO: Validate Field: default value must be of given type
         ]
         for validator in validators:
+            # TODO: Improve validation (messages & returns).
             res = validator()
             if not res:
                 return False
         return True
-
-        # Validate custom Scalar has an implementation (do it here ?)
-        # Validate Enum: a keys is not in the GraphQL default scalars or a
-        #     custom scalar, it has to be "unique"
-        # Validate Union: cannot contain itself and must be of concrete types (check if this is true)
-        # Validate Field: default value must be of given type
-        #
-        pass
 
     def print_sdl(self):
         pass

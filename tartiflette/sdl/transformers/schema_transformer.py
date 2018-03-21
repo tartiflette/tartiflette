@@ -13,6 +13,8 @@ from tartiflette.sdl.transformers.schema import GraphQLType, GraphQLValue, \
     GraphQLInputObjectTypeDefinition, GraphQLEnumTypeDefinition, Description, \
     Name, GraphQLScalarValue, GraphQLEnumValue, GraphQLListValue, \
     GraphQLObjectValue, GraphQLObjectFieldValue, GraphQLEnumValueDefinition
+
+# TODO: Remove ASAP
 """
 import_sdl -> create AST -> convert to schema -> validate schema
 
@@ -31,6 +33,9 @@ class SchemaTransformer(Transformer_NoRecurse):
     Each function is called on a `Tree` node corresponding to the
     grammar rule name.
     """
+    # TODO: Add directives
+    # TODO: Add type extensions
+    # TODO: Cleanup errors & custom type (format, line number etc.).
 
     def __init__(self, input_sdl: str, schema=None):
         self.input_sdl = input_sdl

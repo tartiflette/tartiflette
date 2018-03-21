@@ -3,6 +3,7 @@ from tartiflette.sdl.builder import transform_ast_to_schema, \
 
 
 def main():
+    # TODO: Move this to a global "bin" directory
     print(
         "Welcome to the Tartiflette GraphQL Schema Definition Language (SDL)"
     )

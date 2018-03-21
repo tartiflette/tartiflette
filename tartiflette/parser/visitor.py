@@ -183,6 +183,7 @@ class TartifletteVisitor(Visitor):
             return None
 
         self._validate_type(name, val, a_type)
+        # TODO: Error in above method, `val` does not exist
         return None
 
     def _on_variable_definition_out(self, _):

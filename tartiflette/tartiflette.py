@@ -3,10 +3,13 @@ from tartiflette.executors.basic import execute
 
 import rapidjson as json
 
+from tartiflette.sdl.builder import build_graphql_schema_from_sdl
+
 
 class Tartiflette():
-    def __init__(self, schema_definition, serialize_cbk=None):
-        self._schema_definition = schema_definition
+
+    def __init__(self, full_sdl, serialize_cbk=None):
+        self._schema_definition = build_graphql_schema_from_sdl(full_sdl)
         self._serialize_cbk = serialize_cbk if serialize_cbk else json.dumps
         self._parser = TartifletteRequestParser()
 

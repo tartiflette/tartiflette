@@ -2,13 +2,17 @@ import os
 
 from lark.lark import Lark
 from lark.tree import Tree
+from tartiflette.sdl.schema import DefaultGraphQLSchema
 
-from tartiflette.sdl.transformers import CleaningTransformer, SchemaTransformer
+from tartiflette.sdl.transformers.cleaning_transformer import \
+    CleaningTransformer
+from tartiflette.sdl.transformers.schema_transformer import SchemaTransformer
 
 
 def build_graphql_schema_from_sdl(
     input_sdl: str, schema=None
 ) -> 'GraphQLSchema':
+    # TODO: Fix imports so "GraphQLSchema" can be imported here.
     """
     Convert a GraphAL Schema Defnition Language schema into an Abstract
     Syntax Tree.
@@ -16,6 +20,9 @@ def build_graphql_schema_from_sdl(
     :param input_sdl: a string containg the full schema in GraphQL SDL format
     :return: a GraphQLSchema object.
     """
+    # TODO: Define where we use the DefaultGraphQLSchema if None is given
+    if schema is None:
+        schema = DefaultGraphQLSchema
     raw_tree = parse_graphql_sdl_to_ast(input_sdl)
     return transform_ast_to_schema(input_sdl, raw_tree, schema=schema)
 

@@ -3,6 +3,7 @@ from typing import Optional
 
 
 class Location(object):
+    # TODO: To delete if useless (it seems this class is...), and assoc. tests
 
     __slots__ = [
         'line',
