@@ -1,27 +1,25 @@
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
-from lark.lexer import Token
 from lark.tree import Transformer_NoRecurse, Tree
 
-from tartiflette.sdl.schema import DefaultGraphQLSchema
-from tartiflette.sdl.transformers.helpers import find_token_in_ast
-from tartiflette.sdl.transformers.schema import GraphQLType, GraphQLValue, \
-    GraphQLNamedType, GraphQLUnionTypeDefinition, GraphQLNamedTypeDefinition, \
-    GraphQLScalarTypeDefinition, GraphQLInterfaceTypeDefinition, \
-    GraphQLFieldDefinition, GraphQLListType, GraphQLNonNullType, \
-    GraphQLArgumentDefinition, GraphQLObjectTypeDefinition, \
-    GraphQLInputObjectTypeDefinition, GraphQLEnumTypeDefinition, Description, \
-    Name, GraphQLScalarValue, GraphQLEnumValue, GraphQLListValue, \
-    GraphQLObjectValue, GraphQLObjectFieldValue, GraphQLEnumValueDefinition
+from tartiflette.sdl.ast_types import String
+from tartiflette.schema import DefaultGraphQLSchema
+from tartiflette.types.argument import GraphQLArgument
+from tartiflette.types.enum import GraphQLEnumValue, GraphQLEnumType
+from tartiflette.types.field import GraphQLField
+from tartiflette.types.input_object import GraphQLInputObjectType
+from tartiflette.types.interface import GraphQLInterfaceType
+from tartiflette.types.list import GraphQLList
+from tartiflette.types.non_null import GraphQLNonNull
+from tartiflette.types.object import GraphQLObjectType
+from tartiflette.types.scalar import GraphQLScalarType
+from tartiflette.types.type import GraphQLType
+from tartiflette.types.union import GraphQLUnionType
 
-# TODO: Remove ASAP
+SchemaNode = namedtuple('SchemaNode', ['type', 'value'])
 """
-import_sdl -> create AST -> convert to schema -> validate schema
-
-import_sdl -> build_schema -> validate_schema -> link it with external definitions (custom Scalar, directives, resolvers <- auto imports) -> runnable ! :D
-
-@QueryResolver(schema_endpoint)
-def func(...)
+SchemaNode is used as a container that mimics the lark.Token type.
+That way, we can do child.type and child.value in any lark.Tree.children
 """
 
 
@@ -37,8 +35,8 @@ class SchemaTransformer(Transformer_NoRecurse):
     # TODO: Add type extensions
     # TODO: Cleanup errors & custom type (format, line number etc.).
 
-    def __init__(self, input_sdl: str, schema=None):
-        self.input_sdl = input_sdl
+    def __init__(self, sdl: str, schema=None):
+        self.sdl = sdl
         self._schema = schema if schema else DefaultGraphQLSchema
 
     def document(self, tree: Tree):
@@ -54,10 +52,9 @@ class SchemaTransformer(Transformer_NoRecurse):
 
     def _operation_type_definition(self, tree: Tree, operation_name: str):
         for child in tree.children:
-            if isinstance(child, GraphQLNamedType):
-                setattr(self._schema, operation_name + "_type", child)
-            elif isinstance(child, Token) and \
-                    child.type == operation_name.upper():
+            if child.type == 'named_type':
+                setattr(self._schema, operation_name + "_type", child.value)
+            elif child.type == operation_name.upper():
                 pass
             else:
                 raise ValueError(
@@ -77,468 +74,411 @@ class SchemaTransformer(Transformer_NoRecurse):
     def subscription_operation_type_definition(self, tree: Tree):
         return self._operation_type_definition(tree, "subscription")
 
-    def named_type(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ['IDENT'])
-        return GraphQLNamedType(str(token.value), ast_node=token)
+    def named_type(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('named_type',
+                          String(str(tree.children[0].value),
+                                 ast_node=tree.children[0]))
 
-    def type(self, tree: Tree):
-        subtype = tree.children[0]
-        if not isinstance(subtype, GraphQLType):
-            raise ValueError(
-                'Invalid GraphQLType, got `{}`'.format(
-                    subtype.__class__.__name__
-                )
-            )
-        else:
-            return subtype
+    def list_type(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('list_type',
+                          GraphQLList(gql_type=tree.children[0].value))
+
+    def non_null_type(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('non_null_type',
+                          GraphQLNonNull(gql_type=tree.children[0].value))
+
+    def type(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('type', tree.children[0].value)
 
     def type_definition(self, tree: Tree):
         for child in tree.children:
-            if isinstance(child, GraphQLNamedTypeDefinition):
+            if isinstance(child, GraphQLType):
                 self._schema.add_definition(child)
             else:
+                # TODO: should be improved to a custom error or removed (speed)
                 raise ValueError(
-                    'All GraphQL type definitions must be '
-                    'sub-classes of type '
-                    '`GraphQLNamedTypeDefinition`, '
-                    'got `{}`'.format(child.__class__.__name__)
+                    'Invalid GraphQLType definition, got `{}`'.format(
+                        child.__class__.__name__
+                    )
                 )
         return tree
 
-    def scalar_type_definition(self, tree: Tree):
+    def scalar_type_definition(self, tree: Tree) -> GraphQLScalarType:
+        # TODO: Add directives
         description = None
-        ast_node = None
+        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
-        directives = []  # TODO: To do !
         for child in tree.children:
-            if isinstance(child, Description):
-                description = child
-            elif isinstance(child, Token) and child.type == 'SCALAR':
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'SCALAR':
                 ast_node = child
-            elif isinstance(child, Token) and child.type == 'IDENT':
-                name = Name(name=child.value, ast_node=child)
+            elif child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'discard':
+                pass
             else:
-                raise ValueError(
-                    '`scalar_type_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return GraphQLScalarTypeDefinition(
-            name=name, description=description, ast_node=ast_node
-        )
-
-    def union_type_definition(self, tree: Tree):
-        description = None
-        ast_node = None
-        name = None
-        directives = []  # TODO: To do !
-        union_members = []
-        for child in tree.children:
-            if isinstance(child, Description):
-                description = child
-            elif isinstance(
-                child, Tree
-            ) and child.data == 'union_member_types':
-                union_members = child.children
-            elif isinstance(child, Token) and child.type == 'UNION':
-                ast_node = child
-            elif isinstance(child, Token) and child.type == 'IDENT':
-                name = Name(name=child.value, ast_node=child)
-            else:
-                raise ValueError(
-                    '`union_type_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return GraphQLUnionTypeDefinition(
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return GraphQLScalarType(
             name=name,
-            types=union_members,
             description=description,
-            ast_node=ast_node
         )
 
-    def union_member_types(self, tree: Tree):
-        # TODO: Is this check useful ? We may be able to remove it !
+    def union_type_definition(self, tree: Tree) -> GraphQLUnionType:
+        # TODO: Add directives
+        description = None
+        ast_node = None  # TODO: Should we discard it or keep it ?
+        name = None
+        members = None
         for child in tree.children:
-            if not isinstance(child, GraphQLNamedType):
-                raise ValueError(
-                    '`union_member_type`s must be '
-                    '`GraphQLNamedType`s, '
-                    'got {}'.format(child.__class__.__name__)
-                )
-        return tree
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'UNION':
+                ast_node = child
+            elif child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'union_members':
+                members = child.value
+            elif child.type == 'discard':
+                pass
+            else:
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return GraphQLUnionType(
+            name=name,
+            gql_types=members,
+            description=description,
+        )
+
+    def union_member_types(self, tree: Tree) -> SchemaNode:
+        members = []
+        for child in tree.children:
+            members.append(child.value)
+        return SchemaNode('union_members', members)
 
     def enum_type_definition(self, tree: Tree):
+        # TODO: Add directives
         description = None
+        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
-        directives = []  # TODO: To do !
-        values = []
+        values = None
         for child in tree.children:
-            if isinstance(child, Description):
-                description = child
-            elif isinstance(child, Token) and child.type == 'ENUM':
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'ENUM':
                 ast_node = child
-            elif isinstance(child, Token) and child.type == 'IDENT':
-                name = Name(name=child.value, ast_node=child)
-            elif isinstance(child, dict) and child.get("values"):
-                values = child.get("values")
+            elif child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'enum_values':
+                values = child.value
+            elif child.type == 'discard':
+                pass
             else:
-                raise ValueError(
-                    '`enum_type_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return GraphQLEnumTypeDefinition(
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return GraphQLEnumType(
             name=name,
             values=values,
             description=description,
-            ast_node=ast_node
         )
 
-    def enum_values_definition(self, tree: Tree):
+    def enum_values_definition(self, tree: Tree) -> SchemaNode:
         values = []
         for child in tree.children:
-            if isinstance(child, GraphQLEnumValueDefinition):
-                values.append(child)
-            else:
-                raise ValueError(
-                    '`enum_values_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return {"values": values}
+            values.append(child)
+        return SchemaNode('enum_values', values)
 
-    def enum_value_definition(self, tree: Tree):
+    def enum_value_definition(self, tree: Tree) -> GraphQLEnumValue:
+        # TODO: Add directives
         description = None
-        enum_value = None
-        directives = []  # TODO: To do !
+        value: GraphQLEnumValue = None
         for child in tree.children:
-            if isinstance(child, Description):
-                description = child
-            elif isinstance(child, GraphQLEnumValue):
-                enum_value = child
-            # elif isinstance(child, GraphQLDirective):
-            #     ...
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'enum_value':
+                value = child.value
+            elif child.type == 'discard':
+                pass
             else:
-                raise ValueError(
-                    '`enum_value_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return GraphQLEnumValueDefinition(
-            key=enum_value.value,
-            description=description,
-            ast_node=enum_value.ast_node
-        )
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        if description:
+            value.description = description
+        return value
 
-    def interface_type_definition(self, tree: Tree):
+    def interface_type_definition(self, tree: Tree) -> GraphQLInterfaceType:
+        # TODO: Add directives
         description = None
-        ast_node = None
+        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
-        directives = []  # TODO: To do !
-        fields = {}
+        fields = None
         for child in tree.children:
-            if isinstance(child, Description):
-                description = child
-            elif isinstance(child, Token) and child.type == 'INTERFACE':
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'INTERFACE':
                 ast_node = child
-            elif isinstance(child, Token) and child.type == 'IDENT':
-                name = Name(name=child.value, ast_node=child)
-            elif isinstance(child, dict) and child.get("fields"):
-                fields = child.get("fields")
+            elif child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'fields':
+                fields = child.value
+            elif child.type == 'discard':
+                pass
             else:
-                raise ValueError(
-                    '`interface_type_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return GraphQLInterfaceTypeDefinition(
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return GraphQLInterfaceType(
             name=name,
             fields=fields,
             description=description,
-            ast_node=ast_node
         )
 
-    def object_type_definition(self, tree: Tree):
+    def object_type_definition(self, tree: Tree) -> GraphQLObjectType:
+        # TODO: Add directives
         description = None
-        ast_node = None
+        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
-        interfaces = []
-        directives = []  # TODO: To do !
-        fields = OrderedDict()
+        interfaces = None
+        fields = None
         for child in tree.children:
-            if isinstance(child, Description):
-                description = child
-            elif isinstance(child, Token) and child.type == 'TYPE':
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'TYPE':
                 ast_node = child
-            elif isinstance(child, Token) and child.type == 'IDENT':
-                name = Name(name=child.value, ast_node=child)
-            elif isinstance(child, dict) and child.get("interfaces"):
-                interfaces = child.get("interfaces")
-            elif isinstance(child, dict) and child.get("fields"):
-                fields = child.get("fields")
-            elif isinstance(child, GraphQLFieldDefinition):
-                fields[child.name] = child
-            elif child is None:
-                pass  # TODO: directives to do.
+            elif child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'interfaces':
+                interfaces = child.value
+            elif child.type == 'fields':
+                fields = child.value
+            elif child.type == 'discard':
+                pass
             else:
-                raise ValueError(
-                    '`object_type_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return GraphQLObjectTypeDefinition(
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return GraphQLObjectType(
             name=name,
             fields=fields,
             interfaces=interfaces,
             description=description,
-            ast_node=ast_node
         )
 
-    def implements_interfaces(self, tree: Tree):
+    def implements_interfaces(self, tree: Tree) -> SchemaNode:
         interfaces = []
+        ast_node = None  # TODO: Should we keep it or discard it ?
         for child in tree.children:
-            if isinstance(child, GraphQLNamedType):
-                interfaces.append(child)
-            elif isinstance(child, Token) and child.type == 'IMPLEMENTS':
+            if child.type == 'IMPLEMENTS':
+                ast_node = child
+            else:
+                interfaces.append(child.value)
+        return SchemaNode('interfaces', interfaces)
+
+    def input_object_type_definition(self, tree: Tree) -> GraphQLInputObjectType:
+        # TODO: Add directives
+        description = None
+        ast_node = None  # TODO: Should we discard it or keep it ?
+        name = None
+        fields = None
+        for child in tree.children:
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'INPUT':
+                ast_node = child
+            elif child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'input_fields':
+                fields = child.value
+            elif child.type == 'discard':
                 pass
             else:
-                raise ValueError(
-                    '`implements_interfaces` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return {"interfaces": interfaces}
-
-    def input_object_type_definition(self, tree: Tree):
-        description = None
-        ast_node = None
-        name = None
-        directives = []  # TODO: To do !
-        fields = OrderedDict()
-        for child in tree.children:
-            if isinstance(child, Description):
-                description = child
-            elif isinstance(child, Token) and child.type == 'INPUT':
-                ast_node = child
-            elif isinstance(child, Token) and child.type == 'IDENT':
-                name = Name(name=child.value, ast_node=child)
-            elif isinstance(child, dict) and child.get("fields"):
-                fields = child.get("fields")
-            elif isinstance(child, GraphQLFieldDefinition):
-                fields[child.name] = child
-            else:
-                raise ValueError(
-                    '`input_object_type_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return GraphQLInputObjectTypeDefinition(
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return GraphQLInputObjectType(
             name=name,
             fields=fields,
             description=description,
-            ast_node=ast_node
         )
 
-    def input_fields_definition(self, tree: Tree):
+    def input_fields_definition(self, tree: Tree) -> SchemaNode:
         fields = OrderedDict()
         for child in tree.children:
-            if isinstance(child, GraphQLArgumentDefinition):
-                fields[child.name] = child
-            else:
-                raise ValueError(
-                    '`input_fields_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return {"fields": fields}
+            fields[child.name] = child
+        return SchemaNode('input_fields', fields)
 
-    def fields_definition(self, tree: Tree):
+    def fields_definition(self, tree: Tree) -> SchemaNode:
         fields = OrderedDict()
         for child in tree.children:
-            if isinstance(child, GraphQLFieldDefinition):
-                fields[child.name] = child
-            else:
-                raise ValueError(
-                    '`fields_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return {"fields": fields}
+            fields[child.name] = child
+        return SchemaNode('fields', fields)
 
-    def field_definition(self, tree: Tree):
+    def field_definition(self, tree: Tree) -> GraphQLField:
+        # TODO: Add directives
         description = None
-        name = find_token_in_ast(tree, ['IDENT'])
-        arguments = OrderedDict()
+        name = None
+        arguments = None
         gql_type = None
-        directives = []  # TODO: To do !
         for child in tree.children:
-            if isinstance(child, Description):
-                description = child
-            elif isinstance(child, Token) and child.type == 'IDENT':
-                name = Name(name=child.value, ast_node=child)
-            elif isinstance(child, GraphQLType):
-                gql_type = child
-            elif isinstance(child, dict) and child.get("arguments"):
-                arguments = child.get("arguments")
-            elif child is None:
-                pass  # TODO: directives to do.
-            # elif isinstance(child, GraphQLDirective):
-            #     directives.append(child)
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'type':
+                gql_type = child.value
+            elif child.type == 'arguments':
+                arguments = child.value
+            elif child.type == 'discard':
+                pass
             else:
-                raise ValueError(
-                    '`field_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return GraphQLFieldDefinition(
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return GraphQLField(
             name=name,
             gql_type=gql_type,
             arguments=arguments,
             description=description
         )
 
-    def arguments_definition(self, tree: Tree):
+    def arguments_definition(self, tree: Tree) -> SchemaNode:
         arguments = OrderedDict()
         for child in tree.children:
-            if isinstance(child, GraphQLArgumentDefinition):
-                arguments[child.name] = child
-            else:
-                raise ValueError(
-                    '`arguments_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return {"arguments": arguments}
+            arguments[child.name] = child
+        return SchemaNode('arguments', arguments)
 
     def input_value_definition(self, tree: Tree):
+        # TODO: Add directives
         description = None
         name = None
         gql_type = None
         default_value = None
         for child in tree.children:
-            if isinstance(child, Description):
-                description = child
-            elif isinstance(child, Token) and child.type == 'IDENT':
-                name = Name(name=child.value, ast_node=child)
-            elif isinstance(child, GraphQLType):
-                gql_type = child
-            elif isinstance(child, GraphQLValue):
-                default_value = child
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'type':
+                gql_type = child.value
+            elif child.type == 'value':
+                default_value = child.value
+            elif child.type == 'discard':
+                pass
             else:
-                raise ValueError(
-                    '`input_value_definition` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return GraphQLArgumentDefinition(
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return GraphQLArgument(
             name=name,
             gql_type=gql_type,
             default_value=default_value,
-            description=description
+            description=description,
         )
 
-    def list_type(self, tree: Tree):
-        child = tree.children[0]
-        if isinstance(child, GraphQLType):
-            return GraphQLListType(gql_type=child)
-        else:
-            raise ValueError(
-                '`list_type` unknown AST Node, '
-                'got `{}`'.format(child.__class__.__name__)
-            )
+    def description(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('description',
+                          String(str(tree.children[0].value),
+                               ast_node=tree.children[0]))
 
-    def non_null_type(self, tree: Tree):
-        child = tree.children[0]
-        if isinstance(child, GraphQLType):
-            return GraphQLNonNullType(gql_type=child)
-        else:
-            raise ValueError(
-                '`non_null_type` unknown AST Node, '
-                'got `{}`'.format(child.__class__.__name__)
-            )
-
-    def description(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ['DESCRIPTION'])
-        return Description(description=token.value, ast_node=token)
-
-    def default_value(self, tree: Tree):
+    def default_value(self, tree: Tree) -> SchemaNode:
+        # Ignore this node and return the value contained
         return tree.children[0]
 
-    def enum_value(self, tree: Tree):
-        token = tree.children[0]
-        return GraphQLEnumValue(token.value, ast_node=token)
+    def enum_value(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('enum_value',
+                          GraphQLEnumValue(value=str(tree.children[0].value)))
 
-    def value(self, tree: Tree):
-        value_type_to_gql_type = {
-            "int_value": GraphQLScalarValue,
-            "float_value": GraphQLScalarValue,
-            "string_value": GraphQLScalarValue,
-            "true_value": GraphQLScalarValue,
-            "false_value": GraphQLScalarValue,
-            "null_value": GraphQLScalarValue,
-        }
-        subtree = tree.children[0]
-        if isinstance(subtree, GraphQLEnumValue):
-            return subtree
-        value_type = getattr(subtree, "data")
-        if value_type in value_type_to_gql_type.keys():
-            token = subtree.children[0]
-            return value_type_to_gql_type[value_type](
-                token.value, ast_node=token
-            )
-        elif value_type == "list_value":
-            return GraphQLListValue(subtree.children)
-        elif value_type == "object_value":
-            return GraphQLObjectValue(subtree.children)
-        # TODO: This should never happen. Leave an alert here ?
-        raise ValueError(
-            '`value` unknown AST Node, '
-            'got `{}`'.format(value_type.__class__.__name__)
-        )
+    def int_value(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('int_value', tree.children[0].value)
 
-    def object_field(self, tree: Tree):
+    def float_value(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('float_value', tree.children[0].value)
+
+    def string_value(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('string_value', tree.children[0].value)
+
+    def true_value(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('true_value', tree.children[0].value)
+
+    def false_value(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('false_value', tree.children[0].value)
+
+    def null_value(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('null_value', tree.children[0].value)
+
+    def value(self, tree: Tree) -> SchemaNode:
+        return SchemaNode('value', tree.children[0].value)
+
+    def list_value(self, tree: Tree) -> SchemaNode:
+        lst = []
+        for child in tree.children:
+            if child.type == 'value':
+                lst.append(child.value)
+        return SchemaNode('list_value', lst)
+
+    def object_value(self, tree: Tree) -> SchemaNode:
+        obj = {}
+        for child in tree.children:
+            if child.type == 'object_field':
+                name, value = child.value
+                obj[name] = value
+            else:
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return SchemaNode('object_value', obj)
+
+    def object_field(self, tree: Tree) -> SchemaNode:
         name = None
         value = None
         for child in tree.children:
-            if isinstance(child, Token):
-                name = Name(name=child.value, ast_node=child)
+            if child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'value':
+                value = child.value
             else:
-                value = child
-        return GraphQLObjectFieldValue(name, value)
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return SchemaNode('object_field', (name, value))
 
-    def argument(self, tree: Tree):
+    def arguments(self, tree: Tree) -> SchemaNode:
+        arguments = {}
+        for child in tree.children:
+            arguments[child.value[0]] = child.value[1]
+        return SchemaNode('arguments', arguments)
+
+    def argument(self, tree: Tree) -> SchemaNode:
         name = None
         value = None
         for child in tree.children:
-            if isinstance(child, Token):
-                name = Name(name=child.value, ast_node=child)
+            if child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'value':
+                value = child.value
             else:
-                value = child
-        return {name.name: value}
+                # TODO: Unify exceptions format etc.
+                raise Exception("TODO: Unknown field {}".format(child))
+        return SchemaNode('argument', (name, value))
 
-    def arguments(self, tree: Tree):
-        kwargs = {}
-        for child in tree.children:
-            if isinstance(child, dict):
-                kwargs.update(child)
-            else:
-                raise ValueError(
-                    '`arguments` unknown AST Node, '
-                    'got `{}`'.format(child.__class__.__name__)
-                )
-        return kwargs
-
-    def directives(self, tree: Tree):
+    def directives(self, tree: Tree) -> SchemaNode:
         # TODO !!!!
-        return None
+        return SchemaNode('discard', None)
 
-    def directive(self, tree: Tree):
+    def directive(self, tree: Tree) -> SchemaNode:
         # TODO !!!
-        return None
+        return SchemaNode('discard', None)
 
     def __getattr__(self, attr):
         ignored = [
-            'int_value',
-            'float_value',
-            'string_value',
-            'list_value',
-            'object_value',
-            'enum_value',
-            'true_value',
-            'false_value',
-            'null_value',
+            # 'int_value',
+            # 'float_value',
+            # 'string_value',
+            # 'list_value',
+            # 'object_value',
+            # 'enum_value',
+            # 'true_value',
+            # 'false_value',
+            # 'null_value',
         ]
 
         def fn(tree: Tree):
             if tree.data not in ignored:
-                print('{}({})\n'.format(attr, tree))
+                print('{} => {}\n'.format(attr, tree))
             return tree
 
         return fn

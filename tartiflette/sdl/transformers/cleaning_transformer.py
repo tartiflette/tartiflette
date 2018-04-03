@@ -38,14 +38,26 @@ class CleaningTransformer(Transformer_NoRecurse):
         return token
 
     def description(self, tree: Tree):
+        """
+        We convert tokens 'STRING' and 'LONG_STRING' into a 'DESCRIPTION'
+        Token.
+        'STRING' tokens contain the first and last quote `"` and are thus
+        removed in the process. A similar method is applied to `LONG_STRING`
+        that have three `"` quotes before and after the string.
+
+        :param tree: a lark Tree
+        :return: returns a Tree
+        """
         token = find_token_in_ast(tree.children, ['STRING', 'LONG_STRING'])
-        tmp = bytes(token.value[1:-1], "utf-8").decode('unicode-escape')
+        cleaned_str = bytes(token.value[1:-1], "utf-8").decode('unicode-escape')
+        # TODO: For `LONG_STRING`s, we should remove the indentation spaces
         if token.type == 'LONG_STRING':
-            tmp = bytes(token.value[3:-3], "utf-8").decode('unicode-escape')
-        newtoken = Token(
-            'DESCRIPTION', tmp, token.pos_in_stream, token.line, token.column
-        )
-        tree.children = [newtoken]
+            cleaned_str = bytes(token.value[3:-3], "utf-8").decode(
+                'unicode-escape')
+        new_token = Token(
+            'DESCRIPTION', cleaned_str, token.pos_in_stream, token.line,
+            token.column)
+        tree.children = [new_token]
         return tree
 
     def int_value(self, tree: Tree):

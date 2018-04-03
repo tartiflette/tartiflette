@@ -107,15 +107,15 @@ class TartifletteVisitor(Visitor):
         except KeyError:
             raise UnknownVariableException(var_name)
 
-    def _find_resolver(self, name):
+    def _find_resolver(self, path_name):
         try:
-            return self._schema_definition.get_resolver(name)
+            return self._schema_definition.get_resolver(path_name)
         except KeyError:
             pass
 
         try:
             return self._schema_definition.get_resolver(
-                "%s.%s" % (self._current_node.name, name)
+                "%s/%s" % (self._current_node.name, path_name),
             )
         except (KeyError, AttributeError):
             # AttributeError for no Parent
