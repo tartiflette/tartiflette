@@ -38,10 +38,8 @@ class GraphQLScalarType(GraphQLType):
         self.deserialize = deserialize
 
     def __repr__(self) -> str:
-        return "{}(name={!r}, serialize={!r}, " \
-               "deserialize={!r}, description={!r})".format(
-            self.__class__.__name__, self.name, self.serialize,
-            self.deserialize, self.description,
+        return "{}(name={!r}, description={!r})".format(
+            self.__class__.__name__, self.name, self.description,
         )
 
     def __eq__(self, other) -> bool:

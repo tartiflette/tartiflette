@@ -17,16 +17,17 @@ class GraphQLEnumValue:
     def __init__(self, value: Any = None, name: Optional[str]=None, description: Optional[str]=None):
         self.value = value
         self.name = str(name)
+        if not name:
+            self.name = str(value)
         self.description = description
 
     def __repr__(self):
-        return "{}(value={}, name={}, description={})".format(
+        return "{}(value={!r}, name={!r}, description={!r})".format(
             self.__class__.__name__,
             self.value, self.name, self.description
         )
 
     def __eq__(self, other):
-        # TODO: We do not compare descriptions. Should we ?
         return self is other or (
             type(self) is type(other) and
             self.value == other.value and
@@ -62,7 +63,7 @@ class GraphQLEnumType(GraphQLType):
         # and more
 
     def __repr__(self):
-        return "{}(name={}, values={}, description={})".format(
+        return "{}(name={!r}, values={!r}, description={!r})".format(
             self.__class__.__name__, self.name, self.values, self.description
         )
 

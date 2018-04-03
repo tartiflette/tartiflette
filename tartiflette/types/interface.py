@@ -33,7 +33,7 @@ class GraphQLInterfaceType(GraphQLType):
     def __repr__(self) -> str:
         return "{}(name={!r}, fields={!r}, description={!r})".format(
             self.__class__.__name__,
-            self.name, self.fields, self.description,
+            self.name, self._fields, self.description,
         )
 
     def __eq__(self, other) -> bool:

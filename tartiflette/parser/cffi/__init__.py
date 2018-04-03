@@ -460,7 +460,10 @@ class LibGraphqlParser():
         self._ffi = FFI()
         self._ffi.cdef(CDEFS_LIBGRAPHQL)
         # TODO do a conf of this ?
-        self._lib = self._ffi.dlopen("/usr/local/lib/libgraphqlparser.so")
+        try:
+            self._lib = self._ffi.dlopen("/usr/local/lib/libgraphqlparser.so")
+        except OSError:
+            self._lib = self._ffi.dlopen("/usr/local/lib/libgraphqlparser.dylib")
         self._lib_callbacks = self._ffi.new(
             "struct GraphQLAstVisitorCallbacks *"
         )
