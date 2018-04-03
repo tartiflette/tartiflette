@@ -2,9 +2,9 @@
 
 ## Prerequisites
 
-Before getting started, you should have Python 3.5+ installed _(at least)_. As we are using ["libgraphqlparser"](https://github.com/graphql/libgraphqlparser), the C++ query parser, you should have the necessary to compile that library. **We suggest to use the docker image, which contains the necessary to work**.
+Before getting started, you should have Python 3.5+ installed. As we are using [libgraphqlparser](https://github.com/graphql/libgraphqlparser), a C++ query parser, you should have the necessary to compile that library (Cmake etc.). **We suggest you use the provided docker image, which contains everything needed**.
 
-To create a new project with Tartiflette, just execute that command.
+To create a new project with Tartiflette, just execute this command:
 
 ```bash
 pip install tartiflette
@@ -14,8 +14,8 @@ pip install tartiflette
 
 The smallest recipe to make a tartiflette is pretty easy. Let's start with a hello world.
 
-* Define a **Schema** _(with Schema Definition Language)_ that defines the **"Query"** type.
-* Implement a simple resolver which resolve the hello field.
+* Define a **Schema** _(with the Schema Definition Language)_ that defines the **`Query`** type.
+* Implement a simple resolver which resolves the `hello` field.
 
 ```python
 import asyncio
@@ -25,7 +25,6 @@ engine = Engine(
     """
     type Query {
         hello: String
-        whoami: Kevin
     }
     """
 )
