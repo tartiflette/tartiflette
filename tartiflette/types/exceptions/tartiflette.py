@@ -7,6 +7,10 @@ class TartifletteSchemaValidationError(Exception):
     pass
 
 
+class TartifletteUnexpectedASTNode(Exception):
+    pass
+
+
 class TartifletteSDLUnexpectedToken(Exception):
     # TODO: Wrap lark exceptions (UnexpectedToken, UnexpectedInput
     pass

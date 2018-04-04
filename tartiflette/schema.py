@@ -106,6 +106,10 @@ class GraphQLSchema:
 
     def add_definition(self, value: GraphQLType) -> None:
         # TODO: Check stuff, call update_schema after each new definition ?
+        if not isinstance(value, GraphQLType):
+            raise ValueError('new GraphQLSchema type definition `{}` '
+                             'is not a GraphQLType.'.format(
+                value.__class__.__name__))
         if self._gql_types.get(value.name):
             raise ValueError('new GraphQL type definition `{}` '
                              'overrides existing type definition `{}`.'.format(
