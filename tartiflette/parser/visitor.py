@@ -4,6 +4,8 @@ from tartiflette.parser.cffi import Visitor
 from tartiflette.parser.exceptions import (
     UnknownVariableException, TatifletteException
 )
+from tartiflette.schema import GraphQLSchema
+from tartiflette.types.helpers import reduce_type
 from .nodes.field import NodeField
 from .nodes.fragment_definition import NodeFragmentDefinition
 from .nodes.variable_definition import NodeVariableDefinition
@@ -66,8 +68,9 @@ class TartifletteVisitor(Visitor):
         self._current_argument_name = None
         self._current_type_condition = None
         self._current_fragment_definition = None
+        self._parent_node_type = None
         self._fragments = {}
-        self._schema_definition = schema_definition
+        self._schema_definition: GraphQLSchema = schema_definition
 
     def _on_argument_in(self, element):
         self._current_argument_name = element.name
@@ -107,22 +110,21 @@ class TartifletteVisitor(Visitor):
         except KeyError:
             raise UnknownVariableException(var_name)
 
-    def _find_resolver(self, path_name):
-        try:
-            return self._schema_definition.get_resolver(path_name)
-        except KeyError:
-            pass
+    def _find_resolver(self, element_name):
+        parent_name = ""
+        if self._parent_node_type is None:
+            parent_name = self._schema_definition.query_type
+        else:
+            parent_name = self._parent_node_type
 
-        try:
-            return self._schema_definition.get_resolver(
-                "%s/%s" % (self._current_node.name, path_name),
-            )
-        except (KeyError, AttributeError):
-            # AttributeError for no Parent
-            # KeyError no resolver
-            pass
+        field_name = parent_name + '.' + element_name
+        field = self._schema_definition.get_field_by_name(field_name)
 
-        return _default_resolver
+        if field:
+            self._parent_node_type = reduce_type(field.gql_type)
+            return field.resolver
+        else:
+            return _default_resolver
 
     def _add_node(self, node):
         try:
