@@ -50,3 +50,26 @@ async def test_tartiflette_execute():
     assert result == """{"testField":{}}"""
     # TODO: This should work but needs fixes in Tartiflette executor
     # assert mock_one.called is True
+
+
+@pytest.mark.asyncio
+async def test_tartiflette_execute_hello_world():
+    schema_sdl = """
+    type Query {
+        hello: String!
+    }
+    """
+
+    ttftt = Tartiflette(schema_sdl)
+
+    @Resolver("Query.hello", schema=ttftt._schema_definition)
+    def func_field_resolver(*args, **kwargs):
+        return "world"
+
+    result = await ttftt.execute("""
+    query Test{
+        hello
+    }
+    """)
+
+    assert """{"hello":"world"}""" == result

@@ -104,6 +104,10 @@ class GraphQLSchema:
     def subscription_type(self, value: str) -> None:
         self._subscription_type = value
 
+    @property
+    def types(self):
+        return self._gql_types
+
     def add_definition(self, value: GraphQLType) -> None:
         # TODO: Check stuff, call update_schema after each new definition ?
         if not isinstance(value, GraphQLType):

@@ -35,7 +35,7 @@ class TartifletteVisitor(Visitor):
         return node_name
 
     def __init__(self, variables=None, schema_definition=None):
-        super(TartifletteVisitor, self).__init__()
+        super().__init__()
         self.path = ""
         self._events = [
             {
@@ -236,11 +236,11 @@ class TartifletteVisitor(Visitor):
 
     def _in(self, element):
         self.path = self.path + "/%s" % TartifletteVisitor.create_node_name(
-            element.graphql_type, element.name
+            element.libcffi_type, element.name
         )
 
         try:
-            self._events[self.IN][element.graphql_type](element)
+            self._events[self.IN][element.libcffi_type](element)
         except KeyError:
             pass
 
@@ -248,7 +248,7 @@ class TartifletteVisitor(Visitor):
         self.path = "/".join(self.path.split("/")[:-1])
 
         try:
-            self._events[self.OUT][element.graphql_type](element)
+            self._events[self.OUT][element.libcffi_type](element)
         except KeyError:
             pass
 
@@ -256,11 +256,11 @@ class TartifletteVisitor(Visitor):
         self.skip_child = False
         self.event = event
 
-        if element.graphql_type in ['SelectionSet']:
+        if element.libcffi_type in ['SelectionSet']:
             return  #cause we don't care.
 
         if not self._current_fragment_definition or \
-                element.graphql_type == 'FragmentDefinition':
+                element.libcffi_type == 'FragmentDefinition':
             # Always execute FragmentDefinitions Handlers,
             # never exec if in fragment.
             self._events[self.event]["default"](element)

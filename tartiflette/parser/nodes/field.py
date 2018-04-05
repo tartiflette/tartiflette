@@ -46,7 +46,7 @@ def _to_dict(thing):
 
 class NodeField(Node):
     def __init__(self, func, location, path, name, type_condition):
-        super(NodeField, self).__init__(path, 'Field', location, name)
+        super().__init__(path, 'Field', location, name)
         self._func = func
         self.results = None
         self.arguments = {}

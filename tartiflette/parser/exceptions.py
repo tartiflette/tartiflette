@@ -1,8 +1,7 @@
 class UnknownVariableException(Exception):
     def __init__(self, varname):
         # TODO: Unify error messages format
-        super(UnknownVariableException,
-              self).__init__(message="< %s > is not known" % varname)
+        super().__init__(message="< %s > is not known" % varname)
 
 
 class TatifletteException(Exception):
