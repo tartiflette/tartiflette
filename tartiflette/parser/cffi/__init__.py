@@ -336,11 +336,11 @@ class Location:
 
 
 class _VisitorElement:
-    def __init__(self, lib, ffi, libcffi_type, internal_element):
+    def __init__(self, lib, ffi, libgraphql_type, internal_element):
         self._lib = lib
         self._ffi = ffi
         self._internal_element = internal_element
-        self.libcffi_type = libcffi_type
+        self.libgraphql_type = libgraphql_type
         self.name = None
         try:
             self.name = self._get_name()
@@ -349,7 +349,7 @@ class _VisitorElement:
 
     def _get_name_object(self):
         return self._lib.__getattr__(
-            'GraphQLAst%s_get_name' % self.libcffi_type
+            'GraphQLAst%s_get_name' % self.libgraphql_type
         )(self._internal_element)
 
     def _get_name_string(self, name_object):
@@ -363,7 +363,7 @@ class _VisitorElement:
 
     def _get_name(self):
         element = self._internal_element
-        if self.libcffi_type != "Name":
+        if self.libgraphql_type != "Name":
             element = self._get_name_object()
 
         return self._get_name_string(element)
@@ -414,13 +414,13 @@ class _VisitorElementFloatValue(_VisitorElement):
 class _VisitorElementBooleanValue(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
         super().__init__(lib, ffi, 'BooleanValue', internal_element)
-        self._vals = [False, True]
+        self._values = [False, True]
 
     def get_value(self):
         val = self._lib.GraphQLAstBooleanValue_get_value(
             self._internal_element
         )
-        return self._vals[val]
+        return self._values[val]
 
 
 class _VisitorElementFragmentDefinition(_VisitorElement):
@@ -439,8 +439,7 @@ class _VisitorElementFragmentDefinition(_VisitorElement):
         return None
 
 
-# TODO: What about `ID` types ?
-_GQL_TYPE_TO_CLASS = {
+_LIBGRAPHQL_TYPE_TO_CLASS = {
     "IntValue": _VisitorElementIntValue,
     "StringValue": _VisitorElementStringValue,
     "FloatValue": _VisitorElementFloatValue,
@@ -467,25 +466,26 @@ class LibGraphqlParser:
         self._default_visitor_cls = Visitor
         self._creates_callbacks()
 
-    def _create_visitor_element(self, gql_type, element):
+    def _create_visitor_element(self, libgraphql_type, element):
         try:
-            return _GQL_TYPE_TO_CLASS[gql_type](self._lib, self._ffi, element)
+            return _LIBGRAPHQL_TYPE_TO_CLASS[libgraphql_type](
+                self._lib, self._ffi, element)
         except KeyError:
             pass
 
-        return _VisitorElement(self._lib, self._ffi, gql_type, element)
+        return _VisitorElement(self._lib, self._ffi, libgraphql_type, element)
 
-    def _callback_enter(self, gql_type, element, udata):
+    def _callback_enter(self, libgraphql_type, element, udata):
         context = self._ffi.from_handle(udata)
         context.update(
-            Visitor.IN, self._create_visitor_element(gql_type, element)
+            Visitor.IN, self._create_visitor_element(libgraphql_type, element)
         )
         return not context.skip_child
 
-    def _callback_exit(self, gql_type, element, udata):
+    def _callback_exit(self, libgraphql_type, element, udata):
         context = self._ffi.from_handle(udata)
         context.update(
-            Visitor.OUT, self._create_visitor_element(gql_type, element)
+            Visitor.OUT, self._create_visitor_element(libgraphql_type, element)
         )
         return None
 

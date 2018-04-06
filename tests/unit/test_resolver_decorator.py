@@ -1,11 +1,16 @@
 from unittest.mock import Mock
 
+import pytest
+
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 from tartiflette.resolver_decorator import Resolver
 from tartiflette.schema import GraphQLSchema
+from tartiflette.types.exceptions.tartiflette import \
+    TartifletteNonAwaitableResolver
 
 
-def test_resolver_decorator():
+@pytest.mark.asyncio
+async def test_resolver_decorator():
     schema_sdl = """
     schema @enable_cache {
         query: RootQuery
@@ -62,14 +67,19 @@ def test_resolver_decorator():
     mock_two = Mock()
 
     @Resolver("Test.field", schema=generated_schema)
-    def func_field_resolver(*args, **kwargs):
+    async def func_field_resolver(*args, **kwargs):
         mock_one()
         return
 
     @Resolver("RootQuery.defaultField", schema=generated_schema)
-    def func_default_resolver(*args, **kwargs):
+    async def func_default_resolver(*args, **kwargs):
         mock_two()
         return
+
+    with pytest.raises(TartifletteNonAwaitableResolver):
+        @Resolver("Test.simpleField", schema=generated_schema)
+        def func_default_resolver(*args, **kwargs):
+            pass
 
     assert generated_schema.get_field_by_name('Test.field').resolver == func_field_resolver
     assert mock_one.called is False

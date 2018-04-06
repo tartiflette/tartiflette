@@ -1,10 +1,10 @@
 from functools import lru_cache, partial
 
-from tartiflette.parser.cffi import Visitor
-from tartiflette.parser.exceptions import (
-    UnknownVariableException, TatifletteException
-)
+from tartiflette.parser.cffi import Visitor, _VisitorElement
+from tartiflette.parser.nodes.node import Node
 from tartiflette.schema import GraphQLSchema
+from tartiflette.types.exceptions.tartiflette import TartifletteException, \
+    UnknownVariableException
 from tartiflette.types.helpers import reduce_type
 from .nodes.field import NodeField
 from .nodes.fragment_definition import NodeFragmentDefinition
@@ -15,7 +15,7 @@ async def _default_resolver(ctx, execution_data):
     try:
         return getattr(execution_data.parent_result, execution_data.name)
     except AttributeError:
-        raise TatifletteException(
+        raise TartifletteException(
             "Parent < %s > doesn't contain expected attribute < %s >" %
             (execution_data.parent_result, execution_data.name)
         )
@@ -72,13 +72,13 @@ class TartifletteVisitor(Visitor):
         self._fragments = {}
         self._schema_definition: GraphQLSchema = schema_definition
 
-    def _on_argument_in(self, element):
+    def _on_argument_in(self, element: _VisitorElement):
         self._current_argument_name = element.name
 
     def _on_argument_out(self, _):
         self._current_argument_name = None
 
-    def _on_value_in(self, element):
+    def _on_value_in(self, element: _VisitorElement):
         try:
             self._current_node.default_value = element.get_value()
             return
@@ -92,7 +92,7 @@ class TartifletteVisitor(Visitor):
             }
         )
 
-    def _on_variable_in(self, element):
+    def _on_variable_in(self, element: _VisitorElement):
         try:
             self._current_node.var_name = element.name
             return
@@ -110,7 +110,7 @@ class TartifletteVisitor(Visitor):
         except KeyError:
             raise UnknownVariableException(var_name)
 
-    def _find_resolver(self, element_name):
+    def _find_resolver(self, element_name: str):
         parent_name = ""
         if self._parent_node_type is None:
             parent_name = self._schema_definition.query_type
@@ -126,7 +126,7 @@ class TartifletteVisitor(Visitor):
         else:
             return _default_resolver
 
-    def _add_node(self, node):
+    def _add_node(self, node: Node):
         try:
             self.nodes[self._depth - 1]
         except IndexError:
@@ -134,7 +134,11 @@ class TartifletteVisitor(Visitor):
 
         self.nodes[self._depth - 1].append(node)
 
-    def _on_field_in(self, element):
+    def _on_field_in(self, element: _VisitorElement):
+        print("Element: ", element)
+        print("Element type: ", type(element))
+        print("Element class: ", element.__class__.__name__)
+
         self._depth = self._depth + 1
 
         node = NodeField(
@@ -150,7 +154,7 @@ class TartifletteVisitor(Visitor):
         self._depth = self._depth - 1
         self._current_node = self._current_node.parent
 
-    def _on_variable_definition_in(self, element):
+    def _on_variable_definition_in(self, element: _VisitorElement):
         node = NodeVariableDefinition(
             self.path, element.get_location(), element.name
         )
@@ -193,7 +197,7 @@ class TartifletteVisitor(Visitor):
         # now the VariableDefinition Node is useless so kill it
         self._current_node = self._current_node.parent
 
-    def _on_named_type_in(self, element):
+    def _on_named_type_in(self, element: _VisitorElement):
         try:
             self._current_node.var_type = element.name
         except AttributeError:
@@ -208,7 +212,7 @@ class TartifletteVisitor(Visitor):
     def _on_non_null_type_in(self, _):
         self._current_node.is_nullable = False
 
-    def _on_fragment_definition_in(self, element):
+    def _on_fragment_definition_in(self, element: _VisitorElement):
         nfd = NodeFragmentDefinition(
             self.path,
             element.get_location(),
@@ -217,50 +221,50 @@ class TartifletteVisitor(Visitor):
         )
 
         if element.name in self._fragments:
-            raise TatifletteException(
+            raise TartifletteException(
                 "Fragment < %s > is already define" % element.name
             )
 
-        self._fragments[element.name] = nfd
+        self._fragments[element.name: str] = nfd
         self._current_fragment_definition = nfd
 
     def _on_fragment_definition_out(self, _):
         self._current_fragment_definition = None
 
-    def _on_fragment_spread_out(self, element):
+    def _on_fragment_spread_out(self, element: _VisitorElement):
         cfd = self._fragments[element.name]
         self._current_type_condition = cfd.type_condition
         for saved_callback in cfd.callbacks:
             saved_callback()  ## Simulate calling a the right place.
         self._current_type_condition = None
 
-    def _in(self, element):
+    def _in(self, element: _VisitorElement):
         self.path = self.path + "/%s" % TartifletteVisitor.create_node_name(
-            element.libcffi_type, element.name
+            element.libgraphql_type, element.name
         )
 
         try:
-            self._events[self.IN][element.libcffi_type](element)
+            self._events[self.IN][element.libgraphql_type](element)
         except KeyError:
             pass
 
-    def _out(self, element):
+    def _out(self, element: _VisitorElement):
         self.path = "/".join(self.path.split("/")[:-1])
 
         try:
-            self._events[self.OUT][element.libcffi_type](element)
+            self._events[self.OUT][element.libgraphql_type](element)
         except KeyError:
             pass
 
-    def update(self, event, element):
+    def update(self, event, element: _VisitorElement):
         self.skip_child = False
         self.event = event
 
-        if element.libcffi_type in ['SelectionSet']:
-            return  #cause we don't care.
+        if element.libgraphql_type in ['SelectionSet']:
+            return  # because we don't care.
 
         if not self._current_fragment_definition or \
-                element.libcffi_type == 'FragmentDefinition':
+                element.libgraphql_type == 'FragmentDefinition':
             # Always execute FragmentDefinitions Handlers,
             # never exec if in fragment.
             self._events[self.event]["default"](element)

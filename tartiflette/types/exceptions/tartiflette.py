@@ -7,6 +7,10 @@ class TartifletteSchemaValidationError(Exception):
     pass
 
 
+class TartifletteNonAwaitableResolver(Exception):
+    pass
+
+
 class TartifletteUnexpectedASTNode(Exception):
     pass
 
@@ -14,6 +18,12 @@ class TartifletteUnexpectedASTNode(Exception):
 class TartifletteSDLUnexpectedToken(Exception):
     # TODO: Wrap lark exceptions (UnexpectedToken, UnexpectedInput
     pass
+
+
+class UnknownVariableException(Exception):
+    def __init__(self, varname):
+        # TODO: Unify error messages format
+        super().__init__(message="< %s > is not known" % varname)
 
 
 class TartifletteGraphQLTypeException(Exception):

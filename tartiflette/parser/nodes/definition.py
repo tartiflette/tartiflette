@@ -2,8 +2,8 @@ from .node import Node
 
 
 class NodeDefinition(Node):
-    def __init__(self, path, libcffi_type, location, name):
-        super().__init__(path, libcffi_type, location, name)
+    def __init__(self, path, libgraphql_type, location, name):
+        super().__init__(path, libgraphql_type, location, name)
 
         self._types = {
             "String": str,

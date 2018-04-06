@@ -29,12 +29,12 @@ async def test_tartiflette_execute():
     mock_two = Mock()
 
     @Resolver("Test.field", schema=ttftt._schema_definition)
-    def func_field_resolver(*args, **kwargs):
+    async def func_field_resolver(*args, **kwargs):
         mock_one()
         return
 
     @Resolver("RootQuery.defaultField", schema=ttftt._schema_definition)
-    def func_default_query_resolver(*args, **kwargs):
+    async def func_default_query_resolver(*args, **kwargs):
         mock_two()
         return
 
@@ -46,10 +46,8 @@ async def test_tartiflette_execute():
     }
     """)
 
-    # TODO: This should return """{"testField":null}""" instead of {}
-    assert result == """{"testField":{}}"""
-    # TODO: This should work but needs fixes in Tartiflette executor
-    # assert mock_one.called is True
+    assert result == """{"testField":{"field":null}}"""
+    assert mock_one.called is True
 
 
 @pytest.mark.asyncio
@@ -63,7 +61,7 @@ async def test_tartiflette_execute_hello_world():
     ttftt = Tartiflette(schema_sdl)
 
     @Resolver("Query.hello", schema=ttftt._schema_definition)
-    def func_field_resolver(*args, **kwargs):
+    async def func_field_resolver(*args, **kwargs):
         return "world"
 
     result = await ttftt.execute("""

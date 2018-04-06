@@ -1,4 +1,8 @@
+from inspect import iscoroutinefunction
+
 from tartiflette.schema import DefaultGraphQLSchema
+from tartiflette.types.exceptions.tartiflette import \
+    TartifletteNonAwaitableResolver
 
 
 class Resolver:
@@ -24,6 +28,10 @@ class Resolver:
         self.field = self._schema.get_field_by_name(name=name)
 
     def __call__(self, resolver, *args, **kwargs):
+        if not iscoroutinefunction(resolver):
+            raise TartifletteNonAwaitableResolver(
+                "The resolver `{}` given for the field `{}` "
+                "is not awaitable.".format(repr(resolver), self.field.name))
         if self.field:
             self.field.resolver = resolver
         return resolver
