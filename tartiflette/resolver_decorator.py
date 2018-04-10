@@ -1,18 +1,8 @@
 from inspect import iscoroutinefunction
 
-from tartiflette.schema import DefaultGraphQLSchema
+from tartiflette.schema import DefaultGraphQLSchema, GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import \
     TartifletteNonAwaitableResolver
-
-
-class _ResolverWrapper:
-
-    def __init__(self, to_primitive, resolver):
-        self.to_primitive = to_primitive
-        self.resolver = resolver
-
-    async def __call__(self, *args, **kwargs):
-        return self.to_primitive(await self.resolver(*args, **kwargs))
 
 
 class Resolver:
@@ -33,18 +23,22 @@ class Resolver:
             ... do stuff
             return 42
     """
-    def __init__(self, name: str, schema=None):
-        self._schema = schema if schema else DefaultGraphQLSchema
-        self.field = self._schema.get_field_by_name(name=name)
+    def __init__(self, name: str, schema: GraphQLSchema=None):
+        self.schema = schema if schema else DefaultGraphQLSchema
+        self.field = self.schema.get_field_by_name(name=name)
 
     def __call__(self, resolver, *args, **kwargs):
         if not iscoroutinefunction(resolver):
             raise TartifletteNonAwaitableResolver(
                 "The resolver `{}` given for the field `{}` "
                 "is not awaitable.".format(repr(resolver), self.field.name))
-        if self.field:
-            # self.field.resolver = _
-            # ResolverWrapper(self._schema.get_type(
-            # self.field.gql_type).to_primitive, resolver)
-            self.field.resolver = resolver
+        try:
+            async def resolver_wrapper(*args, **kwargs):
+                return self.schema.to_value(
+                    self.field.gql_type,
+                    await resolver(*args, **kwargs)
+                )
+            self.field.resolver = resolver_wrapper
+        except AttributeError:
+            pass
         return resolver

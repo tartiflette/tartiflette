@@ -9,7 +9,7 @@ from tartiflette.tartiflette import Tartiflette
 @pytest.mark.asyncio
 async def test_tartiflette_execute_basic():
     schema_sdl = """
-    schema @enable_cache {
+    schema {
         query: RootQuery
     }
 
@@ -19,7 +19,7 @@ async def test_tartiflette_execute_basic():
     }
 
     type Test {
-        field: String!
+        field: String
     }
     """
 
@@ -55,7 +55,7 @@ async def test_tartiflette_execute_basic():
 async def test_tartiflette_execute_hello_world():
     schema_sdl = """
     type Query {
-        hello: String
+        hello: String!
     }
     """
 

@@ -1,12 +1,12 @@
 
 from tartiflette.types.scalar import GraphQLScalarType
 
-GraphQLBoolean = GraphQLScalarType(name="Boolean", serialize=bool, deserialize=bool)
+GraphQLBoolean = GraphQLScalarType(name="Boolean", serializer=bool, deserializer=bool)
 
-GraphQLFloat = GraphQLScalarType(name="Float", serialize=float, deserialize=float)
+GraphQLFloat = GraphQLScalarType(name="Float", serializer=float, deserializer=float)
 
-GraphQLID = GraphQLScalarType(name="ID", serialize=str, deserialize=str)
+GraphQLID = GraphQLScalarType(name="ID", serializer=str, deserializer=str)
 
-GraphQLInt = GraphQLScalarType(name="Int", serialize=int, deserialize=int)
+GraphQLInt = GraphQLScalarType(name="Int", serializer=int, deserializer=int)
 
-GraphQLString = GraphQLScalarType(name="String", serialize=str, deserialize=str)
+GraphQLString = GraphQLScalarType(name="String", serializer=str, deserializer=str)

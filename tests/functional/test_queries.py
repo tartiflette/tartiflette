@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import Mock, call
-from tests.functional.utils import AsyncMock
 from tartiflette.parser.nodes.field import ExecutionData
 
 
@@ -41,7 +40,7 @@ async def test_get_field_by_name_call_order(query, varis, expected):
     from tartiflette.tartiflette import Tartiflette
 
     async def _resolver(ctx, exec_data):
-        pass
+        return {}
 
     field = Mock()
     field.name = "test"

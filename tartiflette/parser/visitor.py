@@ -15,10 +15,12 @@ async def _default_resolver(ctx, execution_data):
     try:
         return getattr(execution_data.parent_result, execution_data.name)
     except AttributeError:
-        raise TartifletteException(
-            "Parent < %s > doesn't contain expected attribute < %s >" %
-            (execution_data.parent_result, execution_data.name)
-        )
+        # TODO: Think about this :)
+        return {}
+        # raise TartifletteException(
+        #     "Parent < %s > doesn't contain expected attribute < %s >" %
+        #     (execution_data.parent_result, execution_data.name)
+        # )
 
 
 class TartifletteVisitor(Visitor):
@@ -68,7 +70,6 @@ class TartifletteVisitor(Visitor):
         self._current_argument_name = None
         self._current_type_condition = None
         self._current_fragment_definition = None
-        self._parent_node_type = None
         self._fragments = {}
         self._schema_definition: GraphQLSchema = schema_definition
 
@@ -110,22 +111,6 @@ class TartifletteVisitor(Visitor):
         except KeyError:
             raise UnknownVariableException(var_name)
 
-    def _find_resolver(self, element_name: str):
-        parent_name = ""
-        if self._parent_node_type is None:
-            parent_name = self._schema_definition.query_type
-        else:
-            parent_name = self._parent_node_type
-
-        field_name = parent_name + '.' + element_name
-        field = self._schema_definition.get_field_by_name(field_name)
-
-        if field:
-            self._parent_node_type = reduce_type(field.gql_type)
-            return field.resolver
-        else:
-            return _default_resolver
-
     def _add_node(self, node: Node):
         try:
             self.nodes[self._depth - 1]
@@ -137,9 +122,27 @@ class TartifletteVisitor(Visitor):
     def _on_field_in(self, element: _VisitorElement):
         self._depth = self._depth + 1
 
+        try:
+            parent_type = self._current_node.gql_type
+        except AttributeError:
+            parent_type = self._schema_definition.query_type
+
+        field = self._schema_definition.get_field_by_name(
+            parent_type + '.' + element.name)
+        try:
+            gql_type = reduce_type(field.gql_type)
+        except AttributeError:
+            gql_type = None
+
+        resolver = getattr(field, 'resolver', _default_resolver)
+        if resolver is None:
+            resolver = _default_resolver
+
         node = NodeField(
-            self._find_resolver(element.name), element.get_location(),
-            self.path, element.name, self._current_type_condition
+            resolver,
+            element.get_location(),
+            self.path, element.name, self._current_type_condition,
+            gql_type,
         )
 
         node.parent = self._current_node

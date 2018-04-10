@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Union
 
 from tartiflette.types.builtins import GraphQLBoolean, GraphQLFloat, GraphQLID, \
     GraphQLInt, GraphQLString
@@ -7,6 +7,8 @@ from tartiflette.types.exceptions.tartiflette import \
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.interface import GraphQLInterfaceType
+from tartiflette.types.list import GraphQLList
+from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.type import GraphQLType
 from tartiflette.types.union import GraphQLUnionType
@@ -110,12 +112,6 @@ class GraphQLSchema:
 
     def add_definition(self, value: GraphQLType) -> None:
         # TODO: Check stuff, call update_schema after each new definition ?
-        if not isinstance(value, GraphQLType):
-            raise TartifletteSchemaValidationError(
-                'new GraphQLSchema type definition `{}` '
-                'is not a GraphQLType.'.format(
-                    value.__class__.__name__)
-            )
         if self._gql_types.get(value.name):
             raise ValueError('new GraphQL type definition `{}` '
                              'overrides existing type definition `{}`.'.format(
@@ -124,8 +120,25 @@ class GraphQLSchema:
             ))
         self._gql_types[value.name] = value
 
-    def get_type(self, name):
-        return self._gql_types[name]
+    def to_real_type(self, gql_type: Union[str, GraphQLNonNull, GraphQLList]):
+        # TODO: Execute this at schema build time, performance issue !
+        try:
+            return self._gql_types[gql_type]
+        except TypeError:  # Unhashable so must be GraphQL[NonNull|List]
+            pass
+        root = gql_type
+        prev = None
+        while isinstance(gql_type, (GraphQLList, GraphQLNonNull)):
+            prev = gql_type
+            gql_type = gql_type.gql_type
+        prev.gql_type = self._gql_types[gql_type]
+        return root
+
+    def to_value(self, gql_type, resolved_value):
+        # TODO: Execute the below conversion at schema build time,
+        # big performance issue !
+        real_type = self.to_real_type(gql_type)
+        return real_type.to_value(resolved_value)
 
     def get_resolver(self, field_path: str) -> Optional[callable]:
         if not field_path:

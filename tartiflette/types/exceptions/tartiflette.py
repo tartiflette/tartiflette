@@ -20,6 +20,14 @@ class TartifletteSDLUnexpectedToken(Exception):
     pass
 
 
+class TartifletteUnexpectedNullValue(Exception):
+    pass
+
+
+class TartifletteNonListValue(Exception):
+    pass
+
+
 class UnknownVariableException(Exception):
     def __init__(self, varname):
         # TODO: Unify error messages format

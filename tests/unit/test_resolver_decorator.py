@@ -81,9 +81,11 @@ async def test_resolver_decorator():
         def func_default_resolver(*args, **kwargs):
             pass
 
-    assert generated_schema.get_field_by_name('Test.field').resolver == func_field_resolver
+    assert generated_schema.get_field_by_name('Test.field').resolver is not None
+    assert callable(generated_schema.get_field_by_name('Test.field').resolver)
     assert mock_one.called is False
-    assert generated_schema.get_field_by_name('RootQuery.defaultField').resolver == func_default_resolver
+    assert generated_schema.get_field_by_name('RootQuery.defaultField').resolver is not None
+    assert callable(generated_schema.get_field_by_name('RootQuery.defaultField').resolver)
     assert mock_two.called is False
 
 

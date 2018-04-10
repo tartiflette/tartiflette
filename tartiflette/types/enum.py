@@ -14,24 +14,20 @@ class GraphQLEnumValue:
         'value',
     )
 
-    def __init__(self, value: Any = None, name: Optional[str]=None, description: Optional[str]=None):
+    def __init__(self, value: Any = None, description: Optional[str]=None):
         self.value = value
-        self.name = str(name)
-        if not name:
-            self.name = str(value)
         self.description = description
 
     def __repr__(self):
-        return "{}(value={!r}, name={!r}, description={!r})".format(
+        return "{}(value={!r}, description={!r})".format(
             self.__class__.__name__,
-            self.value, self.name, self.description
+            self.value, self.description
         )
 
     def __eq__(self, other):
         return self is other or (
             type(self) is type(other) and
-            self.value == other.value and
-            self.name == other.name
+            self.value == other.value
         )
 
 
@@ -70,3 +66,9 @@ class GraphQLEnumType(GraphQLType):
     def __eq__(self, other):
         return super().__eq__(other) and \
                self.values == other.values
+
+    def to_value(self, value):
+        for enumval in self.values:
+            if enumval.value == value:
+                return enumval.value
+        return None
