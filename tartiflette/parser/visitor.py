@@ -135,10 +135,6 @@ class TartifletteVisitor(Visitor):
         self.nodes[self._depth - 1].append(node)
 
     def _on_field_in(self, element: _VisitorElement):
-        print("Element: ", element)
-        print("Element type: ", type(element))
-        print("Element class: ", element.__class__.__name__)
-
         self._depth = self._depth + 1
 
         node = NodeField(

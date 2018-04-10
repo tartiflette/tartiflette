@@ -7,7 +7,7 @@ from tartiflette.tartiflette import Tartiflette
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute():
+async def test_tartiflette_execute_basic():
     schema_sdl = """
     schema @enable_cache {
         query: RootQuery
@@ -28,12 +28,12 @@ async def test_tartiflette_execute():
     mock_one = Mock()
     mock_two = Mock()
 
-    @Resolver("Test.field", schema=ttftt._schema_definition)
+    @Resolver("Test.field", schema=ttftt.schema_definition)
     async def func_field_resolver(*args, **kwargs):
         mock_one()
         return
 
-    @Resolver("RootQuery.defaultField", schema=ttftt._schema_definition)
+    @Resolver("RootQuery.defaultField", schema=ttftt.schema_definition)
     async def func_default_query_resolver(*args, **kwargs):
         mock_two()
         return
@@ -48,19 +48,20 @@ async def test_tartiflette_execute():
 
     assert result == """{"testField":{"field":null}}"""
     assert mock_one.called is True
+    assert mock_two.called is False
 
 
 @pytest.mark.asyncio
 async def test_tartiflette_execute_hello_world():
     schema_sdl = """
     type Query {
-        hello: String!
+        hello: String
     }
     """
 
     ttftt = Tartiflette(schema_sdl)
 
-    @Resolver("Query.hello", schema=ttftt._schema_definition)
+    @Resolver("Query.hello", schema=ttftt.schema_definition)
     async def func_field_resolver(*args, **kwargs):
         return "world"
 

@@ -11,12 +11,12 @@ class Tartiflette:
 
     def __init__(self, sdl=None, schema_definition=None, serialize_cbk=None):
         if not sdl and schema_definition:
-            self._schema_definition = schema_definition
+            self.schema_definition = schema_definition
         else:
             # TODO: Is the DefaultGraphQLSchema a good idea to have as a
             # default fallback ?
-            self._schema_definition = GraphQLSchema()
-            build_graphql_schema_from_sdl(sdl, schema=self._schema_definition)
+            self.schema_definition = GraphQLSchema()
+            build_graphql_schema_from_sdl(sdl, schema=self.schema_definition)
         self._serialize_cbk = serialize_cbk if serialize_cbk else json.dumps
         self._parser = TartifletteRequestParser()
 
@@ -30,7 +30,7 @@ class Tartiflette:
                 self._parser.parse_and_tartify(
                     g_req,
                     variables=variables,
-                    schema_definition=self._schema_definition
+                    schema_definition=self.schema_definition
                 ),
                 request_ctx=context
             )

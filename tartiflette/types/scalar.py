@@ -46,3 +46,6 @@ class GraphQLScalarType(GraphQLType):
         # TODO: Need to check if [de]serialize functions need to be equal
         return super().__eq__(other) and self.serialize == other.serialize and \
                self.deserialize == other.deserialize
+
+    async def to_primitives(self, value):
+        return self.serialize(value)

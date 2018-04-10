@@ -5,6 +5,16 @@ from tartiflette.types.exceptions.tartiflette import \
     TartifletteNonAwaitableResolver
 
 
+class _ResolverWrapper:
+
+    def __init__(self, to_primitive, resolver):
+        self.to_primitive = to_primitive
+        self.resolver = resolver
+
+    async def __call__(self, *args, **kwargs):
+        return self.to_primitive(await self.resolver(*args, **kwargs))
+
+
 class Resolver:
     """
     Resolver is a decorator to link a resolver with a field defined in
@@ -33,5 +43,8 @@ class Resolver:
                 "The resolver `{}` given for the field `{}` "
                 "is not awaitable.".format(repr(resolver), self.field.name))
         if self.field:
+            # self.field.resolver = _
+            # ResolverWrapper(self._schema.get_type(
+            # self.field.gql_type).to_primitive, resolver)
             self.field.resolver = resolver
         return resolver

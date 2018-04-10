@@ -124,6 +124,9 @@ class GraphQLSchema:
             ))
         self._gql_types[value.name] = value
 
+    def get_type(self, name):
+        return self._gql_types[name]
+
     def get_resolver(self, field_path: str) -> Optional[callable]:
         if not field_path:
             return None

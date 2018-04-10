@@ -31,6 +31,7 @@ async def _exec_list(func, alist, path, args, request_ctx, name):
 
 def _to_dict(thing):
     if isinstance(thing, dict):
+        # Makes a copy of the contents so it's not modified by the child
         return {x: v for x, v in thing.items()}
 
     # TODO call the correct method when SDL thing
