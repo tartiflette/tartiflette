@@ -6,6 +6,8 @@ from tartiflette.sdl.ast_types import String
 from tartiflette.schema import DefaultGraphQLSchema
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.enum import GraphQLEnumValue, GraphQLEnumType
+from tartiflette.types.exceptions.tartiflette import \
+    TartifletteUnexpectedASTNode
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -13,7 +15,6 @@ from tartiflette.types.list import GraphQLList
 from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.scalar import GraphQLScalarType
-from tartiflette.types.type import GraphQLType
 from tartiflette.types.union import GraphQLUnionType
 
 SchemaNode = namedtuple('SchemaNode', ['type', 'value'])
@@ -58,7 +59,7 @@ class SchemaTransformer(Transformer_NoRecurse):
                 pass
             else:
                 raise ValueError(
-                    'Invalid GraphQLNamedType for `{}` '
+                    'Invalid GraphQL named type for `{}` '
                     'operation definition, got `{}`'.format(
                         operation_name, child.__class__.__name__
                     )
@@ -91,16 +92,7 @@ class SchemaTransformer(Transformer_NoRecurse):
         return SchemaNode('type', tree.children[0].value)
 
     def type_definition(self, tree: Tree):
-        for child in tree.children:
-            if isinstance(child, GraphQLType):
-                self._schema.add_definition(child)
-            else:
-                # TODO: should be improved to a custom error or removed (speed)
-                raise ValueError(
-                    'Invalid GraphQLType definition, got `{}`'.format(
-                        child.__class__.__name__
-                    )
-                )
+        self._schema.add_definition(tree.children[0])
         return tree
 
     def scalar_type_definition(self, tree: Tree) -> GraphQLScalarType:
@@ -118,8 +110,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return GraphQLScalarType(
             name=name,
             description=description,
@@ -143,8 +136,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return GraphQLUnionType(
             name=name,
             gql_types=members,
@@ -175,8 +169,10 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
+
         return GraphQLEnumType(
             name=name,
             values=values,
@@ -201,8 +197,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         if description:
             value.description = description
         return value
@@ -225,8 +222,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return GraphQLInterfaceType(
             name=name,
             fields=fields,
@@ -254,8 +252,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return GraphQLObjectType(
             name=name,
             fields=fields,
@@ -291,8 +290,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return GraphQLInputObjectType(
             name=name,
             fields=fields,
@@ -329,8 +329,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return GraphQLField(
             name=name,
             gql_type=gql_type,
@@ -362,8 +363,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return GraphQLArgument(
             name=name,
             gql_type=gql_type,
@@ -419,8 +421,9 @@ class SchemaTransformer(Transformer_NoRecurse):
                 name, value = child.value
                 obj[name] = value
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return SchemaNode('object_value', obj)
 
     def object_field(self, tree: Tree) -> SchemaNode:
@@ -432,8 +435,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'value':
                 value = child.value
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return SchemaNode('object_field', (name, value))
 
     def arguments(self, tree: Tree) -> SchemaNode:
@@ -451,8 +455,9 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'value':
                 value = child.value
             else:
-                # TODO: Unify exceptions format etc.
-                raise Exception("TODO: Unknown field {}".format(child))
+                raise TartifletteUnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
         return SchemaNode('argument', (name, value))
 
     def directives(self, tree: Tree) -> SchemaNode:
@@ -464,17 +469,7 @@ class SchemaTransformer(Transformer_NoRecurse):
         return SchemaNode('discard', None)
 
     def __getattr__(self, attr):
-        ignored = [
-            # 'int_value',
-            # 'float_value',
-            # 'string_value',
-            # 'list_value',
-            # 'object_value',
-            # 'enum_value',
-            # 'true_value',
-            # 'false_value',
-            # 'null_value',
-        ]
+        ignored = []
 
         def fn(tree: Tree):
             if tree.data not in ignored:

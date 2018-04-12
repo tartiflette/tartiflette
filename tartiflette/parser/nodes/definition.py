@@ -2,13 +2,13 @@ from .node import Node
 
 
 class NodeDefinition(Node):
-    def __init__(self, path, gql_type, location, name):
-        super(NodeDefinition, self).__init__(path, gql_type, location, name)
+    def __init__(self, path, libgraphql_type, location, name):
+        super().__init__(path, libgraphql_type, location, name)
 
         self._types = {
             "String": str,
             "Int": int,
-            "Booleand": bool,
+            "Boolean": bool,
             "Float": float
         }
 

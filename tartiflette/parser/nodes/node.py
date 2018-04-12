@@ -1,10 +1,11 @@
-class Node():
-    def __init__(self, path, gql_type, location, name):
+
+class Node:
+    def __init__(self, path, libgraphql_type, location, name):
         self.path = path
         self.parent = None
-        self.graphql_type = gql_type
+        self.libgraphql_type = libgraphql_type
         self.location = location
         self.name = name
 
     def __repr__(self):
-        return "%s(%s)" % (self.graphql_type, self.name)
+        return "%s(%s)" % (self.libgraphql_type, self.name)

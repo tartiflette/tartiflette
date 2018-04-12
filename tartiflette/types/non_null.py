@@ -1,5 +1,7 @@
 from typing import Optional
 
+from tartiflette.types.exceptions.tartiflette import \
+    TartifletteUnexpectedNullValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -27,3 +29,12 @@ class GraphQLNonNull(GraphQLType):
     def __eq__(self, other):
         return super().__eq__(other) and \
                self.gql_type == other.gql_type
+
+    def to_value(self, value):
+        result = self.gql_type.to_value(value)
+        if result is None:
+            raise TartifletteUnexpectedNullValue(
+                "resolved value `{}` is not of valid type, "
+                "it cannot be `None`.".format(value)
+            )
+        return result

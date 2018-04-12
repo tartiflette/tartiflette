@@ -2,15 +2,15 @@ import asyncio
 
 
 async def _level_execute(resolvers, request_ctx):
-    corroutines = [
+    coroutines = [
         resolver(request_ctx) for resolver in resolvers \
         if not resolver.type_condition or (resolver.type_condition and \
         resolver.parent and resolver.type_condition == \
         resolver.parent.results.__class__.__name__)
-        # TODO base __class__.__name__ on idl parsing result
+        # TODO base __class__.__name__ on sdl parsing result
     ]
 
-    return await asyncio.gather(*corroutines, return_exceptions=True)
+    return await asyncio.gather(*coroutines, return_exceptions=True)
 
 
 async def execute(gql_nodes, request_ctx):

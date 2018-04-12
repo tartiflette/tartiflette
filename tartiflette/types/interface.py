@@ -19,7 +19,7 @@ class GraphQLInterfaceType(GraphQLType):
     __slots__ = (
         'name',
         'description',
-        '_fields',
+        'fields',
     )
 
     def __init__(self, name: str, fields: Dict[str, GraphQLField],
@@ -28,7 +28,7 @@ class GraphQLInterfaceType(GraphQLType):
         # python 3.6 interpreter fails to interpret the signature correctly.
         super().__init__(name=name, description=description)
         # TODO: This will need a "resolve_type" function at execution time (?)
-        self._fields: Dict[str, GraphQLField] = fields
+        self.fields: Dict[str, GraphQLField] = fields
 
     def __repr__(self) -> str:
         return "{}(name={!r}, fields={!r}, description={!r})".format(
@@ -39,11 +39,3 @@ class GraphQLInterfaceType(GraphQLType):
     def __eq__(self, other) -> bool:
         return super().__eq__(other) and \
                self.fields == other.fields
-
-    @property
-    def fields(self) -> Dict[str, GraphQLField]:
-        return self._fields
-
-    @fields.setter
-    def fields(self, value) -> None:
-        self._fields = OrderedDict(value)

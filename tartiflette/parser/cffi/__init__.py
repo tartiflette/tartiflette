@@ -1,6 +1,4 @@
-import types
 from functools import partial
-from importlib import import_module
 from cffi import FFI
 
 ## TODO automatize read from headers files
@@ -307,7 +305,7 @@ class _ParsedData:
         self._destroy_cb(self._c_parsed)
 
 
-class Visitor():
+class Visitor:
     IN = 0
     OUT = 1
     UKN = 2
@@ -320,7 +318,7 @@ class Visitor():
         pass
 
 
-class Location():
+class Location:
     def __init__(self, bc, bl, ec, el):
         self._begin_column = bc
         self._begin_line = bl
@@ -337,12 +335,12 @@ class Location():
         return str(self)
 
 
-class _VisitorElement():
-    def __init__(self, lib, ffi, gql_type, internal_element):
+class _VisitorElement:
+    def __init__(self, lib, ffi, libgraphql_type, internal_element):
         self._lib = lib
         self._ffi = ffi
         self._internal_element = internal_element
-        self.graphql_type = gql_type
+        self.libgraphql_type = libgraphql_type
         self.name = None
         try:
             self.name = self._get_name()
@@ -351,7 +349,7 @@ class _VisitorElement():
 
     def _get_name_object(self):
         return self._lib.__getattr__(
-            'GraphQLAst%s_get_name' % self.graphql_type
+            'GraphQLAst%s_get_name' % self.libgraphql_type
         )(self._internal_element)
 
     def _get_name_string(self, name_object):
@@ -365,7 +363,7 @@ class _VisitorElement():
 
     def _get_name(self):
         element = self._internal_element
-        if self.graphql_type != "Name":
+        if self.libgraphql_type != "Name":
             element = self._get_name_object()
 
         return self._get_name_string(element)
@@ -384,8 +382,7 @@ class _VisitorElement():
 
 class _VisitorElementIntValue(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super(_VisitorElementIntValue,
-              self).__init__(lib, ffi, 'IntValue', internal_element)
+        super().__init__(lib, ffi, 'IntValue', internal_element)
 
     def get_value(self):
         val = self._from_char_to_string(
@@ -396,8 +393,7 @@ class _VisitorElementIntValue(_VisitorElement):
 
 class _VisitorElementStringValue(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super(_VisitorElementStringValue,
-              self).__init__(lib, ffi, 'StringValue', internal_element)
+        super().__init__(lib, ffi, 'StringValue', internal_element)
 
     def get_value(self):
         val = self._lib.GraphQLAstStringValue_get_value(self._internal_element)
@@ -406,8 +402,7 @@ class _VisitorElementStringValue(_VisitorElement):
 
 class _VisitorElementFloatValue(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super(_VisitorElementFloatValue,
-              self).__init__(lib, ffi, 'FloatValue', internal_element)
+        super().__init__(lib, ffi, 'FloatValue', internal_element)
 
     def get_value(self):
         val = self._from_char_to_string(
@@ -418,21 +413,19 @@ class _VisitorElementFloatValue(_VisitorElement):
 
 class _VisitorElementBooleanValue(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super(_VisitorElementBooleanValue,
-              self).__init__(lib, ffi, 'BooleanValue', internal_element)
-        self._vals = [False, True]
+        super().__init__(lib, ffi, 'BooleanValue', internal_element)
+        self._values = [False, True]
 
     def get_value(self):
         val = self._lib.GraphQLAstBooleanValue_get_value(
             self._internal_element
         )
-        return self._vals[val]
+        return self._values[val]
 
 
 class _VisitorElementFragmentDefinition(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super(_VisitorElementFragmentDefinition,
-              self).__init__(lib, ffi, 'FragmentDefinition', internal_element)
+        super().__init__(lib, ffi, 'FragmentDefinition', internal_element)
 
     def get_type_condition(self):
         name_type = self._lib.GraphQLAstFragmentDefinition_get_type_condition(
@@ -446,7 +439,7 @@ class _VisitorElementFragmentDefinition(_VisitorElement):
         return None
 
 
-_GQL_TYPE_TO_CLASS = {
+_LIBGRAPHQL_TYPE_TO_CLASS = {
     "IntValue": _VisitorElementIntValue,
     "StringValue": _VisitorElementStringValue,
     "FloatValue": _VisitorElementFloatValue,
@@ -455,12 +448,15 @@ _GQL_TYPE_TO_CLASS = {
 }
 
 
-class LibGraphqlParser():
+class LibGraphqlParser:
     def __init__(self):
         self._ffi = FFI()
         self._ffi.cdef(CDEFS_LIBGRAPHQL)
         # TODO do a conf of this ?
-        self._lib = self._ffi.dlopen("/usr/local/lib/libgraphqlparser.so")
+        try:
+            self._lib = self._ffi.dlopen("/usr/local/lib/libgraphqlparser.so")
+        except OSError:
+            self._lib = self._ffi.dlopen("/usr/local/lib/libgraphqlparser.dylib")
         self._lib_callbacks = self._ffi.new(
             "struct GraphQLAstVisitorCallbacks *"
         )
@@ -470,25 +466,26 @@ class LibGraphqlParser():
         self._default_visitor_cls = Visitor
         self._creates_callbacks()
 
-    def _create_visitor_element(self, gql_type, element):
+    def _create_visitor_element(self, libgraphql_type, element):
         try:
-            return _GQL_TYPE_TO_CLASS[gql_type](self._lib, self._ffi, element)
+            return _LIBGRAPHQL_TYPE_TO_CLASS[libgraphql_type](
+                self._lib, self._ffi, element)
         except KeyError:
             pass
 
-        return _VisitorElement(self._lib, self._ffi, gql_type, element)
+        return _VisitorElement(self._lib, self._ffi, libgraphql_type, element)
 
-    def _callback_enter(self, gql_type, element, udata):
+    def _callback_enter(self, libgraphql_type, element, udata):
         context = self._ffi.from_handle(udata)
         context.update(
-            Visitor.IN, self._create_visitor_element(gql_type, element)
+            Visitor.IN, self._create_visitor_element(libgraphql_type, element)
         )
         return not context.skip_child
 
-    def _callback_exit(self, gql_type, element, udata):
+    def _callback_exit(self, libgraphql_type, element, udata):
         context = self._ffi.from_handle(udata)
         context.update(
-            Visitor.OUT, self._create_visitor_element(gql_type, element)
+            Visitor.OUT, self._create_visitor_element(libgraphql_type, element)
         )
         return None
 
@@ -496,7 +493,7 @@ class LibGraphqlParser():
         c_func = self._ffi.callback(proto)(func)
         # Keep the callbacks alive in this list
         # to keep the underlying cdata alive.
-        # cause we do it with reflexion and
+        # because we do it with reflexion and
         # not with decoration
         self._callbacks.append(c_func)
         setattr(self._lib_callbacks, attr, c_func)

@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import Mock, call
-from tests.functional.utils import AsyncMock
 from tartiflette.parser.nodes.field import ExecutionData
 
 
@@ -17,45 +16,49 @@ from tartiflette.parser.nodes.field import ExecutionData
                     D
                     E
                     F {
-                        H {
-                            I
+                        G {
+                            H
                         }
                     }
                 }
             }
             """, {}, [
-                call("A"),
-                call("B"),
-                call("C"),
-                call("D"),
-                call("E"),
-                call("F"),
-                call("H"),
-                call("I")
+                call("Query.A"),
+                call("Object.B"),
+                call("Object.C"),
+                call("Object.D"),
+                call("Object.E"),
+                call("Object.F"),
+                call("Object.G"),
+                call("Object.H")
             ]
         )
     ],
     ids=["Simple Order"]
 )
-async def test_get_resolver_call_order(query, varis, expected):
+async def test_get_field_by_name_call_order(query, varis, expected):
     from tartiflette.tartiflette import Tartiflette
 
     async def _resolver(ctx, exec_data):
-        pass
+        return {}
+
+    field = Mock()
+    field.name = "test"
+    field.gql_type = "Object"
+    field.resolver = _resolver
 
     sdm = Mock()
-    sdm.get_resolver = Mock(return_value=_resolver)
+    sdm.query_type = "Query"
+    sdm.get_field_by_name = Mock(return_value=field)
 
     ttftt = Tartiflette(schema_definition=sdm)
     await ttftt.execute(query, context={}, variables=varis)
 
-    sdm.get_resolver.assert_has_calls(expected, any_order=False)
+    sdm.get_field_by_name.assert_has_calls(expected, any_order=False)
 
 
 @pytest.mark.asyncio
-async def test_calling_resolver_with_correct_value(monkeypatch):
-    import tartiflette.parser.visitor
-
+async def test_calling_get_field_by_name_with_correct_value():
     class default_resolver(Mock):
         async def __call__(self, ctx, exe):
             super(default_resolver, self).__call__(ctx, exe)
@@ -63,12 +66,6 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                 return getattr(exe.parent_result, exe.name)
             except:
                 return {}
-
-    _default_resolver = default_resolver()
-
-    monkeypatch.setattr(
-        tartiflette.parser.visitor, "_default_resolver", _default_resolver
-    )
 
     from tartiflette.tartiflette import Tartiflette
 
@@ -101,16 +98,33 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
             super(resolver_d, self).__call__(ctx, exedata)
             return "ValueD"
 
-    rslvr_a = resolver_a()
-    rslvr_b = resolver_b()
-    rslvr_d = resolver_d()
+    field_a = Mock()
+    field_a.resolver = resolver_a()
+    field_a.gql_type = "Test"
+    field_a.name = "test"
 
-    def get_resolver(name):
-        resolvers = {"A": rslvr_a, "B": rslvr_b, "D": rslvr_d}
-        return resolvers[name]
+    field_b = Mock()
+    field_b.resolver = resolver_b()
+    field_b.gql_type = "Test"
+    field_b.name = "test"
+
+    field_d = Mock()
+    field_d.resolver = resolver_d()
+    field_d.gql_type = "Test"
+    field_d.name = "test"
+
+    default_field = Mock()
+    default_field.resolver = default_resolver()
+    default_field.gql_type = "Test"
+    default_field.name = "test"
+
+    def get_field(name):
+        fields = {"Query.A": field_a, "Test.B": field_b, "Test.D": field_d}
+        return fields.get(name, default_field)
 
     sdm = Mock()
-    sdm.get_resolver = get_resolver
+    sdm.query_type = "Query"
+    sdm.get_field_by_name = get_field
 
     ttftt = Tartiflette(schema_definition=sdm)
     r = await ttftt.execute(
@@ -136,7 +150,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
         variables={}
     )
 
-    rslvr_a.assert_has_calls(
+    field_a.resolver.assert_has_calls(
         [
             call(
                 {},
@@ -144,14 +158,14 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     parent_result={},
                     path='/Document/OperationDefinition(a_request)/Field(A)',
                     arguments={},
-                    name='A'
+                    name='A',
                 )
             )
         ],
-        any_order=True
+        any_order=True,
     )
 
-    rslvr_b.assert_has_calls(
+    field_b.resolver.assert_has_calls(
         [
             call(
                 {},
@@ -160,7 +174,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(B)[0]',
                     arguments={},
-                    name='B'
+                    name='B',
                 )
             ),
             call(
@@ -170,14 +184,14 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(B)[1]',
                     arguments={},
-                    name='B'
+                    name='B',
                 )
             )
         ],
         any_order=True
     )
 
-    rslvr_d.assert_has_calls(
+    field_d.resolver.assert_has_calls(
         [
             call(
                 {},
@@ -186,7 +200,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(D)[0]',
                     arguments={},
-                    name='D'
+                    name='D',
                 )
             ),
             call(
@@ -196,14 +210,14 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(D)[1]',
                     arguments={},
-                    name='D'
+                    name='D',
                 )
             )
         ],
         any_order=True
     )
 
-    _default_resolver.assert_has_calls(
+    default_field.resolver.assert_has_calls(
         [
             call(
                 {},
@@ -212,7 +226,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(F)[0]',
                     arguments={},
-                    name='F'
+                    name='F',
                 )
             ),
             call(
@@ -222,7 +236,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(E)[0]',
                     arguments={},
-                    name='E'
+                    name='E',
                 )
             ),
             call(
@@ -232,7 +246,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(F)[1]',
                     arguments={},
-                    name='F'
+                    name='F',
                 )
             ),
             call(
@@ -242,27 +256,27 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(E)[1]',
                     arguments={},
-                    name='E'
+                    name='E',
                 )
             ),
             call(
                 {},
                 ExecutionData(
-                    parent_result=rslvr_b.rtrn,
+                    parent_result=field_b.resolver.rtrn,
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(B)/Field(C)[0]',
                     arguments={},
-                    name='C'
+                    name='C',
                 )
             ),
             call(
                 {},
                 ExecutionData(
-                    parent_result=rslvr_b.rtrn,
+                    parent_result=field_b.resolver.rtrn,
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(B)/Field(C)[1]',
                     arguments={},
-                    name='C'
+                    name='C',
                 )
             ),
             call(
@@ -272,7 +286,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(B)/Field(C)/Field(K)[0]',
                     arguments={},
-                    name='K'
+                    name='K',
                 )
             ),
             call(
@@ -282,7 +296,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(B)/Field(C)/Field(K)[1]',
                     arguments={},
-                    name='K'
+                    name='K',
                 )
             ),
             call(
@@ -292,7 +306,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(F)/Field(H)[1]',
                     arguments={},
-                    name='H'
+                    name='H',
                 )
             ),
             call(
@@ -302,7 +316,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(F)/Field(H)[0]',
                     arguments={},
-                    name='H'
+                    name='H',
                 )
             ),
             call(
@@ -312,7 +326,7 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(F)/Field(H)/Field(I)[1]',
                     arguments={},
-                    name='I'
+                    name='I',
                 )
             ),
             call(
@@ -322,14 +336,12 @@ async def test_calling_resolver_with_correct_value(monkeypatch):
                     path=
                     '/Document/OperationDefinition(a_request)/Field(A)/Field(F)/Field(H)/Field(I)[0]',
                     arguments={},
-                    name='I'
+                    name='I',
                 )
             ),
         ],
         any_order=True
     )
-
-    monkeypatch.undo()
 
 
 @pytest.mark.asyncio
@@ -367,13 +379,17 @@ async def test_result_value(query, expected):
             super(default_resolver, self).__call__(ctx, exe)
             return {"iam": exe.name}
 
-    _default_resolver = default_resolver()
+    field = Mock()
+    field.gql_type = "Test"
+    field.name = "test"
+    field.resolver = default_resolver()
 
-    def get_resolver(name):
-        return _default_resolver
+    def get_field_by_name(name):
+        return field
 
     sdm = Mock()
-    sdm.get_resolver = get_resolver
+    sdm.query_type = "Query"
+    sdm.get_field_by_name = get_field_by_name
 
     ttftt = Tartiflette(schema_definition=sdm)
     results = await ttftt.execute(query, context={}, variables={})

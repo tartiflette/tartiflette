@@ -262,6 +262,36 @@ def test_schema_validate_named_types(full_sdl, expected_error, expected_value):
     ),
     (
         """
+        scalar Brand 
+    
+        type Car implements Unknown {
+            name: String!
+        }
+    
+        type Query {
+            placeholder: String
+        }
+        """,
+        True,
+        False
+    ),
+    (
+        """
+        scalar Brand 
+
+        type Car implements Brand {
+            name: String!
+        }
+
+        type Query {
+            placeholder: String
+        }
+        """,
+        True,
+        False
+    ),
+    (
+        """
         interface Vehicle {
             speedInKmh: Float
         }

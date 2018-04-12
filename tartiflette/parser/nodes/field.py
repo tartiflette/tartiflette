@@ -31,6 +31,7 @@ async def _exec_list(func, alist, path, args, request_ctx, name):
 
 def _to_dict(thing):
     if isinstance(thing, dict):
+        # Makes a copy of the contents so it's not modified by the child
         return {x: v for x, v in thing.items()}
 
     # TODO call the correct method when SDL thing
@@ -45,13 +46,14 @@ def _to_dict(thing):
 
 
 class NodeField(Node):
-    def __init__(self, func, location, path, name, type_condition):
-        super(NodeField, self).__init__(path, 'Field', location, name)
+    def __init__(self, func, location, path, name, type_condition, gql_type = None):
+        super().__init__(path, 'Field', location, name)
         self._func = func
         self.results = None
         self.arguments = {}
         self.type_condition = type_condition
         self.as_jsonable = {}
+        self.gql_type = gql_type
 
     async def __call__(self, request_ctx):
         # TODO reduce this function (too much if and for)

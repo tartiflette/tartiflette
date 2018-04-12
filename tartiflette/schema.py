@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Union
 
 from tartiflette.types.builtins import GraphQLBoolean, GraphQLFloat, GraphQLID, \
     GraphQLInt, GraphQLString
@@ -7,6 +7,8 @@ from tartiflette.types.exceptions.tartiflette import \
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.interface import GraphQLInterfaceType
+from tartiflette.types.list import GraphQLList
+from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.type import GraphQLType
 from tartiflette.types.union import GraphQLUnionType
@@ -104,6 +106,10 @@ class GraphQLSchema:
     def subscription_type(self, value: str) -> None:
         self._subscription_type = value
 
+    @property
+    def types(self):
+        return self._gql_types
+
     def add_definition(self, value: GraphQLType) -> None:
         # TODO: Check stuff, call update_schema after each new definition ?
         if self._gql_types.get(value.name):
@@ -113,6 +119,26 @@ class GraphQLSchema:
                                 repr(self._gql_types.get(value.name))
             ))
         self._gql_types[value.name] = value
+
+    def to_real_type(self, gql_type: Union[str, GraphQLNonNull, GraphQLList]):
+        # TODO: Execute this at schema build time, performance issue !
+        try:
+            return self._gql_types[gql_type]
+        except TypeError:  # Unhashable so must be GraphQL[NonNull|List]
+            pass
+        root = gql_type
+        prev = None
+        while isinstance(gql_type, (GraphQLList, GraphQLNonNull)):
+            prev = gql_type
+            gql_type = gql_type.gql_type
+        prev.gql_type = self._gql_types[gql_type]
+        return root
+
+    def to_value(self, gql_type, resolved_value):
+        # TODO: Execute the below conversion at schema build time,
+        # big performance issue !
+        real_type = self.to_real_type(gql_type)
+        return real_type.to_value(resolved_value)
 
     def get_resolver(self, field_path: str) -> Optional[callable]:
         if not field_path:

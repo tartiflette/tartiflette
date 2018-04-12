@@ -21,7 +21,6 @@ from tartiflette.types.union import GraphQLUnionType
 
 
 @pytest.mark.parametrize("full_sdl,expected_tree", [
-    # The `name` rule cleans up the name Token
     (
         """
         \"\"\"

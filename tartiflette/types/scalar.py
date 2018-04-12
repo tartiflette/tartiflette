@@ -17,34 +17,29 @@ class GraphQLScalarType(GraphQLType):
     __slots__ = (
         'name',
         'description',
-        'serialize',
-        'deserialize',
+        'serializer',
+        'deserializer',
     )
 
     def __init__(self, name: str,
-                 serialize: Optional[callable]=None,
-                 deserialize: Optional[callable]= None,
+                 serializer: Optional[callable]=None,
+                 deserializer: Optional[callable]= None,
                  description: Optional[str] = None):
         super().__init__(name=name, description=description)
-        # TODO: Better validation
-        # if not callable(serialize) or not callable(deserialize):
-        #     raise TartifletteGraphQLTypeException(
-        #         "Error while defining Scalar `{}`. "
-        #         "You must provide `serialize` and `deserialize` functions.".
-        #             format(name)
-        #         , gql_type=self)
-
-        self.serialize = serialize
-        self.deserialize = deserialize
+        self.serializer = serializer
+        self.deserializer = deserializer
 
     def __repr__(self) -> str:
-        return "{}(name={!r}, serialize={!r}, " \
-               "deserialize={!r}, description={!r})".format(
-            self.__class__.__name__, self.name, self.serialize,
-            self.deserialize, self.description,
+        return "{}(name={!r}, description={!r})".format(
+            self.__class__.__name__, self.name, self.description,
         )
 
     def __eq__(self, other) -> bool:
         # TODO: Need to check if [de]serialize functions need to be equal
-        return super().__eq__(other) and self.serialize == other.serialize and \
-               self.deserialize == other.deserialize
+        return super().__eq__(other) and self.serializer == other.serializer \
+               and self.deserializer == other.deserializer
+
+    def to_value(self, value):
+        if value is None:
+            return value
+        return self.serializer(value)
