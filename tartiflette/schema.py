@@ -1,9 +1,11 @@
+import traceback
 from typing import Optional, Dict, List, Union
 
+from tartiflette.executors.types import ExecutionData
 from tartiflette.types.builtins import GraphQLBoolean, GraphQLFloat, GraphQLID, \
     GraphQLInt, GraphQLString
 from tartiflette.types.exceptions.tartiflette import \
-    TartifletteSchemaValidationError
+    GraphQLSchemaError, InvalidValue, GraphQLError
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -131,14 +133,37 @@ class GraphQLSchema:
         while isinstance(gql_type, (GraphQLList, GraphQLNonNull)):
             prev = gql_type
             gql_type = gql_type.gql_type
-        prev.gql_type = self._gql_types[gql_type]
+        # TODO: Improve this logic ! It's unpythonic
+        if isinstance(gql_type, str):
+            prev.gql_type = self._gql_types[gql_type]
         return root
 
-    def to_value(self, gql_type, resolved_value):
-        # TODO: Execute the below conversion at schema build time,
+    def collect_field_value(self, field, resolved_value, execution_data: ExecutionData):
+        # TODO: Execute the below conversion (to_real_type) at schema build time,
         # big performance issue !
-        real_type = self.to_real_type(gql_type)
-        return real_type.to_value(resolved_value)
+        real_type = self.to_real_type(field.gql_type)
+        result = real_type.collect_value(resolved_value)
+        if isinstance(result, list):
+            # TODO: Make this cleaner. Too many "useless" loops in
+            # fields, executor & resolvers.
+            # TODO: Also, we append the index in the path both here and in the
+            # NodeField (we need it for errors but we can probably do better)
+            new_result = []
+            for index, res in enumerate(result):
+                if isinstance(res, InvalidValue):
+                    execution_data.path.append(index)
+                    new_result.append(InvalidValue(res.value,
+                                      gql_type=real_type,
+                                      field=field, path=execution_data.path))
+                else:
+                    new_result.append(res)
+            return new_result
+
+        if isinstance(result, InvalidValue):
+            return InvalidValue(result.value,
+                                gql_type=real_type,
+                                field=field, path=execution_data.path)
+        return result
 
     def get_resolver(self, field_path: str) -> Optional[callable]:
         if not field_path:
@@ -216,7 +241,7 @@ class GraphQLSchema:
                 for field_name, field in gql_type.fields.items():
                     gql_type = reduce_type(field.gql_type)
                     if gql_type not in self._gql_types:
-                        raise TartifletteSchemaValidationError(
+                        raise GraphQLSchemaError(
                             "field `{}` in GraphQL type `{}` is invalid, "
                             "the given type `{}` does not exist!".format(
                                 field_name, type_name, gql_type
@@ -233,14 +258,14 @@ class GraphQLSchema:
                     try:
                         iface_type = self._gql_types[iface_name]
                     except KeyError:
-                        raise TartifletteSchemaValidationError(
+                        raise GraphQLSchemaError(
                             "GraphQL type `{}` implements the `{}` interface "
                             "which does not exist!".format(
                                 gql_type.name, iface_name
                             )
                         )
                     if not isinstance(iface_type, GraphQLInterfaceType):
-                        raise TartifletteSchemaValidationError(
+                        raise GraphQLSchemaError(
                             "GraphQL type `{}` implements the `{}` interface "
                             "which is not an interface!".format(
                                 gql_type.name, iface_name,
@@ -250,14 +275,14 @@ class GraphQLSchema:
                         try:
                             gql_type_field = gql_type.fields[iface_field_name]
                         except KeyError:
-                            raise TartifletteSchemaValidationError(
+                            raise GraphQLSchemaError(
                                 "field `{}` is missing in GraphQL type `{}` "
                                 "that implements the `{}` interface.".format(
                                     iface_field_name, gql_type.name, iface_name,
                                 )
                             )
                         if gql_type_field.gql_type != iface_field.gql_type:
-                            raise TartifletteSchemaValidationError(
+                            raise GraphQLSchemaError(
                                 "field `{}` in GraphQL type `{}` that "
                                 "implements the `{}` interface does not follow "
                                 "the interface field type `{}`.".format(
@@ -272,21 +297,21 @@ class GraphQLSchema:
     def _validate_schema_root_types_exist(self):
         # Check "query" which is the only mandatory root type
         if self.query_type not in self._gql_types.keys():
-            raise TartifletteSchemaValidationError(
+            raise GraphQLSchemaError(
                 "schema could not find the root `query` type `{}`.".format(
                     self.query_type
                 )
             )
         elif self.mutation_type != "Mutation" and \
                 self.mutation_type not in self._gql_types.keys():
-            raise TartifletteSchemaValidationError(
+            raise GraphQLSchemaError(
                 "schema could not find the root `mutation` type `{}`.".format(
                     self.mutation_type
                 )
             )
         elif self.subscription_type != "Subscription" and \
                 self.subscription_type not in self._gql_types.keys():
-            raise TartifletteSchemaValidationError(
+            raise GraphQLSchemaError(
                 "schema could not find the root `subscription` type `{}`.".format(
                     self.subscription_type
                 )
@@ -296,7 +321,7 @@ class GraphQLSchema:
     def _validate_non_empty_object(self):
         for type_name, gql_type in self._gql_types.items():
             if isinstance(gql_type, GraphQLObjectType) and not gql_type.fields:
-                raise TartifletteSchemaValidationError(
+                raise GraphQLSchemaError(
                     "object type `{}` has no fields.".format(
                         type_name
                     )
@@ -308,7 +333,7 @@ class GraphQLSchema:
             if isinstance(gql_type, GraphQLUnionType):
                 for contained_type_name in gql_type.gql_types:
                     if contained_type_name == type_name:
-                        raise TartifletteSchemaValidationError(
+                        raise GraphQLSchemaError(
                             "union type `{}` contains itself.".format(
                                 type_name
                             )

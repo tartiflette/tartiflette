@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, Union
 
-from tartiflette.types.exceptions.tartiflette import TartifletteNonListValue
+from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -16,7 +16,8 @@ class GraphQLList(GraphQLType):
         'gql_type',
     )
 
-    def __init__(self, gql_type: str, description: Optional[str] = None):
+    def __init__(self, gql_type: Union[str, GraphQLType],
+                 description: Optional[str] = None):
         super().__init__(name=None, description=description)
         self.gql_type = gql_type
 
@@ -25,17 +26,17 @@ class GraphQLList(GraphQLType):
             self.__class__.__name__, self.gql_type, self.description,
         )
 
+    def __str__(self):
+        return '[{!s}]'.format(self.gql_type)
+
     def __eq__(self, other):
         return super().__eq__(other) and \
                self.gql_type == other.gql_type
 
-    def to_value(self, value):
+    def collect_value(self, value):
         if not isinstance(value, list):
-            raise TartifletteNonListValue(
-                "resolved value `{}` is not of valid type, "
-                "expected a list.".format(value)
-            )
+            return InvalidValue(value, gql_type=self)
         results = []
         for item in value:
-            results.append(self.gql_type.to_value(item))
+            results.append(self.gql_type.collect_value(item))
         return results

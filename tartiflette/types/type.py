@@ -19,7 +19,17 @@ class GraphQLType:
             self.__class__.__name__, self.name, self.description
         )
 
+    def __str__(self):
+        return '{!s}'.format(self.name)
+
     def __eq__(self, other) -> bool:
         return self is other or (
                 type(self) is type(other) and self.name == other.name
+        )
+
+    def collect_value(self, value):
+        raise NotImplementedError(
+            "{} must implement a `collect_value` function.".format(
+                self.__class__.__name__
+            )
         )

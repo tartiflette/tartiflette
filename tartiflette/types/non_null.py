@@ -1,7 +1,7 @@
-from typing import Optional
+from typing import Optional, Union
 
 from tartiflette.types.exceptions.tartiflette import \
-    TartifletteUnexpectedNullValue
+    InvalidValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -17,7 +17,8 @@ class GraphQLNonNull(GraphQLType):
         'gql_type',
     )
 
-    def __init__(self, gql_type: str, description: Optional[str] = None):
+    def __init__(self, gql_type: Union[str, GraphQLType],
+                 description: Optional[str] = None):
         super().__init__(name=None, description=description)
         self.gql_type = gql_type
 
@@ -26,15 +27,15 @@ class GraphQLNonNull(GraphQLType):
             self.__class__.__name__, self.gql_type, self.description,
         )
 
+    def __str__(self):
+        return '{!s}!'.format(self.gql_type)
+
     def __eq__(self, other):
         return super().__eq__(other) and \
                self.gql_type == other.gql_type
 
-    def to_value(self, value):
-        result = self.gql_type.to_value(value)
+    def collect_value(self, value):
+        result = self.gql_type.collect_value(value)
         if result is None:
-            raise TartifletteUnexpectedNullValue(
-                "resolved value `{}` is not of valid type, "
-                "it cannot be `None`.".format(value)
-            )
+            return InvalidValue(result, gql_type=self)
         return result

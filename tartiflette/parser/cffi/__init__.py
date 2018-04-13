@@ -1,7 +1,10 @@
 from functools import partial
 from cffi import FFI
 
+from tartiflette.types.location import Location
+
 ## TODO automatize read from headers files
+
 CDEFS_LIBGRAPHQL = """
 /**
  * This file provides C wrappers for ../GraphQLParser.h.
@@ -318,23 +321,6 @@ class Visitor:
         pass
 
 
-class Location:
-    def __init__(self, bc, bl, ec, el):
-        self._begin_column = bc
-        self._begin_line = bl
-        self._end_column = ec
-        self._end_line = el
-
-    def __str__(self):
-        return "Starts at < %s, %s >, ends at < %s, %s >" % (
-            self._begin_line, self._begin_column, self._end_line,
-            self._end_column
-        )
-
-    def __repr__(self):
-        return str(self)
-
-
 class _VisitorElement:
     def __init__(self, lib, ffi, libgraphql_type, internal_element):
         self._lib = lib
@@ -375,8 +361,8 @@ class _VisitorElement:
             location
         )
         return Location(
-            location.beginColumn, location.beginLine, location.endColumn,
-            location.endLine
+            location.beginLine, location.beginColumn,
+            location.endLine, location.endColumn,
         )
 
 

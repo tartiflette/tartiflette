@@ -3,11 +3,14 @@ from typing import Optional
 
 from lark.lark import Lark
 from lark.tree import Tree
+from lark.common import UnexpectedToken, ParseError
+from lark.lexer import UnexpectedInput
 
 from tartiflette.schema import GraphQLSchema
 from tartiflette.sdl.transformers.cleaning_transformer import \
     CleaningTransformer
 from tartiflette.sdl.transformers.schema_transformer import SchemaTransformer
+from tartiflette.types.exceptions.tartiflette import InvalidSDL
 
 
 def build_graphql_schema_from_sdl(
@@ -47,7 +50,11 @@ def parse_graphql_sdl_to_ast(sdl: str) -> Tree:
         )
         gqlsdl = gqlsdl_parser.parse
 
+    # try:
     return gqlsdl(sdl)
+    # TODO: Improve this as below
+    # except (UnexpectedToken, ParseError, UnexpectedInput) as e:
+    #     raise InvalidSDL(e.message)
 
 
 def transform_ast_to_schema(

@@ -7,7 +7,7 @@ from tartiflette.schema import DefaultGraphQLSchema
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.enum import GraphQLEnumValue, GraphQLEnumType
 from tartiflette.types.exceptions.tartiflette import \
-    TartifletteUnexpectedASTNode
+    UnexpectedASTNode
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -110,7 +110,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return GraphQLScalarType(
@@ -136,7 +136,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return GraphQLUnionType(
@@ -169,7 +169,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
 
@@ -197,7 +197,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         if description:
@@ -222,7 +222,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return GraphQLInterfaceType(
@@ -252,7 +252,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return GraphQLObjectType(
@@ -290,7 +290,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return GraphQLInputObjectType(
@@ -329,7 +329,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return GraphQLField(
@@ -363,7 +363,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'discard':
                 pass
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return GraphQLArgument(
@@ -421,7 +421,7 @@ class SchemaTransformer(Transformer_NoRecurse):
                 name, value = child.value
                 obj[name] = value
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return SchemaNode('object_value', obj)
@@ -435,7 +435,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'value':
                 value = child.value
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return SchemaNode('object_field', (name, value))
@@ -455,7 +455,7 @@ class SchemaTransformer(Transformer_NoRecurse):
             elif child.type == 'value':
                 value = child.value
             else:
-                raise TartifletteUnexpectedASTNode(
+                raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__))
         return SchemaNode('argument', (name, value))

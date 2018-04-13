@@ -5,8 +5,8 @@ def test_graphql_scalar_init():
     scalar = GraphQLScalarType(name="Name", description="description")
 
     assert scalar.name == "Name"
-    assert scalar.serializer is None
-    assert scalar.deserializer is None
+    assert scalar.coerce_output is None
+    assert scalar.coerce_input is None
     assert scalar.description == "description"
 
 

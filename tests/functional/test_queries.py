@@ -82,7 +82,7 @@ async def test_calling_get_field_by_name_with_correct_value():
             def __repr__(self):
                 return "IAmABResults"
 
-            def as_ttftt_dict(self):
+            def collect_value(self):
                 return {"C": self.C}
 
         def __init__(self, *args, **kwargs):
@@ -156,7 +156,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={},
-                    path='/Document/OperationDefinition(a_request)/Field(A)',
+                    path=['A'],
                     arguments={},
                     name='A',
                 )
@@ -171,8 +171,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": 1},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(B)[0]',
+                    path=['A', 'B', 0],
                     arguments={},
                     name='B',
                 )
@@ -181,8 +180,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": 2},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(B)[1]',
+                    path=['A', 'B', 1],
                     arguments={},
                     name='B',
                 )
@@ -197,8 +195,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": 1},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(D)[0]',
+                    path=['A', 'D', 0],
                     arguments={},
                     name='D',
                 )
@@ -207,8 +204,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": 2},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(D)[1]',
+                    path=['A', 'D', 1],
                     arguments={},
                     name='D',
                 )
@@ -223,8 +219,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": 1},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(F)[0]',
+                    path=['A', 'F', 0],
                     arguments={},
                     name='F',
                 )
@@ -233,8 +228,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": 1},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(E)[0]',
+                    path=['A', 'E', 0],
                     arguments={},
                     name='E',
                 )
@@ -243,8 +237,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": 2},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(F)[1]',
+                    path=['A', 'F', 1],
                     arguments={},
                     name='F',
                 )
@@ -253,8 +246,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": 2},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(E)[1]',
+                    path=['A', 'E', 1],
                     arguments={},
                     name='E',
                 )
@@ -263,8 +255,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result=field_b.resolver.rtrn,
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(B)/Field(C)[0]',
+                    path=['A', 'B', 'C', 0],
                     arguments={},
                     name='C',
                 )
@@ -273,8 +264,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result=field_b.resolver.rtrn,
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(B)/Field(C)[1]',
+                    path=['A', 'B', 'C', 1],
                     arguments={},
                     name='C',
                 )
@@ -283,8 +273,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": "b.c"},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(B)/Field(C)/Field(K)[0]',
+                    path=['A', 'B', 'C', 'K', 0],
                     arguments={},
                     name='K',
                 )
@@ -293,8 +282,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={"id": "b.c"},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(B)/Field(C)/Field(K)[1]',
+                    path=['A', 'B', 'C', 'K', 1],
                     arguments={},
                     name='K',
                 )
@@ -303,8 +291,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(F)/Field(H)[1]',
+                    path=['A', 'F', 'H', 1],
                     arguments={},
                     name='H',
                 )
@@ -313,8 +300,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(F)/Field(H)[0]',
+                    path=['A', 'F', 'H', 0],
                     arguments={},
                     name='H',
                 )
@@ -323,8 +309,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(F)/Field(H)/Field(I)[1]',
+                    path=['A', 'F', 'H', 'I', 1],
                     arguments={},
                     name='I',
                 )
@@ -333,8 +318,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 {},
                 ExecutionData(
                     parent_result={},
-                    path=
-                    '/Document/OperationDefinition(a_request)/Field(A)/Field(F)/Field(H)/Field(I)[0]',
+                    path=['A', 'F', 'H', 'I', 0],
                     arguments={},
                     name='I',
                 )
@@ -352,7 +336,7 @@ async def test_calling_get_field_by_name_with_correct_value():
             query LOL {
                 A
             }
-            """, '{"A":{"iam": "A"}}'
+            """, '{"data":{"A":{"iam": "A"}}}'
         ), (
             """
             query a_request {
@@ -366,7 +350,7 @@ async def test_calling_get_field_by_name_with_correct_value():
                 }
             }
             """,
-            '{"A":{"iam": "A", "B": {"iam":"B"}, "C": {"iam":"C"}, "D": {"iam":"D"}, "E": {"iam":"E", "F":{"iam":"F"}}}}'
+            '{"data":{"A":{"iam": "A", "B": {"iam":"B"}, "C": {"iam":"C"}, "D": {"iam":"D"}, "E": {"iam":"E", "F":{"iam":"F"}}}}}'
         )
     ]
 )
