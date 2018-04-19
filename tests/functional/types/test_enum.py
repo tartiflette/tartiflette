@@ -33,43 +33,52 @@ async def test_tartiflette_execute_enum_type_output():
     assert """{"data":{"enumTest":"Value1"}}""" == result
 
 
-# @pytest.mark.asyncio
-# @pytest.mark.parametrize("input_sdl,resolver_response,expected", [
-#     (
-#         "Test",
-#         "Value1",
-#         '{"data":{"testField":"Value1"}}',
-#     ),
-#     (
-#         "Test",
-#         "UnknownValue",
-#         '{"data":{"testField":null},"errors":[]}',
-#     ),
-#
-# ])
-# async def test_tartiflette_execute_enum_type_advanced(input_sdl, resolver_response, expected):
-#     schema_sdl = """
-#     enum Test {{
-#         Value1
-#         Value2
-#         Value3
-#     }}
-#
-#     type Query {{
-#         testField: {}
-#     }}
-#     """.format(input_sdl)
-#
-#     ttftt = Tartiflette(schema_sdl)
-#
-#     @Resolver("Query.testField", schema=ttftt.schema_definition)
-#     async def func_field_resolver(*args, **kwargs):
-#         return resolver_response
-#
-#     result = await ttftt.execute("""
-#     query Test{
-#         testField
-#     }
-#     """)
-#
-#     assert expected == result
+@pytest.mark.asyncio
+@pytest.mark.parametrize("input_sdl,resolver_response,expected", [
+    (
+        "Test",
+        "Value1",
+        '{"data":{"testField":"Value1"}}',
+    ),
+    (
+        "Test!",
+        None,
+        '{"data":{"testField":null},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[]}]}',
+    ),
+    (
+        "[Test]",
+        ["Value3", "Value1"],
+        '{"data":{"testField":["Value3","Value1"]}}',
+    ),
+    (
+        "[Test]",
+        ["Value3", "UnknownValue"],
+        '{"data":{"testField":["Value3"]},"errors":[{"message":"Invalid value (value: \'UnknownValue\') for field `testField` of type `[Test]`","path":["testField",1],"locations":[]}]}',
+    ),
+])
+async def test_tartiflette_execute_enum_type_advanced(input_sdl, resolver_response, expected):
+    schema_sdl = """
+    enum Test {{
+        Value1
+        Value2
+        Value3
+    }}
+
+    type Query {{
+        testField: {}
+    }}
+    """.format(input_sdl)
+
+    ttftt = Tartiflette(schema_sdl)
+
+    @Resolver("Query.testField", schema=ttftt.schema_definition)
+    async def func_field_resolver(*args, **kwargs):
+        return resolver_response
+
+    result = await ttftt.execute("""
+    query Test{
+        testField
+    }
+    """)
+
+    assert expected == result

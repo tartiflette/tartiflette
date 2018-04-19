@@ -1,5 +1,6 @@
 from typing import List, Optional, Any
 
+from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -71,5 +72,4 @@ class GraphQLEnumType(GraphQLType):
         for enumval in self.values:
             if enumval.value == value:
                 return enumval.value
-        # TODO: raise InvalidValue
-        return None
+        return InvalidValue(value)

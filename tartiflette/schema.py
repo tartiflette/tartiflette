@@ -142,7 +142,11 @@ class GraphQLSchema:
         # TODO: Execute the below conversion (to_real_type) at schema build time,
         # big performance issue !
         real_type = self.to_real_type(field.gql_type)
-        result = real_type.collect_value(resolved_value)
+        try:
+            result = real_type.collect_value(resolved_value)
+        except NotImplementedError:
+            result = resolved_value
+
         if isinstance(result, list):
             # TODO: Make this cleaner. Too many "useless" loops in
             # fields, executor & resolvers.
