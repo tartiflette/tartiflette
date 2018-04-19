@@ -1,83 +1,96 @@
+from tartiflette.executors.types import ExecutionData
+from tartiflette.types.exceptions.tartiflette import GraphQLError
 from .node import Node
 import asyncio
-from collections import namedtuple
-
-ExecutionData = namedtuple(
-    'ExecutionData', ['parent_result', 'path', 'arguments', 'name']
-)
 
 
-async def _exec_list(func, alist, path, args, request_ctx, name):
+async def _exec_list(resolver, lst, path, args, request_ctx, name):
     coroutines = []
 
-    for index, item in enumerate(alist):
+    for index, item in enumerate(lst):
+        new_path = path[:]
+        new_path.append(index)
         if isinstance(item, list):
             coroutines.append(
                 _exec_list(
-                    func, item, "%s[%s]" % (path, index), args, request_ctx,
+                    resolver, item, new_path[:], args, request_ctx,
                     name
                 )
             )
         else:
             coroutines.append(
-                func(
+                resolver(
                     request_ctx,
-                    ExecutionData(item, "%s[%s]" % (path, index), args, name)
+                    ExecutionData(item, new_path[:], args, name)
                 )
             )
 
     return await asyncio.gather(*coroutines, return_exceptions=True)
 
 
-def _to_dict(thing):
+def _to_jsonable(thing):
     if isinstance(thing, dict):
         # Makes a copy of the contents so it's not modified by the child
         return {x: v for x, v in thing.items()}
 
-    # TODO call the correct method when SDL thing
-    # generation will be done.
     try:
-        return thing.as_ttftt_dict()
+        # TODO: Is this still useful ? Check.
+        val = thing.collect_value()
+        return val
     except AttributeError:
         pass
 
-    # Means it's a scalar
+    # It's a base python type so no need to do anything
     return thing
 
 
 class NodeField(Node):
-    def __init__(self, func, location, path, name, type_condition, gql_type = None):
+    def __init__(self, resolver, location, path, name, type_condition, gql_type = None):
         super().__init__(path, 'Field', location, name)
-        self._func = func
-        self.results = None
-        self.arguments = {}
-        self.type_condition = type_condition
-        self.as_jsonable = {}
+        self.resolver = resolver
         self.gql_type = gql_type
+        self.arguments = {}
+        self.results = None
+        self.errors = []
 
-    async def __call__(self, request_ctx):
-        # TODO reduce this function (too much if and for)
+        self.type_condition = type_condition
+        self.as_jsonable = None
 
+    async def _get_results(self, request_ctx):
         if self.parent and isinstance(self.parent.results, list):
             self.results = await _exec_list(
-                self._func, self.parent.results, self.path, self.arguments,
+                self.resolver, self.parent.results, self.path, self.arguments,
                 request_ctx, self.name
             )
         else:
-            self.results = await self._func(
+            self.results = await self.resolver(
                 request_ctx,
                 ExecutionData(
-                    self.parent.results if self.parent else {}, self.path,
-                    self.arguments, self.name
+                    self.parent.results if self.parent else {},
+                    self.path,
+                    self.arguments,
+                    self.name
                 )
             )
 
+    def _results_to_jsonable(self):
+        # TODO: Make cleaner Error management.
         if isinstance(self.results, list):
             self.as_jsonable = []
-            for result in self.results:
-                self.as_jsonable.append(_to_dict(result))
+            for index, result in enumerate(self.results):
+                if isinstance(result, GraphQLError):
+                    self.errors.append(result.collect_value())
+                else:
+                    self.as_jsonable.append(_to_jsonable(result))
         else:
-            self.as_jsonable = _to_dict(self.results)
+            if isinstance(self.results, GraphQLError):
+                self.errors.append(self.results.collect_value())
+            else:
+                self.as_jsonable = _to_jsonable(self.results)
+
+    async def __call__(self, request_ctx):
+        await self._get_results(request_ctx)
+        self._results_to_jsonable()
 
         if self.parent:
             if isinstance(self.parent.results, list):
@@ -87,4 +100,4 @@ class NodeField(Node):
             else:
                 self.parent.as_jsonable[self.name] = self.as_jsonable
 
-        return self.results
+        return self.results  # TODO: Leave or remove ? It's currently unused

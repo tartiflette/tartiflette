@@ -46,7 +46,7 @@ async def test_tartiflette_execute_basic():
     }
     """)
 
-    assert result == """{"testField":{"field":null}}"""
+    assert result == """{"data":{"testField":{"field":null}}}"""
     assert mock_one.called is True
     assert mock_two.called is False
 
@@ -71,4 +71,4 @@ async def test_tartiflette_execute_hello_world():
     }
     """)
 
-    assert """{"hello":"world"}""" == result
+    assert """{"data":{"hello":"world"}}""" == result

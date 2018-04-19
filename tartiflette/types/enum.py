@@ -67,8 +67,9 @@ class GraphQLEnumType(GraphQLType):
         return super().__eq__(other) and \
                self.values == other.values
 
-    def to_value(self, value):
+    def collect_value(self, value):
         for enumval in self.values:
             if enumval.value == value:
                 return enumval.value
+        # TODO: raise InvalidValue
         return None

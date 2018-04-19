@@ -3,7 +3,7 @@ import pytest
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import \
-    TartifletteSchemaValidationError
+    GraphQLSchemaError
 
 
 def test_schema_object_get_field_name():
@@ -158,7 +158,7 @@ def test_schema_validate_named_types(full_sdl, expected_error, expected_value):
     generated_schema = build_graphql_schema_from_sdl(full_sdl,
                                                      schema=GraphQLSchema())
     if expected_error:
-        with pytest.raises(TartifletteSchemaValidationError):
+        with pytest.raises(GraphQLSchemaError):
             generated_schema.validate_schema()
     else:
         assert generated_schema.validate_schema() == expected_value
@@ -319,7 +319,7 @@ def test_schema_validate_object_follow_interfaces(full_sdl, expected_error,
     generated_schema = build_graphql_schema_from_sdl(full_sdl,
                                                      schema=GraphQLSchema())
     if expected_error:
-        with pytest.raises(TartifletteSchemaValidationError):
+        with pytest.raises(GraphQLSchemaError):
             generated_schema.validate_schema()
     else:
         assert generated_schema.validate_schema() == expected_value
@@ -427,7 +427,7 @@ def test_schema_validate_root_types_exist(full_sdl, expected_error,
     generated_schema = build_graphql_schema_from_sdl(full_sdl,
                                                      schema=GraphQLSchema())
     if expected_error:
-        with pytest.raises(TartifletteSchemaValidationError):
+        with pytest.raises(GraphQLSchemaError):
             generated_schema.validate_schema()
     else:
         assert generated_schema.validate_schema() == expected_value
@@ -458,7 +458,7 @@ def test_schema_validate_non_empty_object(full_sdl, expected_error,
     generated_schema = build_graphql_schema_from_sdl(full_sdl,
                                                      schema=GraphQLSchema())
     if expected_error:
-        with pytest.raises(TartifletteSchemaValidationError):
+        with pytest.raises(GraphQLSchemaError):
             generated_schema.validate_schema()
     else:
         assert generated_schema.validate_schema() == expected_value
@@ -503,7 +503,7 @@ def test_schema_validate_union_is_acceptable(full_sdl, expected_error,
     generated_schema = build_graphql_schema_from_sdl(full_sdl,
                                                      schema=GraphQLSchema())
     if expected_error:
-        with pytest.raises(TartifletteSchemaValidationError):
+        with pytest.raises(GraphQLSchemaError):
             generated_schema.validate_schema()
     else:
         assert generated_schema.validate_schema() == expected_value

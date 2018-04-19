@@ -4,8 +4,6 @@ import pytest
 
 from tartiflette import Resolver
 from tartiflette.tartiflette import Tartiflette
-from tartiflette.types.exceptions.tartiflette import \
-    TartifletteUnexpectedNullValue, TartifletteNonListValue
 
 
 @pytest.mark.asyncio
@@ -26,8 +24,8 @@ async def test_tartiflette_execute_scalar_type_output():
 
     ttftt = Tartiflette(schema_sdl)
 
-    ttftt.schema_definition.types["Date"].serializer = from_date_to_str
-    ttftt.schema_definition.types["Date"].deserializer = from_str_to_date
+    ttftt.schema_definition.types["Date"].coerce_output = from_date_to_str
+    ttftt.schema_definition.types["Date"].coerce_input = from_str_to_date
 
     @Resolver("Query.lastUpdate", schema=ttftt.schema_definition)
     async def func_field_resolver(*args, **kwargs):
@@ -40,16 +38,45 @@ async def test_tartiflette_execute_scalar_type_output():
     }
     """)
 
-    assert """{"lastUpdate":"2018-04-19T14:57:38"}""" == result
+    assert """{"data":{"lastUpdate":"2018-04-19T14:57:38"}}""" == result
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("input_sdl,resolver_response,expects_error,expected", [
+@pytest.mark.parametrize("input_sdl,resolver_response,expected", [
+    (
+        "String",
+        "test",
+        '{"data":{"testField":"test"}}',
+    ),
+    (
+        "String!",
+        None,
+        '{"data":{"testField":null},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `String!`","path":["testField"],"locations":[]}]}',
+    ),
+    (
+        "Int",
+        45,
+        '{"data":{"testField":45}}',
+    ),
+    (
+        "Float",
+        45.0,
+        '{"data":{"testField":45.0}}',
+    ),
+    (
+        "Boolean",
+        True,
+        '{"data":{"testField":true}}',
+    ),
+    (
+        "Boolean",
+        False,
+        '{"data":{"testField":false}}',
+    ),
     (
         "[Date]",
         [datetime(year=2018, month=4, day=19, hour=14, minute=57, second=38)],
-        False,
-        '["2018-04-19T14:57:38"]',
+        '{"data":{"testField":["2018-04-19T14:57:38"]}}',
     ),
     (
         "[[Date!]!]!",
@@ -57,8 +84,7 @@ async def test_tartiflette_execute_scalar_type_output():
             datetime(year=2017, month=3, day=18, hour=13, minute=56, second=37),
             datetime(year=2018, month=4, day=19, hour=14, minute=57, second=38),
           ]],
-        False,
-        '[["2017-03-18T13:56:37","2018-04-19T14:57:38"]]',
+        '{"data":{"testField":[["2017-03-18T13:56:37","2018-04-19T14:57:38"]]}}',
     ),
     (
         "[Date]",
@@ -67,8 +93,7 @@ async def test_tartiflette_execute_scalar_type_output():
             None,
             datetime(year=2018, month=4, day=19, hour=14, minute=57, second=38),
         ],
-        False,
-        '["2017-03-18T13:56:37",null,"2018-04-19T14:57:38"]',
+        '{"data":{"testField":["2017-03-18T13:56:37",null,"2018-04-19T14:57:38"]}}',
     ),
     (
         "[Date!]",
@@ -77,29 +102,15 @@ async def test_tartiflette_execute_scalar_type_output():
             None,
             datetime(year=2018, month=4, day=19, hour=14, minute=57, second=38),
         ],
-        True,  # We expect the "None" in the response to raise an error
-        '',
+        '{"data":{"testField":["2017-03-18T13:56:37","2018-04-19T14:57:38"]},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `[Date!]`","path":["testField",1],"locations":[]}]}',
     ),
     (
         "[Date!]",
         datetime(year=2017, month=3, day=18, hour=13, minute=56, second=37),
-        True,  # We expect the wrong type (not a list) to raise an error
-        '',
-    ),
-    (
-        "String",
-        "test",
-        False,
-        '"test"',
-    ),
-    (
-        "String!",
-        None,
-        True,
-        '',
+        '{"data":{"testField":null},"errors":[{"message":"Invalid value (value: datetime.datetime(2017, 3, 18, 13, 56, 37)) for field `testField` of type `[Date!]`","path":["testField"],"locations":[]}]}',
     ),
 ])
-async def test_tartiflette_execute_scalar_type_nested(input_sdl,resolver_response,expects_error,expected):
+async def test_tartiflette_execute_scalar_type_advanced(input_sdl, resolver_response, expected):
     schema_sdl = """
     scalar Date
 
@@ -108,31 +119,24 @@ async def test_tartiflette_execute_scalar_type_nested(input_sdl,resolver_respons
     }}
     """.format(input_sdl)
 
-    def from_date_to_str(datetime_str):
+    def from_date_to_str(datetime):
         try:
-            return datetime_str.isoformat()
+            return datetime.isoformat()
         except AttributeError:
             return None
 
     ttftt = Tartiflette(schema_sdl)
 
-    ttftt.schema_definition.types["Date"].serializer = from_date_to_str
+    ttftt.schema_definition.types["Date"].coerce_output = from_date_to_str
 
     @Resolver("Query.testField", schema=ttftt.schema_definition)
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
-    if expects_error:
-        with pytest.raises((TartifletteUnexpectedNullValue, TartifletteNonListValue)):
-            await ttftt.execute("""
-            query Test{
-                testField
-            }
-            """)
-    else:
-        result = await ttftt.execute("""
-                    query Test{
-                        testField
-                    }
-                    """)
-        assert """{{"testField":{}}}""".format(expected) == result
+    result = await ttftt.execute("""
+    query Test{
+        testField
+    }
+    """)
+
+    assert expected == result

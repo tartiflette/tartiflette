@@ -17,17 +17,17 @@ class GraphQLScalarType(GraphQLType):
     __slots__ = (
         'name',
         'description',
-        'serializer',
-        'deserializer',
+        'coerce_output',
+        'coerce_input',
     )
 
     def __init__(self, name: str,
-                 serializer: Optional[callable]=None,
-                 deserializer: Optional[callable]= None,
+                 coerce_output: Optional[callable]=None,
+                 coerce_input: Optional[callable]= None,
                  description: Optional[str] = None):
         super().__init__(name=name, description=description)
-        self.serializer = serializer
-        self.deserializer = deserializer
+        self.coerce_output = coerce_output
+        self.coerce_input = coerce_input
 
     def __repr__(self) -> str:
         return "{}(name={!r}, description={!r})".format(
@@ -36,10 +36,11 @@ class GraphQLScalarType(GraphQLType):
 
     def __eq__(self, other) -> bool:
         # TODO: Need to check if [de]serialize functions need to be equal
-        return super().__eq__(other) and self.serializer == other.serializer \
-               and self.deserializer == other.deserializer
+        return super().__eq__(other) and \
+               self.coerce_output == other.coerce_output and \
+               self.coerce_input == other.coerce_input
 
-    def to_value(self, value):
+    def collect_value(self, value):
         if value is None:
             return value
-        return self.serializer(value)
+        return self.coerce_output(value)

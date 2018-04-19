@@ -1,8 +1,5 @@
-from collections import OrderedDict
 from typing import Dict, Optional, List
 
-from tartiflette.types.exceptions.tartiflette import \
-    TartifletteGraphQLTypeException
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
 

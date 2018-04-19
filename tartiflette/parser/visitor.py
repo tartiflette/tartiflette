@@ -39,6 +39,7 @@ class TartifletteVisitor(Visitor):
     def __init__(self, variables=None, schema_definition=None):
         super().__init__()
         self.path = ""
+        self.field_path = []
         self._events = [
             {
                 "default": self._in,
@@ -120,6 +121,7 @@ class TartifletteVisitor(Visitor):
         self.nodes[self._depth - 1].append(node)
 
     def _on_field_in(self, element: _VisitorElement):
+        self.field_path.append(element.name)
         self._depth = self._depth + 1
 
         try:
@@ -141,7 +143,7 @@ class TartifletteVisitor(Visitor):
         node = NodeField(
             resolver,
             element.get_location(),
-            self.path, element.name, self._current_type_condition,
+            self.field_path[:], element.name, self._current_type_condition,
             gql_type,
         )
 
@@ -150,6 +152,7 @@ class TartifletteVisitor(Visitor):
         self._add_node(node)
 
     def _on_field_out(self, _):
+        self.field_path.pop()
         self._depth = self._depth - 1
         self._current_node = self._current_node.parent
 
