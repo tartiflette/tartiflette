@@ -7,7 +7,7 @@ from tartiflette.tartiflette import Tartiflette
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_scalar_type_output():
+async def test_tartiflette_execute_nested_error():
     schema_sdl = """
     scalar Date
     
@@ -39,10 +39,6 @@ async def test_tartiflette_execute_scalar_type_output():
     async def func_field_resolver(*args, **kwargs):
         return [datetime(year=2018, month=4, day=19,
                         hour=14, minute=57, second=38), None]
-
-    # @Resolver("Obj.deep", schema=ttftt.schema_definition)
-    # async def func_deep_resolver(*args, **kwargs):
-    #     return []
 
     result = await ttftt.execute("""
     query Test{

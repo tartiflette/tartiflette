@@ -52,6 +52,49 @@ async def test_tartiflette_execute_basic():
 
 
 @pytest.mark.asyncio
+async def test_tartiflette_nexted_resolvers():
+    schema_sdl = """
+    type Query {
+        rootField: RootType
+    }
+    
+    type RootType {
+        nestedField: NestedType
+    }
+    
+    type NestedType {
+        endField: String
+    }
+    """
+
+    ttftt = Tartiflette(schema_sdl)
+
+    @Resolver("Query.rootField", schema=ttftt.schema_definition)
+    async def func_resolver(request_ctx, execution_data):
+        return {"nestedField": "Nested ?"}
+
+    @Resolver("RootType.nestedField", schema=ttftt.schema_definition)
+    async def func_resolver(request_ctx, execution_data):
+        return {"endField": "Another"}
+
+    @Resolver("NestedType.endField", schema=ttftt.schema_definition)
+    async def func_resolver(request_ctx, execution_data):
+        return "Test"
+
+    result = await ttftt.execute("""
+    query Test{
+        rootField {
+            nestedField {
+                endField
+            }
+        }
+    }
+    """)
+
+    assert result == """{"data":{"rootField":{"nestedField":{"endField":"Test"}}}}"""
+
+
+@pytest.mark.asyncio
 async def test_tartiflette_execute_hello_world():
     schema_sdl = """
     type Query {

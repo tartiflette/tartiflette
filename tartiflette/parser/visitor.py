@@ -15,12 +15,19 @@ async def _default_resolver(ctx, execution_data):
     try:
         return getattr(execution_data.parent_result, execution_data.name)
     except AttributeError:
-        # TODO: Think about this :)
-        return {}
-        # raise TartifletteException(
-        #     "Parent < %s > doesn't contain expected attribute < %s >" %
-        #     (execution_data.parent_result, execution_data.name)
-        # )
+        pass
+
+    try:
+        return execution_data.parent_result[execution_data.name]
+    except KeyError:
+        pass
+
+    # TODO: Think about this :)
+    return {}
+    # raise TartifletteException(
+    #     "Parent < %s > doesn't contain expected attribute < %s >" %
+    #     (execution_data.parent_result, execution_data.name)
+    # )
 
 
 class TartifletteVisitor(Visitor):
