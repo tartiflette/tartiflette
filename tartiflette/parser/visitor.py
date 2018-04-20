@@ -2,6 +2,7 @@ from functools import lru_cache, partial
 
 from tartiflette.parser.cffi import Visitor, _VisitorElement
 from tartiflette.parser.nodes.node import Node
+from tartiflette.resolver import wrap_resolver
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import TartifletteException, \
     UnknownVariableException
@@ -145,13 +146,16 @@ class TartifletteVisitor(Visitor):
 
         resolver = getattr(field, 'resolver', _default_resolver)
         if resolver is None:
-            resolver = _default_resolver
+            resolver = wrap_resolver(self._schema_definition,
+                                     field,
+                                     _default_resolver)
 
         node = NodeField(
             resolver,
             element.get_location(),
             self.field_path[:], element.name, self._current_type_condition,
             gql_type,
+            field
         )
 
         node.parent = self._current_node

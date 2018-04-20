@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import Mock, call
 from tartiflette.parser.nodes.field import ExecutionData
+from tartiflette.types.location import Location
 
 
 @pytest.mark.asyncio
@@ -159,6 +160,9 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A'],
                     arguments={},
                     name='A',
+                    field=field_a,
+                    location=Location(line=1, column=40,
+                                      line_end=1, column_end=313, context='')
                 )
             )
         ],
@@ -174,6 +178,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'B', 0],
                     arguments={},
                     name='B',
+                    field=field_b,
+                    location=Location(line=1, column=60,
+                                      line_end=1, column_end=153,
+                                      context='')
                 )
             ),
             call(
@@ -183,6 +191,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'B', 1],
                     arguments={},
                     name='B',
+                    field=field_b,
+                    location=Location(line=1, column=60,
+                                      line_end=1, column_end=153,
+                                      context='')
                 )
             )
         ],
@@ -198,6 +210,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'D', 0],
                     arguments={},
                     name='D',
+                    field=field_d,
+                    location=Location(line=1, column=170,
+                                      line_end=1, column_end=171,
+                                      context='')
                 )
             ),
             call(
@@ -207,6 +223,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'D', 1],
                     arguments={},
                     name='D',
+                    field=field_d,
+                    location=Location(line=1, column=170,
+                                      line_end=1, column_end=171,
+                                      context='')
                 )
             )
         ],
@@ -222,6 +242,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'F', 0],
                     arguments={},
                     name='F',
+                    field=default_field,
+                    location=Location(line=1, column=206,
+                                      line_end=1, column_end=299,
+                                      context='')
                 )
             ),
             call(
@@ -231,6 +255,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'E', 0],
                     arguments={},
                     name='E',
+                    field=default_field,
+                    location=Location(line=1, column=188,
+                                      line_end=1, column_end=189,
+                                      context='')
                 )
             ),
             call(
@@ -240,6 +268,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'F', 1],
                     arguments={},
                     name='F',
+                    field=default_field,
+                    location=Location(line=1, column=206,
+                                      line_end=1, column_end=299,
+                                      context='')
                 )
             ),
             call(
@@ -249,6 +281,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'E', 1],
                     arguments={},
                     name='E',
+                    field=default_field,
+                    location=Location(line=1, column=188,
+                                      line_end=1, column_end=189,
+                                      context='')
                 )
             ),
             call(
@@ -258,6 +294,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'B', 'C', 0],
                     arguments={},
                     name='C',
+                    field=default_field,
+                    location=Location(line=1, column=84,
+                                      line_end=1, column_end=135,
+                                      context='')
                 )
             ),
             call(
@@ -267,6 +307,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'B', 'C', 1],
                     arguments={},
                     name='C',
+                    field=default_field,
+                    location=Location(line=1, column=84,
+                                      line_end=1, column_end=135,
+                                      context='')
                 )
             ),
             call(
@@ -276,6 +320,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'B', 'C', 'K', 0],
                     arguments={},
                     name='K',
+                    field=default_field,
+                    location=Location(line=1, column=112,
+                                      line_end=1, column_end=113,
+                                      context='')
                 )
             ),
             call(
@@ -285,6 +333,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'B', 'C', 'K', 1],
                     arguments={},
                     name='K',
+                    field=default_field,
+                    location=Location(line=1, column=112,
+                                      line_end=1, column_end=113,
+                                      context='')
                 )
             ),
             call(
@@ -294,6 +346,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'F', 'H', 1],
                     arguments={},
                     name='H',
+                    field=default_field,
+                    location=Location(line=1, column=230,
+                                      line_end=1, column_end=281,
+                                      context='')
                 )
             ),
             call(
@@ -303,6 +359,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'F', 'H', 0],
                     arguments={},
                     name='H',
+                    field=default_field,
+                    location=Location(line=1, column=230,
+                                      line_end=1, column_end=281,
+                                      context='')
                 )
             ),
             call(
@@ -312,6 +372,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'F', 'H', 'I', 1],
                     arguments={},
                     name='I',
+                    field=default_field,
+                    location=Location(line=1, column=258,
+                                      line_end=1, column_end=259,
+                                      context='')
                 )
             ),
             call(
@@ -321,6 +385,10 @@ async def test_calling_get_field_by_name_with_correct_value():
                     path=['A', 'F', 'H', 'I', 0],
                     arguments={},
                     name='I',
+                    field=default_field,
+                    location=Location(line=1, column=258,
+                                      line_end=1, column_end=259,
+                                      context='')
                 )
             ),
         ],

@@ -45,7 +45,7 @@ Here are the subjects we are working on:
 
 * [x] Bind the Types specified in the SDL to the `Executor`.
 * [ ] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191)
-* [ ] Error management
+* [x] Error management
 * [ ] Abstract and Compound Types: Unions, Interfaces, …
 * [ ] NodeDefinition: Check that the [Type exists](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/nodes/definition.py#L26)
 * [ ] (Resolver) Think how to apply [a default resolver](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L18) to a field.

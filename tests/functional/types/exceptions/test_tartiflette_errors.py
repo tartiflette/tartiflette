@@ -50,4 +50,4 @@ async def test_tartiflette_execute_nested_error():
     }
     """)
 
-    assert """{"data":{"test":{"deep":{"lastUpdate":["2018-04-19T14:57:38"]}}},"errors":[{"message":"Invalid value (value: None) for field `lastUpdate` of type `[Date!]`","path":["test","deep","lastUpdate",1],"locations":[]}]}""" == result
+    assert """{"data":{"test":{"deep":{"lastUpdate":["2018-04-19T14:57:38"]}}},"errors":[{"message":"Invalid value (value: None) for field `lastUpdate` of type `[Date!]`","path":["test","deep","lastUpdate",1],"locations":[{"line":1,"column":68}]}]}""" == result

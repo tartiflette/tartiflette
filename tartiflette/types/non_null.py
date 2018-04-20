@@ -1,5 +1,6 @@
 from typing import Optional, Union
 
+from tartiflette.executors.types import ExecutionData
 from tartiflette.types.exceptions.tartiflette import \
     InvalidValue
 from tartiflette.types.type import GraphQLType
@@ -34,8 +35,12 @@ class GraphQLNonNull(GraphQLType):
         return super().__eq__(other) and \
                self.gql_type == other.gql_type
 
-    def collect_value(self, value):
-        result = self.gql_type.collect_value(value)
+    def collect_value(self, value, execution_data: ExecutionData):
+        result = self.gql_type.collect_value(value, execution_data)
         if result is None:
-            return InvalidValue(result, gql_type=self)
+            raise InvalidValue(result,
+                               gql_type=execution_data.field.gql_type,
+                               field=execution_data.field,
+                               path=execution_data.path,
+                               locations=[execution_data.location])
         return result

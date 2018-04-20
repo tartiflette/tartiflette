@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette.resolver_decorator import Resolver
+from tartiflette.resolver import Resolver
 from tartiflette.tartiflette import Tartiflette
 
 
@@ -52,7 +52,7 @@ async def test_tartiflette_execute_basic():
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_nexted_resolvers():
+async def test_tartiflette_nested_resolvers():
     schema_sdl = """
     type Query {
         rootField: RootType

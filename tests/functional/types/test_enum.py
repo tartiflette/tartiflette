@@ -43,7 +43,7 @@ async def test_tartiflette_execute_enum_type_output():
     (
         "Test!",
         None,
-        '{"data":{"testField":null},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[]}]}',
+        '{"data":{"testField":null},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[{"line":1,"column":26}]}]}',
     ),
     (
         "[Test]",
@@ -53,7 +53,7 @@ async def test_tartiflette_execute_enum_type_output():
     (
         "[Test]",
         ["Value3", "UnknownValue"],
-        '{"data":{"testField":["Value3"]},"errors":[{"message":"Invalid value (value: \'UnknownValue\') for field `testField` of type `[Test]`","path":["testField",1],"locations":[]}]}',
+        '{"data":{"testField":["Value3"]},"errors":[{"message":"Invalid value (value: \'UnknownValue\') for field `testField` of type `[Test]`","path":["testField",1],"locations":[{"line":1,"column":26}]}]}',
     ),
 ])
 async def test_tartiflette_execute_enum_type_advanced(input_sdl, resolver_response, expected):
