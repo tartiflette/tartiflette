@@ -191,14 +191,13 @@ class TartifletteVisitor(Visitor):
         a_value = self._vars[name]
 
         if self._current_node.is_list:
-            if type(a_value) != list:
+            if not isinstance(a_value, list):
                 raise TypeError("Expecting List for < %s > values" % name)
             for val in a_value:
                 self._validate_type(name, val, a_type)
             return None
 
-        self._validate_type(name, val, a_type)
-        # TODO: Error in above method, `val` does not exist
+        self._validate_type(name, a_value, a_type)
         return None
 
     def _on_variable_definition_out(self, _):

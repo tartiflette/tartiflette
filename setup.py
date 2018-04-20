@@ -1,8 +1,6 @@
-import sys
+from setuptools import find_packages, setup, Extension
 
-from setuptools import find_packages, setup
-
-tests_require = [
+_TEST_REQUIRE = [
     'pytest',
     'pytest-benchmark',
     'pytest-cov',
@@ -14,6 +12,8 @@ tests_require = [
 ]
 
 _VERSION = '0.1.0'
+
+_PACKAGES = find_packages(exclude=['tests*'])
 
 setup(
     name='tartiflette',
@@ -31,16 +31,16 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
     keywords='api graphql protocol api rest relay tartiflette dailymotion',
-    packages=find_packages(exclude=['tests']),
+    packages=_PACKAGES,
     install_requires=[
         'cython',
-        'uvloop',
+        'uvloop==0.9.1',
         'cffi',
         'python-rapidjson',
         'lark-parser',
     ],
-    tests_require=tests_require,
+    tests_require=_TEST_REQUIRE,
     extras_require={
-        'test': tests_require,
+        'test': _TEST_REQUIRE,
     }
 )
