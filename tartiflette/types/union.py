@@ -12,11 +12,6 @@ class GraphQLUnionType(GraphQLType):
     a function to determine which type is actually used when the field
     if resolved.
     """
-    __slots__ = (
-        'name',
-        'description',
-        'gql_types',
-    )
 
     def __init__(
         self, name: str, gql_types: List[str], description: Optional[str]=None

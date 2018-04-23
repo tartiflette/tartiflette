@@ -32,6 +32,7 @@ async def test_tartiflette_execute_scalar_type_output():
         return datetime(year=2018, month=4, day=19,
                         hour=14, minute=57, second=38)
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         lastUpdate
@@ -133,6 +134,7 @@ async def test_tartiflette_execute_scalar_type_advanced(input_sdl, resolver_resp
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         testField

@@ -10,13 +10,6 @@ class GraphQLArgument:
       - GraphQLInputObject fields
     """
 
-    __slots__ = (
-        'name',
-        'description',
-        'gql_type',
-        'default_value',
-    )
-
     def __init__(self, name: str, gql_type: str,
                  default_value: Optional[Any]=None,
                  description: Optional[str]=None):
@@ -33,6 +26,9 @@ class GraphQLArgument:
             self.name, self.gql_type,
             self.default_value, self.description
         )
+
+    def __str__(self):
+        return self.name
 
     def __eq__(self, other):
         return self is other or (

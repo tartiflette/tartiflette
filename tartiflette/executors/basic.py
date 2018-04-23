@@ -1,9 +1,9 @@
 import asyncio
 
 
-async def _level_execute(resolvers, request_ctx):
+async def _level_execute(resolvers, request_ctx, schema):
     coroutines = [
-        resolver(request_ctx) for resolver in resolvers \
+        resolver(request_ctx, schema) for resolver in resolvers \
         if not resolver.type_condition or (resolver.type_condition and \
         resolver.parent and resolver.type_condition == \
         resolver.parent.results.__class__.__name__)
@@ -13,13 +13,13 @@ async def _level_execute(resolvers, request_ctx):
     return await asyncio.gather(*coroutines, return_exceptions=True)
 
 
-async def execute(gql_nodes, request_ctx):
+async def execute(gql_nodes, request_ctx, schema):
     results = {
         "data": {},
         "errors": [],
     }
     for nodes in gql_nodes:
-        await _level_execute(nodes, request_ctx)
+        await _level_execute(nodes, request_ctx, schema)
         # TODO: There is probably a better way than to iterate after each level
         # Flatten errors from each levels
         for node in nodes:

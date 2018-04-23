@@ -96,7 +96,7 @@ def test_build_schema():
                                                                ]))
 
     assert expected_schema == generated_schema
-    assert len(generated_schema._gql_types) > 5
-    assert len(generated_schema._gql_types) == len(expected_schema._gql_types)
+    assert 5 < len(generated_schema._gql_types)
+    assert len(expected_schema._gql_types) == len(generated_schema._gql_types)
     # Only the default types should be in the schema
-    assert len(DefaultGraphQLSchema._gql_types) == 5
+    assert 5 == len(DefaultGraphQLSchema._gql_types)

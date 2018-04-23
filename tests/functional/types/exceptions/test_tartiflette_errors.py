@@ -40,6 +40,7 @@ async def test_tartiflette_execute_nested_error():
         return [datetime(year=2018, month=4, day=19,
                         hour=14, minute=57, second=38), None]
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         test {

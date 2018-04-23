@@ -9,14 +9,19 @@ from tartiflette.types.exceptions.tartiflette import \
 
 
 def wrap_resolver(schema, field, resolver):
+    """
+    Currenty unused, this allows an easy wrapping of resolvers
+    (for hooks, middlewares etc.)
+
+    :param schema: The current schema
+    :param field: The current field
+    :param resolver: The field resolver
+    :return: Any: the resolver result
+    """
 
     @functools.wraps(resolver)
     async def wrapper(request_ctx, execution_data: ExecutionData):
-        return schema.collect_field_value(
-            field,
-            await resolver(request_ctx, execution_data),
-            execution_data,
-        )
+        return await resolver(request_ctx, execution_data)
 
     return wrapper
 

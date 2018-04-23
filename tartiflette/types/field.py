@@ -1,5 +1,7 @@
 from collections import OrderedDict
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
+
+from tartiflette.executors.types import ExecutionData
 
 
 class GraphQLField:
@@ -8,14 +10,6 @@ class GraphQLField:
 
     A field is used in Object, Interfaces as its constituents.
     """
-
-    __slots__ = (
-        'name',
-        'description',
-        'gql_type',
-        'arguments',
-        'resolver',
-    )
 
     def __init__(self, name: str,
                  gql_type: str,
@@ -35,6 +29,9 @@ class GraphQLField:
                 self.__class__.__name__, self.name, self.gql_type,
             self.arguments, self.resolver, self.description)
 
+    def __str__(self):
+        return self.name
+
     def __eq__(self, other):
         return self is other or (
                 type(self) is type(other) and
@@ -43,3 +40,13 @@ class GraphQLField:
                 self.arguments == other.arguments and
                 self.resolver == other.resolver
         )
+
+    def type_check(self, value: Any, execution_data: ExecutionData) -> Any:
+        # TODO: IMPORTANT Implement this !!
+        return value
+
+    def coerce_value(self, value: Any):
+        if value is None:
+            return None
+        return {self.name: value}
+
