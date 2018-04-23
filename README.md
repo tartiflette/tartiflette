@@ -44,7 +44,7 @@ Here are the subjects we are working on:
 ### Executor
 
 * [x] Bind the Types specified in the SDL to the `Executor`.
-* [ ] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191)
+* [ ] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191) [**IN PROGRESS**](https://github.com/dailymotion/tartiflette/issues/17)
 * [x] Error management
 * [ ] Abstract and Compound Types: Unions, Interfaces, …
 * [ ] NodeDefinition: Check that the [Type exists](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/nodes/definition.py#L26)
@@ -56,8 +56,8 @@ Here are the subjects we are working on:
 
 * [x] Build a `Parser` which parse the [Schema Definition Language](https://github.com/facebook/graphql/blob/master/spec/Section%202%20--%20Language.md) and created the associated schema and types as Python objects.
 * [ ] Implement custom Scalar
-* [ ] (Introspection) Implement the `__type` Field.
-* [ ] (Introspection) Implement the `__schema`Field.
+* [ ] (Introspection) Implement the `__type` Field. [**IN PROGRESS**](https://github.com/dailymotion/tartiflette/issues/15)
+* [ ] (Introspection) Implement the `__schema`Field. [**IN PROGRESS**](https://github.com/dailymotion/tartiflette/issues/16)
 * [ ] (Directive) Append directive informations _(from SDL)_ as metadata on Fields / Types.
 * [ ] (Directive) Implement the declaration of the custom directives into the Engine constructor.
 * [ ] (Directive) Implement @deprecated
