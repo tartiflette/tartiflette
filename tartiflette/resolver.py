@@ -1,3 +1,4 @@
+import functools
 from inspect import iscoroutinefunction
 from typing import Optional, Callable
 
@@ -5,6 +6,19 @@ from tartiflette.executors.types import ExecutionData
 from tartiflette.schema import DefaultGraphQLSchema, GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import \
     NonAwaitableResolver
+
+
+def wrap_resolver(schema, field, resolver):
+
+    @functools.wraps(resolver)
+    async def wrapper(request_ctx, execution_data: ExecutionData):
+        return schema.collect_field_value(
+            field,
+            await resolver(request_ctx, execution_data),
+            execution_data,
+        )
+
+    return wrapper
 
 
 class Resolver:
@@ -35,15 +49,10 @@ class Resolver:
                 "The resolver `{}` given for the field `{}` "
                 "is not awaitable.".format(repr(resolver), self.field.name))
 
-        async def resolver_wrapper(request_ctx, execution_data: ExecutionData):
-            return self.schema.collect_field_value(
-                self.field,
-                await resolver(request_ctx, execution_data),
-                execution_data,
-            )
-
         try:
-            self.field.resolver = resolver_wrapper
+            self.field.resolver = wrap_resolver(self.schema,
+                                                self.field,
+                                                resolver)
         except AttributeError:
             pass
 

@@ -139,34 +139,16 @@ class GraphQLSchema:
         return root
 
     def collect_field_value(self, field, resolved_value, execution_data: ExecutionData):
-        # TODO: Execute the below conversion (to_real_type) at schema build time,
-        # big performance issue !
+        # TODO: This call to `to_real_type` can be removed if you have called
+        # the `bake_schema` method below.
+        # This has a big performance impact during execution
         real_type = self.to_real_type(field.gql_type)
         try:
-            result = real_type.collect_value(resolved_value)
+            result = real_type.collect_value(resolved_value, execution_data)
         except NotImplementedError:
             result = resolved_value
-
-        if isinstance(result, list):
-            # TODO: Make this cleaner. Too many "useless" loops in
-            # fields, executor & resolvers.
-            # TODO: Also, we append the index in the path both here and in the
-            # NodeField (we need it for errors but we can probably do better)
-            new_result = []
-            for index, res in enumerate(result):
-                if isinstance(res, InvalidValue):
-                    execution_data.path.append(index)
-                    new_result.append(InvalidValue(res.value,
-                                      gql_type=real_type,
-                                      field=field, path=execution_data.path))
-                else:
-                    new_result.append(res)
-            return new_result
-
-        if isinstance(result, InvalidValue):
-            return InvalidValue(result.value,
-                                gql_type=real_type,
-                                field=field, path=execution_data.path)
+        except InvalidValue as e:
+            result = e
         return result
 
     def get_resolver(self, field_path: str) -> Optional[callable]:
@@ -200,15 +182,16 @@ class GraphQLSchema:
             pass
         return None
 
-    def update_schema(self) -> None:
+    def bake_schema(self) -> None:
         """
-        Updates the schema given all the defined types: compute interfaces and
-        unions.
+        Bake the final schema (it should not change after this) used for
+        execution.
 
         :return: None
         """
-        # TODO: To do :)
-        pass
+        self.validate_schema()
+        self.field_gql_types_to_real_types()
+        return None
 
     def validate_schema(self) -> bool:
         """
@@ -346,6 +329,14 @@ class GraphQLSchema:
                         # can they contain interfaces ?
                         # can they mix types: interface | object | scalar
         return True
+
+    def field_gql_types_to_real_types(self) -> None:
+        for type_name, gql_type in self._gql_types.items():
+            try:
+                for field_name, field in gql_type.fields.items():
+                    field.gql_type = self.to_real_type(field.gql_type)
+            except AttributeError:
+                pass
 
 
 DefaultGraphQLSchema = GraphQLSchema()

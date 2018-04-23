@@ -1,5 +1,6 @@
 from typing import List, Optional, Any
 
+from tartiflette.executors.types import ExecutionData
 from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
@@ -68,8 +69,12 @@ class GraphQLEnumType(GraphQLType):
         return super().__eq__(other) and \
                self.values == other.values
 
-    def collect_value(self, value):
+    def collect_value(self, value, execution_data: ExecutionData):
         for enumval in self.values:
             if enumval.value == value:
                 return enumval.value
-        return InvalidValue(value)
+        raise InvalidValue(value,
+                           gql_type=execution_data.field.gql_type,
+                           field=execution_data.field,
+                           path=execution_data.path,
+                           locations=[execution_data.location])

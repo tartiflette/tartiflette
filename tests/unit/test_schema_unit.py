@@ -555,3 +555,8 @@ def test_schema_get_resolver():
 
     assert generated_schema.get_resolver("RootQuery.testField.userInfo.smthg.oneField.unknownField") is None
     assert generated_schema.get_resolver("RootQuery.testField.userInfo.oneField.unknownField") is None
+
+
+def test_schema_bake_schema():
+    # TODO
+    pass

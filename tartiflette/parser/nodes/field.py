@@ -4,7 +4,7 @@ from .node import Node
 import asyncio
 
 
-async def _exec_list(resolver, lst, path, args, request_ctx, name):
+async def _exec_list(resolver, lst, path, args, request_ctx, name, field, location):
     coroutines = []
 
     for index, item in enumerate(lst):
@@ -14,14 +14,14 @@ async def _exec_list(resolver, lst, path, args, request_ctx, name):
             coroutines.append(
                 _exec_list(
                     resolver, item, new_path[:], args, request_ctx,
-                    name
+                    name, field, location
                 )
             )
         else:
             coroutines.append(
                 resolver(
                     request_ctx,
-                    ExecutionData(item, new_path[:], args, name)
+                    ExecutionData(item, new_path[:], args, name, field, location)
                 )
             )
 
@@ -45,8 +45,11 @@ def _to_jsonable(thing):
 
 
 class NodeField(Node):
-    def __init__(self, resolver, location, path, name, type_condition, gql_type = None):
+    def __init__(self, resolver, location, path, name, type_condition,
+                 gql_type=None, field=None):
         super().__init__(path, 'Field', location, name)
+        # TODO: This can be simplified if we have the field
+        self.field = field
         self.resolver = resolver
         self.gql_type = gql_type
         self.arguments = {}
@@ -60,7 +63,7 @@ class NodeField(Node):
         if self.parent and isinstance(self.parent.results, list):
             self.results = await _exec_list(
                 self.resolver, self.parent.results, self.path, self.arguments,
-                request_ctx, self.name
+                request_ctx, self.name, self.field, self.location,
             )
         else:
             self.results = await self.resolver(
@@ -69,7 +72,9 @@ class NodeField(Node):
                     self.parent.results if self.parent else {},
                     self.path,
                     self.arguments,
-                    self.name
+                    self.name,
+                    self.field,
+                    self.location,
                 )
             )
 

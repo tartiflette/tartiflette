@@ -1,5 +1,7 @@
 from typing import Dict, Optional, List
 
+from tartiflette.executors.types import ExecutionData
+from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
 
@@ -41,3 +43,15 @@ class GraphQLObjectType(GraphQLType):
         return super().__eq__(other) and self.fields == other.fields and \
                self.interfaces == other.interfaces
 
+    # TODO: This does not work, yet.
+    # def collect_value(self, value, execution_data: ExecutionData):
+    #     if value is None:
+    #         return value
+    #     for field in self.fields:
+    #         if field not in value:
+    #             raise InvalidValue(value,
+    #                                gql_type=execution_data.field.gql_type,
+    #                                field=execution_data.field,
+    #                                path=execution_data.path,
+    #                                locations=[execution_data.location])
+    #     return value

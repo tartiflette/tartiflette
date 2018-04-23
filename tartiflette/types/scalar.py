@@ -1,5 +1,6 @@
 from typing import Optional
 
+from tartiflette.executors.types import ExecutionData
 from tartiflette.types.type import GraphQLType
 
 
@@ -40,7 +41,7 @@ class GraphQLScalarType(GraphQLType):
                self.coerce_output == other.coerce_output and \
                self.coerce_input == other.coerce_input
 
-    def collect_value(self, value):
+    def collect_value(self, value, execution_data: ExecutionData):
         if value is None:
             return value
         return self.coerce_output(value)

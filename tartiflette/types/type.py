@@ -1,5 +1,7 @@
 from typing import Optional
 
+from tartiflette.executors.types import ExecutionData
+
 
 class GraphQLType:
     __slots__ = (
@@ -27,7 +29,7 @@ class GraphQLType:
                 type(self) is type(other) and self.name == other.name
         )
 
-    def collect_value(self, value):
+    def collect_value(self, value, execution_data: ExecutionData):
         raise NotImplementedError(
             "{} must implement a `collect_value` function.".format(
                 self.__class__.__name__
