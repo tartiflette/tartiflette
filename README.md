@@ -27,12 +27,12 @@ Here are the subjects we are working on:
 
 * [x] Define Open Source guidelines (Contributing, Code of conduct, Issue Template, PR Template).
 * [ ] (API) Describe the API that will be used by the Tartiflette users.
-* [ ] (API) Engine constructor.
-* [ ] (API) How to declare custom directives in the Engine Constructor.
-* [ ] (API) How to declare middleware on a resolver.
-* [ ] (API) Executor.
-* [ ] (API) Resolver.
-* [ ] (API) Resolver - `Info` parameter.
+  * [x] (API) [Engine constructor](https://github.com/dailymotion/tartiflette/blob/master/docs/API.md#engine-initialization) - _[#19](https://github.com/dailymotion/tartiflette/issues/19)_.
+  * [ ] (API) How to declare custom directives in the Engine Constructor.
+  * [ ] (API) How to declare middleware on a resolver.
+  * [ ] (API) Executor.
+  * [ ] (API) Resolver.
+  * [ ] (API) Resolver - `Info` parameter.
 * [ ] (Website) Landing page for https://tartiflette.io
 * [ ] (Website) Expose documentation on https://tartiflette.io
 ### Query Parser
@@ -44,7 +44,7 @@ Here are the subjects we are working on:
 ### Executor
 
 * [x] Bind the Types specified in the SDL to the `Executor`.
-* [ ] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191) [**IN PROGRESS**](https://github.com/dailymotion/tartiflette/issues/17)
+* [ ] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191) - _[#17 - In progress](https://github.com/dailymotion/tartiflette/issues/17)_
 * [x] Error management
 * [ ] Abstract and Compound Types: Unions, Interfaces, …
 * [ ] NodeDefinition: Check that the [Type exists](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/nodes/definition.py#L26)
@@ -56,8 +56,8 @@ Here are the subjects we are working on:
 
 * [x] Build a `Parser` which parse the [Schema Definition Language](https://github.com/facebook/graphql/blob/master/spec/Section%202%20--%20Language.md) and created the associated schema and types as Python objects.
 * [ ] Implement custom Scalar
-* [ ] (Introspection) Implement the `__type` Field. [**IN PROGRESS**](https://github.com/dailymotion/tartiflette/issues/15)
-* [ ] (Introspection) Implement the `__schema`Field. [**IN PROGRESS**](https://github.com/dailymotion/tartiflette/issues/16)
+* [ ] (Introspection) Implement the `__type` Field. - [_[#15 - In progress](https://github.com/dailymotion/tartiflette/issues/15)_
+* [ ] (Introspection) Implement the `__schema`Field. - [_[#16 - In progress](https://github.com/dailymotion/tartiflette/issues/16)_
 * [ ] (Directive) Append directive informations _(from SDL)_ as metadata on Fields / Types.
 * [ ] (Directive) Implement the declaration of the custom directives into the Engine constructor.
 * [ ] (Directive) Implement @deprecated
