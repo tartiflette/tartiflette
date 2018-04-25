@@ -178,7 +178,8 @@ class TartifletteVisitor(Visitor):
 
     def _validate_type(self, varname, a_value, a_type):
         if not isinstance(a_value, a_type):
-            raise TypeError(
+            self.continue_child = 0
+            self.exception = TypeError(
                 "Given value for < %s > is not type < %s >" %
                 (varname, a_type)
             )
@@ -243,15 +244,18 @@ class TartifletteVisitor(Visitor):
         )
 
         if element.name in self._fragments:
-            raise TartifletteException(
+            self.continue_child = 0
+            self.exception = TartifletteException(
                 "Fragment < %s > is already define" % element.name
             )
+            return
 
-        self._fragments[element.name: str] = nfd
         self._current_fragment_definition = nfd
+        self._fragments[element.name] = nfd
 
     def _on_fragment_definition_out(self, _):
         self._current_fragment_definition = None
+
 
     def _on_fragment_spread_out(self, element: _VisitorElement):
         cfd = self._fragments[element.name]
