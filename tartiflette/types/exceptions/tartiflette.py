@@ -76,7 +76,7 @@ class InvalidSDL(GraphQLError):
         super().__init__(message=message)
 
 
-class UnknownVariableException(Exception):
+class UnknownVariableException(GraphQLError):
     def __init__(self, varname):
         # TODO: Unify error messages format
         super().__init__(message="< %s > is not known" % varname)

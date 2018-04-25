@@ -81,6 +81,7 @@ class TartifletteVisitor(Visitor):
         self._current_fragment_definition = None
         self._fragments = {}
         self._schema_definition: GraphQLSchema = schema_definition
+        self.exception = None
 
     def _on_argument_in(self, element: _VisitorElement):
         self._current_argument_name = element.name
@@ -89,12 +90,9 @@ class TartifletteVisitor(Visitor):
         self._current_argument_name = None
 
     def _on_value_in(self, element: _VisitorElement):
-        try:
+        if hasattr(self._current_node, 'default_value'):
             self._current_node.default_value = element.get_value()
             return
-        except AttributeError:
-            # Not a vardef so consider it a field
-            pass
 
         self._current_node.arguments.update(
             {
@@ -103,12 +101,9 @@ class TartifletteVisitor(Visitor):
         )
 
     def _on_variable_in(self, element: _VisitorElement):
-        try:
+        if hasattr(self._current_node, 'var_name'):
             self._current_node.var_name = element.name
             return
-        except AttributeError:
-            # Cause it's not a var def so try as a field
-            pass
 
         try:
             var_name = element.name
@@ -118,7 +113,8 @@ class TartifletteVisitor(Visitor):
                 }
             )
         except KeyError:
-            raise UnknownVariableException(var_name)
+            self.continue_child = 0
+            self.exception = UnknownVariableException(var_name)
 
     def _add_node(self, node: Node):
         try:
@@ -138,11 +134,17 @@ class TartifletteVisitor(Visitor):
             parent_type = self._schema_definition.query_type
 
         field = self._schema_definition.get_field_by_name(
-            parent_type + '.' + element.name)
+            parent_type + '.' + element.name
+        )
+
         try:
             gql_type = reduce_type(field.gql_type)
         except AttributeError:
-            gql_type = None
+            self.continue_child = 0
+            self.exception = TartifletteException(
+                "No field %s in %s" % (element.name, parent_type)
+            )
+            return
 
         resolver = getattr(field, 'resolver', _default_resolver)
         if resolver is None:
@@ -176,7 +178,8 @@ class TartifletteVisitor(Visitor):
 
     def _validate_type(self, varname, a_value, a_type):
         if not isinstance(a_value, a_type):
-            raise TypeError(
+            self.continue_child = 0
+            self.exception = TypeError(
                 "Given value for < %s > is not type < %s >" %
                 (varname, a_type)
             )
@@ -187,7 +190,10 @@ class TartifletteVisitor(Visitor):
         if name not in self._vars:
             dfv = self._current_node.default_value
             if not dfv and not self._current_node.is_nullable:
-                raise UnknownVariableException(name)
+                self.continue_child = 0
+                self.exception = UnknownVariableException(name)
+                return None
+
             self._vars[name] = dfv
             return None
 
@@ -196,7 +202,12 @@ class TartifletteVisitor(Visitor):
 
         if self._current_node.is_list:
             if not isinstance(a_value, list):
-                raise TypeError("Expecting List for < %s > values" % name)
+                self.continue_child = 0
+                self.exception = TypeError(
+                    "Expecting List for < %s > values" % name
+                )
+                return None
+
             for val in a_value:
                 self._validate_type(name, val, a_type)
             return None
@@ -233,15 +244,18 @@ class TartifletteVisitor(Visitor):
         )
 
         if element.name in self._fragments:
-            raise TartifletteException(
+            self.continue_child = 0
+            self.exception = TartifletteException(
                 "Fragment < %s > is already define" % element.name
             )
+            return
 
-        self._fragments[element.name: str] = nfd
         self._current_fragment_definition = nfd
+        self._fragments[element.name] = nfd
 
     def _on_fragment_definition_out(self, _):
         self._current_fragment_definition = None
+
 
     def _on_fragment_spread_out(self, element: _VisitorElement):
         cfd = self._fragments[element.name]
@@ -269,7 +283,7 @@ class TartifletteVisitor(Visitor):
             pass
 
     def update(self, event, element: _VisitorElement):
-        self.skip_child = False
+        self.continue_child = 1
         self.event = event
 
         if element.libgraphql_type in ['SelectionSet']:
