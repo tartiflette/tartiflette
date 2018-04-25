@@ -13,7 +13,7 @@ style: check-format
 
 .PHONY: complexity
 complexity:
-	xenon --max-absolute B --max-modules B --max-average A tartiflette 
+	xenon --max-absolute B --max-modules B --max-average A tartiflette
 
 .PHONY: test-integ
 test-integ:
@@ -27,7 +27,7 @@ test-unit:
 .PHONY: test-func
 test-func:
 	mkdir -p reports
-	py.test -s tests/func --junitxml=reports/report_func_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage.xml
+	py.test -s tests/functional --junitxml=reports/report_func_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage.xml
 
 .PHONY: tests
 tests: test-integ test-unit test-func

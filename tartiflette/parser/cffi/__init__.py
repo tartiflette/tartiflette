@@ -315,7 +315,7 @@ class Visitor:
 
     def __init__(self):
         self.event = self.UKN
-        self.skip_child = False
+        self.continue_child = 1
 
     def update(self, _, __):
         pass
@@ -466,13 +466,14 @@ class LibGraphqlParser:
         context.update(
             Visitor.IN, self._create_visitor_element(libgraphql_type, element)
         )
-        return not context.skip_child
+        return context.continue_child
 
     def _callback_exit(self, libgraphql_type, element, udata):
         context = self._ffi.from_handle(udata)
-        context.update(
-            Visitor.OUT, self._create_visitor_element(libgraphql_type, element)
-        )
+        if context.continue_child:
+            context.update(
+                Visitor.OUT, self._create_visitor_element(libgraphql_type, element)
+            )
         return None
 
     def _set_callback(self, proto, func, attr):
