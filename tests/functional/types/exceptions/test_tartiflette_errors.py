@@ -32,10 +32,10 @@ async def test_tartiflette_execute_nested_error():
 
     ttftt = Tartiflette(schema_sdl)
 
-    ttftt.schema_definition.types["Date"].coerce_output = from_date_to_str
-    ttftt.schema_definition.types["Date"].coerce_input = from_str_to_date
+    ttftt.schema.types["Date"].coerce_output = from_date_to_str
+    ttftt.schema.types["Date"].coerce_input = from_str_to_date
 
-    @Resolver("Nested.lastUpdate", schema=ttftt.schema_definition)
+    @Resolver("Nested.lastUpdate", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return [datetime(year=2018, month=4, day=19,
                         hour=14, minute=57, second=38), None]

@@ -24,10 +24,10 @@ async def test_tartiflette_execute_scalar_type_output():
 
     ttftt = Tartiflette(schema_sdl)
 
-    ttftt.schema_definition.types["Date"].coerce_output = from_date_to_str
-    ttftt.schema_definition.types["Date"].coerce_input = from_str_to_date
+    ttftt.schema.types["Date"].coerce_output = from_date_to_str
+    ttftt.schema.types["Date"].coerce_input = from_str_to_date
 
-    @Resolver("Query.lastUpdate", schema=ttftt.schema_definition)
+    @Resolver("Query.lastUpdate", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return datetime(year=2018, month=4, day=19,
                         hour=14, minute=57, second=38)
@@ -127,9 +127,9 @@ async def test_tartiflette_execute_scalar_type_advanced(input_sdl, resolver_resp
 
     ttftt = Tartiflette(schema_sdl)
 
-    ttftt.schema_definition.types["Date"].coerce_output = from_date_to_str
+    ttftt.schema.types["Date"].coerce_output = from_date_to_str
 
-    @Resolver("Query.testField", schema=ttftt.schema_definition)
+    @Resolver("Query.testField", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 

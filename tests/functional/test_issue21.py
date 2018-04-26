@@ -81,7 +81,7 @@ async def test_issue21_okayquery(query, expected, varis):
         "Test": GQLTypeMock(name="Test"),
     }
 
-    ttftt = Tartiflette(schema_definition=sdm)
+    ttftt = Tartiflette(schema=sdm)
     results = await ttftt.execute(query, context={}, variables=varis)
 
     assert json.loads(results) == json.loads(expected)
@@ -153,7 +153,7 @@ async def test_issue21_exceptquery(query, expected, varis):
         "Query": GQLTypeMock(name="Query"),
     }
 
-    ttftt = Tartiflette(schema_definition=sdm)
+    ttftt = Tartiflette(schema=sdm)
     with pytest.raises(expected):
         results = await ttftt.execute(query, context={}, variables=varis)
 

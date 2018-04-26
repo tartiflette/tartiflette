@@ -28,12 +28,12 @@ async def test_tartiflette_execute_basic():
     mock_one = Mock()
     mock_two = Mock()
 
-    @Resolver("Test.field", schema=ttftt.schema_definition)
+    @Resolver("Test.field", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         mock_one()
         return
 
-    @Resolver("RootQuery.defaultField", schema=ttftt.schema_definition)
+    @Resolver("RootQuery.defaultField", schema=ttftt.schema)
     async def func_default_query_resolver(*args, **kwargs):
         mock_two()
         return
@@ -69,15 +69,15 @@ async def test_tartiflette_nested_resolvers():
 
     ttftt = Tartiflette(schema_sdl)
 
-    @Resolver("Query.rootField", schema=ttftt.schema_definition)
+    @Resolver("Query.rootField", schema=ttftt.schema)
     async def func_resolver(request_ctx, execution_data):
         return {"nestedField": "Nested ?"}
 
-    @Resolver("RootType.nestedField", schema=ttftt.schema_definition)
+    @Resolver("RootType.nestedField", schema=ttftt.schema)
     async def func_resolver(request_ctx, execution_data):
         return {"endField": "Another"}
 
-    @Resolver("NestedType.endField", schema=ttftt.schema_definition)
+    @Resolver("NestedType.endField", schema=ttftt.schema)
     async def func_resolver(request_ctx, execution_data):
         return "Test"
 
@@ -104,7 +104,7 @@ async def test_tartiflette_execute_hello_world():
 
     ttftt = Tartiflette(schema_sdl)
 
-    @Resolver("Query.hello", schema=ttftt.schema_definition)
+    @Resolver("Query.hello", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return "world"
 

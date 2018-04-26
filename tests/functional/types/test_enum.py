@@ -20,7 +20,7 @@ async def test_tartiflette_execute_enum_type_output():
 
     ttftt = Tartiflette(schema_sdl)
 
-    @Resolver("Query.enumTest", schema=ttftt.schema_definition)
+    @Resolver("Query.enumTest", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return "Value1"
 
@@ -71,7 +71,7 @@ async def test_tartiflette_execute_enum_type_advanced(input_sdl, resolver_respon
 
     ttftt = Tartiflette(schema_sdl)
 
-    @Resolver("Query.testField", schema=ttftt.schema_definition)
+    @Resolver("Query.testField", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 

@@ -20,7 +20,7 @@ async def test_tartiflette_execute_object_type_output():
 
     ttftt = Tartiflette(schema_sdl)
 
-    @Resolver("Query.objectTest", schema=ttftt.schema_definition)
+    @Resolver("Query.objectTest", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return {"field1": "Test"}
 
@@ -61,7 +61,7 @@ async def test_tartiflette_execute_object_type_advanced(input_sdl, resolver_resp
 
     ttftt = Tartiflette(schema_sdl)
 
-    @Resolver("Query.testField", schema=ttftt.schema_definition)
+    @Resolver("Query.testField", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
@@ -96,12 +96,12 @@ async def test_tartiflette_execute_object_type_unknown_field():
 
     mock_call = Mock()
 
-    @Resolver("Content.title", schema=ttftt.schema_definition)
+    @Resolver("Content.title", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         mock_call()
         return "Test"
 
-    @Resolver("Post.content", schema=ttftt.schema_definition)
+    @Resolver("Post.content", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return {"title": "Stuff"}
 
