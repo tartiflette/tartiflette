@@ -12,16 +12,13 @@ from tartiflette.schema import GraphQLSchema
 class Tartiflette:
 
     def __init__(self, sdl=None, schema_definition=None, serialize_callback=None):
-        if not sdl and schema_definition:
-            self.schema_definition = schema_definition
-        else:
-            # TODO: Is the DefaultGraphQLSchema a good idea to have as a
-            # default fallback ?
-            self.schema_definition = GraphQLSchema()
+        self.schema_definition = schema_definition or GraphQLSchema()
+        if sdl:
             build_graphql_schema_from_sdl(sdl, schema=self.schema_definition)
         self._serialize_callback = serialize_callback \
             if serialize_callback else json.dumps
         self._parser = TartifletteRequestParser()
+        self.schema_definition.bake_schema()
 
     async def execute(self, query: str, context: Dict[str, Any]=None,
                       variables: Dict[str, Any]=None) -> str:

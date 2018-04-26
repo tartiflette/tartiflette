@@ -115,3 +115,12 @@ async def test_tartiflette_execute_hello_world():
     """)
 
     assert """{"data":{"hello":"world"}}""" == result
+
+    # Try twice to be sure everything works mutliple times
+    result = await ttftt.execute("""
+        query Test{
+            hello
+        }
+        """)
+
+    assert """{"data":{"hello":"world"}}""" == result

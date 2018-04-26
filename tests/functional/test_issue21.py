@@ -1,5 +1,9 @@
+from collections import namedtuple
 from unittest.mock import Mock
 import pytest
+
+
+GQLTypeMock = namedtuple("GQLTypeMock", ["name"])
 
 
 @pytest.mark.asyncio
@@ -62,7 +66,7 @@ async def test_issue21_okayquery(query, expected, varis):
             return {"iam": exe.name, "args": exe.arguments}
 
     field = Mock()
-    field.gql_type = "Test"
+    field.gql_type = GQLTypeMock(name="Test")
     field.name = "test"
     field.resolver = default_resolver()
 
@@ -72,6 +76,10 @@ async def test_issue21_okayquery(query, expected, varis):
     sdm = Mock()
     sdm.query_type = "Query"
     sdm.get_field_by_name = get_field_by_name
+    sdm.types = {
+        "Query": GQLTypeMock(name="Query"),
+        "Test": GQLTypeMock(name="Test"),
+    }
 
     ttftt = Tartiflette(schema_definition=sdm)
     results = await ttftt.execute(query, context={}, variables=varis)
@@ -123,7 +131,6 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
     ]
 )
 async def test_issue21_exceptquery(query, expected, varis):
-    import json
     from tartiflette.tartiflette import Tartiflette
 
     class default_resolver(Mock):
@@ -132,7 +139,7 @@ async def test_issue21_exceptquery(query, expected, varis):
             return {"iam": exe.name, "args": exe.arguments}
 
     field = Mock()
-    field.gql_type = "Test"
+    field.gql_type = GQLTypeMock(name="Test")
     field.name = "test"
     field.resolver = default_resolver()
 
@@ -142,6 +149,9 @@ async def test_issue21_exceptquery(query, expected, varis):
     sdm = Mock()
     sdm.query_type = "Query"
     sdm.get_field_by_name = get_field_by_name
+    sdm.types = {
+        "Query": GQLTypeMock(name="Query"),
+    }
 
     ttftt = Tartiflette(schema_definition=sdm)
     with pytest.raises(expected):
