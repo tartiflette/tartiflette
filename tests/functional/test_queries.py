@@ -60,7 +60,7 @@ async def test_get_field_by_name_call_order(query, varis, expected):
         "Query": GQLTypeMock(name="Query"),
     }
 
-    ttftt = Tartiflette(schema_definition=sdm)
+    ttftt = Tartiflette(schema=sdm)
     await ttftt.execute(query, context={}, variables=varis)
 
     sdm.get_field_by_name.assert_has_calls(expected, any_order=False)
@@ -139,7 +139,7 @@ async def test_calling_get_field_by_name_with_correct_value():
         "Test": GQLTypeMock(name="Test"),
     }
 
-    ttftt = Tartiflette(schema_definition=sdm)
+    ttftt = Tartiflette(schema=sdm)
     r = await ttftt.execute(
         """
         query a_request {
@@ -458,7 +458,7 @@ async def test_result_value(query, expected):
         "Query": GQLTypeMock(name="Query"),
     }
 
-    ttftt = Tartiflette(schema_definition=sdm)
+    ttftt = Tartiflette(schema=sdm)
     results = await ttftt.execute(query, context={}, variables={})
 
     assert json.loads(results) == json.loads(expected)
