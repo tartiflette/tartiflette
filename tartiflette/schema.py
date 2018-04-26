@@ -139,12 +139,8 @@ class GraphQLSchema:
         return root
 
     def collect_field_value(self, field, resolved_value, execution_data: ExecutionData):
-        # TODO: This call to `to_real_type` can be removed if you have called
-        # the `bake_schema` method below.
-        # This has a big performance impact during execution
-        real_type = self.to_real_type(field.gql_type)
         try:
-            result = real_type.collect_value(resolved_value, execution_data)
+            result = field.gql_type.collect_value(resolved_value, execution_data)
         except NotImplementedError:
             result = resolved_value
         except InvalidValue as e:

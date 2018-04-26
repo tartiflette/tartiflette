@@ -131,10 +131,10 @@ class TartifletteVisitor(Visitor):
         try:
             parent_type = self._current_node.gql_type
         except AttributeError:
-            parent_type = self._schema_definition.query_type
+            parent_type = self._schema_definition.types[self._schema_definition.query_type]
 
         field = self._schema_definition.get_field_by_name(
-            parent_type + '.' + element.name
+            parent_type.name + '.' + element.name
         )
 
         try:
