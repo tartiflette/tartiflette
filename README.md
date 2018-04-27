@@ -21,6 +21,8 @@ See [here](https://github.com/graphql/libgraphqlparser) for more details.
 
 Following on our experience in managing GraphQL APIs in production **for more than a year**, we've decided to build a brand new GraphQL Engine.
 
+[Know more about the API.](docs/API.md)
+
 Here are the subjects we are working on:
 
 ### Communication and documentation
@@ -31,8 +33,8 @@ Here are the subjects we are working on:
   * [ ] (API) How to declare custom directives in the Engine Constructor.
   * [ ] (API) How to declare middleware on a resolver.
   * [ ] (API) Executor.
-  * [ ] (API) Resolver.
-  * [ ] (API) Resolver - `Info` parameter.
+  * [x] (API) Resolver - _[#19](https://github.com/dailymotion/tartiflette/issues/19)_.
+  * [x] (API) Resolver - `Info` parameter - _[#19](https://github.com/dailymotion/tartiflette/issues/19)_.
 * [ ] (Website) Landing page for https://tartiflette.io
 * [ ] (Website) Expose documentation on https://tartiflette.io
 ### Query Parser
