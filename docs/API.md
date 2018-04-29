@@ -100,7 +100,7 @@ engine = tartiflette.Engine(
 2. **resolver_middlewares:** Middlewares list which are applied **only** to resolvers.
 3. **resolvers:** By default, [the resolvers should be decorated with `@Resolver`](#with-decorators). It is possible to specify a list of resolvers
 ```python
-def my_hello_resolver(parent, args, ctx, info):
+async def my_hello_resolver(parent, args, ctx, info):
     return "Hey"
 
 resolvers = {
@@ -123,7 +123,7 @@ The most common way to assign specific resolver to a Field, is to decorate your 
 from tartiflette import Resolver
 
 @Resolver("Query.hello")
-def my_hello_resolver(parent, args, context, info):
+async def my_hello_resolver(parent, args, context, info):
     return "Chuck"
 ```
 
@@ -134,7 +134,7 @@ The second way is to use the [advanced Engine initialization](#advanced-construc
 ```python
 import tartiflette
 
-def my_hello_resolver(parent, args, ctx, info):
+async def my_hello_resolver(parent, args, ctx, info):
     return "Chuck"
 
 engine = tartiflette.Engine(
@@ -152,7 +152,7 @@ Every resolver in Tartiflette accepts four positional arguments:
 _(This signature has been highly inspired by the GraphQL.js implementation)_
 
 ```python
-def my_hello_resolver(parent, args, context, info):
+async def my_hello_resolver(parent, args, context, info):
     pass
 ```
 
