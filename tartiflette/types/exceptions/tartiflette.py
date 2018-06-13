@@ -1,5 +1,6 @@
 from typing import List, Any, Optional
 
+from tartiflette.executors.types import ExecutionData
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.location import Location
 
@@ -20,11 +21,16 @@ class GraphQLError(Exception):
         self.path = path if path else None
         self.locations = locations if locations else []
 
+    def to_jsonable(self):
+        return self.collect_value()
+
     def collect_value(self):
         locations = []
         try:
             for loc in self.locations:
                 locations.append(loc.collect_value())
+        except AttributeError:
+            pass
         except TypeError:
             pass
         return {
@@ -81,3 +87,6 @@ class UnknownVariableException(GraphQLError):
         # TODO: Unify error messages format
         super().__init__(message="< %s > is not known" % varname)
 
+class UnknownGraphQLType(GraphQLError):
+    def __init__(self, message):
+        super().__init__(message=message)

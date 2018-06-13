@@ -13,11 +13,6 @@ class GraphQLInputObjectType(GraphQLType):
 
     Using `NonNull` will ensure that a value must be provided by the query
     """
-    __slots__ = (
-        'name',
-        'description',
-        'fields',
-    )
 
     def __init__(
         self, name: str,

@@ -159,9 +159,9 @@ def test_schema_validate_named_types(full_sdl, expected_error, expected_value):
                                                      schema=GraphQLSchema())
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate_schema()
+            generated_schema.validate()
     else:
-        assert generated_schema.validate_schema() == expected_value
+        assert generated_schema.validate() == expected_value
 
 
 @pytest.mark.parametrize("full_sdl,expected_error,expected_value", [
@@ -320,9 +320,9 @@ def test_schema_validate_object_follow_interfaces(full_sdl, expected_error,
                                                      schema=GraphQLSchema())
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate_schema()
+            generated_schema.validate()
     else:
-        assert generated_schema.validate_schema() == expected_value
+        assert generated_schema.validate() == expected_value
 
 
 @pytest.mark.parametrize("full_sdl,expected_error,expected_value", [
@@ -428,9 +428,9 @@ def test_schema_validate_root_types_exist(full_sdl, expected_error,
                                                      schema=GraphQLSchema())
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate_schema()
+            generated_schema.validate()
     else:
-        assert generated_schema.validate_schema() == expected_value
+        assert generated_schema.validate() == expected_value
 
 
 @pytest.mark.parametrize("full_sdl,expected_error,expected_value", [
@@ -459,9 +459,9 @@ def test_schema_validate_non_empty_object(full_sdl, expected_error,
                                                      schema=GraphQLSchema())
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate_schema()
+            generated_schema.validate()
     else:
-        assert generated_schema.validate_schema() == expected_value
+        assert generated_schema.validate() == expected_value
 
 
 @pytest.mark.parametrize("full_sdl,expected_error,expected_value", [
@@ -504,9 +504,9 @@ def test_schema_validate_union_is_acceptable(full_sdl, expected_error,
                                                      schema=GraphQLSchema())
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate_schema()
+            generated_schema.validate()
     else:
-        assert generated_schema.validate_schema() == expected_value
+        assert generated_schema.validate() == expected_value
 
 
 def test_schema_get_resolver():

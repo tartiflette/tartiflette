@@ -1,10 +1,9 @@
 from tartiflette.executors.types import ExecutionData
-from tartiflette.types.exceptions.tartiflette import GraphQLError
 from .node import Node
 import asyncio
 
 
-async def _exec_list(resolver, lst, path, args, request_ctx, name, field, location):
+async def _exec_list(resolver, lst, path, args, request_ctx, name, field, location, schema):
     coroutines = []
 
     for index, item in enumerate(lst):
@@ -14,48 +13,41 @@ async def _exec_list(resolver, lst, path, args, request_ctx, name, field, locati
             coroutines.append(
                 _exec_list(
                     resolver, item, new_path[:], args, request_ctx,
-                    name, field, location
+                    name, field, location, schema,
                 )
             )
         else:
             coroutines.append(
                 resolver(
                     request_ctx,
-                    ExecutionData(item, new_path[:], args, name, field, location)
+                    ExecutionData(item, new_path[:], args, name, field, location, schema)
                 )
             )
 
     return await asyncio.gather(*coroutines, return_exceptions=True)
 
 
-def _to_jsonable(thing):
+def _to_jsonable(thing, execution_data: ExecutionData):
     if isinstance(thing, dict):
         # Makes a copy of the contents so it's not modified by the child
-        return {x: v for x, v in thing.items()}
+        return {k: v for k, v in thing.items()}, []
 
-    try:
-        # TODO: Is this still useful ? Check.
-        val = thing.collect_value()
-        return val
-    except AttributeError:
-        pass
-
-    # It's a base python type so no need to do anything
-    return thing
+    # TODO: This has to be upgraded, it does not manage errors gracefully :x
+    return execution_data.field.gql_type.coerce_value(thing), []
 
 
 class NodeField(Node):
     def __init__(self, resolver, location, path, name, type_condition,
                  gql_type=None, field=None):
         super().__init__(path, 'Field', location, name)
-        # TODO: This can be simplified if we have the field
+        # TODO: This can be simplified if we have the field & schema
         self.field = field
         self.resolver = resolver
         self.gql_type = gql_type
         self.arguments = {}
         self.results = None
         self.errors = []
-
+        self.schema = None
         self.type_condition = type_condition
         self.as_jsonable = None
 
@@ -64,6 +56,7 @@ class NodeField(Node):
             self.results = await _exec_list(
                 self.resolver, self.parent.results, self.path, self.arguments,
                 request_ctx, self.name, self.field, self.location,
+                self.schema,
             )
         else:
             self.results = await self.resolver(
@@ -75,25 +68,26 @@ class NodeField(Node):
                     self.name,
                     self.field,
                     self.location,
+                    self.schema,
                 )
             )
 
     def _results_to_jsonable(self):
-        # TODO: Make cleaner Error management.
-        if isinstance(self.results, list):
-            self.as_jsonable = []
-            for index, result in enumerate(self.results):
-                if isinstance(result, GraphQLError):
-                    self.errors.append(result.collect_value())
-                else:
-                    self.as_jsonable.append(_to_jsonable(result))
-        else:
-            if isinstance(self.results, GraphQLError):
-                self.errors.append(self.results.collect_value())
-            else:
-                self.as_jsonable = _to_jsonable(self.results)
+        self.as_jsonable, self.errors = _to_jsonable(
+            self.results,
+            ExecutionData(
+                self.parent.results if self.parent else {},
+                self.path,
+                self.arguments,
+                self.name,
+                self.field,
+                self.location,
+                self.schema,
+            )
+        )
 
-    async def __call__(self, request_ctx):
+    async def __call__(self, request_ctx, schema):
+        self.schema = schema
         await self._get_results(request_ctx)
         self._results_to_jsonable()
 

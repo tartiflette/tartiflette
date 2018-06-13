@@ -25,10 +25,6 @@ async def _default_resolver(ctx, execution_data):
 
     # TODO: Think about this :)
     return {}
-    # raise TartifletteException(
-    #     "Parent < %s > doesn't contain expected attribute < %s >" %
-    #     (execution_data.parent_result, execution_data.name)
-    # )
 
 
 class TartifletteVisitor(Visitor):
@@ -130,12 +126,18 @@ class TartifletteVisitor(Visitor):
 
         try:
             parent_type = self._current_node.gql_type
-        except AttributeError:
-            parent_type = self._schema.types[self._schema.query_type]
+        except (AttributeError, TypeError):
+            parent_type = self._schema.query_type
 
-        field = self._schema.get_field_by_name(
-            parent_type.name + '.' + element.name
-        )
+        try:
+            # TODO: This is maybe not the best way. Think about it.
+            field = self._schema.get_field_by_name(
+                parent_type.name + '.' + element.name
+            )
+        except AttributeError:
+            field = self._schema.get_field_by_name(
+                str(parent_type) + '.' + element.name
+            )
 
         try:
             gql_type = reduce_type(field.gql_type)
@@ -157,7 +159,7 @@ class TartifletteVisitor(Visitor):
             element.get_location(),
             self.field_path[:], element.name, self._current_type_condition,
             gql_type,
-            field
+            field,
         )
 
         node.parent = self._current_node
@@ -246,7 +248,7 @@ class TartifletteVisitor(Visitor):
         if element.name in self._fragments:
             self.continue_child = 0
             self.exception = TartifletteException(
-                "Fragment < %s > is already define" % element.name
+                "Fragment < %s > already defined" % element.name
             )
             return
 

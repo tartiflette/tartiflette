@@ -1,14 +1,16 @@
-import traceback
 from typing import Optional, Dict, List, Union
 
-from tartiflette.executors.types import ExecutionData
 from tartiflette.types.builtins import GraphQLBoolean, GraphQLFloat, GraphQLID, \
     GraphQLInt, GraphQLString
 from tartiflette.types.exceptions.tartiflette import \
-    GraphQLSchemaError, InvalidValue, GraphQLError
+    GraphQLSchemaError
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.interface import GraphQLInterfaceType
+from tartiflette.introspection import SchemaRootFieldDefinition, \
+    TypeRootFieldDefinition, TypeNameRootFieldDefinition, IntrospectionSchema, \
+    IntrospectionType, IntrospectionTypeKind, IntrospectionField, \
+    IntrospectionEnumValue, IntrospectionInputValue
 from tartiflette.types.list import GraphQLList
 from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
@@ -22,16 +24,6 @@ class GraphQLSchema:
 
     Contains the complete GraphQL Schema: types, entrypoints and directives.
     """
-
-    __slots__ = [
-        'description',
-        '_query_type',
-        '_mutation_type',
-        '_subscription_type',
-        '_gql_types',
-        '_implementations',
-        '_possible_types',
-    ]
 
     def __init__(self, description=None):
         self.description = description
@@ -138,15 +130,6 @@ class GraphQLSchema:
             prev.gql_type = self._gql_types[gql_type]
         return root
 
-    def collect_field_value(self, field, resolved_value, execution_data: ExecutionData):
-        try:
-            result = field.gql_type.collect_value(resolved_value, execution_data)
-        except NotImplementedError:
-            result = resolved_value
-        except InvalidValue as e:
-            result = e
-        return result
-
     def get_resolver(self, field_path: str) -> Optional[callable]:
         if not field_path:
             return None
@@ -178,18 +161,19 @@ class GraphQLSchema:
             pass
         return None
 
-    def bake_schema(self) -> None:
+    def bake(self) -> None:
         """
         Bake the final schema (it should not change after this) used for
         execution.
 
         :return: None
         """
-        self.validate_schema()
+        self.validate()
+        self.inject_introspection()
         self.field_gql_types_to_real_types()
         return None
 
-    def validate_schema(self) -> bool:
+    def validate(self) -> bool:
         """
         Check that the given schema is valid.
 
@@ -223,7 +207,7 @@ class GraphQLSchema:
             try:
                 for field_name, field in gql_type.fields.items():
                     gql_type = reduce_type(field.gql_type)
-                    if gql_type not in self._gql_types:
+                    if str(gql_type) not in self._gql_types:
                         raise GraphQLSchemaError(
                             "field `{}` in GraphQL type `{}` is invalid, "
                             "the given type `{}` does not exist!".format(
@@ -333,6 +317,19 @@ class GraphQLSchema:
                     field.gql_type = self.to_real_type(field.gql_type)
             except AttributeError:
                 pass
+
+    def inject_introspection(self):
+        # Add Introspection types
+        self.add_definition(IntrospectionSchema)
+        self.add_definition(IntrospectionType)
+        self.add_definition(IntrospectionTypeKind)
+        self.add_definition(IntrospectionField)
+        self.add_definition(IntrospectionEnumValue)
+        self.add_definition(IntrospectionInputValue)
+        # Add introspection field into root objectss
+        self.types[self.query_type].add_field(SchemaRootFieldDefinition)
+        self.types[self.query_type].add_field(TypeRootFieldDefinition)
+        self.types[self.query_type].add_field(TypeNameRootFieldDefinition)
 
 
 DefaultGraphQLSchema = GraphQLSchema()

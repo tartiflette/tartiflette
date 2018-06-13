@@ -24,6 +24,7 @@ async def test_tartiflette_execute_object_type_output():
     async def func_field_resolver(*args, **kwargs):
         return {"field1": "Test"}
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         objectTest {
@@ -65,6 +66,7 @@ async def test_tartiflette_execute_object_type_advanced(input_sdl, resolver_resp
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         testField
@@ -105,6 +107,7 @@ async def test_tartiflette_execute_object_type_unknown_field():
     async def func_field_resolver(*args, **kwargs):
         return {"title": "Stuff"}
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         posts {

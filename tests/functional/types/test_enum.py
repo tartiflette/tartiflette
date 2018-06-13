@@ -24,6 +24,7 @@ async def test_tartiflette_execute_enum_type_output():
     async def func_field_resolver(*args, **kwargs):
         return "Value1"
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         enumTest
@@ -53,7 +54,7 @@ async def test_tartiflette_execute_enum_type_output():
     (
         "[Test]",
         ["Value3", "UnknownValue"],
-        '{"data":{"testField":["Value3"]},"errors":[{"message":"Invalid value (value: \'UnknownValue\') for field `testField` of type `[Test]`","path":["testField",1],"locations":[{"line":1,"column":26}]}]}',
+        '{"data":{"testField":["Value3",null]},"errors":[{"message":"Invalid value (value: \'UnknownValue\') for field `testField` of type `[Test]`","path":["testField",1],"locations":[{"line":1,"column":26}]}]}',
     ),
 ])
 async def test_tartiflette_execute_enum_type_advanced(input_sdl, resolver_response, expected):
@@ -75,6 +76,7 @@ async def test_tartiflette_execute_enum_type_advanced(input_sdl, resolver_respon
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         testField

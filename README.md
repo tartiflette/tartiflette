@@ -57,9 +57,9 @@ Here are the subjects we are working on:
 ### SDL - Schema Definition Language
 
 * [x] Build a `Parser` which parse the [Schema Definition Language](https://github.com/facebook/graphql/blob/master/spec/Section%202%20--%20Language.md) and created the associated schema and types as Python objects.
-* [ ] Implement custom Scalar
-* [ ] (Introspection) Implement the `__type` Field. - [_[#15 - In progress](https://github.com/dailymotion/tartiflette/issues/15)_
-* [ ] (Introspection) Implement the `__schema`Field. - [_[#16 - In progress](https://github.com/dailymotion/tartiflette/issues/16)_
+* [ ] Think about custom Scalar API
+* [x] (Introspection) Implement the `__type` Field. - [_[#15 - In progress](https://github.com/dailymotion/tartiflette/issues/15)_
+* [x] (Introspection) Implement the `__schema`Field. - [_[#16 - In progress](https://github.com/dailymotion/tartiflette/issues/16)_
 * [ ] (Directive) Append directive informations _(from SDL)_ as metadata on Fields / Types.
 * [ ] (Directive) Implement the declaration of the custom directives into the Engine constructor.
 * [ ] (Directive) Implement @deprecated

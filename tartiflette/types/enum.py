@@ -10,11 +10,6 @@ class GraphQLEnumValue:
     Enums are special leaf values.
     `GraphQLEnumValue`s is a way to represent them.
     """
-    __slots__ = (
-        'name',
-        'description',
-        'value',
-    )
 
     def __init__(self, value: Any = None, description: Optional[str]=None):
         self.value = value
@@ -25,6 +20,9 @@ class GraphQLEnumValue:
             self.__class__.__name__,
             self.value, self.description
         )
+
+    def __str__(self):
+        return str(self.value)
 
     def __eq__(self, other):
         return self is other or (
@@ -45,12 +43,6 @@ class GraphQLEnumType(GraphQLType):
     the name of the enum value will be used as its internal value.
     """
 
-    __slots__ = (
-        'name',
-        'description',
-        'values',
-    )
-
     def __init__(
         self, name: str,
             values: List[GraphQLEnumValue],
@@ -68,6 +60,24 @@ class GraphQLEnumType(GraphQLType):
     def __eq__(self, other):
         return super().__eq__(other) and \
                self.values == other.values
+
+    def type_check(self, value: Any, execution_data: ExecutionData) -> Any:
+        for item in self.values:
+            if item.value == value:
+                return value
+        raise InvalidValue(value,
+                           gql_type=execution_data.field.gql_type,
+                           field=execution_data.field,
+                           path=execution_data.path,
+                           locations=[execution_data.location],
+                           )
+
+    def coerce_value(self, value: Any):
+        if value is None:
+            return None
+        for enumval in self.values:
+            if enumval.value == value:
+                return enumval.value
 
     def collect_value(self, value, execution_data: ExecutionData):
         for enumval in self.values:

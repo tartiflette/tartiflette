@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import Optional, Any
 
 from tartiflette.executors.types import ExecutionData
+from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -14,13 +15,6 @@ class GraphQLScalarType(GraphQLType):
 
     Example: see the default Int, String or Boolean scalars.
     """
-
-    __slots__ = (
-        'name',
-        'description',
-        'coerce_output',
-        'coerce_input',
-    )
 
     def __init__(self, name: str,
                  coerce_output: Optional[callable]=None,
@@ -40,6 +34,23 @@ class GraphQLScalarType(GraphQLType):
         return super().__eq__(other) and \
                self.coerce_output == other.coerce_output and \
                self.coerce_input == other.coerce_input
+
+    def type_check(self, value: Any, execution_data: ExecutionData) -> Any:
+        try:
+            self.coerce_output(value)
+            return value
+        except TypeError:
+            raise InvalidValue(value,
+                               gql_type=execution_data.field.gql_type,
+                               field=execution_data.field,
+                               path=execution_data.path,
+                               locations=[execution_data.location],
+                               )
+
+    def coerce_value(self, value: Any) -> Any:
+        if value is None:
+            return value
+        return self.coerce_output(value)
 
     def collect_value(self, value, execution_data: ExecutionData):
         if value is None:

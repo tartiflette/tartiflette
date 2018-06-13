@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from typing import Dict, Optional
 
 from tartiflette.types.field import GraphQLField
@@ -16,11 +15,6 @@ class GraphQLInterfaceType(GraphQLType):
     function to determine which type is actually used
     when the field is resolved.
     """
-    __slots__ = (
-        'name',
-        'description',
-        'fields',
-    )
 
     def __init__(self, name: str, fields: Dict[str, GraphQLField],
                  description: Optional[str]=None):
