@@ -30,12 +30,18 @@ def test_graphql_interface_repr():
                                                GraphQLField(name="arg",
                                                                gql_type="String")),
                                           ]),
-                                          description="description")
+                                          description="description",)
 
     assert interface.__repr__() == "GraphQLInterfaceType(name='Name', " \
                                       "fields=OrderedDict([" \
-                                      "('test', GraphQLField(name='arg', gql_type='Int', arguments=OrderedDict(), resolver=None, description=None)), " \
-                                      "('another', GraphQLField(name='arg', gql_type='String', arguments=OrderedDict(), resolver=None, description=None))" \
+                                      "('test', GraphQLField(name='arg', " \
+                                   "gql_type='Int', arguments=OrderedDict(), " \
+                                   "resolver=None, description=None, " \
+                                   "directives=None)), " \
+                                      "('another', GraphQLField(name='arg', " \
+                                   "gql_type='String', arguments=OrderedDict(), " \
+                                   "resolver=None, description=None, " \
+                                   "directives=None))" \
                                       "]), description='description')"
     assert interface == eval(repr(interface))
 

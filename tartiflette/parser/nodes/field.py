@@ -1,63 +1,29 @@
 import asyncio
+import traceback
 from typing import List, Any, Dict
 
-from tartiflette.executors.types import Info, CoercedValue
+from tartiflette.executors.types import Info, ExecutionContext
 from tartiflette.schema import GraphQLSchema
-from tartiflette.types.exceptions.tartiflette import GraphQLError
+from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.location import Location
 from .node import Node
 
 
-async def _exec_list(
-        parent_result_lst: List, args: Dict[str, Any],
-        request_ctx: Dict[str, Any], path: List[str], location: Location,
-        schema: GraphQLSchema, schema_field: GraphQLField,
-        query_field: 'NodeField',
-):
-    coroutines = []
+async def default_resolver(parent_result, _arguments, _request_ctx, info: Info):
+    try:
+        return getattr(
+            parent_result, info.schema_field.name
+        )
+    except AttributeError:
+        pass
 
-    for index, parent_result_item in enumerate(parent_result_lst):
-        new_path = path[:]
-        new_path.append(index)
-        if isinstance(parent_result_item, list):
-            coroutines.append(
-                _exec_list(
-                    parent_result_item,
-                    args,
-                    request_ctx,
-                    new_path[:],
-                    location,
-                    schema,
-                    schema_field,
-                    query_field,
-                )
-            )
-        else:
-            coroutines.append(
-                schema_field.resolver(
-                    parent_result_item,
-                    args,
-                    request_ctx,
-                    Info(
-                        query_field=query_field,
-                        schema_field=schema_field,
-                        schema=schema,
-                        path=new_path[:],
-                        location=location,
-                    ),
-                )
-            )
+    try:
+        return parent_result[info.schema_field.name]
+    except (KeyError, TypeError):
+        pass
 
-    raw_results = await asyncio.gather(*coroutines, return_exceptions=True)
-    results = []
-    coerced_value = CoercedValue(value=[], error=None)
-    for tmp_result, tmp_coerced_value in raw_results:
-        results.append(tmp_result)
-        coerced_value.value.append(tmp_coerced_value.value)
-        if tmp_coerced_value.error:
-            coerced_value.error = tmp_coerced_value.error
-    return results, coerced_value
+    return None
 
 
 class NodeField(Node):
@@ -76,9 +42,10 @@ class NodeField(Node):
         self.schema_field = schema_field
         self.arguments = {}
         self.type_condition = type_condition
-        self.is_leaf = False
+        self.is_leaf = False  # TODO: Still used ?
+        self.info: Info = None
         # Result
-        self.results = None
+        self.result = None
         self.coerced = None
         self.error = None
 
@@ -89,34 +56,137 @@ class NodeField(Node):
                                                "__typename"] else False
         )
 
-    async def _get_results(self, request_ctx):
-        if self.parent and isinstance(self.parent.results, list):
-            self.results, self.coerced = await _exec_list(
-                self.parent.results,
-                self.arguments,
+    async def get_result(self, exec_ctx: ExecutionContext,
+                         request_ctx: Dict[str, Any]):
+        if self.parent and self.parent.error:
+            # Parent has error, stop exec.
+            self.error = self.parent.error
+            return
+        self.info = Info(
+            query_field=self,
+            schema_field=self.schema_field,
+            schema=self.schema,
+            path=self.path,
+            location=self.location,
+            execution_ctx=exec_ctx,
+        )
+        try:
+            self.result = await self._get_result(
+                self.parent.result if self.parent else None,
                 request_ctx,
-                self.path,
-                self.location,
-                self.schema,
-                self.schema_field,
-                self,
-            )
+                self.info)
+        except Exception as e:
+            traceback.print_tb(e.__traceback__)
+            exec_ctx.add_error(e)
+            self.error = e
+
+    async def _get_result(self, parent_result: Any,
+                          request_ctx: Dict[str, Any], info: Info):
+        if isinstance(parent_result, list):
+            coroutines = []
+            for index, parent_result_item in enumerate(parent_result):
+                if isinstance(parent_result_item, list):
+                    coroutines.append(
+                        self._get_result(
+                            parent_result_item,
+                            request_ctx,
+                            info.clone_with_path(index),
+                        )
+                    )
+                else:
+                    resolver = info.schema_field.resolver or default_resolver
+                    coroutines.append(
+                        resolver(
+                            parent_result_item,
+                            self.arguments,
+                            request_ctx,
+                            info.clone_with_path(index),
+                        )
+                    )
+            return await asyncio.gather(*coroutines)
         else:
-            self.results, self.coerced = await self.schema_field.resolver(
-                self.parent.results if self.parent else {},
+            resolver = info.schema_field.resolver or default_resolver
+            return await resolver(
+                parent_result,
                 self.arguments,
                 request_ctx,
-                Info(
-                    query_field=self,
-                    schema_field=self.schema_field,
-                    schema=self.schema,
-                    path=self.path,
-                    location=self.location,
-                ),
+                info.clone(),
             )
 
-    async def __call__(self, request_ctx) -> GraphQLError:
-        await self._get_results(request_ctx)
+    def coerce_result(self):
+        if self.error:
+            return
+        try:
+            self.coerced = self._coerce_value(self.result,
+                                              self.parent.result if self.parent else None,
+                                              self.info)
+            return self.coerced
+        except Exception as e:
+            print(repr(e))
+            traceback.print_tb(e.__traceback__)
+            self.info.execution_ctx.add_error(e)
+            self.error = e
+
+    def _coerce_value(self, current_result: Any, parent_result: Any,
+                      info: Info):
+        if isinstance(parent_result, list):
+            coerced_values = []
+            for index, parent_result_item in enumerate(parent_result):
+                if isinstance(parent_result_item, list):
+                    coerced_values.append(self._coerce_value(
+                        current_result[index],
+                        parent_result_item,
+                        info.clone_with_path(index),
+                    ))
+                else:
+                    coerced_values.append(
+                        info.schema_field.gql_type.coerce_value(
+                            current_result[index],
+                            info.clone(),
+                        ))
+            return coerced_values
+        else:
+            return info.schema_field.gql_type.coerce_value(
+                current_result,
+                info.clone(),
+            )
+
+    async def __call__(self, exec_ctx: ExecutionContext,
+                      request_ctx: Dict[str, Any]) -> Any:
+        # TODO: This should not be called anymore.
+        # The above methods are called for trying to coerce
+        # values after results calculations.
+        self.info = Info(
+            query_field=self,
+            schema_field=self.schema_field,
+            schema=self.schema,
+            path=self.path,
+            location=self.location,
+            execution_ctx=exec_ctx,
+        )
+        # Parent has error, stop exec.
+        if self.parent and self.parent.error:
+            self.error = self.parent.error
+            return
+
+        try:
+            self.result = await self._get_result(
+                self.parent.result if self.parent else {},
+                request_ctx,
+                self.info)
+            self.coerced = self._coerce_value(self.result,
+                                              self.parent.result if self.parent else {},
+                                              self.info)
+            self.as_jsonable = self.coerced
+        except InvalidValue as e:
+            exec_ctx.add_error(e)
+            self.error = e
+            if self.is_leaf:
+                self.as_jsonable = None
+        except Exception as e:
+            traceback.print_tb(e.__traceback__)
+            if self.is_leaf:
+                self.as_jsonable = None
 
         def manage_list(par, lii):
             for iii, vvv in enumerate(lii):
@@ -128,30 +198,12 @@ class NodeField(Node):
                     except TypeError:
                         par[iii] = {self.name: vvv}
 
-        self.error = self.coerced.error
-        if self.is_leaf:
-            self.as_jsonable = self.coerced.value
-        elif isinstance(self.coerced.value, dict) or \
-                isinstance(self.coerced.value, list):
-            self.as_jsonable = self.coerced.value
-
-        if self.parent and self.parent.in_introspection:
-            self.in_introspection = True
-            # TODO: Make better error management on instrospection
-            self.error = None
-
         if self.parent:
             if isinstance(self.parent.as_jsonable, list):
                 for index, value in enumerate(self.as_jsonable):
                     if isinstance(self.parent.as_jsonable[index], list):
                         manage_list(self.parent.as_jsonable[index], value)
                     else:
-                        if not isinstance(self.parent.as_jsonable[index], dict):
-                            self.parent.as_jsonable[index] = {}
                         self.parent.as_jsonable[index][self.name] = value
             else:
-                if not isinstance(self.parent.as_jsonable, dict):
-                    self.parent.as_jsonable = {}
                 self.parent.as_jsonable[self.name] = self.as_jsonable
-
-        return self.error

@@ -1,12 +1,11 @@
 from collections import namedtuple
-from typing import Any, List
+from typing import Any
 
 import pytest
 from unittest.mock import Mock, call
 
 from tartiflette import Resolver
-from tartiflette.executors.types import CoercedValue, Info
-from tartiflette.schema import GraphQLSchema
+from tartiflette.executors.types import Info
 from tartiflette.tartiflette import Tartiflette
 from tartiflette.types.location import Location
 
@@ -50,18 +49,16 @@ GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 async def test_get_field_by_name_call_order(query, varis, expected):
     from tartiflette.tartiflette import Tartiflette
 
-    async def _resolver(ctx, exec_data):
+    async def _resolver(_parent_result, _arguments, _request_ctx, _info: Info):
         return {}
 
-    def coerce_value(value: Any, info: Info) -> (
-        Any, List):
-        return CoercedValue(value, None)
+    def coerce_value(value: Any, _info: Info) -> Any:
+        return value
 
     field = Mock()
     field.name = "test"
     field.gql_type = GQLTypeMock(name="Object", coerce_value=coerce_value)
     field.resolver = _resolver
-    GraphQLSchema.wrap_field_resolver(field)
 
     sdm = Mock()
     sdm.query_type = "Query"
@@ -95,7 +92,7 @@ async def test_calling_resolver_with_correct_value():
         type HType { I: String }
 
         type Query {
-            A: AType
+            A: [AType]
         }
         '''
 
@@ -103,7 +100,7 @@ async def test_calling_resolver_with_correct_value():
 
     class resolver_a(Mock):
         async def __call__(self, parent, arguments, request_ctx, info: Info):
-            new_info = Info(None, info.schema_field, info.schema, info.path, info.location)
+            new_info = info.clone(query_field=None, execution_ctx=None)
             super(resolver_a, self).__call__(parent, arguments, request_ctx, new_info)
             return [{"id": 1}, {"id": 2}]
 
@@ -126,8 +123,7 @@ async def test_calling_resolver_with_correct_value():
             self.rtrn = resolver_b.resolver_b_result()
 
         async def __call__(self, parent, arguments, request_ctx, info: Info):
-            new_info = Info(None, info.schema_field, info.schema, info.path,
-                            info.location)
+            new_info = info.clone(query_field=None, execution_ctx=None)
             super(resolver_b, self).__call__(parent, arguments, request_ctx, new_info)
             return self.rtrn
 
@@ -140,8 +136,7 @@ async def test_calling_resolver_with_correct_value():
     class resolver_d(Mock):
 
         async def __call__(self, parent, arguments, request_ctx, info: Info):
-            new_info = Info(None, info.schema_field, info.schema, info.path,
-                            info.location)
+            new_info = info.clone(query_field=None, execution_ctx=None)
             super(resolver_d, self).__call__(parent, arguments, request_ctx, new_info)
             return "ValueD"
 
@@ -188,6 +183,7 @@ async def test_calling_resolver_with_correct_value():
                     path=["A"],
                     location=Location(line=1, column=40,
                                       line_end=1, column_end=313, context=''),
+                    execution_ctx=None,
                 ),
             )
         ],
@@ -207,6 +203,7 @@ async def test_calling_resolver_with_correct_value():
                     path=["A", "B", 0],
                     location=Location(line=1, column=60,
                                       line_end=1, column_end=153, context=''),
+                    execution_ctx=None,
                 ),
             ),
             call(
@@ -220,6 +217,7 @@ async def test_calling_resolver_with_correct_value():
                     path=["A", "B", 1],
                     location=Location(line=1, column=60,
                                       line_end=1, column_end=153, context=''),
+                    execution_ctx=None,
                 ),
             )
         ],
@@ -239,6 +237,7 @@ async def test_calling_resolver_with_correct_value():
                     path=["A", "D", 0],
                     location=Location(line=1, column=170,
                                       line_end=1, column_end=171, context=''),
+                    execution_ctx=None,
                 ),
             ),
             call(
@@ -252,6 +251,7 @@ async def test_calling_resolver_with_correct_value():
                     path=["A", "D", 1],
                     location=Location(line=1, column=170,
                                       line_end=1, column_end=171, context=''),
+                    execution_ctx=None,
                 ),
             )
         ],
@@ -448,6 +448,7 @@ async def test_full_query_execute():
     enum BookCategory {
         Action
         Adventure
+        Romance
         Fiction
         History
     } 
@@ -482,6 +483,7 @@ async def test_full_query_execute():
     AuthorRudyardKipling = Author("Rudyard Kipling")
     AuthorHarperLee = Author("Harper Lee")
     AuthorLeoTolstoy = Author("Leo Tolstoy")
+    AuthorJaneAustin = Author("Jane Austin")
     BookJungleBook = Book(title="The Jungle Book", author=AuthorRudyardKipling,
                           price=14.99, category="Adventure")
     BookToKillAMockingbird = Book(title="To Kill a Mockingbird",
@@ -489,7 +491,9 @@ async def test_full_query_execute():
                                   category="Fiction")
     BookAnnaKarenina = Book(title="Anna Karenina", author=AuthorLeoTolstoy,
                             price=19.99, category="Fiction")
-    Library = Library(books=[
+    BookPrideAndPrejudice = Book(title="Pride and Prejudice", author=AuthorJaneAustin,
+                            price=11.99, category="Romance")
+    LibraryOne = Library(books=[
         BookAnnaKarenina,
         BookJungleBook,
         BookToKillAMockingbird,
@@ -498,10 +502,17 @@ async def test_full_query_execute():
         AuthorHarperLee,
         AuthorRudyardKipling,
     ])
+    LibraryTwo = Library(books=[
+        BookPrideAndPrejudice,
+        BookJungleBook,
+    ], authors=[
+        AuthorJaneAustin,
+        AuthorRudyardKipling,
+    ])
 
     @Resolver("Query.libraries", schema=ttftt.schema)
     async def func_field_libraries_resolver(parent, arguments, request_ctx, info: Info):
-        return [Library]
+        return [LibraryOne, LibraryTwo]
 
     ttftt.schema.bake()
     result = await ttftt.execute("""
@@ -549,6 +560,26 @@ async def test_full_query_execute():
                            "authors": [
                                {"name": "Leo Tolstoy"},
                                {"name": "Harper Lee"},
+                               {"name": "Rudyard Kipling"},
+                           ],
+                       },
+                       {
+                           "books": [
+                               {
+                                   "title": "Pride and Prejudice",
+                                   "author": {"name": "Jane Austin"},
+                                   "price": 11.99,
+                                   "category": "Romance",
+                               },
+                               {
+                                   "title": "The Jungle Book",
+                                   "author": {"name": "Rudyard Kipling"},
+                                   "price": 14.99,
+                                   "category": "Adventure",
+                               },
+                           ],
+                           "authors": [
+                               {"name": "Jane Austin"},
                                {"name": "Rudyard Kipling"},
                            ],
                        }

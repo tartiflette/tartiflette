@@ -16,7 +16,7 @@ class CleaningTransformer(Transformer_InPlace):
     def __init__(self, input_sdl: str):
         self.input_sdl = input_sdl
 
-    def name(self, tree: Tree):
+    def name(self, tree: Tree) -> Tree:
         token = find_token_in_ast(
             tree.children,
             [
@@ -41,7 +41,7 @@ class CleaningTransformer(Transformer_InPlace):
         token.type = "IDENT"  # clean up the grammar variations
         return token
 
-    def description(self, tree: Tree):
+    def description(self, tree: Tree) -> Tree:
         """
         We convert tokens 'STRING' and 'LONG_STRING' into a 'DESCRIPTION'
         Token.
@@ -104,24 +104,24 @@ class CleaningTransformer(Transformer_InPlace):
         tree.children = [newtoken]
         return tree
 
-    def true_value(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ["TRUE"])
+    def true_value(self, tree: Tree) -> Tree:
+        token = find_token_in_ast(tree.children, ['TRUE'])
         newtoken = Token(
             token.type, True, token.pos_in_stream, token.line, token.column
         )
         tree.children = [newtoken]
         return tree
 
-    def false_value(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ["FALSE"])
+    def false_value(self, tree: Tree) -> Tree:
+        token = find_token_in_ast(tree.children, ['FALSE'])
         newtoken = Token(
             token.type, False, token.pos_in_stream, token.line, token.column
         )
         tree.children = [newtoken]
         return tree
 
-    def null_value(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ["NULL"])
+    def null_value(self, tree: Tree) -> Tree:
+        token = find_token_in_ast(tree.children, ['NULL'])
         newtoken = Token(
             token.type, None, token.pos_in_stream, token.line, token.column
         )

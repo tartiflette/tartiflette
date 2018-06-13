@@ -1,7 +1,6 @@
 from typing import Any, List, Optional
 
 from tartiflette.executors.types import Info
-from tartiflette.types.field import GraphQLField
 from tartiflette.types.location import Location
 
 
@@ -51,11 +50,9 @@ class InvalidValue(GraphQLError):
             self,
             value: Any,
             info: Info,
-            is_null_error: bool = False
     ):
         self.value = value
         self.info = info
-        self.is_null_error = is_null_error
         message = "Invalid value (value: {!r})".format(value)
         try:
             if self.info.schema_field:
@@ -70,29 +67,32 @@ class InvalidValue(GraphQLError):
                          locations=[self.info.location])
 
 
+class NullError(InvalidValue):
+    pass
+
+
 class GraphQLSchemaError(GraphQLError):
-    def __init__(self, message):
-        super().__init__(message=message)
+    pass
 
 
 class NonAwaitableResolver(GraphQLError):
-    def __init__(self, message):
-        super().__init__(message=message)
+    pass
 
 
 class UnknownSchemaFieldResolver(GraphQLError):
-    def __init__(self, message):
-        super().__init__(message=message)
+    pass
+
+
+class MissingImplementation(GraphQLError):
+    pass
 
 
 class UnexpectedASTNode(GraphQLError):
-    def __init__(self, message):
-        super().__init__(message=message)
+    pass
 
 
 class InvalidSDL(GraphQLError):
-    def __init__(self, message):
-        super().__init__(message=message)
+    pass
 
 
 class UnknownVariableException(GraphQLError):
@@ -102,5 +102,4 @@ class UnknownVariableException(GraphQLError):
 
 
 class UnknownGraphQLType(GraphQLError):
-    def __init__(self, message):
-        super().__init__(message=message)
+    pass

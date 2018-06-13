@@ -16,23 +16,26 @@ class GraphQLField:
         arguments: Optional[Dict] = None,
         resolver: Optional[callable] = None,
         description: Optional[str] = None,
+        directives: Optional[Dict] = None,
     ):
         self.name = name
         self.gql_type = gql_type
         self.arguments = arguments if arguments else OrderedDict()
         self.resolver = resolver
         self.description = description
+        self.directives = directives
 
     def __repr__(self):
         return (
             "{}(name={!r}, gql_type={!r}, arguments={!r}, "
-            "resolver={!r}, description={!r})".format(
+            "resolver={!r}, description={!r}, directives={!r})".format(
                 self.__class__.__name__,
                 self.name,
                 self.gql_type,
                 self.arguments,
                 self.resolver,
                 self.description,
+                self.directives,
             )
         )
 
@@ -46,9 +49,5 @@ class GraphQLField:
             and self.gql_type == other.gql_type
             and self.arguments == other.arguments
             and self.resolver == other.resolver
+            and self.directives == other.directives
         )
-
-    # def coerce_value(self, value: Any, _execution_data: ExecutionData) -> CoercedValue:
-    #     if value is None:
-    #         return None
-    #     return {self.name: value}

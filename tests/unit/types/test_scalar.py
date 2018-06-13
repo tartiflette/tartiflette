@@ -1,4 +1,7 @@
+import pytest
+
 from tartiflette.executors.types import Info
+from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.scalar import GraphQLScalarType
 
 
@@ -37,20 +40,17 @@ def test_graphql_scalar_coerce_value():
                                coerce_input=int, coerce_output=int)
 
     info = Info(
-        None, None, None, None, None
+        None, None, None, None, None, None
     )
     # Coercing None returns None
     coerced_value = scalar.coerce_value(None, info)
-    assert coerced_value.value is None
-    assert coerced_value.error is None
+    assert coerced_value is None
 
     # Coercing a float returns an int (int() worked)
     src_val = 42.0
     coerced_value = scalar.coerce_value(src_val, info)
-    assert coerced_value.value == 42
-    assert coerced_value.error is None
+    assert coerced_value == 42
 
     # Coercing something unknown returns an empty dict
-    coerced_value = scalar.coerce_value("invalid string", info)
-    assert coerced_value.value is None
-    assert coerced_value.error is not None
+    with pytest.raises(InvalidValue):
+        scalar.coerce_value("invalid string", info)

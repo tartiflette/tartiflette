@@ -11,6 +11,7 @@ from tartiflette.sdl.transformers.cleaning_transformer import \
 from tartiflette.sdl.transformers.schema_transformer import \
     SchemaTransformer, SchemaNode
 from tartiflette.types.argument import GraphQLArgument
+from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumValue
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType
@@ -167,6 +168,26 @@ from tartiflette.types.union import GraphQLUnionType
             ],
                             description="\n        The enum Mode is "
                                         "used to switch environments.\n        "),
+        ])],
+    ),
+    (
+        """
+        \"\"\"
+        This is a description of the directive.
+        \"\"\"
+        directive @deprecated(firstArg: Int, anotherArg: InputType) on SCHEMA | FIELD_DEFINITION
+        """,
+        [Tree('directive_definition', [
+            GraphQLDirective(name="deprecated",
+                             on=["SCHEMA", "FIELD_DEFINITION"],
+                             arguments=OrderedDict([
+                    ("firstArg",
+                     GraphQLArgument(name="firstArg", gql_type="Int")),
+                    ("anotherArg",
+                     GraphQLArgument(name="anotherArg", gql_type="InputType")),
+                ]),
+                             description="\n        This is a description of the directive.\n        ",
+            ),
         ])],
     ),
 ])

@@ -1,6 +1,7 @@
 from typing import Any, Optional, Union
 
-from tartiflette.executors.types import CoercedValue, Info
+from tartiflette.executors.types import Info
+from tartiflette.types.exceptions.tartiflette import NullError, InvalidValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -30,39 +31,25 @@ class GraphQLList(GraphQLType):
     def __eq__(self, other):
         return super().__eq__(other) and self.gql_type == other.gql_type
 
-    def coerce_value(
-        self, value: Any, info: Info
-    ) -> CoercedValue:
+    def coerce_value(self, value: Any, info: Info) -> Any:
         if value is None:
-            return CoercedValue(value, None)
+            return value
         try:
             results = []
-            error = None
             for index, item in enumerate(value):
-                tmp_path = info.path[:]
-                tmp_path.append(index)
-                tmp_info = Info(
-                    info.query_field,
-                    info.schema_field,
-                    info.schema,
-                    tmp_path,
-                    info.location,
-                )
-                coerced_value = self.gql_type.coerce_value(
-                    item, tmp_info
-                )
-                if coerced_value.error and coerced_value.error.is_null_error is True:
-                    coerced_value.error.is_null_error = False
-                    return CoercedValue(None, coerced_value.error)
-                elif coerced_value.error and error is None:
-                    # The GraphQL spec says 1 error per field: other errors
-                    # are discarded. Should we stop the loop ?
-                    error = coerced_value.error
-                results.append(coerced_value.value)
-            return CoercedValue(results, error)
+                try:
+                    results.append(self.gql_type.coerce_value(
+                        item, info.clone_with_path(index)
+                    ))
+                except NullError as e:
+                    info.execution_ctx.add_error(e)
+                    return None
+                except InvalidValue as e:
+                    results.append(None)
+                    info.execution_ctx.add_error(e)
+            return results
         except TypeError:
             # GraphQLList accepts values of 1 element
             # see the GraphQL.js implementation
             pass
-        coerced_value = self.gql_type.coerce_value(value, info)
-        return CoercedValue([coerced_value.value], coerced_value.error)
+        return [self.gql_type.coerce_value(value, info)]

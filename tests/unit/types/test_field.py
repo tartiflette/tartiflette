@@ -5,32 +5,35 @@ from tartiflette.types.field import GraphQLField
 
 def test_graphql_field_init():
     field = GraphQLField(name="Name", gql_type="Test",
-                       arguments=OrderedDict([
-                           ("test", 42),
-                           ("another", 24),
-                       ]),
-                       description="description")
+                         arguments=OrderedDict([
+                             ("test", 42),
+                             ("another", 24),
+                         ]),
+                         description="description")
 
     assert field.name == "Name"
     assert field.gql_type == "Test"
     assert field.arguments == OrderedDict([
-                           ("test", 42),
-                           ("another", 24),
-                       ])
+        ("test", 42),
+        ("another", 24),
+    ])
     assert field.resolver is None
     assert field.description == "description"
 
 
 def test_graphql_field_repr():
     field = GraphQLField(name="Name", gql_type="Test",
-                       arguments=OrderedDict([
-                           ("test", 42),
-                           ("another", 24),
-                       ]),
-                       description="description")
+                         arguments=OrderedDict([
+                             ("test", 42),
+                             ("another", 24),
+                         ]),
+                         description="description",
+                         directives=None)
 
     assert field.__repr__() == "GraphQLField(name='Name', gql_type='Test', " \
-                             "arguments=OrderedDict([('test', 42), ('another', 24)]), resolver=None, description='description')"
+                               "arguments=OrderedDict([('test', 42), " \
+                               "('another', 24)]), resolver=None, " \
+                               "description='description', directives=None)"
     assert field == eval(repr(field))
 
 

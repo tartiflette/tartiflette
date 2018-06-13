@@ -6,8 +6,10 @@ from lark.visitors import Transformer_InPlace, v_args
 from tartiflette.schema import DefaultGraphQLSchema
 from tartiflette.sdl.ast_types import String
 from tartiflette.types.argument import GraphQLArgument
+from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumValue
-from tartiflette.types.exceptions.tartiflette import UnexpectedASTNode
+from tartiflette.types.exceptions.tartiflette import \
+    UnexpectedASTNode
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -281,7 +283,7 @@ class SchemaTransformer(Transformer_InPlace):
         return SchemaNode("interfaces", interfaces)
 
     def input_object_type_definition(
-        self, tree: Tree
+            self, tree: Tree
     ) -> GraphQLInputObjectType:
         # TODO: Add directives
         description = None
@@ -322,11 +324,11 @@ class SchemaTransformer(Transformer_InPlace):
         return SchemaNode("fields", fields)
 
     def field_definition(self, tree: Tree) -> GraphQLField:
-        # TODO: Add directives
         description = None
         name = None
         arguments = None
         gql_type = None
+        directives = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
@@ -336,6 +338,8 @@ class SchemaTransformer(Transformer_InPlace):
                 gql_type = child.value
             elif child.type == "arguments":
                 arguments = child.value
+            elif child.type == "directives":
+                directives = child.value
             elif child.type == "discard":
                 pass
             else:
@@ -349,6 +353,7 @@ class SchemaTransformer(Transformer_InPlace):
             gql_type=gql_type,
             arguments=arguments,
             description=description,
+            directives=directives,
         )
 
     def arguments_definition(self, tree: Tree) -> SchemaNode:
@@ -386,6 +391,51 @@ class SchemaTransformer(Transformer_InPlace):
             default_value=default_value,
             description=description,
         )
+
+    def directive_definition(self, tree: Tree):
+        description = None
+        ast_node = None  # TODO: Should we discard it or keep it ?
+        name = None
+        on = None
+        arguments = None
+        for child in tree.children:
+            if child.type == 'description':
+                description = child.value
+            elif child.type == 'DIRECTIVE':
+                ast_node = child
+            elif child.type == 'IDENT':
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'arguments':
+                arguments = child.value
+            elif child.type == 'ON':
+                pass
+            elif child.type == 'directive_locations':
+                on = child.value
+            elif child.type == 'discard':
+                pass
+            else:
+                raise UnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__))
+        directive = GraphQLDirective(
+            name=name,
+            on=on,
+            arguments=arguments,
+            description=description
+        )
+        self._schema.add_directive(directive)
+        return Tree('directive_definition', [directive])
+
+    def directive_locations(self, tree: Tree):
+        locations = []
+        for child in tree.children:
+            if child.value in GraphQLDirective.POSSIBLE_LOCATIONS:
+                locations.append(String(str(child.value), ast_node=child))
+            else:
+                raise ValueError(
+                    "Invalid directive location `{}`".format(child.value)
+                )
+        return SchemaNode('directive_locations', locations)
 
     def description(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
@@ -483,12 +533,27 @@ class SchemaTransformer(Transformer_InPlace):
         return SchemaNode("argument", (name, value))
 
     def directives(self, tree: Tree) -> SchemaNode:
-        # TODO !!!!
-        return SchemaNode("discard", None)
+        directives = {}
+        for child in tree.children:
+            if child.type == 'directive':
+                directives[child.value[0]] = child.value[1]
+        return SchemaNode("directives", directives)
 
     def directive(self, tree: Tree) -> SchemaNode:
-        # TODO !!!
-        return SchemaNode("discard", None)
+        name = None
+        arguments = None
+        for child in tree.children:
+            if child.type == "IDENT":
+                name = String(str(child.value), ast_node=child)
+            elif child.type == 'arguments':
+                arguments = child.value
+            else:
+                raise UnexpectedASTNode(
+                    "Unexpected AST node `{}`, type `{}`".format(
+                        child, child.__class__.__name__
+                    )
+                )
+        return SchemaNode("directive", (name, arguments))
 
     def __getattr__(self, attr):
         ignored = []

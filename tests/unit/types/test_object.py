@@ -37,10 +37,13 @@ def test_graphql_object_repr():
                              "fields=OrderedDict([" \
                                 "('test', GraphQLField(name='arg', " \
                                     "gql_type='Int', arguments=OrderedDict(), " \
-                                    "resolver=None, description=None)), " \
+                                    "resolver=None, description=None, " \
+                                    "directives=None)), " \
                                 "('another', GraphQLField(name='arg', " \
                                     "gql_type='String', arguments=OrderedDict(), " \
-                                    "resolver=None, description=None))]), " \
+                                    "resolver=None, description=None, " \
+                                    "directives=None" \
+                             "))]), " \
                              "interfaces=['First', 'Second'], " \
                              "description='description')"
     assert obj == eval(repr(obj))
@@ -119,21 +122,18 @@ def test_graphql_object_coerce_value():
                             description="description")
 
     info = Info(
-        None, None, None, None, None
+        None, None, None, None, None, None
     )
     # Coercing None returns None
     coerced_value = obj.coerce_value(None, info)
-    assert coerced_value.value is None
-    assert coerced_value.error is None
+    assert coerced_value is None
 
     # Coercing a dict returns a copy of the dict
     src_dict = {"key1": "value", "key2": "value2"}
     coerced_value = obj.coerce_value(src_dict, info)
     # Dict keys are ignored, sub-resolvers will add them again.
-    assert coerced_value.value == {}
-    assert coerced_value.error is None
+    assert coerced_value == {}
 
     # Coercing something unknown returns an empty dict
     coerced_value = obj.coerce_value(42, info)
-    assert coerced_value.value == {}
-    assert coerced_value.error is None
+    assert coerced_value == {}
