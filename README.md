@@ -46,11 +46,11 @@ Here are the subjects we are working on:
 ### Executor
 
 * [x] Bind the Types specified in the SDL to the `Executor`.
-* [ ] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191) - _[#17 - In progress](https://github.com/dailymotion/tartiflette/issues/17)_
+* [x] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191) - _[#17 - In progress](https://github.com/dailymotion/tartiflette/issues/17)_
 * [x] Error management
 * [ ] Abstract and Compound Types: Unions, Interfaces, …
 * [ ] NodeDefinition: Check that the [Type exists](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/nodes/definition.py#L26)
-* [ ] (Resolver) Think how to apply [a default resolver](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L18) to a field.
+* [x] (Resolver) Think how to apply [a default resolver](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L18) to a field.
 * [ ] (Directive) Integrate the directive's execution in the Executor.
 * [ ] Integrate the middleware in the Executor.
 

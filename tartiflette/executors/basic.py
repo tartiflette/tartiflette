@@ -24,7 +24,13 @@ async def execute(gql_nodes, request_ctx, schema):
         # Flatten errors from each levels
         for node in nodes:
             if node.errors:
-                results["errors"] += node.errors
+                results["errors"] = []
+                for error in node.errors:
+                    # TODO: The best would be to make "errors" automatically
+                    # JSON serializable instead of doing this here.
+                    # Also, this prevents the final user of the lib to
+                    # use the source error object (which contains more info).
+                    results["errors"].append(error.coerce_value())
 
     for node in gql_nodes[0]:
         results["data"][node.name] = node.as_jsonable

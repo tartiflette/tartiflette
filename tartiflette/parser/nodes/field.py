@@ -24,7 +24,16 @@ async def _exec_list(resolver, lst, path, args, request_ctx, name, field, locati
                 )
             )
 
-    return await asyncio.gather(*coroutines, return_exceptions=True)
+    raw_result = await asyncio.gather(*coroutines, return_exceptions=True)
+    result = []
+    errors = []
+    coerced_result = []
+    for tmp_res, tmp_error, tmp_coerced in raw_result:
+        result.append(tmp_res)
+        for err in tmp_error:
+            errors.append(err)
+        coerced_result.append(tmp_coerced)
+    return result, errors, coerced_result
 
 
 def _to_jsonable(thing, execution_data: ExecutionData):
@@ -46,6 +55,7 @@ class NodeField(Node):
         self.gql_type = gql_type
         self.arguments = {}
         self.results = None
+        self.coerced = None
         self.errors = []
         self.schema = None
         self.type_condition = type_condition
@@ -53,13 +63,13 @@ class NodeField(Node):
 
     async def _get_results(self, request_ctx):
         if self.parent and isinstance(self.parent.results, list):
-            self.results = await _exec_list(
+            self.results, self.errors, self.coerced = await _exec_list(
                 self.resolver, self.parent.results, self.path, self.arguments,
                 request_ctx, self.name, self.field, self.location,
                 self.schema,
             )
         else:
-            self.results = await self.resolver(
+            raw_result = await self.resolver(
                 request_ctx,
                 ExecutionData(
                     self.parent.results if self.parent else {},
@@ -71,6 +81,7 @@ class NodeField(Node):
                     self.schema,
                 )
             )
+            self.results, self.errors, self.coerced = raw_result
 
     def _results_to_jsonable(self):
         self.as_jsonable, self.errors = _to_jsonable(
@@ -89,13 +100,24 @@ class NodeField(Node):
     async def __call__(self, request_ctx, schema):
         self.schema = schema
         await self._get_results(request_ctx)
-        self._results_to_jsonable()
+        # TODO: Not used: self._results_to_jsonable()
+
+        def manage_list(par, lii):
+            for iii, vvv in enumerate(lii):
+                if isinstance(par[iii], list):
+                    manage_list(par[iii], vvv)
+                else:
+                    par[iii][self.name] = vvv
+
+        self.as_jsonable = self.coerced
 
         if self.parent:
-            if isinstance(self.parent.results, list):
-                for index, _ in enumerate(self.parent.results):
-                    self.parent.as_jsonable[index][self.name
-                                                   ] = self.as_jsonable[index]
+            if isinstance(self.parent.as_jsonable, list):
+                for index, value in enumerate(self.as_jsonable):
+                    if isinstance(self.parent.as_jsonable[index], list):
+                        manage_list(self.parent.as_jsonable[index], value)
+                    else:
+                        self.parent.as_jsonable[index][self.name] = value
             else:
                 self.parent.as_jsonable[self.name] = self.as_jsonable
 

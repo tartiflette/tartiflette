@@ -2,7 +2,6 @@ from functools import lru_cache, partial
 
 from tartiflette.parser.cffi import Visitor, _VisitorElement
 from tartiflette.parser.nodes.node import Node
-from tartiflette.resolver import wrap_resolver
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import TartifletteException, \
     UnknownVariableException
@@ -10,21 +9,6 @@ from tartiflette.types.helpers import reduce_type
 from .nodes.field import NodeField
 from .nodes.fragment_definition import NodeFragmentDefinition
 from .nodes.variable_definition import NodeVariableDefinition
-
-
-async def _default_resolver(ctx, execution_data):
-    try:
-        return getattr(execution_data.parent_result, execution_data.name)
-    except AttributeError:
-        pass
-
-    try:
-        return execution_data.parent_result[execution_data.name]
-    except KeyError:
-        pass
-
-    # TODO: Think about this :)
-    return {}
 
 
 class TartifletteVisitor(Visitor):
@@ -148,14 +132,8 @@ class TartifletteVisitor(Visitor):
             )
             return
 
-        resolver = getattr(field, 'resolver', _default_resolver)
-        if resolver is None:
-            resolver = wrap_resolver(self._schema,
-                                     field,
-                                     _default_resolver)
-
         node = NodeField(
-            resolver,
+            field.resolver,
             element.get_location(),
             self.field_path[:], element.name, self._current_type_condition,
             gql_type,
@@ -258,12 +236,11 @@ class TartifletteVisitor(Visitor):
     def _on_fragment_definition_out(self, _):
         self._current_fragment_definition = None
 
-
     def _on_fragment_spread_out(self, element: _VisitorElement):
         cfd = self._fragments[element.name]
         self._current_type_condition = cfd.type_condition
         for saved_callback in cfd.callbacks:
-            saved_callback()  ## Simulate calling a the right place.
+            saved_callback()  # Simulate calling a the right place.
         self._current_type_condition = None
 
     def _in(self, element: _VisitorElement):

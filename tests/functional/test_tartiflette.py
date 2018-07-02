@@ -31,13 +31,14 @@ async def test_tartiflette_execute_basic():
     @Resolver("Test.field", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         mock_one()
-        return
+        return None
 
     @Resolver("RootQuery.defaultField", schema=ttftt.schema)
     async def func_default_query_resolver(*args, **kwargs):
         mock_two()
         return
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         testField {
@@ -81,6 +82,7 @@ async def test_tartiflette_nested_resolvers():
     async def func_resolver(request_ctx, execution_data):
         return "Test"
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         rootField {
@@ -108,6 +110,7 @@ async def test_tartiflette_execute_hello_world():
     async def func_field_resolver(*args, **kwargs):
         return "world"
 
+    ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
         hello

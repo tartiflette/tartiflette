@@ -61,30 +61,14 @@ class GraphQLEnumType(GraphQLType):
         return super().__eq__(other) and \
                self.values == other.values
 
-    def type_check(self, value: Any, execution_data: ExecutionData) -> Any:
-        for item in self.values:
-            if item.value == value:
-                return value
-        raise InvalidValue(value,
-                           gql_type=execution_data.field.gql_type,
-                           field=execution_data.field,
-                           path=execution_data.path,
-                           locations=[execution_data.location],
-                           )
-
-    def coerce_value(self, value: Any):
+    def coerce_value(self, value: Any, execution_data: ExecutionData) -> (Any, List):
         if value is None:
-            return None
+            return None, []
         for enumval in self.values:
             if enumval.value == value:
-                return enumval.value
-
-    def collect_value(self, value, execution_data: ExecutionData):
-        for enumval in self.values:
-            if enumval.value == value:
-                return enumval.value
-        raise InvalidValue(value,
-                           gql_type=execution_data.field.gql_type,
-                           field=execution_data.field,
-                           path=execution_data.path,
-                           locations=[execution_data.location])
+                return enumval.value, []
+        return None, [InvalidValue(value,
+                      gql_type=execution_data.field.gql_type,
+                      field=execution_data.field,
+                      path=execution_data.path,
+                      locations=[execution_data.location])]

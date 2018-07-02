@@ -24,7 +24,7 @@ class GraphQLError(Exception):
     def to_jsonable(self):
         return self.collect_value()
 
-    def collect_value(self):
+    def coerce_value(self, *args, **kwargs):
         locations = []
         try:
             for loc in self.locations:

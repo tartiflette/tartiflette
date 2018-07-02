@@ -1,9 +1,12 @@
 from collections import namedtuple
+from typing import Any, List
 from unittest.mock import Mock
 import pytest
 
+from tartiflette.executors.types import ExecutionData
+from tartiflette.schema import GraphQLSchema
 
-GQLTypeMock = namedtuple("GQLTypeMock", ["name"])
+GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 
 
 @pytest.mark.asyncio
@@ -65,10 +68,15 @@ async def test_issue21_okayquery(query, expected, varis):
             super(default_resolver, self).__call__(ctx, exe)
             return {"iam": exe.name, "args": exe.arguments}
 
+    def coerce_value(value: Any, execution_data: ExecutionData) -> (
+        Any, List):
+        return value, []
+
     field = Mock()
-    field.gql_type = GQLTypeMock(name="Test")
+    field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)
     field.name = "test"
     field.resolver = default_resolver()
+    GraphQLSchema.wrap_field_resolver(field)
 
     def get_field_by_name(_):
         return field
@@ -77,8 +85,8 @@ async def test_issue21_okayquery(query, expected, varis):
     sdm.query_type = "Query"
     sdm.get_field_by_name = get_field_by_name
     sdm.types = {
-        "Query": GQLTypeMock(name="Query"),
-        "Test": GQLTypeMock(name="Test"),
+        "Query": GQLTypeMock(name="Query", coerce_value=coerce_value),
+        "Test": GQLTypeMock(name="Test", coerce_value=coerce_value),
     }
 
     ttftt = Tartiflette(schema=sdm)
@@ -138,10 +146,15 @@ async def test_issue21_exceptquery(query, expected, varis):
             super(default_resolver, self).__call__(ctx, exe)
             return {"iam": exe.name, "args": exe.arguments}
 
+    def coerce_value(value: Any, execution_data: ExecutionData) -> (
+        Any, List):
+        return value, []
+
     field = Mock()
-    field.gql_type = GQLTypeMock(name="Test")
+    field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)
     field.name = "test"
     field.resolver = default_resolver()
+    GraphQLSchema.wrap_field_resolver(field)
 
     def get_field_by_name(_):
         return field
@@ -150,7 +163,7 @@ async def test_issue21_exceptquery(query, expected, varis):
     sdm.query_type = "Query"
     sdm.get_field_by_name = get_field_by_name
     sdm.types = {
-        "Query": GQLTypeMock(name="Query"),
+        "Query": GQLTypeMock(name="Query", coerce_value=coerce_value),
     }
 
     ttftt = Tartiflette(schema=sdm)
