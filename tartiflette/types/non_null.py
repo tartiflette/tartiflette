@@ -1,4 +1,4 @@
-from typing import Optional, Union, Any
+from typing import Optional, Union, Any, List
 
 from tartiflette.executors.types import ExecutionData
 from tartiflette.types.exceptions.tartiflette import \
@@ -30,27 +30,11 @@ class GraphQLNonNull(GraphQLType):
         return super().__eq__(other) and \
                self.gql_type == other.gql_type
 
-    def type_check(self, value: Any, execution_data: ExecutionData) -> Any:
+    def coerce_value(self, value: Any, execution_data: ExecutionData) -> (Any, List):
         if value is None:
-            raise InvalidValue(value,
-                               gql_type=execution_data.field.gql_type,
-                               field=execution_data.field,
-                               path=execution_data.path,
-                               locations=[execution_data.location],
-                               )
-        return value
-
-    def coerce_value(self, value: Any) -> Any:
-        if value is None:
-            raise ValueError("NonNull got None value !")
-        return self.gql_type.coerce_value(value)
-
-    def collect_value(self, value, execution_data: ExecutionData):
-        result = self.gql_type.collect_value(value, execution_data)
-        if result is None:
-            raise InvalidValue(result,
-                               gql_type=execution_data.field.gql_type,
-                               field=execution_data.field,
-                               path=execution_data.path,
-                               locations=[execution_data.location])
-        return result
+            return None, [InvalidValue(value,
+                gql_type=execution_data.field.gql_type,
+                field=execution_data.field,
+                path=execution_data.path,
+                locations=[execution_data.location])]
+        return self.gql_type.coerce_value(value, execution_data)

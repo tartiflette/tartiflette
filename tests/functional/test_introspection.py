@@ -36,7 +36,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
             fields {
                 name
             }
-        } 
+        }
     }
     """)
 

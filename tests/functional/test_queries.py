@@ -1,14 +1,16 @@
 from collections import namedtuple
+from typing import Any, List
 
 import pytest
 from unittest.mock import Mock, call
 
 from tartiflette import Resolver
 from tartiflette.parser.nodes.field import ExecutionData
+from tartiflette.schema import GraphQLSchema
 from tartiflette.types.location import Location
 
 
-GQLTypeMock = namedtuple("GQLTypeMock", ["name"])
+GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 
 
 @pytest.mark.asyncio
@@ -50,16 +52,21 @@ async def test_get_field_by_name_call_order(query, varis, expected):
     async def _resolver(ctx, exec_data):
         return {}
 
+    def coerce_value(value: Any, execution_data: ExecutionData) -> (
+        Any, List):
+        return value, []
+
     field = Mock()
     field.name = "test"
-    field.gql_type = GQLTypeMock(name="Object")
+    field.gql_type = GQLTypeMock(name="Object", coerce_value=coerce_value)
     field.resolver = _resolver
+    GraphQLSchema.wrap_field_resolver(field)
 
     sdm = Mock()
     sdm.query_type = "Query"
     sdm.get_field_by_name = Mock(return_value=field)
     sdm.types = {
-        "Query": GQLTypeMock(name="Query"),
+        "Query": GQLTypeMock(name="Query", coerce_value=coerce_value),
     }
 
     ttftt = Tartiflette(schema=sdm)
@@ -96,7 +103,6 @@ async def test_calling_get_field_by_name_with_correct_value():
     class default_resolver(Mock):
         async def __call__(self, ctx, exe):
             super(default_resolver, self).__call__(ctx, exe)
-            print("[RESOLVER DFLT] Called with %s" % str(exe))
             try:
                 return getattr(exe.parent_result, exe.name)
             except:
@@ -111,7 +117,7 @@ async def test_calling_get_field_by_name_with_correct_value():
 
     @Resolver("Query.A", schema=ttftt.schema)
     async def wrap_1(ctx, exe):
-        return stuff_a(ctx, exe)
+        return await stuff_a(ctx, exe)
 
     class resolver_b(Mock):
         class resolver_b_result:
@@ -120,9 +126,6 @@ async def test_calling_get_field_by_name_with_correct_value():
 
             def __repr__(self):
                 return "IAmABResults"
-
-            def collect_value(self):
-                return {"C": self.C}
 
         def __init__(self, *args, **kwargs):
             super(resolver_b, self).__init__(*args, **kwargs)
@@ -136,7 +139,7 @@ async def test_calling_get_field_by_name_with_correct_value():
 
     @Resolver("AType.B", schema=ttftt.schema)
     async def wrap_2(ctx, exe):
-        return stuff_b(ctx, exe)
+        return await stuff_b(ctx, exe)
 
     class resolver_d(Mock):
 
@@ -147,17 +150,11 @@ async def test_calling_get_field_by_name_with_correct_value():
 
     stuff_d = resolver_d()
 
-    sdm = Mock()
-    sdm.query_type = "Query"
-    sdm.types = {
-        "Query": GQLTypeMock(name="Query"),
-        "Test": GQLTypeMock(name="Test"),
-    }
-
     @Resolver("AType.D", schema=ttftt.schema)
     async def wrap_3(ctx, exe):
-        return stuff_d(ctx, exe)
+        return await stuff_d(ctx, exe)
 
+    # TODO: Repair this test
     # field_a = Mock()
     # field_a.resolver = resolver_a()
     # field_a.gql_type = Mock()
@@ -187,7 +184,6 @@ async def test_calling_get_field_by_name_with_correct_value():
     # default_field.name = "test"
 
     # def get_field(name):
-    #     print("Getting field... %s" % name)
     #     fields = {"Query.A": field_a, "Test.B": field_b, "Test.D": field_d}
     #     return fields.get(name, default_field)
 
@@ -516,10 +512,15 @@ async def test_result_value(query, expected):
             super(default_resolver, self).__call__(ctx, exe)
             return {"iam": exe.name}
 
+    def coerce_value(value: Any, execution_data: ExecutionData) -> (
+        Any, List):
+        return value, []
+
     field = Mock()
-    field.gql_type = GQLTypeMock(name="Test")
     field.name = "test"
+    field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)
     field.resolver = default_resolver()
+    GraphQLSchema.wrap_field_resolver(field)
 
     def get_field_by_name(name):
         return field
@@ -528,7 +529,7 @@ async def test_result_value(query, expected):
     sdm.query_type = "Query"
     sdm.get_field_by_name = get_field_by_name
     sdm.types = {
-        "Query": GQLTypeMock(name="Query"),
+        "Query": GQLTypeMock(name="Query", coerce_value=coerce_value),
     }
 
     ttftt = Tartiflette(schema=sdm)

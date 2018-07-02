@@ -1,9 +1,11 @@
+import functools
 from typing import Optional, Dict, List, Union
 
+from tartiflette.executors.types import ExecutionData
 from tartiflette.types.builtins import GraphQLBoolean, GraphQLFloat, GraphQLID, \
     GraphQLInt, GraphQLString
 from tartiflette.types.exceptions.tartiflette import \
-    GraphQLSchemaError
+    GraphQLSchemaError, InvalidValue
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -171,6 +173,7 @@ class GraphQLSchema:
         self.validate()
         self.inject_introspection()
         self.field_gql_types_to_real_types()
+        self.wrap_all_resolvers()
         return None
 
     def validate(self) -> bool:
@@ -309,6 +312,49 @@ class GraphQLSchema:
                         # can they contain interfaces ?
                         # can they mix types: interface | object | scalar
         return True
+
+    @staticmethod
+    def wrap_field_resolver(field: GraphQLField):
+        if getattr(field.resolver, "__ttftt_wrapped__", False):
+            return
+
+        def _default_resolver(execution_data):
+            try:
+                return getattr(execution_data.parent_result,
+                               execution_data.name)
+            except AttributeError:
+                pass
+
+            try:
+                return execution_data.parent_result[execution_data.name]
+            except (KeyError, TypeError):
+                pass
+
+            return {}
+
+        resolver = field.resolver
+
+        @functools.wraps(resolver)
+        async def wrapper(request_ctx, execution_data: ExecutionData):
+            try:
+                result = await resolver(request_ctx, execution_data)
+            except TypeError:
+                result = _default_resolver(execution_data)
+            coerced, errors = field.gql_type.coerce_value(result, execution_data)
+            return result, errors, coerced
+
+        wrapper.__ttftt_wrapped__ = True
+
+        field.resolver = wrapper
+        return
+
+    def wrap_all_resolvers(self):
+        for type_name, gql_type in self._gql_types.items():
+            try:
+                for field_name, field in gql_type.fields.items():
+                    self.wrap_field_resolver(field)
+            except AttributeError as e:
+                pass
 
     def field_gql_types_to_real_types(self) -> None:
         for type_name, gql_type in self._gql_types.items():

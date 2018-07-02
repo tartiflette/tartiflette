@@ -129,8 +129,11 @@ class __FieldResolvers:
 
     @staticmethod
     async def name_resolver(_request_ctx, execution_data):
-        val = execution_data.parent_result.name
-        return val
+        return execution_data.parent_result.name
+
+    @staticmethod
+    async def type_resolver(_request_ctx, execution_data):
+        return execution_data.parent_result.gql_type
 
 
 __Field = GraphQLObjectType(
@@ -142,7 +145,7 @@ __Field = GraphQLObjectType(
         ('name', GraphQLField(
             name="name",
             gql_type=GraphQLNonNull("String"),
-            # resolver=__FieldResolvers.name_resolver,
+            resolver=__FieldResolvers.name_resolver,
         )),
         ('description', GraphQLField(
             name="description",
@@ -155,8 +158,9 @@ __Field = GraphQLObjectType(
         )),
         ('type', GraphQLField(
             name="type",
-            gql_type=GraphQLNonNull("__Type")),
-         ),
+            gql_type=GraphQLNonNull("__Type"),
+            resolver=__FieldResolvers.type_resolver,
+        )),
     ])
 )
 
@@ -304,13 +308,16 @@ IntrospectionField = __Field
 IntrospectionEnumValue = __EnumValue
 IntrospectionInputValue = __InputValue
 
+
+async def schema_resolver(_request_ctx, execution_data: ExecutionData):
+    return execution_data.schema
+
 SchemaRootFieldDefinition = GraphQLField(
     name="__schema",
     gql_type=GraphQLNonNull("__Schema"),
     description='Access the current type schema of this server.',
-    # resolver=lambda x, y: None,  # TODO
     arguments={},
-    # resolver=schema_resolver
+    resolver=schema_resolver,
 )
 
 

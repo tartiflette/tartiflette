@@ -1,3 +1,4 @@
+from collections import namedtuple
 from unittest.mock import Mock
 
 import pytest
@@ -107,6 +108,13 @@ async def test_tartiflette_execute_object_type_unknown_field():
     async def func_field_resolver(*args, **kwargs):
         return {"title": "Stuff"}
 
+    Post = namedtuple("Post", ["content", "meta_creator"])
+    Content = namedtuple("Content", ["title"])
+
+    @Resolver("Query.posts", schema=ttftt.schema)
+    async def func_field_resolver(*args, **kwargs):
+        return [Post(content=Content(title="Test"), meta_creator="Dailymotion")]
+
     ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
@@ -118,9 +126,5 @@ async def test_tartiflette_execute_object_type_unknown_field():
     }
     """)
 
-    # TODO: There is an issue here: the `Query.posts` resolver doesn't exist
-    # so the fallback kicks-in. The issue is that the fallback returns a default
-    # value of None or {} and that's not a valid return value.
-    # Also the None value interrupts the execution and value "bubble up"
-    # assert result == """{"data":{"posts":[{"content":{"title":"Test"}}]}}"""
-    # assert mock_call.assert_called_once()
+    assert result == """{"data":{"posts":[{"content":{"title":"Test"}}]}}"""
+    assert mock_call.called == True

@@ -40,21 +40,11 @@ class GraphQLObjectType(GraphQLType):
     def add_field(self, value: GraphQLField):
         self.fields[value.name] = value
 
-    def type_check(self, value: Any, execution_data: ExecutionData) -> Any:
-        if not isinstance(value, (dict, object)):
-            raise InvalidValue(value,
-                               gql_type=execution_data.field.gql_type,
-                               field=execution_data.field,
-                               path=execution_data.path,
-                               locations=[execution_data.location],
-                               )
-        return value
-
-    def coerce_value(self, value: Any) -> Any:
+    def coerce_value(self, value: Any, execution_data: ExecutionData) -> (Any, List):
         if value is None:
-            return None
+            return None, []
         try:
-            return {k: v for (k, v) in value.items()}
+            return {k: v for (k, v) in value.items()}, []
         except AttributeError:
-            return {}
+            return {}, []
 

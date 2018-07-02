@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 from tartiflette.executors.types import ExecutionData
 
@@ -41,12 +41,8 @@ class GraphQLField:
                 self.resolver == other.resolver
         )
 
-    def type_check(self, value: Any, execution_data: ExecutionData) -> Any:
-        # TODO: IMPORTANT Implement this !!
-        return value
-
-    def coerce_value(self, value: Any):
+    def coerce_value(self, value: Any, _execution_data: ExecutionData) -> (
+        Any, List):
         if value is None:
             return None
         return {self.name: value}
-

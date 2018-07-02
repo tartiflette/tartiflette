@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Optional, Any, List
 
 from tartiflette.executors.types import ExecutionData
 
@@ -25,17 +25,7 @@ class GraphQLType:
                 type(self) is type(other) and self.name == other.name
         )
 
-    def type_check(self, value: Any, execution_data: ExecutionData) -> Any:
-        raise NotImplementedError("The GraphQLType %s must implement "
-                                  "a type_check(value) method." %
-                                  self.__class__.__name__)
-
-    def coerce_value(self, value: Any) -> Any:
+    def coerce_value(self, value: Any, execution_data: ExecutionData) -> (Any, List):
         raise NotImplementedError("The GraphQLType %s must implement "
                                   "a coerce_value(value) method." %
                                   self.__class__.__name__)
-
-    def collect_value(self, value, execution_data: ExecutionData):
-        if value is None:
-            return None
-        return {}
