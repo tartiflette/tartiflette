@@ -41,8 +41,7 @@ class GraphQLField:
                 self.resolver == other.resolver
         )
 
-    def coerce_value(self, value: Any, _execution_data: ExecutionData) -> (
-        Any, List):
-        if value is None:
-            return None
-        return {self.name: value}
+    # def coerce_value(self, value: Any, _execution_data: ExecutionData) -> CoercedValue:
+    #     if value is None:
+    #         return None
+    #     return {self.name: value}

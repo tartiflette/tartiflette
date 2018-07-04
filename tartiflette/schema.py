@@ -1,11 +1,11 @@
 import functools
 from typing import Optional, Dict, List, Union
 
-from tartiflette.executors.types import ExecutionData
+from tartiflette.executors.types import ExecutionData, CoercedValue
 from tartiflette.types.builtins import GraphQLBoolean, GraphQLFloat, GraphQLID, \
     GraphQLInt, GraphQLString
 from tartiflette.types.exceptions.tartiflette import \
-    GraphQLSchemaError, InvalidValue
+    GraphQLSchemaError
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -330,7 +330,7 @@ class GraphQLSchema:
             except (KeyError, TypeError):
                 pass
 
-            return {}
+            return None
 
         resolver = field.resolver
 
@@ -340,8 +340,11 @@ class GraphQLSchema:
                 result = await resolver(request_ctx, execution_data)
             except TypeError:
                 result = _default_resolver(execution_data)
-            coerced, errors = field.gql_type.coerce_value(result, execution_data)
-            return result, errors, coerced
+            except Exception as e:
+                # TODO: Capture this error !
+                result = None
+            coerced_value = field.gql_type.coerce_value(result, execution_data)
+            return result, coerced_value.errors, coerced_value.value
 
         wrapper.__ttftt_wrapped__ = True
 
@@ -353,7 +356,7 @@ class GraphQLSchema:
             try:
                 for field_name, field in gql_type.fields.items():
                     self.wrap_field_resolver(field)
-            except AttributeError as e:
+            except AttributeError:
                 pass
 
     def field_gql_types_to_real_types(self) -> None:
@@ -361,6 +364,11 @@ class GraphQLSchema:
             try:
                 for field_name, field in gql_type.fields.items():
                     field.gql_type = self.to_real_type(field.gql_type)
+                    try:
+                        for arg_name, arg in field.arguments.items():
+                            arg.gql_type = self.to_real_type(arg.gql_type)
+                    except AttributeError:
+                        pass
             except AttributeError:
                 pass
 

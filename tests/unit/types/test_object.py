@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from tartiflette.executors.types import ExecutionData
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.object import GraphQLObjectType
 
@@ -106,3 +107,32 @@ def test_graphql_object_eq():
                                     ]),
                                     interfaces=["First", "Second"],
                                     description="description")
+
+
+def test_graphql_object_coerce_value():
+    obj = GraphQLObjectType(name="Name",
+                            fields=OrderedDict([
+                                ("test", GraphQLField(name="arg", gql_type="Int")),
+                                ("another", GraphQLField(name="arg", gql_type="String")),
+                            ]),
+                            interfaces=[],
+                            description="description")
+
+    exe_data = ExecutionData(
+        None, [], {}, "test", None, None, None
+    )
+    # Coercing None returns None
+    coerced_value = obj.coerce_value(None, exe_data)
+    assert coerced_value.value is None
+    assert coerced_value.errors is None
+
+    # Coercing a dict returns a copy of the dict
+    src_dict = {"key1": "value", "key2": "value2"}
+    coerced_value = obj.coerce_value(src_dict, exe_data)
+    assert src_dict == coerced_value.value
+    assert coerced_value.errors is None
+
+    # Coercing something unknown returns an empty dict
+    coerced_value = obj.coerce_value(42, exe_data)
+    assert coerced_value.value == {}
+    assert coerced_value.errors is None

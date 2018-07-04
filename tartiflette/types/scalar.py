@@ -1,6 +1,6 @@
-from typing import Optional, Any, List
+from typing import Optional, Any
 
-from tartiflette.executors.types import ExecutionData
+from tartiflette.executors.types import ExecutionData, CoercedValue
 from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
@@ -35,15 +35,15 @@ class GraphQLScalarType(GraphQLType):
                self.coerce_output == other.coerce_output and \
                self.coerce_input == other.coerce_input
 
-    def coerce_value(self, value: Any, execution_data: ExecutionData) -> (Any, List):
+    def coerce_value(self, value: Any, execution_data: ExecutionData) -> CoercedValue:
         if value is None:
-            return value, []
+            return CoercedValue(value, None)
         try:
-            return self.coerce_output(value), []
-        except Exception as e:
-            return None, [InvalidValue(value,
+            return CoercedValue(self.coerce_output(value), None)
+        except TypeError:
+            return CoercedValue(None, [InvalidValue(value,
                 gql_type=execution_data.field.gql_type,
                 field=execution_data.field,
                 path=execution_data.path,
                 locations=[execution_data.location],
-            )]
+            )])

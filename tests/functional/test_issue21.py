@@ -3,7 +3,7 @@ from typing import Any, List
 from unittest.mock import Mock
 import pytest
 
-from tartiflette.executors.types import ExecutionData
+from tartiflette.executors.types import ExecutionData, CoercedValue
 from tartiflette.schema import GraphQLSchema
 
 GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
@@ -70,7 +70,7 @@ async def test_issue21_okayquery(query, expected, varis):
 
     def coerce_value(value: Any, execution_data: ExecutionData) -> (
         Any, List):
-        return value, []
+        return CoercedValue(value, None)
 
     field = Mock()
     field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)
@@ -148,7 +148,7 @@ async def test_issue21_exceptquery(query, expected, varis):
 
     def coerce_value(value: Any, execution_data: ExecutionData) -> (
         Any, List):
-        return value, []
+        return CoercedValue(value, None)
 
     field = Mock()
     field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)

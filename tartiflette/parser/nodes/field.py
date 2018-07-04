@@ -30,19 +30,10 @@ async def _exec_list(resolver, lst, path, args, request_ctx, name, field, locati
     coerced_result = []
     for tmp_res, tmp_error, tmp_coerced in raw_result:
         result.append(tmp_res)
-        for err in tmp_error:
-            errors.append(err)
         coerced_result.append(tmp_coerced)
+        if tmp_error:
+            errors += tmp_error
     return result, errors, coerced_result
-
-
-def _to_jsonable(thing, execution_data: ExecutionData):
-    if isinstance(thing, dict):
-        # Makes a copy of the contents so it's not modified by the child
-        return {k: v for k, v in thing.items()}, []
-
-    # TODO: This has to be upgraded, it does not manage errors gracefully :x
-    return execution_data.field.gql_type.coerce_value(thing), []
 
 
 class NodeField(Node):
@@ -60,6 +51,7 @@ class NodeField(Node):
         self.schema = None
         self.type_condition = type_condition
         self.as_jsonable = None
+        self.in_introspection = True if name in ["__type", "__schema", "__typename"] else False
 
     async def _get_results(self, request_ctx):
         if self.parent and isinstance(self.parent.results, list):
@@ -83,42 +75,39 @@ class NodeField(Node):
             )
             self.results, self.errors, self.coerced = raw_result
 
-    def _results_to_jsonable(self):
-        self.as_jsonable, self.errors = _to_jsonable(
-            self.results,
-            ExecutionData(
-                self.parent.results if self.parent else {},
-                self.path,
-                self.arguments,
-                self.name,
-                self.field,
-                self.location,
-                self.schema,
-            )
-        )
-
     async def __call__(self, request_ctx, schema):
         self.schema = schema
         await self._get_results(request_ctx)
-        # TODO: Not used: self._results_to_jsonable()
 
         def manage_list(par, lii):
             for iii, vvv in enumerate(lii):
                 if isinstance(par[iii], list):
                     manage_list(par[iii], vvv)
                 else:
-                    par[iii][self.name] = vvv
+                    try:
+                        par[iii][self.name] = vvv
+                    except TypeError:
+                        par[iii] = {self.name: vvv}
 
         self.as_jsonable = self.coerced
 
         if self.parent:
+            if self.parent.in_introspection:
+                self.in_introspection = True
+                #TODO: Make better error management on instrospection
+                self.errors = []
+
             if isinstance(self.parent.as_jsonable, list):
                 for index, value in enumerate(self.as_jsonable):
                     if isinstance(self.parent.as_jsonable[index], list):
                         manage_list(self.parent.as_jsonable[index], value)
                     else:
+                        if self.parent.as_jsonable[index] is None:
+                            self.parent.as_jsonable[index] = {}
                         self.parent.as_jsonable[index][self.name] = value
             else:
+                if self.parent.as_jsonable is None:
+                    self.parent.as_jsonable = {}
                 self.parent.as_jsonable[self.name] = self.as_jsonable
 
         return self.results  # TODO: Leave or remove ? It's currently unused

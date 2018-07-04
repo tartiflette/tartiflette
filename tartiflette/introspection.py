@@ -81,6 +81,17 @@ __TypeKind = GraphQLEnumType(
     ])
 
 
+class __InputValueResolvers:
+
+    @staticmethod
+    async def type_resolver(_request_ctx, execution_data):
+        return execution_data.parent_result.gql_type
+
+    @staticmethod
+    async def default_value_resolver(_request_ctx, execution_data):
+        return execution_data.parent_result.default_value
+
+
 __InputValue = GraphQLObjectType(
     name='__InputValue',
     description='Arguments provided to Fields or Directives and the input '
@@ -89,20 +100,21 @@ __InputValue = GraphQLObjectType(
     fields=OrderedDict([
         ('name', GraphQLField(
             name="name",
-            gql_type=GraphQLNonNull("String")),
-         ),
+            gql_type=GraphQLNonNull("String"),
+        )),
         ('description', GraphQLField(
             name="description",
-            gql_type="String")
-         ),
+            gql_type="String",
+         )),
         ('type', GraphQLField(
             name="type",
-            gql_type=GraphQLNonNull("__Type"))
-         ),
+            gql_type=GraphQLNonNull("__Type"),
+            resolver=__InputValueResolvers.type_resolver,
+        )),
         ('defaultValue', GraphQLField(
             name="defaultValue",
             gql_type="String",
-            # resolver=lambda x, y: None,  # TODO
+            resolver=__InputValueResolvers.default_value_resolver,
         ))
     ]))
 
@@ -128,12 +140,12 @@ __EnumValue = GraphQLObjectType(
 class __FieldResolvers:
 
     @staticmethod
-    async def name_resolver(_request_ctx, execution_data):
-        return execution_data.parent_result.name
-
-    @staticmethod
     async def type_resolver(_request_ctx, execution_data):
         return execution_data.parent_result.gql_type
+
+    @staticmethod
+    async def args_resolver(_request_ctx, execution_data):
+        return list(execution_data.parent_result.arguments.values())
 
 
 __Field = GraphQLObjectType(
@@ -145,7 +157,6 @@ __Field = GraphQLObjectType(
         ('name', GraphQLField(
             name="name",
             gql_type=GraphQLNonNull("String"),
-            resolver=__FieldResolvers.name_resolver,
         )),
         ('description', GraphQLField(
             name="description",
@@ -154,7 +165,7 @@ __Field = GraphQLObjectType(
         ('args', GraphQLField(
             name="args",
             gql_type=GraphQLNonNull(GraphQLList(GraphQLNonNull("__InputValue"))),
-            # resolver=lambda x, y: None,  # TODO
+            resolver=__FieldResolvers.args_resolver,
         )),
         ('type', GraphQLField(
             name="type",
@@ -173,7 +184,7 @@ class __TypeResolvers:
 
     @staticmethod
     async def fields_resolver(_request_ctx, execution_data):
-        return [field for field in execution_data.parent_result.fields.values()]
+        return list(execution_data.parent_result.fields.values())
 
     @staticmethod
     async def possible_types_resolver(_request_ctx, execution_data):
@@ -187,9 +198,9 @@ class __TypeResolvers:
     # async def input_fields_resolver(_request_ctx, execution_data):
     #     return execution_data.parent_result.input_fields
 
-    # @staticmethod
-    # async def of_type_resolver(_request_ctx, execution_data):
-    #     return execution_data.parent_result.gql_type
+    @staticmethod
+    async def of_type_resolver(_request_ctx, execution_data):
+        return execution_data.parent_result.gql_type
 
 
 __Type = GraphQLObjectType(
@@ -246,7 +257,7 @@ __Type = GraphQLObjectType(
         ('ofType', GraphQLField(
             name="ofType",
             gql_type="__Type",
-            # resolver=__TypeResolvers.of_type_resolver,
+            resolver=__TypeResolvers.of_type_resolver,
         )),
     ]))
 

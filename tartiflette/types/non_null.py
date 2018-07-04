@@ -1,6 +1,6 @@
-from typing import Optional, Union, Any, List
+from typing import Optional, Union, Any
 
-from tartiflette.executors.types import ExecutionData
+from tartiflette.executors.types import ExecutionData, CoercedValue
 from tartiflette.types.exceptions.tartiflette import \
     InvalidValue
 from tartiflette.types.type import GraphQLType
@@ -30,11 +30,11 @@ class GraphQLNonNull(GraphQLType):
         return super().__eq__(other) and \
                self.gql_type == other.gql_type
 
-    def coerce_value(self, value: Any, execution_data: ExecutionData) -> (Any, List):
+    def coerce_value(self, value: Any, execution_data: ExecutionData) -> CoercedValue:
         if value is None:
-            return None, [InvalidValue(value,
+            return CoercedValue(None, [InvalidValue(value,
                 gql_type=execution_data.field.gql_type,
                 field=execution_data.field,
                 path=execution_data.path,
-                locations=[execution_data.location])]
+                locations=[execution_data.location])])
         return self.gql_type.coerce_value(value, execution_data)
