@@ -3,8 +3,10 @@ from functools import lru_cache, partial
 from tartiflette.parser.cffi import Visitor, _VisitorElement
 from tartiflette.parser.nodes.node import Node
 from tartiflette.schema import GraphQLSchema
-from tartiflette.types.exceptions.tartiflette import TartifletteException, \
-    UnknownVariableException
+from tartiflette.types.exceptions.tartiflette import (
+    TartifletteException,
+    UnknownVariableException,
+)
 from tartiflette.types.helpers import reduce_type
 from .nodes.field import NodeField
 from .nodes.fragment_definition import NodeFragmentDefinition
@@ -13,9 +15,9 @@ from .nodes.variable_definition import NodeVariableDefinition
 
 class TartifletteVisitor(Visitor):
 
-    # TODO is usefull only for debug, will
+    #  TODO is usefull only for debug, will
     # be removed when everythings works
-    # Same as path information
+    #  Same as path information
     @staticmethod
     @lru_cache(maxsize=10)
     def create_node_name(gql_type, name):
@@ -42,15 +44,16 @@ class TartifletteVisitor(Visitor):
                 "ListType": self._on_list_type_in,
                 "NonNullType": self._on_non_null_type_in,
                 "VariableDefinition": self._on_variable_definition_in,
-                "FragmentDefinition": self._on_fragment_definition_in
-            }, {
+                "FragmentDefinition": self._on_fragment_definition_in,
+            },
+            {
                 "default": self._out,
                 "Argument": self._on_argument_out,
                 "Field": self._on_field_out,
                 "VariableDefinition": self._on_variable_definition_out,
                 "FragmentDefinition": self._on_fragment_definition_out,
-                "FragmentSpread": self._on_fragment_spread_out
-            }
+                "FragmentSpread": self._on_fragment_spread_out,
+            },
         ]
         self._depth = 0
         self.nodes = []
@@ -70,27 +73,23 @@ class TartifletteVisitor(Visitor):
         self._current_argument_name = None
 
     def _on_value_in(self, element: _VisitorElement):
-        if hasattr(self._current_node, 'default_value'):
+        if hasattr(self._current_node, "default_value"):
             self._current_node.default_value = element.get_value()
             return
 
         self._current_node.arguments.update(
-            {
-                self._current_argument_name: element.get_value()
-            }
+            {self._current_argument_name: element.get_value()}
         )
 
     def _on_variable_in(self, element: _VisitorElement):
-        if hasattr(self._current_node, 'var_name'):
+        if hasattr(self._current_node, "var_name"):
             self._current_node.var_name = element.name
             return
 
         try:
             var_name = element.name
             self._current_node.arguments.update(
-                {
-                    self._current_argument_name: self._vars[var_name]
-                }
+                {self._current_argument_name: self._vars[var_name]}
             )
         except KeyError:
             self.continue_child = 0
@@ -116,11 +115,11 @@ class TartifletteVisitor(Visitor):
         try:
             # TODO: This is maybe not the best way. Think about it.
             field = self._schema.get_field_by_name(
-                parent_type.name + '.' + element.name
+                parent_type.name + "." + element.name
             )
         except AttributeError:
             field = self._schema.get_field_by_name(
-                str(parent_type) + '.' + element.name
+                str(parent_type) + "." + element.name
             )
 
         try:
@@ -135,7 +134,9 @@ class TartifletteVisitor(Visitor):
         node = NodeField(
             field.resolver,
             element.get_location(),
-            self.field_path[:], element.name, self._current_type_condition,
+            self.field_path[:],
+            element.name,
+            self._current_type_condition,
             gql_type,
             field,
         )
@@ -160,8 +161,7 @@ class TartifletteVisitor(Visitor):
         if not isinstance(a_value, a_type):
             self.continue_child = 0
             self.exception = TypeError(
-                "Given value for < %s > is not type < %s >" %
-                (varname, a_type)
+                "Given value for < %s > is not type < %s >" % (varname, a_type)
             )
 
     def _validates_vars(self):
@@ -220,7 +220,7 @@ class TartifletteVisitor(Visitor):
             self.path,
             element.get_location(),
             element.name,
-            type_condition=element.get_type_condition()
+            type_condition=element.get_type_condition(),
         )
 
         if element.name in self._fragments:
@@ -265,11 +265,13 @@ class TartifletteVisitor(Visitor):
         self.continue_child = 1
         self.event = event
 
-        if element.libgraphql_type in ['SelectionSet']:
+        if element.libgraphql_type in ["SelectionSet"]:
             return  # because we don't care.
 
-        if not self._current_fragment_definition or \
-                element.libgraphql_type == 'FragmentDefinition':
+        if (
+            not self._current_fragment_definition
+            or element.libgraphql_type == "FragmentDefinition"
+        ):
             # Always execute FragmentDefinitions Handlers,
             # never exec if in fragment.
             self._events[self.event]["default"](element)

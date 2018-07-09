@@ -4,8 +4,7 @@ from typing import Optional, Callable
 
 from tartiflette.executors.types import ExecutionData
 from tartiflette.schema import DefaultGraphQLSchema, GraphQLSchema
-from tartiflette.types.exceptions.tartiflette import \
-    NonAwaitableResolver
+from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
 
 
 def wrap_resolver(schema, field, resolver):
@@ -44,7 +43,8 @@ class Resolver:
             return 42
 
     """
-    def __init__(self, name: str, schema: Optional[GraphQLSchema]=None):
+
+    def __init__(self, name: str, schema: Optional[GraphQLSchema] = None):
         self.schema = schema if schema else DefaultGraphQLSchema
         self.field = self.schema.get_field_by_name(name=name)
 
@@ -52,12 +52,13 @@ class Resolver:
         if not iscoroutinefunction(resolver):
             raise NonAwaitableResolver(
                 "The resolver `{}` given for the field `{}` "
-                "is not awaitable.".format(repr(resolver), self.field.name))
+                "is not awaitable.".format(repr(resolver), self.field.name)
+            )
 
         try:
-            self.field.resolver = wrap_resolver(self.schema,
-                                                self.field,
-                                                resolver)
+            self.field.resolver = wrap_resolver(
+                self.schema, self.field, resolver
+            )
         except AttributeError:
             pass
 

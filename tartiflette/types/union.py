@@ -14,7 +14,10 @@ class GraphQLUnionType(GraphQLType):
     """
 
     def __init__(
-        self, name: str, gql_types: List[str], description: Optional[str]=None
+        self,
+        name: str,
+        gql_types: List[str],
+        description: Optional[str] = None,
     ):
         # TODO: This will need a "resolve_type" function at execution time
         super().__init__(name=name, description=description)
@@ -22,7 +25,10 @@ class GraphQLUnionType(GraphQLType):
 
     def __repr__(self) -> str:
         return "{}(name={!r}, gql_types={!r}, description={!r})".format(
-            self.__class__.__name__, self.name, self.gql_types, self.description
+            self.__class__.__name__,
+            self.name,
+            self.gql_types,
+            self.description,
         )
 
     def __eq__(self, other) -> bool:

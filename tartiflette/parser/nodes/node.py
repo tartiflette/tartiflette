@@ -1,4 +1,3 @@
-
 class Node:
     def __init__(self, path, libgraphql_type, location, name):
         self.path = path

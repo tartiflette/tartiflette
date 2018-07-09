@@ -3,7 +3,9 @@ from .node import Node
 import asyncio
 
 
-async def _exec_list(resolver, lst, path, args, request_ctx, name, field, location, schema):
+async def _exec_list(
+    resolver, lst, path, args, request_ctx, name, field, location, schema
+):
     coroutines = []
 
     for index, item in enumerate(lst):
@@ -12,15 +14,24 @@ async def _exec_list(resolver, lst, path, args, request_ctx, name, field, locati
         if isinstance(item, list):
             coroutines.append(
                 _exec_list(
-                    resolver, item, new_path[:], args, request_ctx,
-                    name, field, location, schema,
+                    resolver,
+                    item,
+                    new_path[:],
+                    args,
+                    request_ctx,
+                    name,
+                    field,
+                    location,
+                    schema,
                 )
             )
         else:
             coroutines.append(
                 resolver(
                     request_ctx,
-                    ExecutionData(item, new_path[:], args, name, field, location, schema)
+                    ExecutionData(
+                        item, new_path[:], args, name, field, location, schema
+                    ),
                 )
             )
 
@@ -37,9 +48,17 @@ async def _exec_list(resolver, lst, path, args, request_ctx, name, field, locati
 
 
 class NodeField(Node):
-    def __init__(self, resolver, location, path, name, type_condition,
-                 gql_type=None, field=None):
-        super().__init__(path, 'Field', location, name)
+    def __init__(
+        self,
+        resolver,
+        location,
+        path,
+        name,
+        type_condition,
+        gql_type=None,
+        field=None,
+    ):
+        super().__init__(path, "Field", location, name)
         # TODO: This can be simplified if we have the field & schema
         self.field = field
         self.resolver = resolver
@@ -51,13 +70,21 @@ class NodeField(Node):
         self.schema = None
         self.type_condition = type_condition
         self.as_jsonable = None
-        self.in_introspection = True if name in ["__type", "__schema", "__typename"] else False
+        self.in_introspection = (
+            True if name in ["__type", "__schema", "__typename"] else False
+        )
 
     async def _get_results(self, request_ctx):
         if self.parent and isinstance(self.parent.results, list):
             self.results, self.errors, self.coerced = await _exec_list(
-                self.resolver, self.parent.results, self.path, self.arguments,
-                request_ctx, self.name, self.field, self.location,
+                self.resolver,
+                self.parent.results,
+                self.path,
+                self.arguments,
+                request_ctx,
+                self.name,
+                self.field,
+                self.location,
                 self.schema,
             )
         else:
@@ -71,7 +98,7 @@ class NodeField(Node):
                     self.field,
                     self.location,
                     self.schema,
-                )
+                ),
             )
             self.results, self.errors, self.coerced = raw_result
 
@@ -94,7 +121,7 @@ class NodeField(Node):
         if self.parent:
             if self.parent.in_introspection:
                 self.in_introspection = True
-                #TODO: Make better error management on instrospection
+                # TODO: Make better error management on instrospection
                 self.errors = []
 
             if isinstance(self.parent.as_jsonable, list):

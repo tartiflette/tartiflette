@@ -7,8 +7,9 @@ from lark.common import UnexpectedToken, ParseError
 from lark.lexer import UnexpectedInput
 
 from tartiflette.schema import GraphQLSchema
-from tartiflette.sdl.transformers.cleaning_transformer import \
+from tartiflette.sdl.transformers.cleaning_transformer import (
     CleaningTransformer
+)
 from tartiflette.sdl.transformers.schema_transformer import SchemaTransformer
 from tartiflette.types.exceptions.tartiflette import InvalidSDL
 
@@ -41,12 +42,12 @@ def parse_graphql_sdl_to_ast(sdl: str) -> Tree:
     """
     __path__ = os.path.dirname(__file__)
     grammar_filename = os.path.join(
-        __path__, 'grammar', 'graphql_sdl_grammar.lark'
+        __path__, "grammar", "graphql_sdl_grammar.lark"
     )
 
     with open(grammar_filename) as f:
         gqlsdl_parser = Lark(
-            f, start='document', parser='lalr', lexer='contextual'
+            f, start="document", parser="lalr", lexer="contextual"
         )
         gqlsdl = gqlsdl_parser.parse
 
@@ -68,9 +69,8 @@ def transform_ast_to_schema(
     :param schema: A GraphQLSchema to pass to the transformer if needed
     :return: a GraphQL Schema
     """
-    transformer = (
-            CleaningTransformer(sdl) *
-            SchemaTransformer(sdl, schema=schema)
+    transformer = CleaningTransformer(sdl) * SchemaTransformer(
+        sdl, schema=schema
     )
     transformer.transform(raw_ast)
     return schema

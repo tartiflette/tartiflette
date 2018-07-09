@@ -235,63 +235,76 @@ const char *graphql_ast_to_json(const struct GraphQLAstNode *node);
 """
 
 TYPES_LIBGRAPHQL = [
-    ['Document', 'document'], ['OperationDefinition', 'operation_definition'],
-    ['VariableDefinition',
-     'variable_definition'], ['SelectionSet', 'selection_set'], [
-         'Field', 'field'
-     ], ['Argument', 'argument'], ['FragmentSpread', 'fragment_spread'], [
-         'InlineFragment', 'inline_fragment'
-     ], ['FragmentDefinition',
-         'fragment_definition'], ['Variable',
-                                  'variable'], ['IntValue', 'int_value'],
-    ['FloatValue', 'float_value'], ['StringValue', 'string_value'], [
-        'BooleanValue', 'boolean_value'
-    ], ['NullValue', 'null_value'], ['EnumValue', 'enum_value'], [
-        'ListValue', 'list_value'
-    ], ['ObjectValue', 'object_value'], ['ObjectField', 'object_field'], [
-        'Directive', 'directive'
-    ], ['NamedType', 'named_type'], ['ListType', 'list_type'], [
-        'NonNullType', 'non_null_type'
-    ], ['Name', 'name'], ['SchemaDefinition', 'schema_definition'], [
-        'OperationTypeDefinition', 'operation_type_definition'
-    ], ['ScalarTypeDefinition', 'scalar_type_definition'], [
-        'ObjectTypeDefinition', 'object_type_definition'
-    ], ['FieldDefinition', 'field_definition'], [
-        'InputValueDefinition', 'input_value_definition'
-    ], ['InterfaceTypeDefinition', 'interface_type_definition'], [
-        'UnionTypeDefinition', 'union_type_definition'
-    ], ['EnumTypeDefinition', 'enum_type_definition'], [
-        'EnumValueDefinition', 'enum_value_definition'
-    ], ['InputObjectTypeDefinition', 'input_object_type_definition'], [
-        'TypeExtensionDefinition', 'type_extension_definition'
-    ], ['DirectiveDefinition', 'directive_definition']
+    ["Document", "document"],
+    ["OperationDefinition", "operation_definition"],
+    ["VariableDefinition", "variable_definition"],
+    ["SelectionSet", "selection_set"],
+    ["Field", "field"],
+    ["Argument", "argument"],
+    ["FragmentSpread", "fragment_spread"],
+    ["InlineFragment", "inline_fragment"],
+    ["FragmentDefinition", "fragment_definition"],
+    ["Variable", "variable"],
+    ["IntValue", "int_value"],
+    ["FloatValue", "float_value"],
+    ["StringValue", "string_value"],
+    ["BooleanValue", "boolean_value"],
+    ["NullValue", "null_value"],
+    ["EnumValue", "enum_value"],
+    ["ListValue", "list_value"],
+    ["ObjectValue", "object_value"],
+    ["ObjectField", "object_field"],
+    ["Directive", "directive"],
+    ["NamedType", "named_type"],
+    ["ListType", "list_type"],
+    ["NonNullType", "non_null_type"],
+    ["Name", "name"],
+    ["SchemaDefinition", "schema_definition"],
+    ["OperationTypeDefinition", "operation_type_definition"],
+    ["ScalarTypeDefinition", "scalar_type_definition"],
+    ["ObjectTypeDefinition", "object_type_definition"],
+    ["FieldDefinition", "field_definition"],
+    ["InputValueDefinition", "input_value_definition"],
+    ["InterfaceTypeDefinition", "interface_type_definition"],
+    ["UnionTypeDefinition", "union_type_definition"],
+    ["EnumTypeDefinition", "enum_type_definition"],
+    ["EnumValueDefinition", "enum_value_definition"],
+    ["InputObjectTypeDefinition", "input_object_type_definition"],
+    ["TypeExtensionDefinition", "type_extension_definition"],
+    ["DirectiveDefinition", "directive_definition"],
 ]
 
 ## Doing all this cause the macro definitions directly in cffi doesn't works
 _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS = ""
 
 for typ in TYPES_LIBGRAPHQL:
-    CDEFS_LIBGRAPHQL = CDEFS_LIBGRAPHQL + \
-        "\ntypedef int (*visit_{st}_func)(const struct " \
-        "GraphQLAst{t} *{st}, void *user_data);".format(
-            st=typ[1], t=typ[0]
-        )
-    CDEFS_LIBGRAPHQL = CDEFS_LIBGRAPHQL + \
-        "\ntypedef void (*end_visit_{st}_func)(const struct " \
-        "GraphQLAst{t} *{st}, void *user_data);".format(
-            st=typ[1], t=typ[0]
-        )
+    CDEFS_LIBGRAPHQL = (
+        CDEFS_LIBGRAPHQL + "\ntypedef int (*visit_{st}_func)(const struct "
+        "GraphQLAst{t} *{st}, void *user_data);".format(st=typ[1], t=typ[0])
+    )
+    CDEFS_LIBGRAPHQL = (
+        CDEFS_LIBGRAPHQL
+        + "\ntypedef void (*end_visit_{st}_func)(const struct "
+        "GraphQLAst{t} *{st}, void *user_data);".format(st=typ[1], t=typ[0])
+    )
 
-    _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS = _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS + \
-        "visit_{st}_func visit_{st}; \n".format(st=typ[1])
-    _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS = _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS + \
-        "end_visit_{st}_func end_visit_{st}; \n".format(st=typ[1])
+    _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS = (
+        _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS
+        + "visit_{st}_func visit_{st}; \n".format(st=typ[1])
+    )
+    _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS = (
+        _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS
+        + "end_visit_{st}_func end_visit_{st}; \n".format(st=typ[1])
+    )
 
-_CDEF_LIBGRAPHQL_CALLBACK_STRUCTS = """
+_CDEF_LIBGRAPHQL_CALLBACK_STRUCTS = (
+    """
 struct GraphQLAstVisitorCallbacks {
 %s
 };
-""" % _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS
+"""
+    % _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS
+)
 
 CDEFS_LIBGRAPHQL = CDEFS_LIBGRAPHQL + _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS
 
@@ -335,7 +348,7 @@ class _VisitorElement:
 
     def _get_name_object(self):
         return self._lib.__getattr__(
-            'GraphQLAst%s_get_name' % self.libgraphql_type
+            "GraphQLAst%s_get_name" % self.libgraphql_type
         )(self._internal_element)
 
     def _get_name_string(self, name_object):
@@ -345,7 +358,7 @@ class _VisitorElement:
         return None
 
     def _from_char_to_string(self, val):
-        return self._ffi.string(val).decode('UTF-8', 'replace')
+        return self._ffi.string(val).decode("UTF-8", "replace")
 
     def _get_name(self):
         element = self._internal_element
@@ -358,17 +371,19 @@ class _VisitorElement:
         location = self._ffi.new("struct GraphQLAstLocation *")
         self._lib.graphql_node_get_location(
             self._ffi.cast("struct GraphQLAstNode *", self._internal_element),
-            location
+            location,
         )
         return Location(
-            location.beginLine, location.beginColumn,
-            location.endLine, location.endColumn,
+            location.beginLine,
+            location.beginColumn,
+            location.endLine,
+            location.endColumn,
         )
 
 
 class _VisitorElementIntValue(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super().__init__(lib, ffi, 'IntValue', internal_element)
+        super().__init__(lib, ffi, "IntValue", internal_element)
 
     def get_value(self):
         val = self._from_char_to_string(
@@ -379,7 +394,7 @@ class _VisitorElementIntValue(_VisitorElement):
 
 class _VisitorElementStringValue(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super().__init__(lib, ffi, 'StringValue', internal_element)
+        super().__init__(lib, ffi, "StringValue", internal_element)
 
     def get_value(self):
         val = self._lib.GraphQLAstStringValue_get_value(self._internal_element)
@@ -388,7 +403,7 @@ class _VisitorElementStringValue(_VisitorElement):
 
 class _VisitorElementFloatValue(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super().__init__(lib, ffi, 'FloatValue', internal_element)
+        super().__init__(lib, ffi, "FloatValue", internal_element)
 
     def get_value(self):
         val = self._from_char_to_string(
@@ -399,7 +414,7 @@ class _VisitorElementFloatValue(_VisitorElement):
 
 class _VisitorElementBooleanValue(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super().__init__(lib, ffi, 'BooleanValue', internal_element)
+        super().__init__(lib, ffi, "BooleanValue", internal_element)
         self._values = [False, True]
 
     def get_value(self):
@@ -411,7 +426,7 @@ class _VisitorElementBooleanValue(_VisitorElement):
 
 class _VisitorElementFragmentDefinition(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
-        super().__init__(lib, ffi, 'FragmentDefinition', internal_element)
+        super().__init__(lib, ffi, "FragmentDefinition", internal_element)
 
     def get_type_condition(self):
         name_type = self._lib.GraphQLAstFragmentDefinition_get_type_condition(
@@ -430,7 +445,7 @@ _LIBGRAPHQL_TYPE_TO_CLASS = {
     "StringValue": _VisitorElementStringValue,
     "FloatValue": _VisitorElementFloatValue,
     "BooleanValue": _VisitorElementBooleanValue,
-    "FragmentDefinition": _VisitorElementFragmentDefinition
+    "FragmentDefinition": _VisitorElementFragmentDefinition,
 }
 
 
@@ -442,7 +457,9 @@ class LibGraphqlParser:
         try:
             self._lib = self._ffi.dlopen("/usr/local/lib/libgraphqlparser.so")
         except OSError:
-            self._lib = self._ffi.dlopen("/usr/local/lib/libgraphqlparser.dylib")
+            self._lib = self._ffi.dlopen(
+                "/usr/local/lib/libgraphqlparser.dylib"
+            )
         self._lib_callbacks = self._ffi.new(
             "struct GraphQLAstVisitorCallbacks *"
         )
@@ -455,7 +472,8 @@ class LibGraphqlParser:
     def _create_visitor_element(self, libgraphql_type, element):
         try:
             return _LIBGRAPHQL_TYPE_TO_CLASS[libgraphql_type](
-                self._lib, self._ffi, element)
+                self._lib, self._ffi, element
+            )
         except KeyError:
             pass
 
@@ -472,7 +490,8 @@ class LibGraphqlParser:
         context = self._ffi.from_handle(udata)
         if context.continue_child:
             context.update(
-                Visitor.OUT, self._create_visitor_element(libgraphql_type, element)
+                Visitor.OUT,
+                self._create_visitor_element(libgraphql_type, element),
             )
         return None
 
@@ -488,13 +507,15 @@ class LibGraphqlParser:
     def _set_exit_callback(self, typee):
         self._set_callback(
             "void(struct GraphQLAst%s *, void *)" % typee[0],
-            partial(self._callback_exit, typee[0]), "end_visit_%s" % typee[1]
+            partial(self._callback_exit, typee[0]),
+            "end_visit_%s" % typee[1],
         )
 
     def _set_enter_callback(self, typee):
         self._set_callback(
             "int(struct GraphQLAst%s *, void *)" % typee[0],
-            partial(self._callback_enter, typee[0]), "visit_%s" % typee[1]
+            partial(self._callback_enter, typee[0]),
+            "visit_%s" % typee[1],
         )
 
     def _creates_callbacks(self):
@@ -511,13 +532,13 @@ class LibGraphqlParser:
         c_query = self._ffi.new("char[]", query)
         parsed_data = _ParsedData(
             self._lib.graphql_parse_string(c_query, self._errors),
-            self._lib.graphql_node_free
+            self._lib.graphql_node_free,
         )
 
         if self._errors[0] != self._ffi.NULL:
             # TODO specialize Exception here
             e = Exception(
-                self._ffi.string(self._errors[0]).decode('UTF-8', 'replace')
+                self._ffi.string(self._errors[0]).decode("UTF-8", "replace")
             )
             self._lib.graphql_error_free(self._errors[0])
             raise e

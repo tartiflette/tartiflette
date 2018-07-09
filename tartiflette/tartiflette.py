@@ -10,7 +10,6 @@ from tartiflette.schema import GraphQLSchema
 
 
 class Tartiflette:
-
     def __init__(self, sdl=None, schema=None, serialize_callback=None):
         # TODO: Remove serializer callback, return Dict / Raw Python
         if not sdl and schema:
@@ -20,12 +19,17 @@ class Tartiflette:
             # default fallback ?
             self.schema = GraphQLSchema()
             build_graphql_schema_from_sdl(sdl, schema=self.schema)
-        self._serialize_callback = serialize_callback \
-            if serialize_callback else json.dumps
+        self._serialize_callback = (
+            serialize_callback if serialize_callback else json.dumps
+        )
         self._parser = TartifletteRequestParser()
 
-    async def execute(self, query: str, context: Dict[str, Any]=None,
-                      variables: Dict[str, Any]=None) -> str:
+    async def execute(
+        self,
+        query: str,
+        context: Dict[str, Any] = None,
+        variables: Dict[str, Any] = None,
+    ) -> str:
         """
         Parse and execute a GraphQL Request (as string).
         :param query: The GraphQL request / query as UTF8-encoded string
@@ -36,9 +40,7 @@ class Tartiflette:
         return self._serialize_callback(
             await execute(
                 self._parser.parse_and_tartify(
-                    query,
-                    variables=variables,
-                    schema=self.schema,
+                    query, variables=variables, schema=self.schema
                 ),
                 request_ctx=context,
                 schema=self.schema,

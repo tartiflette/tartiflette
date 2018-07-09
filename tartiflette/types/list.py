@@ -11,24 +11,28 @@ class GraphQLList(GraphQLType):
     The type contained will be returned as a list instead of a single item.
     """
 
-    def __init__(self, gql_type: Union[str, GraphQLType],
-                 description: Optional[str] = None):
+    def __init__(
+        self,
+        gql_type: Union[str, GraphQLType],
+        description: Optional[str] = None,
+    ):
         super().__init__(name=None, description=description)
         self.gql_type = gql_type
 
     def __repr__(self) -> str:
         return "{}(gql_type={!r}, description={!r})".format(
-            self.__class__.__name__, self.gql_type, self.description,
+            self.__class__.__name__, self.gql_type, self.description
         )
 
     def __str__(self):
-        return '[{!s}]'.format(self.gql_type)
+        return "[{!s}]".format(self.gql_type)
 
     def __eq__(self, other):
-        return super().__eq__(other) and \
-               self.gql_type == other.gql_type
+        return super().__eq__(other) and self.gql_type == other.gql_type
 
-    def coerce_value(self, value: Any, execution_data: ExecutionData) -> CoercedValue:
+    def coerce_value(
+        self, value: Any, execution_data: ExecutionData
+    ) -> CoercedValue:
         if value is None:
             return CoercedValue(value, None)
         try:
@@ -37,15 +41,18 @@ class GraphQLList(GraphQLType):
             for index, item in enumerate(value):
                 tmp_path = execution_data.path[:]
                 tmp_path.append(index)
-                tmp_execution_data = ExecutionData(execution_data.parent_result,
-                                                   tmp_path,
-                                                   execution_data.arguments,
-                                                   execution_data.name,
-                                                   execution_data.field,
-                                                   execution_data.location,
-                                                   execution_data.schema, )
-                coerced_value = self.gql_type.coerce_value(item,
-                                                           tmp_execution_data)
+                tmp_execution_data = ExecutionData(
+                    execution_data.parent_result,
+                    tmp_path,
+                    execution_data.arguments,
+                    execution_data.name,
+                    execution_data.field,
+                    execution_data.location,
+                    execution_data.schema,
+                )
+                coerced_value = self.gql_type.coerce_value(
+                    item, tmp_execution_data
+                )
                 if not coerced_value.errors:
                     results.append(coerced_value.value)
                 if coerced_value.errors:

@@ -30,7 +30,7 @@ method-rgx=[a-z_][a-z0-9_]{2,50}$
 # W1202: Logging with '{}' formating instead of '%'
 # C0330: Wrong hanging indentation before block (add 4 spaces).
 # "bad-continuation" is currently disabled because of that issue -> https://github.com/PyCQA/pylint/issues/289
-disable=C0111,E0602,I0011,I0012,R0801,R0903,W0141,W0142,W0223,W0603,W1202,C0303
+disable=C0111,E0602,I0011,I0012,R0801,R0903,W0141,W0142,W0223,W0603,W1202,C0303,C0330,C0301
 
 [DESIGN]
 ## Maximum number of arguments for function / method

@@ -11,14 +11,13 @@ class GraphQLEnumValue:
     `GraphQLEnumValue`s is a way to represent them.
     """
 
-    def __init__(self, value: Any = None, description: Optional[str]=None):
+    def __init__(self, value: Any = None, description: Optional[str] = None):
         self.value = value
         self.description = description
 
     def __repr__(self):
         return "{}(value={!r}, description={!r})".format(
-            self.__class__.__name__,
-            self.value, self.description
+            self.__class__.__name__, self.value, self.description
         )
 
     def __str__(self):
@@ -26,8 +25,7 @@ class GraphQLEnumValue:
 
     def __eq__(self, other):
         return self is other or (
-            type(self) is type(other) and
-            self.value == other.value
+            type(self) is type(other) and self.value == other.value
         )
 
 
@@ -44,9 +42,11 @@ class GraphQLEnumType(GraphQLType):
     """
 
     def __init__(
-        self, name: str,
-            values: List[GraphQLEnumValue],
-            description: Optional[str]=None):
+        self,
+        name: str,
+        values: List[GraphQLEnumValue],
+        description: Optional[str] = None,
+    ):
         super().__init__(name=name, description=description)
         self.values = values
         # TODO: This will probably need a serialization / deserialization logic
@@ -58,17 +58,25 @@ class GraphQLEnumType(GraphQLType):
         )
 
     def __eq__(self, other):
-        return super().__eq__(other) and \
-               self.values == other.values
+        return super().__eq__(other) and self.values == other.values
 
-    def coerce_value(self, value: Any, execution_data: ExecutionData) -> CoercedValue:
+    def coerce_value(
+        self, value: Any, execution_data: ExecutionData
+    ) -> CoercedValue:
         if value is None:
             return CoercedValue(value, None)
         for enumval in self.values:
             if enumval.value == value:
                 return CoercedValue(enumval.value, None)
-        return CoercedValue(None, [InvalidValue(value,
-                      gql_type=execution_data.field.gql_type,
-                      field=execution_data.field,
-                      path=execution_data.path,
-                      locations=[execution_data.location])])
+        return CoercedValue(
+            None,
+            [
+                InvalidValue(
+                    value,
+                    gql_type=execution_data.field.gql_type,
+                    field=execution_data.field,
+                    path=execution_data.path,
+                    locations=[execution_data.location],
+                )
+            ],
+        )
