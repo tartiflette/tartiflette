@@ -9,7 +9,7 @@ class NodeDefinition(Node):
             "String": str,
             "Int": int,
             "Boolean": bool,
-            "Float": float
+            "Float": float,
         }
 
         self._type = None

@@ -15,26 +15,27 @@ class CleaningTransformer(Transformer_NoRecurse):
 
     def name(self, tree: Tree):
         token = find_token_in_ast(
-            tree.children, [
-                'IDENT',
-                'SCHEMA',
-                'QUERY',
-                'MUTATION',
-                'SUBSCRIPTION',
-                'SCALAR',
-                'TYPE',
-                'INTERFACE',
-                'IMPLEMENTS',
-                'UNION',
-                'ENUM',
-                'INPUT',
-                'EXTEND',
-                'DIRECTIVE',
-                'ON',
-                'TYPE_SYSTEM_DIRECTIVE_LOCATION',
-            ]
+            tree.children,
+            [
+                "IDENT",
+                "SCHEMA",
+                "QUERY",
+                "MUTATION",
+                "SUBSCRIPTION",
+                "SCALAR",
+                "TYPE",
+                "INTERFACE",
+                "IMPLEMENTS",
+                "UNION",
+                "ENUM",
+                "INPUT",
+                "EXTEND",
+                "DIRECTIVE",
+                "ON",
+                "TYPE_SYSTEM_DIRECTIVE_LOCATION",
+            ],
         )
-        token.type = 'IDENT'  # clean up the grammar variations
+        token.type = "IDENT"  # clean up the grammar variations
         return token
 
     def description(self, tree: Tree):
@@ -48,39 +49,52 @@ class CleaningTransformer(Transformer_NoRecurse):
         :param tree: a lark Tree
         :return: returns a Tree
         """
-        token = find_token_in_ast(tree.children, ['STRING', 'LONG_STRING'])
-        cleaned_str = bytes(token.value[1:-1], "utf-8").decode('unicode-escape')
+        token = find_token_in_ast(tree.children, ["STRING", "LONG_STRING"])
+        cleaned_str = bytes(token.value[1:-1], "utf-8").decode(
+            "unicode-escape"
+        )
         # TODO: For `LONG_STRING`s, we should remove the indentation spaces
-        if token.type == 'LONG_STRING':
+        if token.type == "LONG_STRING":
             cleaned_str = bytes(token.value[3:-3], "utf-8").decode(
-                'unicode-escape')
+                "unicode-escape"
+            )
         new_token = Token(
-            'DESCRIPTION', cleaned_str, token.pos_in_stream, token.line,
-            token.column)
+            "DESCRIPTION",
+            cleaned_str,
+            token.pos_in_stream,
+            token.line,
+            token.column,
+        )
         tree.children = [new_token]
         return tree
 
     def int_value(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ['SIGNED_INT'])
+        token = find_token_in_ast(tree.children, ["SIGNED_INT"])
         newtoken = Token(
-            token.type, int(token.value), token.pos_in_stream, token.line,
-            token.column
+            token.type,
+            int(token.value),
+            token.pos_in_stream,
+            token.line,
+            token.column,
         )
         tree.children = [newtoken]
         return tree
 
     def float_value(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ['SIGNED_FLOAT'])
+        token = find_token_in_ast(tree.children, ["SIGNED_FLOAT"])
         newtoken = Token(
-            token.type, float(token.value), token.pos_in_stream, token.line,
-            token.column
+            token.type,
+            float(token.value),
+            token.pos_in_stream,
+            token.line,
+            token.column,
         )
         tree.children = [newtoken]
         return tree
 
     def string_value(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ['STRING'])
-        tmp = bytes(token.value[1:-1], "utf-8").decode('unicode-escape')
+        token = find_token_in_ast(tree.children, ["STRING"])
+        tmp = bytes(token.value[1:-1], "utf-8").decode("unicode-escape")
         newtoken = Token(
             token.type, tmp, token.pos_in_stream, token.line, token.column
         )
@@ -88,7 +102,7 @@ class CleaningTransformer(Transformer_NoRecurse):
         return tree
 
     def true_value(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ['TRUE'])
+        token = find_token_in_ast(tree.children, ["TRUE"])
         newtoken = Token(
             token.type, True, token.pos_in_stream, token.line, token.column
         )
@@ -96,7 +110,7 @@ class CleaningTransformer(Transformer_NoRecurse):
         return tree
 
     def false_value(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ['FALSE'])
+        token = find_token_in_ast(tree.children, ["FALSE"])
         newtoken = Token(
             token.type, False, token.pos_in_stream, token.line, token.column
         )
@@ -104,7 +118,7 @@ class CleaningTransformer(Transformer_NoRecurse):
         return tree
 
     def null_value(self, tree: Tree):
-        token = find_token_in_ast(tree.children, ['NULL'])
+        token = find_token_in_ast(tree.children, ["NULL"])
         newtoken = Token(
             token.type, None, token.pos_in_stream, token.line, token.column
         )

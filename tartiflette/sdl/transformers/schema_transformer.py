@@ -6,8 +6,7 @@ from tartiflette.sdl.ast_types import String
 from tartiflette.schema import DefaultGraphQLSchema
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.enum import GraphQLEnumValue, GraphQLEnumType
-from tartiflette.types.exceptions.tartiflette import \
-    UnexpectedASTNode
+from tartiflette.types.exceptions.tartiflette import UnexpectedASTNode
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -17,7 +16,7 @@ from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.union import GraphQLUnionType
 
-SchemaNode = namedtuple('SchemaNode', ['type', 'value'])
+SchemaNode = namedtuple("SchemaNode", ["type", "value"])
 """
 SchemaNode is used as a container that mimics the lark.Token type.
 That way, we can do child.type and child.value in any lark.Tree.children
@@ -32,6 +31,7 @@ class SchemaTransformer(Transformer_NoRecurse):
     Each function is called on a `Tree` node corresponding to the
     grammar rule name.
     """
+
     # TODO: Add directives
     # TODO: Add type extensions
     # TODO: Cleanup errors & custom type (format, line number etc.).
@@ -53,14 +53,14 @@ class SchemaTransformer(Transformer_NoRecurse):
 
     def _operation_type_definition(self, tree: Tree, operation_name: str):
         for child in tree.children:
-            if child.type == 'named_type':
+            if child.type == "named_type":
                 setattr(self._schema, operation_name + "_type", child.value)
             elif child.type == operation_name.upper():
                 pass
             else:
                 raise ValueError(
-                    'Invalid GraphQL named type for `{}` '
-                    'operation definition, got `{}`'.format(
+                    "Invalid GraphQL named type for `{}` "
+                    "operation definition, got `{}`".format(
                         operation_name, child.__class__.__name__
                     )
                 )
@@ -76,20 +76,23 @@ class SchemaTransformer(Transformer_NoRecurse):
         return self._operation_type_definition(tree, "subscription")
 
     def named_type(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('named_type',
-                          String(str(tree.children[0].value),
-                                 ast_node=tree.children[0]))
+        return SchemaNode(
+            "named_type",
+            String(str(tree.children[0].value), ast_node=tree.children[0]),
+        )
 
     def list_type(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('list_type',
-                          GraphQLList(gql_type=tree.children[0].value))
+        return SchemaNode(
+            "list_type", GraphQLList(gql_type=tree.children[0].value)
+        )
 
     def non_null_type(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('non_null_type',
-                          GraphQLNonNull(gql_type=tree.children[0].value))
+        return SchemaNode(
+            "non_null_type", GraphQLNonNull(gql_type=tree.children[0].value)
+        )
 
     def type(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('type', tree.children[0].value)
+        return SchemaNode("type", tree.children[0].value)
 
     def type_definition(self, tree: Tree):
         self._schema.add_definition(tree.children[0])
@@ -101,22 +104,21 @@ class SchemaTransformer(Transformer_NoRecurse):
         ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'SCALAR':
+            elif child.type == "SCALAR":
                 ast_node = child
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
-        return GraphQLScalarType(
-            name=name,
-            description=description,
-        )
+                        child, child.__class__.__name__
+                    )
+                )
+        return GraphQLScalarType(name=name, description=description)
 
     def union_type_definition(self, tree: Tree) -> GraphQLUnionType:
         # TODO: Add directives
@@ -125,31 +127,31 @@ class SchemaTransformer(Transformer_NoRecurse):
         name = None
         members = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'UNION':
+            elif child.type == "UNION":
                 ast_node = child
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'union_members':
+            elif child.type == "union_members":
                 members = child.value
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
         return GraphQLUnionType(
-            name=name,
-            gql_types=members,
-            description=description,
+            name=name, gql_types=members, description=description
         )
 
     def union_member_types(self, tree: Tree) -> SchemaNode:
         members = []
         for child in tree.children:
             members.append(child.value)
-        return SchemaNode('union_members', members)
+        return SchemaNode("union_members", members)
 
     def enum_type_definition(self, tree: Tree):
         # TODO: Add directives
@@ -158,48 +160,50 @@ class SchemaTransformer(Transformer_NoRecurse):
         name = None
         values = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'ENUM':
+            elif child.type == "ENUM":
                 ast_node = child
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'enum_values':
+            elif child.type == "enum_values":
                 values = child.value
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
 
         return GraphQLEnumType(
-            name=name,
-            values=values,
-            description=description,
+            name=name, values=values, description=description
         )
 
     def enum_values_definition(self, tree: Tree) -> SchemaNode:
         values = []
         for child in tree.children:
             values.append(child)
-        return SchemaNode('enum_values', values)
+        return SchemaNode("enum_values", values)
 
     def enum_value_definition(self, tree: Tree) -> GraphQLEnumValue:
         # TODO: Add directives
         description = None
         value: GraphQLEnumValue = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'enum_value':
+            elif child.type == "enum_value":
                 value = child.value
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
         if description:
             value.description = description
         return value
@@ -211,24 +215,24 @@ class SchemaTransformer(Transformer_NoRecurse):
         name = None
         fields = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'INTERFACE':
+            elif child.type == "INTERFACE":
                 ast_node = child
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'fields':
+            elif child.type == "fields":
                 fields = child.value
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
         return GraphQLInterfaceType(
-            name=name,
-            fields=fields,
-            description=description,
+            name=name, fields=fields, description=description
         )
 
     def object_type_definition(self, tree: Tree) -> GraphQLObjectType:
@@ -239,22 +243,24 @@ class SchemaTransformer(Transformer_NoRecurse):
         interfaces = None
         fields = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'TYPE':
+            elif child.type == "TYPE":
                 ast_node = child
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'interfaces':
+            elif child.type == "interfaces":
                 interfaces = child.value
-            elif child.type == 'fields':
+            elif child.type == "fields":
                 fields = child.value
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
         return GraphQLObjectType(
             name=name,
             fields=fields,
@@ -266,50 +272,52 @@ class SchemaTransformer(Transformer_NoRecurse):
         interfaces = []
         ast_node = None  # TODO: Should we keep it or discard it ?
         for child in tree.children:
-            if child.type == 'IMPLEMENTS':
+            if child.type == "IMPLEMENTS":
                 ast_node = child
             else:
                 interfaces.append(child.value)
-        return SchemaNode('interfaces', interfaces)
+        return SchemaNode("interfaces", interfaces)
 
-    def input_object_type_definition(self, tree: Tree) -> GraphQLInputObjectType:
+    def input_object_type_definition(
+        self, tree: Tree
+    ) -> GraphQLInputObjectType:
         # TODO: Add directives
         description = None
         ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
         fields = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'INPUT':
+            elif child.type == "INPUT":
                 ast_node = child
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'input_fields':
+            elif child.type == "input_fields":
                 fields = child.value
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
         return GraphQLInputObjectType(
-            name=name,
-            fields=fields,
-            description=description,
+            name=name, fields=fields, description=description
         )
 
     def input_fields_definition(self, tree: Tree) -> SchemaNode:
         fields = OrderedDict()
         for child in tree.children:
             fields[child.name] = child
-        return SchemaNode('input_fields', fields)
+        return SchemaNode("input_fields", fields)
 
     def fields_definition(self, tree: Tree) -> SchemaNode:
         fields = OrderedDict()
         for child in tree.children:
             fields[child.name] = child
-        return SchemaNode('fields', fields)
+        return SchemaNode("fields", fields)
 
     def field_definition(self, tree: Tree) -> GraphQLField:
         # TODO: Add directives
@@ -318,32 +326,34 @@ class SchemaTransformer(Transformer_NoRecurse):
         arguments = None
         gql_type = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'type':
+            elif child.type == "type":
                 gql_type = child.value
-            elif child.type == 'arguments':
+            elif child.type == "arguments":
                 arguments = child.value
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
         return GraphQLField(
             name=name,
             gql_type=gql_type,
             arguments=arguments,
-            description=description
+            description=description,
         )
 
     def arguments_definition(self, tree: Tree) -> SchemaNode:
         arguments = OrderedDict()
         for child in tree.children:
             arguments[child.name] = child
-        return SchemaNode('arguments', arguments)
+        return SchemaNode("arguments", arguments)
 
     def input_value_definition(self, tree: Tree):
         # TODO: Add directives
@@ -352,20 +362,22 @@ class SchemaTransformer(Transformer_NoRecurse):
         gql_type = None
         default_value = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'type':
+            elif child.type == "type":
                 gql_type = child.value
-            elif child.type == 'value':
+            elif child.type == "value":
                 default_value = child.value
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
         return GraphQLArgument(
             name=name,
             gql_type=gql_type,
@@ -374,106 +386,114 @@ class SchemaTransformer(Transformer_NoRecurse):
         )
 
     def description(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('description',
-                          String(str(tree.children[0].value),
-                               ast_node=tree.children[0]))
+        return SchemaNode(
+            "description",
+            String(str(tree.children[0].value), ast_node=tree.children[0]),
+        )
 
     def default_value(self, tree: Tree) -> SchemaNode:
         # Ignore this node and return the value contained
         return tree.children[0]
 
     def enum_value(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('enum_value',
-                          GraphQLEnumValue(value=str(tree.children[0].value)))
+        return SchemaNode(
+            "enum_value", GraphQLEnumValue(value=str(tree.children[0].value))
+        )
 
     def int_value(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('int_value', tree.children[0].value)
+        return SchemaNode("int_value", tree.children[0].value)
 
     def float_value(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('float_value', tree.children[0].value)
+        return SchemaNode("float_value", tree.children[0].value)
 
     def string_value(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('string_value', tree.children[0].value)
+        return SchemaNode("string_value", tree.children[0].value)
 
     def true_value(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('true_value', tree.children[0].value)
+        return SchemaNode("true_value", tree.children[0].value)
 
     def false_value(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('false_value', tree.children[0].value)
+        return SchemaNode("false_value", tree.children[0].value)
 
     def null_value(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('null_value', tree.children[0].value)
+        return SchemaNode("null_value", tree.children[0].value)
 
     def value(self, tree: Tree) -> SchemaNode:
-        return SchemaNode('value', tree.children[0].value)
+        return SchemaNode("value", tree.children[0].value)
 
     def list_value(self, tree: Tree) -> SchemaNode:
         lst = []
         for child in tree.children:
-            if child.type == 'value':
+            if child.type == "value":
                 lst.append(child.value)
-        return SchemaNode('list_value', lst)
+        return SchemaNode("list_value", lst)
 
     def object_value(self, tree: Tree) -> SchemaNode:
         obj = {}
         for child in tree.children:
-            if child.type == 'object_field':
+            if child.type == "object_field":
                 name, value = child.value
                 obj[name] = value
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
-        return SchemaNode('object_value', obj)
+                        child, child.__class__.__name__
+                    )
+                )
+        return SchemaNode("object_value", obj)
 
     def object_field(self, tree: Tree) -> SchemaNode:
         name = None
         value = None
         for child in tree.children:
-            if child.type == 'IDENT':
+            if child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'value':
+            elif child.type == "value":
                 value = child.value
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
-        return SchemaNode('object_field', (name, value))
+                        child, child.__class__.__name__
+                    )
+                )
+        return SchemaNode("object_field", (name, value))
 
     def arguments(self, tree: Tree) -> SchemaNode:
         arguments = {}
         for child in tree.children:
             arguments[child.value[0]] = child.value[1]
-        return SchemaNode('arguments', arguments)
+        return SchemaNode("arguments", arguments)
 
     def argument(self, tree: Tree) -> SchemaNode:
         name = None
         value = None
         for child in tree.children:
-            if child.type == 'IDENT':
+            if child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'value':
+            elif child.type == "value":
                 value = child.value
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
-        return SchemaNode('argument', (name, value))
+                        child, child.__class__.__name__
+                    )
+                )
+        return SchemaNode("argument", (name, value))
 
     def directives(self, tree: Tree) -> SchemaNode:
         # TODO !!!!
-        return SchemaNode('discard', None)
+        return SchemaNode("discard", None)
 
     def directive(self, tree: Tree) -> SchemaNode:
         # TODO !!!
-        return SchemaNode('discard', None)
+        return SchemaNode("discard", None)
 
     def __getattr__(self, attr):
         ignored = []
 
         def fn(tree: Tree):
             if tree.data not in ignored:
-                print('{} => {}\n'.format(attr, tree))
+                print("{} => {}\n".format(attr, tree))
             return tree
 
         return fn

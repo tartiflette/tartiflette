@@ -1,11 +1,11 @@
 
 .PHONY: format
 format:
-	yapf -i -vv -r tartiflette
+	black -l 79 --py36 tartiflette setup.py
 
 .PHONY: check-format
 check-format:
-	yapf -d -vv -r tartiflette
+	black -l 79 --py36 --check tartiflette setup.py
 
 .PHONY: style
 style: check-format

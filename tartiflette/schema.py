@@ -2,17 +2,28 @@ import functools
 from typing import Optional, Dict, List, Union
 
 from tartiflette.executors.types import ExecutionData, CoercedValue
-from tartiflette.types.builtins import GraphQLBoolean, GraphQLFloat, GraphQLID, \
-    GraphQLInt, GraphQLString
-from tartiflette.types.exceptions.tartiflette import \
-    GraphQLSchemaError
+from tartiflette.types.builtins import (
+    GraphQLBoolean,
+    GraphQLFloat,
+    GraphQLID,
+    GraphQLInt,
+    GraphQLString,
+)
+from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.interface import GraphQLInterfaceType
-from tartiflette.introspection import SchemaRootFieldDefinition, \
-    TypeRootFieldDefinition, TypeNameRootFieldDefinition, IntrospectionSchema, \
-    IntrospectionType, IntrospectionTypeKind, IntrospectionField, \
-    IntrospectionEnumValue, IntrospectionInputValue
+from tartiflette.introspection import (
+    SchemaRootFieldDefinition,
+    TypeRootFieldDefinition,
+    TypeNameRootFieldDefinition,
+    IntrospectionSchema,
+    IntrospectionType,
+    IntrospectionTypeKind,
+    IntrospectionField,
+    IntrospectionEnumValue,
+    IntrospectionInputValue,
+)
 from tartiflette.types.list import GraphQLList
 from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
@@ -30,7 +41,9 @@ class GraphQLSchema:
     def __init__(self, description=None):
         self.description = description
         if not description:
-            self.description = "A GraphQL Schema contains the complete definition "
+            self.description = (
+                "A GraphQL Schema contains the complete definition "
+            )
             "of the GraphQL structure: types, entrypoints (query, "
             "mutation, subscription)."
         # Schema entry points
@@ -52,22 +65,26 @@ class GraphQLSchema:
         self._possible_types: Dict[str, Dict[str, bool]] = {}
 
     def __repr__(self):
-        return "GraphQLSchema(query: {}, " \
-               "mutation: {}, " \
-               "subscription: {}, " \
-               "types: {})".format(
+        return (
+            "GraphQLSchema(query: {}, "
+            "mutation: {}, "
+            "subscription: {}, "
+            "types: {})".format(
                 self._query_type,
                 self._mutation_type,
                 self.subscription_type,
                 self._gql_types,
-                )
+            )
+        )
 
     def __eq__(self, other):
         if not type(self) is type(other):
             return False
-        if self._query_type != other._query_type or \
-                self._mutation_type != other._mutation_type or \
-                self._subscription_type != other._subscription_type:
+        if (
+            self._query_type != other._query_type
+            or self._mutation_type != other._mutation_type
+            or self._subscription_type != other._subscription_type
+        ):
             return False
         if len(self._gql_types) != len(other._gql_types):
             return False
@@ -109,11 +126,12 @@ class GraphQLSchema:
     def add_definition(self, value: GraphQLType) -> None:
         # TODO: Check stuff, call update_schema after each new definition ?
         if self._gql_types.get(value.name):
-            raise ValueError('new GraphQL type definition `{}` '
-                             'overrides existing type definition `{}`.'.format(
-                                value.name,
-                                repr(self._gql_types.get(value.name))
-            ))
+            raise ValueError(
+                "new GraphQL type definition `{}` "
+                "overrides existing type definition `{}`.".format(
+                    value.name, repr(self._gql_types.get(value.name))
+                )
+            )
         self._gql_types[value.name] = value
 
     def to_real_type(self, gql_type: Union[str, GraphQLNonNull, GraphQLList]):
@@ -135,14 +153,16 @@ class GraphQLSchema:
     def get_resolver(self, field_path: str) -> Optional[callable]:
         if not field_path:
             return None
-        field_path_pieces = field_path.split('.')
+        field_path_pieces = field_path.split(".")
         if not self._gql_types.get(field_path_pieces[0]):
             field_path_pieces.insert(0, self._query_type)
-        field = self.get_field_by_name('.'.join(field_path_pieces[0:2]))
-        while field_path_pieces[-1] != getattr(field, 'name', None):
+        field = self.get_field_by_name(".".join(field_path_pieces[0:2]))
+        while field_path_pieces[-1] != getattr(field, "name", None):
             if not field:
                 break
-            field_path_pieces = [reduce_type(field.gql_type)] + field_path_pieces[2:]
+            field_path_pieces = [
+                reduce_type(field.gql_type)
+            ] + field_path_pieces[2:]
             field = self.get_field_by_name(".".join(field_path_pieces[0:2]))
         if field:
             return field.resolver
@@ -150,11 +170,11 @@ class GraphQLSchema:
 
     def get_field_by_name(self, name: str) -> Optional[GraphQLField]:
         try:
-            object_name, field_name = name.split('.')
+            object_name, field_name = name.split(".")
         except ValueError as err:
             raise ValueError(
-                'field name must be of the format '
-                '`TypeName.fieldName` got `{}`.'.format(name)
+                "field name must be of the format "
+                "`TypeName.fieldName` got `{}`.".format(name)
             ) from err
 
         try:
@@ -238,17 +258,20 @@ class GraphQLSchema:
                         raise GraphQLSchemaError(
                             "GraphQL type `{}` implements the `{}` interface "
                             "which is not an interface!".format(
-                                gql_type.name, iface_name,
+                                gql_type.name, iface_name
                             )
                         )
-                    for iface_field_name, iface_field in iface_type.fields.items():
+                    for (
+                        iface_field_name,
+                        iface_field,
+                    ) in iface_type.fields.items():
                         try:
                             gql_type_field = gql_type.fields[iface_field_name]
                         except KeyError:
                             raise GraphQLSchemaError(
                                 "field `{}` is missing in GraphQL type `{}` "
                                 "that implements the `{}` interface.".format(
-                                    iface_field_name, gql_type.name, iface_name,
+                                    iface_field_name, gql_type.name, iface_name
                                 )
                             )
                         if gql_type_field.gql_type != iface_field.gql_type:
@@ -256,8 +279,10 @@ class GraphQLSchema:
                                 "field `{}` in GraphQL type `{}` that "
                                 "implements the `{}` interface does not follow "
                                 "the interface field type `{}`.".format(
-                                    iface_field_name, gql_type.name, iface_name,
-                                    iface_field.gql_type
+                                    iface_field_name,
+                                    gql_type.name,
+                                    iface_name,
+                                    iface_field.gql_type,
                                 )
                             )
             except (AttributeError, TypeError):
@@ -272,15 +297,19 @@ class GraphQLSchema:
                     self.query_type
                 )
             )
-        elif self.mutation_type != "Mutation" and \
-                self.mutation_type not in self._gql_types.keys():
+        elif (
+            self.mutation_type != "Mutation"
+            and self.mutation_type not in self._gql_types.keys()
+        ):
             raise GraphQLSchemaError(
                 "schema could not find the root `mutation` type `{}`.".format(
                     self.mutation_type
                 )
             )
-        elif self.subscription_type != "Subscription" and \
-                self.subscription_type not in self._gql_types.keys():
+        elif (
+            self.subscription_type != "Subscription"
+            and self.subscription_type not in self._gql_types.keys()
+        ):
             raise GraphQLSchemaError(
                 "schema could not find the root `subscription` type `{}`.".format(
                     self.subscription_type
@@ -292,9 +321,7 @@ class GraphQLSchema:
         for type_name, gql_type in self._gql_types.items():
             if isinstance(gql_type, GraphQLObjectType) and not gql_type.fields:
                 raise GraphQLSchemaError(
-                    "object type `{}` has no fields.".format(
-                        type_name
-                    )
+                    "object type `{}` has no fields.".format(type_name)
                 )
         return True
 
@@ -320,8 +347,9 @@ class GraphQLSchema:
 
         def _default_resolver(execution_data):
             try:
-                return getattr(execution_data.parent_result,
-                               execution_data.name)
+                return getattr(
+                    execution_data.parent_result, execution_data.name
+                )
             except AttributeError:
                 pass
 

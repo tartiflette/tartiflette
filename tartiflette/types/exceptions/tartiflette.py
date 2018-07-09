@@ -10,10 +10,14 @@ class TartifletteException(Exception):
 
 
 class GraphQLError(Exception):
-
-    def __init__(self, message: str, path: Optional[List[Any]] = None,
-                 locations: Optional[List[Location]] = None,
-                 user_message: str=None, more_info: str=""):
+    def __init__(
+        self,
+        message: str,
+        path: Optional[List[Any]] = None,
+        locations: Optional[List[Location]] = None,
+        user_message: str = None,
+        more_info: str = "",
+    ):
         super().__init__(message)
         self.message = message  # Developer message by default
         self.user_message = user_message if user_message else message
@@ -34,40 +38,40 @@ class GraphQLError(Exception):
         except TypeError:
             pass
         return {
-            "message": self.user_message if self.user_message else self.message,
+            "message": self.user_message
+            if self.user_message
+            else self.message,
             "path": self.path,
             "locations": locations,
         }
 
 
 class InvalidValue(GraphQLError):
-
-    def __init__(self, value: Any, gql_type=None,
-                 field: Optional[GraphQLField]=None,
-                 path: Optional[List[Any]] = None,
-                 locations: Optional[List[Location]]=None):
+    def __init__(
+        self,
+        value: Any,
+        gql_type=None,
+        field: Optional[GraphQLField] = None,
+        path: Optional[List[Any]] = None,
+        locations: Optional[List[Location]] = None,
+    ):
         self.value = value
         self.field = field
         self.gql_type = gql_type
-        message = "Invalid value (value: {!r})".format(
-            value
-        )
+        message = "Invalid value (value: {!r})".format(value)
         if self.field:
             message += " for field `{}`".format(self.field.name)
         if self.gql_type:
             message += " of type `{}`".format(str(self.gql_type))
-        super().__init__(message=message, path=path,
-                         locations=locations)
+        super().__init__(message=message, path=path, locations=locations)
 
 
 class GraphQLSchemaError(GraphQLError):
-
     def __init__(self, message):
         super().__init__(message=message)
 
 
 class NonAwaitableResolver(GraphQLError):
-
     def __init__(self, message):
         super().__init__(message=message)
 
@@ -86,6 +90,7 @@ class UnknownVariableException(GraphQLError):
     def __init__(self, varname):
         # TODO: Unify error messages format
         super().__init__(message="< %s > is not known" % varname)
+
 
 class UnknownGraphQLType(GraphQLError):
     def __init__(self, message):
