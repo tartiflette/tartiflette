@@ -46,11 +46,10 @@ Here are the subjects we are working on:
 ### Executor
 
 * [x] Bind the Types specified in the SDL to the `Executor`.
-* [x] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191) - _[#17 - In progress](https://github.com/dailymotion/tartiflette/issues/17)_
+* [x] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191) - _[#17](https://github.com/dailymotion/tartiflette/issues/17)_
 * [x] Error management
 * [ ] Abstract and Compound Types: Unions, Interfaces, …
 * [ ] NodeDefinition: Check that the [Type exists](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/nodes/definition.py#L26)
-* [x] (Resolver) Think how to apply [a default resolver](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L18) to a field.
 * [ ] (Directive) Integrate the directive's execution in the Executor.
 * [ ] Integrate the middleware in the Executor.
 
@@ -58,8 +57,8 @@ Here are the subjects we are working on:
 
 * [x] Build a `Parser` which parse the [Schema Definition Language](https://github.com/facebook/graphql/blob/master/spec/Section%202%20--%20Language.md) and created the associated schema and types as Python objects.
 * [ ] Think about custom Scalar API
-* [x] (Introspection) Implement the `__type` Field. - [_[#15 - In progress](https://github.com/dailymotion/tartiflette/issues/15)_
-* [x] (Introspection) Implement the `__schema`Field. - [_[#16 - In progress](https://github.com/dailymotion/tartiflette/issues/16)_
+* [x] (Introspection) Implement the `__type` Field. - _[#15](https://github.com/dailymotion/tartiflette/issues/15)_
+* [x] (Introspection) Implement the `__schema`Field. - _[#16](https://github.com/dailymotion/tartiflette/issues/16)_
 * [ ] (Directive) Append directive informations _(from SDL)_ as metadata on Fields / Types.
 * [ ] (Directive) Implement the declaration of the custom directives into the Engine constructor.
 * [ ] (Directive) Implement @deprecated

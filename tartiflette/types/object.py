@@ -1,8 +1,7 @@
 from collections import OrderedDict
 from typing import Dict, Optional, List, Any
 
-from tartiflette.executors.types import ExecutionData
-from tartiflette.types.exceptions.tartiflette import InvalidValue
+from tartiflette.executors.types import ExecutionData, CoercedValue
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
 
@@ -40,11 +39,10 @@ class GraphQLObjectType(GraphQLType):
     def add_field(self, value: GraphQLField):
         self.fields[value.name] = value
 
-    def coerce_value(self, value: Any, execution_data: ExecutionData) -> (Any, List):
+    def coerce_value(self, value: Any, execution_data: ExecutionData) -> CoercedValue:
         if value is None:
-            return None, []
+            return CoercedValue(value, None)
         try:
-            return {k: v for (k, v) in value.items()}, []
+            return CoercedValue({k: v for (k, v) in value.items()}, None)
         except AttributeError:
-            return {}, []
-
+            return CoercedValue({}, None)

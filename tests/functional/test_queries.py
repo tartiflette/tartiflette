@@ -5,6 +5,7 @@ import pytest
 from unittest.mock import Mock, call
 
 from tartiflette import Resolver
+from tartiflette.executors.types import CoercedValue
 from tartiflette.parser.nodes.field import ExecutionData
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.location import Location
@@ -54,7 +55,7 @@ async def test_get_field_by_name_call_order(query, varis, expected):
 
     def coerce_value(value: Any, execution_data: ExecutionData) -> (
         Any, List):
-        return value, []
+        return CoercedValue(value, None)
 
     field = Mock()
     field.name = "test"
@@ -514,7 +515,7 @@ async def test_result_value(query, expected):
 
     def coerce_value(value: Any, execution_data: ExecutionData) -> (
         Any, List):
-        return value, []
+        return CoercedValue(value, None)
 
     field = Mock()
     field.name = "test"
