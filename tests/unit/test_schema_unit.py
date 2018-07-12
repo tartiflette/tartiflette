@@ -3,7 +3,7 @@ import pytest
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import \
-    GraphQLSchemaError
+    GraphQLSchemaError, UnknownSchemaFieldResolver
 
 
 def test_schema_object_get_field_name():
@@ -73,7 +73,8 @@ def test_schema_object_get_field_name():
     assert generated_schema.get_field_by_name('Test.simpleField') is not None
 
     # Sad path
-    assert generated_schema.get_field_by_name('Something.unknownField') is None
+    with pytest.raises(UnknownSchemaFieldResolver):
+        assert generated_schema.get_field_by_name('Something.unknownField')
 
 
 @pytest.mark.parametrize("full_sdl,expected_error,expected_value", [
@@ -157,6 +158,18 @@ def test_schema_object_get_field_name():
 def test_schema_validate_named_types(full_sdl, expected_error, expected_value):
     generated_schema = build_graphql_schema_from_sdl(full_sdl,
                                                      schema=GraphQLSchema())
+    try:
+        generated_schema.types["Date"].coerce_input = lambda x: x
+        generated_schema.types["Date"].coerce_output = lambda x: x
+    except KeyError:
+        pass
+
+    try:
+        generated_schema.types["Time"].coerce_input = lambda x: x
+        generated_schema.types["Time"].coerce_output = lambda x: x
+    except KeyError:
+        pass
+
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
             generated_schema.validate()
@@ -318,6 +331,18 @@ def test_schema_validate_object_follow_interfaces(full_sdl, expected_error,
                                                   expected_value):
     generated_schema = build_graphql_schema_from_sdl(full_sdl,
                                                      schema=GraphQLSchema())
+    try:
+        generated_schema.types["Brand"].coerce_output=lambda x: x
+        generated_schema.types["Brand"].coerce_input=lambda x: x
+    except KeyError:
+        pass
+
+    try:
+        generated_schema.types["Part"].coerce_output = lambda x: x
+        generated_schema.types["Part"].coerce_input = lambda x: x
+    except KeyError:
+        pass
+
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
             generated_schema.validate()
@@ -553,8 +578,9 @@ def test_schema_get_resolver():
     assert generated_schema.get_resolver("testField.anotherField") == c
     assert generated_schema.get_resolver("testField.userInfo.smthg.oneField") == b
 
-    assert generated_schema.get_resolver("RootQuery.testField.userInfo.smthg.oneField.unknownField") is None
-    assert generated_schema.get_resolver("RootQuery.testField.userInfo.oneField.unknownField") is None
+    with pytest.raises(UnknownSchemaFieldResolver):
+        generated_schema.get_resolver("RootQuery.testField.userInfo.smthg.oneField.unknownField")
+        generated_schema.get_resolver("RootQuery.testField.userInfo.oneField.unknownField")
 
 
 def test_schema_bake_schema():

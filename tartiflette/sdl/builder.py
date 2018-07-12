@@ -3,15 +3,12 @@ from typing import Optional
 
 from lark.lark import Lark
 from lark.tree import Tree
-from lark.common import UnexpectedToken, ParseError
-from lark.lexer import UnexpectedInput
 
 from tartiflette.schema import GraphQLSchema
 from tartiflette.sdl.transformers.cleaning_transformer import (
     CleaningTransformer
 )
 from tartiflette.sdl.transformers.schema_transformer import SchemaTransformer
-from tartiflette.types.exceptions.tartiflette import InvalidSDL
 
 
 def build_graphql_schema_from_sdl(

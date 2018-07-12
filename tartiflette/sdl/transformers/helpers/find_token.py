@@ -1,4 +1,4 @@
-from typing import Optional, Union, List
+from typing import List, Optional, Union
 
 from lark.lexer import Token
 from lark.tree import Tree
@@ -15,7 +15,7 @@ def find_token_in_ast(
             res = find_token_in_ast(child, searched_token_type)
             if res:
                 return res
-    elif isinstance(ast_node, List):
+    elif isinstance(ast_node, list):
         for child in ast_node:
             res = find_token_in_ast(child, searched_token_type)
             if res:

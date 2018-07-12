@@ -39,7 +39,7 @@ async def test_tartiflette_execute_scalar_type_output():
     }
     """)
 
-    assert """{"data":{"lastUpdate":"2018-04-19T14:57:38"}}""" == result
+    assert {"data":{"lastUpdate":"2018-04-19T14:57:38"}} == result
 
 
 @pytest.mark.asyncio
@@ -47,37 +47,37 @@ async def test_tartiflette_execute_scalar_type_output():
     (
         "String",
         "test",
-        '{"data":{"testField":"test"}}',
+        {"data":{"testField":"test"}},
     ),
     (
         "String!",
         None,
-        '{"data":{"testField":null},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `String!`","path":["testField"],"locations":[{"line":1,"column":26}]}]}',
+        {"data":{"testField":None},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `String!`","path":["testField"],"locations":[{"line":1,"column":26}]}]},
     ),
     (
         "Int",
         45,
-        '{"data":{"testField":45}}',
+        {"data":{"testField":45}},
     ),
     (
         "Float",
         45.0,
-        '{"data":{"testField":45.0}}',
+        {"data":{"testField":45.0}},
     ),
     (
         "Boolean",
         True,
-        '{"data":{"testField":true}}',
+        {"data":{"testField":True}},
     ),
     (
         "Boolean",
         False,
-        '{"data":{"testField":false}}',
+        {"data":{"testField":False}},
     ),
     (
         "[Date]",
         [datetime(year=2018, month=4, day=19, hour=14, minute=57, second=38)],
-        '{"data":{"testField":["2018-04-19T14:57:38"]}}',
+        {"data":{"testField":["2018-04-19T14:57:38"]}},
     ),
     (
         "[[Date!]!]!",
@@ -85,7 +85,7 @@ async def test_tartiflette_execute_scalar_type_output():
             datetime(year=2017, month=3, day=18, hour=13, minute=56, second=37),
             datetime(year=2018, month=4, day=19, hour=14, minute=57, second=38),
           ]],
-        '{"data":{"testField":[["2017-03-18T13:56:37","2018-04-19T14:57:38"]]}}',
+        {"data":{"testField":[["2017-03-18T13:56:37","2018-04-19T14:57:38"]]}},
     ),
     (
         "[Date]",
@@ -94,7 +94,7 @@ async def test_tartiflette_execute_scalar_type_output():
             None,
             datetime(year=2018, month=4, day=19, hour=14, minute=57, second=38),
         ],
-        '{"data":{"testField":["2017-03-18T13:56:37",null,"2018-04-19T14:57:38"]}}',
+        {"data":{"testField":["2017-03-18T13:56:37",None,"2018-04-19T14:57:38"]}},
     ),
     # TODO: Test temporarily disabled (needs a fix on error resolving etc.)
     (
@@ -104,7 +104,7 @@ async def test_tartiflette_execute_scalar_type_output():
             None,
             datetime(year=2018, month=4, day=19, hour=14, minute=57, second=38),
         ],
-        '{"data":{"testField":["2017-03-18T13:56:37","2018-04-19T14:57:38"]},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `[Date!]`","path":["testField",1],"locations":[{"line":1,"column":26}]}]}',
+        {"data":{"testField": None},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `[Date!]`","path":["testField",1],"locations":[{"line":1,"column":26}]}]},
     ),
 ])
 async def test_tartiflette_execute_scalar_type_advanced(input_sdl, resolver_response, expected):
@@ -124,6 +124,7 @@ async def test_tartiflette_execute_scalar_type_advanced(input_sdl, resolver_resp
 
     ttftt = Tartiflette(schema_sdl)
 
+    ttftt.schema.types["Date"].coerce_input = lambda x: x
     ttftt.schema.types["Date"].coerce_output = from_date_to_str
 
     @Resolver("Query.testField", schema=ttftt.schema)

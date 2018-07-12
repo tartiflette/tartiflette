@@ -1,7 +1,15 @@
 import functools
-from typing import Optional, Dict, List, Union
+from typing import Dict, List, Optional, Union
 
-from tartiflette.executors.types import ExecutionData, CoercedValue
+from tartiflette.executors.types import Info
+from tartiflette.introspection import (IntrospectionEnumValue,
+                                       IntrospectionField,
+                                       IntrospectionInputValue,
+                                       IntrospectionSchema, IntrospectionType,
+                                       IntrospectionTypeKind,
+                                       SchemaRootFieldDefinition,
+                                       TypeNameRootFieldDefinition,
+                                       TypeRootFieldDefinition)
 from tartiflette.types.builtins import (
     GraphQLBoolean,
     GraphQLFloat,
@@ -9,24 +17,16 @@ from tartiflette.types.builtins import (
     GraphQLInt,
     GraphQLString,
 )
-from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+from tartiflette.types.enum import GraphQLEnumType
+from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError, \
+    UnknownSchemaFieldResolver, GraphQLError
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.interface import GraphQLInterfaceType
-from tartiflette.introspection import (
-    SchemaRootFieldDefinition,
-    TypeRootFieldDefinition,
-    TypeNameRootFieldDefinition,
-    IntrospectionSchema,
-    IntrospectionType,
-    IntrospectionTypeKind,
-    IntrospectionField,
-    IntrospectionEnumValue,
-    IntrospectionInputValue,
-)
 from tartiflette.types.list import GraphQLList
 from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
+from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.type import GraphQLType
 from tartiflette.types.union import GraphQLUnionType
 
@@ -124,7 +124,6 @@ class GraphQLSchema:
         return self._gql_types
 
     def add_definition(self, value: GraphQLType) -> None:
-        # TODO: Check stuff, call update_schema after each new definition ?
         if self._gql_types.get(value.name):
             raise ValueError(
                 "new GraphQL type definition `{}` "
@@ -135,7 +134,6 @@ class GraphQLSchema:
         self._gql_types[value.name] = value
 
     def to_real_type(self, gql_type: Union[str, GraphQLNonNull, GraphQLList]):
-        # TODO: Execute this at schema build time, performance issue !
         try:
             return self._gql_types[gql_type]
         except TypeError:  # Unhashable so must be GraphQL[NonNull|List]
@@ -180,8 +178,9 @@ class GraphQLSchema:
         try:
             return self._gql_types[object_name].fields[field_name]
         except (AttributeError, KeyError):
-            pass
-        return None
+            raise UnknownSchemaFieldResolver(
+                "field `{}` was not found in GraphQL schema.".format(name)
+            )
 
     def bake(self) -> None:
         """
@@ -193,6 +192,7 @@ class GraphQLSchema:
         self.validate()
         self.inject_introspection()
         self.field_gql_types_to_real_types()
+        self.union_gql_types_to_real_types()
         self.wrap_all_resolvers()
         return None
 
@@ -202,18 +202,18 @@ class GraphQLSchema:
 
         :return: bool
         """
-        # TODO: Maybe store this in a cached value
-        # like __validation_errors: List[Errors]
+        # TODO: Optimization: most validation functions iterate over
+        # the schema types: it could be done in one loop.
         validators = [
             self._validate_schema_named_types,
             self._validate_object_follow_interfaces,
             self._validate_schema_root_types_exist,
             self._validate_non_empty_object,
             self._validate_union_is_acceptable,
-            # TODO: Validate custom Scalar has an implementation
-            # TODO: Validate Enum: a key should not use other NamedTypes or
-            # reserved words, check Unions of Enums also !
+            self._validate_all_scalars_have_implementations,
+            self._validate_enum_values_are_unique,
             # TODO: Validate Field: default value must be of given type
+            # TODO: Check all objects have resolvers (at least in parent)
         ]
         for validator in validators:
             # TODO: Improve validation (messages & returns).
@@ -340,21 +340,47 @@ class GraphQLSchema:
                         # can they mix types: interface | object | scalar
         return True
 
+    def _validate_all_scalars_have_implementations(self):
+        for type_name, gql_type in self._gql_types.items():
+            if isinstance(gql_type, GraphQLScalarType):
+                if gql_type.coerce_output is None or \
+                        gql_type.coerce_input is None:
+                    raise GraphQLSchemaError(
+                        "scalar type `{}` must have a coercion "
+                        "function for inputs and outputs.".format(
+                            type_name
+                        )
+                    )
+        return True
+
+    def _validate_enum_values_are_unique(self):
+        for type_name, gql_type in self._gql_types.items():
+            if isinstance(gql_type, GraphQLEnumType):
+                for value in gql_type.values:
+                    if str(value.value) in self._gql_types:
+                        raise GraphQLSchemaError(
+                        "enum type `{}` has a value of `{}` which "
+                        "is not unique in the GraphQL schema.".format(
+                            type_name, str(value.value),
+                        )
+                    )
+        return True
+
     @staticmethod
     def wrap_field_resolver(field: GraphQLField):
         if getattr(field.resolver, "__ttftt_wrapped__", False):
             return
 
-        def _default_resolver(execution_data):
+        def _default_resolver(parent, arguments, request_ctx, info):
             try:
                 return getattr(
-                    execution_data.parent_result, execution_data.name
+                    parent, info.schema_field.name,
                 )
             except AttributeError:
                 pass
 
             try:
-                return execution_data.parent_result[execution_data.name]
+                return parent[info.schema_field.name]
             except (KeyError, TypeError):
                 pass
 
@@ -363,16 +389,17 @@ class GraphQLSchema:
         resolver = field.resolver
 
         @functools.wraps(resolver)
-        async def wrapper(request_ctx, execution_data: ExecutionData):
+        async def wrapper(parent, arguments, request_ctx, info: Info):
             try:
-                result = await resolver(request_ctx, execution_data)
+                result = await resolver(parent, arguments, request_ctx, info)
             except TypeError:
-                result = _default_resolver(execution_data)
+                result = _default_resolver(parent, arguments, request_ctx, info)
             except Exception as e:
                 # TODO: Capture this error !
+                print(e)
                 result = None
-            coerced_value = field.gql_type.coerce_value(result, execution_data)
-            return result, coerced_value.errors, coerced_value.value
+            coerced_value = field.gql_type.coerce_value(result, info)
+            return result, coerced_value
 
         wrapper.__ttftt_wrapped__ = True
 
@@ -400,6 +427,14 @@ class GraphQLSchema:
             except AttributeError:
                 pass
 
+    def union_gql_types_to_real_types(self) -> None:
+        for type_name, gql_type in self._gql_types.items():
+            try:
+                for idx, local_gql_type in enumerate(gql_type.gql_types):
+                    gql_type.gql_types[idx] = self.to_real_type(local_gql_type)
+            except AttributeError as e:
+                pass
+
     def inject_introspection(self):
         # Add Introspection types
         self.add_definition(IntrospectionSchema)
@@ -408,7 +443,7 @@ class GraphQLSchema:
         self.add_definition(IntrospectionField)
         self.add_definition(IntrospectionEnumValue)
         self.add_definition(IntrospectionInputValue)
-        # Add introspection field into root objectss
+        # Add introspection field into root objects
         self.types[self.query_type].add_field(SchemaRootFieldDefinition)
         self.types[self.query_type].add_field(TypeRootFieldDefinition)
         self.types[self.query_type].add_field(TypeNameRootFieldDefinition)

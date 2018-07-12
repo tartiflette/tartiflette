@@ -1,6 +1,6 @@
-from typing import List, Optional, Any
+from typing import Any, List, Optional
 
-from tartiflette.executors.types import ExecutionData, CoercedValue
+from tartiflette.executors.types import CoercedValue, Info
 from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
@@ -61,22 +61,11 @@ class GraphQLEnumType(GraphQLType):
         return super().__eq__(other) and self.values == other.values
 
     def coerce_value(
-        self, value: Any, execution_data: ExecutionData
+        self, value: Any, info: Info
     ) -> CoercedValue:
         if value is None:
             return CoercedValue(value, None)
         for enumval in self.values:
             if enumval.value == value:
                 return CoercedValue(enumval.value, None)
-        return CoercedValue(
-            None,
-            [
-                InvalidValue(
-                    value,
-                    gql_type=execution_data.field.gql_type,
-                    field=execution_data.field,
-                    path=execution_data.path,
-                    locations=[execution_data.location],
-                )
-            ],
-        )
+        return CoercedValue(None, InvalidValue(value, info))

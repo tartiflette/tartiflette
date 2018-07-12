@@ -31,7 +31,7 @@ async def test_tartiflette_execute_enum_type_output():
     }
     """)
 
-    assert """{"data":{"enumTest":"Value1"}}""" == result
+    assert {"data":{"enumTest":"Value1"}} == result
 
 
 @pytest.mark.asyncio
@@ -39,22 +39,22 @@ async def test_tartiflette_execute_enum_type_output():
     (
         "Test",
         "Value1",
-        '{"data":{"testField":"Value1"}}',
+        {"data":{"testField":"Value1"}},
     ),
     (
         "Test!",
         None,
-        '{"data":{"testField":null},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[{"line":1,"column":26}]}]}',
+        {"data":{"testField":None},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[{"line":1,"column":26}]}]},
     ),
     (
         "[Test]",
         ["Value3", "Value1"],
-        '{"data":{"testField":["Value3","Value1"]}}',
+        {"data":{"testField":["Value3","Value1"]}},
     ),
     (
         "[Test]",
         ["Value3", "UnknownValue"],
-        '{"data":{"testField":["Value3",null]},"errors":[{"message":"Invalid value (value: \'UnknownValue\') for field `testField` of type `[Test]`","path":["testField",1],"locations":[{"line":1,"column":26}]}]}',
+        {"data":{"testField":["Value3",None]},"errors":[{"message":"Invalid value (value: \'UnknownValue\') for field `testField` of type `[Test]`","path":["testField",1],"locations":[{"line":1,"column":26}]}]},
     ),
 ])
 async def test_tartiflette_execute_enum_type_advanced(input_sdl, resolver_response, expected):
