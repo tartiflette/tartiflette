@@ -1,7 +1,7 @@
 import pytest
+from lark import UnexpectedToken, UnexpectedCharacters
 from lark.tree import Tree
-from lark.common import UnexpectedToken, ParseError
-from lark.lexer import Token, UnexpectedInput
+from lark.lexer import Token
 
 from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
 
@@ -35,13 +35,13 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
     (
         False,
         """schema { query: RootQueryCustomType""",
-        ParseError,
+        UnexpectedToken,
     ),
     # Invalid schema: no opening { after `schema`
     (
         False,
         """schema query: RootQueryCustomType }""",
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Simple schema with simple directive and comments and ignored commas
     (
@@ -164,7 +164,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             mutation: RootMutationCustomType
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Invalid schema: directive argument without value
     (
@@ -194,7 +194,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             mutation: RootMutationCustomType
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Schema with all scalars and end-objects
     (
@@ -404,7 +404,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             anInt: 10
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Schema with scalar but with empty list (invalid)
     (
@@ -414,7 +414,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             aLst: []
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Schema with scalar but with mixed list (invalid)
     (
@@ -434,7 +434,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             aLst: [String]
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Schema with all type modifiers
     (
@@ -559,7 +559,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             aNonNullString: String!!
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Schema with invalid double ! modifier on [] modifier
     (
@@ -569,7 +569,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             aNullableStringList: [String]!!
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Schema with invalid ! modifier on wrong side of type
     (
@@ -579,7 +579,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             aNonNullStringNonNullList: [!String]!
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Schema with invalid ! modifier on type name declaration
     (
@@ -599,7 +599,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             aNonNullStringNonNullList: [String]
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Schema with object and interfaces
     (
@@ -840,7 +840,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
         """
         scalar [Custom]
         """,
-        UnexpectedInput
+        UnexpectedCharacters
     ),
     # Scalar schema with invalid definition
     (
@@ -1219,7 +1219,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
             sinceID: ID @mydirective
         }
         """,
-        UnexpectedInput,
+        UnexpectedCharacters,
     ),
     # Directive definition schema
     (
@@ -1550,7 +1550,7 @@ def test_parse_graphql_sdl_to_ast_unit(is_valid, test_input, expected):
             wheel: String
         }
         """,
-        UnexpectedInput,
+        UnexpectedToken,
     ),
 ])
 def test_parse_graphql_to_ast_pending_fixes(is_valid, test_input, expected):

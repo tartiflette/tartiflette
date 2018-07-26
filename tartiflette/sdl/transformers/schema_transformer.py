@@ -1,6 +1,7 @@
 from collections import OrderedDict, namedtuple
 
-from lark.tree import Transformer_NoRecurse, Tree
+from lark.tree import Tree
+from lark.visitors import Transformer_InPlace, v_args
 
 from tartiflette.schema import DefaultGraphQLSchema
 from tartiflette.sdl.ast_types import String
@@ -23,7 +24,8 @@ That way, we can do child.type and child.value in any lark.Tree.children
 """
 
 
-class SchemaTransformer(Transformer_NoRecurse):
+@v_args(tree=True)
+class SchemaTransformer(Transformer_InPlace):
     """
     SchemaTransformer converts a cleaned lark AST tree (that has been passed
     through the CleaningTransformer) into a GraphQLSchema full definition.

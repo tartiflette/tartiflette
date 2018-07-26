@@ -142,7 +142,6 @@ async def test_calling_resolver_with_correct_value():
         async def __call__(self, parent, arguments, request_ctx, info: Info):
             new_info = Info(None, info.schema_field, info.schema, info.path,
                             info.location)
-            print("Called with: ", parent, arguments, request_ctx, new_info)
             super(resolver_d, self).__call__(parent, arguments, request_ctx, new_info)
             return "ValueD"
 
