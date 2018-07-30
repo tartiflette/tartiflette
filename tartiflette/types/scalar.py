@@ -1,6 +1,6 @@
-from typing import Optional, Any
+from typing import Any, Optional
 
-from tartiflette.executors.types import ExecutionData, CoercedValue
+from tartiflette.executors.types import CoercedValue, Info
 from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
@@ -33,7 +33,7 @@ class GraphQLScalarType(GraphQLType):
         )
 
     def __eq__(self, other) -> bool:
-        # TODO: Need to check if [de]serialize functions need to be equal
+        # TODO: Comparing function pointers is not ideal here...
         return (
             super().__eq__(other)
             and self.coerce_output == other.coerce_output
@@ -41,22 +41,11 @@ class GraphQLScalarType(GraphQLType):
         )
 
     def coerce_value(
-        self, value: Any, execution_data: ExecutionData
+        self, value: Any, info: Info
     ) -> CoercedValue:
         if value is None:
             return CoercedValue(value, None)
         try:
             return CoercedValue(self.coerce_output(value), None)
-        except TypeError:
-            return CoercedValue(
-                None,
-                [
-                    InvalidValue(
-                        value,
-                        gql_type=execution_data.field.gql_type,
-                        field=execution_data.field,
-                        path=execution_data.path,
-                        locations=[execution_data.location],
-                    )
-                ],
-            )
+        except (TypeError, ValueError):
+            return CoercedValue(None, InvalidValue(value, info))

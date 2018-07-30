@@ -29,12 +29,12 @@ async def test_tartiflette_execute_basic():
     mock_two = Mock()
 
     @Resolver("Test.field", schema=ttftt.schema)
-    async def func_field_resolver(*args, **kwargs):
+    async def func_field_resolver(parent, arguments, request_ctx, info):
         mock_one()
         return None
 
     @Resolver("RootQuery.defaultField", schema=ttftt.schema)
-    async def func_default_query_resolver(*args, **kwargs):
+    async def func_default_query_resolver(parent, arguments, request_ctx, info):
         mock_two()
         return
 
@@ -47,7 +47,7 @@ async def test_tartiflette_execute_basic():
     }
     """)
 
-    assert result == """{"data":{"testField":{"field":null}}}"""
+    assert result == {"data":{"testField":{"field":None}}}
     assert mock_one.called is True
     assert mock_two.called is False
 
@@ -71,15 +71,15 @@ async def test_tartiflette_nested_resolvers():
     ttftt = Tartiflette(schema_sdl)
 
     @Resolver("Query.rootField", schema=ttftt.schema)
-    async def func_resolver(request_ctx, execution_data):
+    async def func_resolver(parent, arguments, request_ctx, info):
         return {"nestedField": "Nested ?"}
 
     @Resolver("RootType.nestedField", schema=ttftt.schema)
-    async def func_resolver(request_ctx, execution_data):
+    async def func_resolver(parent, arguments, request_ctx, info):
         return {"endField": "Another"}
 
     @Resolver("NestedType.endField", schema=ttftt.schema)
-    async def func_resolver(request_ctx, execution_data):
+    async def func_resolver(parent, arguments, request_ctx, info):
         return "Test"
 
     ttftt.schema.bake()
@@ -93,7 +93,7 @@ async def test_tartiflette_nested_resolvers():
     }
     """)
 
-    assert result == """{"data":{"rootField":{"nestedField":{"endField":"Test"}}}}"""
+    assert result == {"data":{"rootField":{"nestedField":{"endField":"Test"}}}}
 
 
 @pytest.mark.asyncio
@@ -107,7 +107,7 @@ async def test_tartiflette_execute_hello_world():
     ttftt = Tartiflette(schema_sdl)
 
     @Resolver("Query.hello", schema=ttftt.schema)
-    async def func_field_resolver(*args, **kwargs):
+    async def func_field_resolver(parent, arguments, request_ctx, info):
         return "world"
 
     ttftt.schema.bake()
@@ -117,7 +117,7 @@ async def test_tartiflette_execute_hello_world():
     }
     """)
 
-    assert """{"data":{"hello":"world"}}""" == result
+    assert {"data":{"hello":"world"}} == result
 
     # Try twice to be sure everything works mutliple times
     result = await ttftt.execute("""
@@ -126,4 +126,4 @@ async def test_tartiflette_execute_hello_world():
         }
         """)
 
-    assert """{"data":{"hello":"world"}}""" == result
+    assert {"data":{"hello":"world"}} == result

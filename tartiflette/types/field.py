@@ -1,7 +1,5 @@
 from collections import OrderedDict
-from typing import Optional, Dict, Any, List
-
-from tartiflette.executors.types import ExecutionData
+from typing import Dict, Optional
 
 
 class GraphQLField:

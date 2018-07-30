@@ -1,6 +1,6 @@
-from typing import List, Any, Optional
+from typing import Any, List, Optional
 
-from tartiflette.executors.types import ExecutionData
+from tartiflette.executors.types import Info
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.location import Location
 
@@ -11,12 +11,12 @@ class TartifletteException(Exception):
 
 class GraphQLError(Exception):
     def __init__(
-        self,
-        message: str,
-        path: Optional[List[Any]] = None,
-        locations: Optional[List[Location]] = None,
-        user_message: str = None,
-        more_info: str = "",
+            self,
+            message: str,
+            path: Optional[List[Any]] = None,
+            locations: Optional[List[Location]] = None,
+            user_message: str = None,
+            more_info: str = "",
     ):
         super().__init__(message)
         self.message = message  # Developer message by default
@@ -48,22 +48,26 @@ class GraphQLError(Exception):
 
 class InvalidValue(GraphQLError):
     def __init__(
-        self,
-        value: Any,
-        gql_type=None,
-        field: Optional[GraphQLField] = None,
-        path: Optional[List[Any]] = None,
-        locations: Optional[List[Location]] = None,
+            self,
+            value: Any,
+            info: Info,
+            is_null_error: bool = False
     ):
         self.value = value
-        self.field = field
-        self.gql_type = gql_type
+        self.info = info
+        self.is_null_error = is_null_error
         message = "Invalid value (value: {!r})".format(value)
-        if self.field:
-            message += " for field `{}`".format(self.field.name)
-        if self.gql_type:
-            message += " of type `{}`".format(str(self.gql_type))
-        super().__init__(message=message, path=path, locations=locations)
+        try:
+            if self.info.schema_field:
+                message += " for field `{}`".format(
+                    self.info.schema_field.name)
+            if self.info.schema_field.gql_type:
+                message += " of type `{}`".format(
+                    str(self.info.schema_field.gql_type))
+        except (AttributeError, TypeError, ValueError):
+            pass
+        super().__init__(message=message, path=self.info.path,
+                         locations=[self.info.location])
 
 
 class GraphQLSchemaError(GraphQLError):
@@ -72,6 +76,11 @@ class GraphQLSchemaError(GraphQLError):
 
 
 class NonAwaitableResolver(GraphQLError):
+    def __init__(self, message):
+        super().__init__(message=message)
+
+
+class UnknownSchemaFieldResolver(GraphQLError):
     def __init__(self, message):
         super().__init__(message=message)
 

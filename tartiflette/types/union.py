@@ -1,5 +1,7 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
+from tartiflette.executors.types import CoercedValue, Info
+from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -14,12 +16,11 @@ class GraphQLUnionType(GraphQLType):
     """
 
     def __init__(
-        self,
-        name: str,
-        gql_types: List[str],
-        description: Optional[str] = None,
+            self,
+            name: str,
+            gql_types: List[GraphQLType],
+            description: Optional[str] = None,
     ):
-        # TODO: This will need a "resolve_type" function at execution time
         super().__init__(name=name, description=description)
         self.gql_types = gql_types
 
@@ -33,3 +34,17 @@ class GraphQLUnionType(GraphQLType):
 
     def __eq__(self, other) -> bool:
         return super().__eq__(other) and self.gql_types == other.gql_types
+
+    def coerce_value(
+            self, value: Any, info: Info
+    ) -> CoercedValue:
+        # TODO: This is not OK: see the associated test and comments
+        # on the error case. If one of the `gql_type` is a GraphQLObject,
+        # it will never fail or check anything :/
+        if value is None:
+            return CoercedValue(value, None)
+        for gql_type in self.gql_types:
+            coerced_value = gql_type.coerce_value(value, info)
+            if not coerced_value.error:
+                return coerced_value
+        return CoercedValue(None, InvalidValue(value, info))

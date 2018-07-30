@@ -1,4 +1,6 @@
+from collections import deque
 from functools import lru_cache, partial
+from typing import Dict, Any
 
 from tartiflette.parser.cffi import Visitor, _VisitorElement
 from tartiflette.parser.nodes.node import Node
@@ -6,7 +8,7 @@ from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     TartifletteException,
     UnknownVariableException,
-)
+    UnknownSchemaFieldResolver)
 from tartiflette.types.helpers import reduce_type
 from .nodes.field import NodeField
 from .nodes.fragment_definition import NodeFragmentDefinition
@@ -26,7 +28,7 @@ class TartifletteVisitor(Visitor):
             node_name = node_name + "(%s)" % name
         return node_name
 
-    def __init__(self, variables=None, schema=None):
+    def __init__(self, schema: GraphQLSchema, variables: Dict[str, Any]=None):
         super().__init__()
         self.path = ""
         self.field_path = []
@@ -63,7 +65,8 @@ class TartifletteVisitor(Visitor):
         self._current_type_condition = None
         self._current_fragment_definition = None
         self._fragments = {}
-        self._schema: GraphQLSchema = schema
+        self._field_events = deque(maxlen=25)
+        self.schema: GraphQLSchema = schema
         self.exception = None
 
     def _on_argument_in(self, element: _VisitorElement):
@@ -106,39 +109,32 @@ class TartifletteVisitor(Visitor):
     def _on_field_in(self, element: _VisitorElement):
         self.field_path.append(element.name)
         self._depth = self._depth + 1
+        self._field_events.append(("IN", element.name))
 
         try:
-            parent_type = self._current_node.gql_type
+            parent_type = reduce_type(self._current_node.schema_field.gql_type)
         except (AttributeError, TypeError):
-            parent_type = self._schema.query_type
+            parent_type = self.schema.types[self.schema.query_type]
 
         try:
-            # TODO: This is maybe not the best way. Think about it.
-            field = self._schema.get_field_by_name(
+            field = self.schema.get_field_by_name(
                 parent_type.name + "." + element.name
             )
-        except AttributeError:
-            field = self._schema.get_field_by_name(
-                str(parent_type) + "." + element.name
-            )
-
-        try:
-            gql_type = reduce_type(field.gql_type)
-        except AttributeError:
+        except UnknownSchemaFieldResolver as e:
             self.continue_child = 0
-            self.exception = TartifletteException(
-                "No field %s in %s" % (element.name, parent_type)
-            )
+            self.exception = e
+            # self.exception = TartifletteException(
+            #     "No field %s in %s" % (element.name, parent_type)
+            # )
             return
 
         node = NodeField(
-            field.resolver,
+            element.name,
+            self.schema,
+            field,
             element.get_location(),
             self.field_path[:],
-            element.name,
             self._current_type_condition,
-            gql_type,
-            field,
         )
 
         node.parent = self._current_node
@@ -146,6 +142,10 @@ class TartifletteVisitor(Visitor):
         self._add_node(node)
 
     def _on_field_out(self, _):
+        movement, name = self._field_events[-1]
+        if movement == "IN" and name == self._current_node.name:
+            self._current_node.is_leaf = True
+        self._field_events.append(("OUT", self._current_node.name))
         self.field_path.pop()
         self._depth = self._depth - 1
         self._current_node = self._current_node.parent

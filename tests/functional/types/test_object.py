@@ -34,7 +34,7 @@ async def test_tartiflette_execute_object_type_output():
     }
     """)
 
-    assert """{"data":{"objectTest":{"field1":"Test"}}}""" == result
+    assert {"data":{"objectTest":{"field1":"Test"}}} == result
 
 
 @pytest.mark.asyncio
@@ -42,12 +42,15 @@ async def test_tartiflette_execute_object_type_output():
     (
         "Test",
         {"field1": "Test"},
-        '{"data":{"testField":{"field1":"Test"}}}',
+        {"data":{"testField":{"field1": "Test"}}},
     ),
     (
         "Test!",
         None,
-        '{"data":{"testField":null},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[{"line":1,"column":26}]}]}',
+        # TODO: Not sure if this is OK: Because the type is Test!
+        # the field should be removed because it's invalid but the location
+        # of the error would be meaningless
+        {"data":{"testField": {"field1": None}},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[{"line":1,"column":26}]}]},
     ),
 ])
 async def test_tartiflette_execute_object_type_advanced(input_sdl, resolver_response, expected):
@@ -70,12 +73,13 @@ async def test_tartiflette_execute_object_type_advanced(input_sdl, resolver_resp
     ttftt.schema.bake()
     result = await ttftt.execute("""
     query Test{
-        testField
+        testField {
+            field1
+        }
     }
     """)
 
-    # TODO: Fix the test once the collect_value on object works.
-    # assert expected == result
+    assert expected == result
 
 
 @pytest.mark.asyncio
@@ -126,5 +130,5 @@ async def test_tartiflette_execute_object_type_unknown_field():
     }
     """)
 
-    assert result == """{"data":{"posts":[{"content":{"title":"Test"}}]}}"""
-    assert mock_call.called == True
+    assert result == {"data":{"posts":[{"content":{"title":"Test"}}]}}
+    assert mock_call.called is True

@@ -5,9 +5,9 @@ import pytest
 from unittest.mock import Mock, call
 
 from tartiflette import Resolver
-from tartiflette.executors.types import CoercedValue
-from tartiflette.parser.nodes.field import ExecutionData
+from tartiflette.executors.types import CoercedValue, Info
 from tartiflette.schema import GraphQLSchema
+from tartiflette.tartiflette import Tartiflette
 from tartiflette.types.location import Location
 
 
@@ -53,7 +53,7 @@ async def test_get_field_by_name_call_order(query, varis, expected):
     async def _resolver(ctx, exec_data):
         return {}
 
-    def coerce_value(value: Any, execution_data: ExecutionData) -> (
+    def coerce_value(value: Any, info: Info) -> (
         Any, List):
         return CoercedValue(value, None)
 
@@ -77,7 +77,7 @@ async def test_get_field_by_name_call_order(query, varis, expected):
 
 
 @pytest.mark.asyncio
-async def test_calling_get_field_by_name_with_correct_value():
+async def test_calling_resolver_with_correct_value():
     from tartiflette.tartiflette import Tartiflette
 
     sdl = '''
@@ -101,24 +101,17 @@ async def test_calling_get_field_by_name_with_correct_value():
 
     ttftt = Tartiflette(sdl=sdl)
 
-    class default_resolver(Mock):
-        async def __call__(self, ctx, exe):
-            super(default_resolver, self).__call__(ctx, exe)
-            try:
-                return getattr(exe.parent_result, exe.name)
-            except:
-                return {}
-
     class resolver_a(Mock):
-        async def __call__(self, ctx, exedata):
-            super(resolver_a, self).__call__(ctx, exedata)
+        async def __call__(self, parent, arguments, request_ctx, info: Info):
+            new_info = Info(None, info.schema_field, info.schema, info.path, info.location)
+            super(resolver_a, self).__call__(parent, arguments, request_ctx, new_info)
             return [{"id": 1}, {"id": 2}]
 
     stuff_a = resolver_a()
 
     @Resolver("Query.A", schema=ttftt.schema)
-    async def wrap_1(ctx, exe):
-        return await stuff_a(ctx, exe)
+    async def wrap_1(parent, arguments, request_ctx, info: Info):
+        return await stuff_a(parent, arguments, request_ctx, info)
 
     class resolver_b(Mock):
         class resolver_b_result:
@@ -132,65 +125,31 @@ async def test_calling_get_field_by_name_with_correct_value():
             super(resolver_b, self).__init__(*args, **kwargs)
             self.rtrn = resolver_b.resolver_b_result()
 
-        async def __call__(self, ctx, exedata):
-            super(resolver_b, self).__call__(ctx, exedata)
+        async def __call__(self, parent, arguments, request_ctx, info: Info):
+            new_info = Info(None, info.schema_field, info.schema, info.path,
+                            info.location)
+            super(resolver_b, self).__call__(parent, arguments, request_ctx, new_info)
             return self.rtrn
 
     stuff_b = resolver_b()
 
     @Resolver("AType.B", schema=ttftt.schema)
-    async def wrap_2(ctx, exe):
-        return await stuff_b(ctx, exe)
+    async def wrap_2(parent, arguments, request_ctx, info: Info):
+        return await stuff_b(parent, arguments, request_ctx, info)
 
     class resolver_d(Mock):
 
-        @Resolver("AType.B", schema=ttftt.schema)
-        async def __call__(self, ctx, exedata):
-            super(resolver_d, self).__call__(ctx, exedata)
+        async def __call__(self, parent, arguments, request_ctx, info: Info):
+            new_info = Info(None, info.schema_field, info.schema, info.path,
+                            info.location)
+            super(resolver_d, self).__call__(parent, arguments, request_ctx, new_info)
             return "ValueD"
 
     stuff_d = resolver_d()
 
     @Resolver("AType.D", schema=ttftt.schema)
-    async def wrap_3(ctx, exe):
-        return await stuff_d(ctx, exe)
-
-    # TODO: Repair this test
-    # field_a = Mock()
-    # field_a.resolver = resolver_a()
-    # field_a.gql_type = Mock()
-    # field_a.gql_type.name = "Test"
-    # field_a.gql_type.collect_value = simple_collect_value
-    # field_a.name = "test"
-    #
-    # field_b = Mock()
-    # field_b.resolver = resolver_b()
-    # field_b.gql_type = Mock()
-    # field_b.gql_type.name = "Test"
-    # field_b.gql_type.collect_value = simple_collect_value
-    # field_b.name = "test"
-    #
-    # field_d = Mock()
-    # field_d.resolver = resolver_d()
-    # field_d.gql_type = Mock()
-    # field_d.gql_type.name = "Test"
-    # field_d.gql_type.collect_value = simple_collect_value
-    # field_d.name = "test"
-    #
-    # default_field = Mock()
-    # default_field.resolver = default_resolver()
-    # default_field.gql_type = Mock()
-    # default_field.gql_type.name = "Test"
-    # default_field.gql_type.collect_value = simple_collect_value
-    # default_field.name = "test"
-
-    # def get_field(name):
-    #     fields = {"Query.A": field_a, "Test.B": field_b, "Test.D": field_d}
-    #     return fields.get(name, default_field)
-
-    # sdm = Mock()
-    # sdm.query_type = "Query"
-    # sdm.get_field_by_name = get_field
+    async def wrap_3(parent, arguments, request_ctx, info: Info):
+        return await stuff_d(parent, arguments, request_ctx, info)
 
     ttftt.schema.bake()
     r = await ttftt.execute(
@@ -220,16 +179,16 @@ async def test_calling_get_field_by_name_with_correct_value():
         [
             call(
                 {},
-                ExecutionData(
-                    parent_result={},
-                    path=['A'],
-                    arguments={},
-                    name='A',
-                    field=ttftt.schema.types["Query"].fields["A"],
+                {},
+                {},
+                Info(
+                    query_field=None,
+                    schema_field=ttftt.schema.types["Query"].fields["A"],
+                    schema=ttftt.schema,
+                    path=["A"],
                     location=Location(line=1, column=40,
                                       line_end=1, column_end=313, context=''),
-                    schema=ttftt.schema,
-                )
+                ),
             )
         ],
         any_order=True,
@@ -238,32 +197,30 @@ async def test_calling_get_field_by_name_with_correct_value():
     stuff_b.assert_has_calls(
         [
             call(
+                {"id": 1},
                 {},
-                ExecutionData(
-                    parent_result={"id": 1},
-                    path=['A', 'B', 0],
-                    arguments={},
-                    name='B',
-                    field=ttftt.schema.types["AType"].fields["B"],
-                    location=Location(line=1, column=60,
-                                      line_end=1, column_end=153,
-                                      context=''),
+                {},
+                Info(
+                    query_field=None,
+                    schema_field=ttftt.schema.types["AType"].fields["B"],
                     schema=ttftt.schema,
-                )
+                    path=["A", "B", 0],
+                    location=Location(line=1, column=60,
+                                      line_end=1, column_end=153, context=''),
+                ),
             ),
             call(
+                {"id": 2},
                 {},
-                ExecutionData(
-                    parent_result={"id": 2},
-                    path=['A', 'B', 1],
-                    arguments={},
-                    name='B',
-                    field=ttftt.schema.types["AType"].fields["B"],
-                    location=Location(line=1, column=60,
-                                      line_end=1, column_end=153,
-                                      context=''),
+                {},
+                Info(
+                    query_field=None,
+                    schema_field=ttftt.schema.types["AType"].fields["B"],
                     schema=ttftt.schema,
-                )
+                    path=["A", "B", 1],
+                    location=Location(line=1, column=60,
+                                      line_end=1, column_end=153, context=''),
+                ),
             )
         ],
         any_order=True
@@ -272,42 +229,48 @@ async def test_calling_get_field_by_name_with_correct_value():
     stuff_d.assert_has_calls(
         [
             call(
+                {"id": 1},
                 {},
-                ExecutionData(
-                    parent_result={"id": 1},
-                    path=['A', 'D', 0],
-                    arguments={},
-                    name='D',
-                    field=ttftt.schema.types["AType"].fields["D"],
-                    location=Location(line=1, column=170,
-                                      line_end=1, column_end=171,
-                                      context=''),
+                {},
+                Info(
+                    query_field=None,
+                    schema_field=ttftt.schema.types["AType"].fields["D"],
                     schema=ttftt.schema,
-                )
+                    path=["A", "D", 0],
+                    location=Location(line=1, column=170,
+                                      line_end=1, column_end=171, context=''),
+                ),
             ),
             call(
+                {"id": 2},
                 {},
-                ExecutionData(
-                    parent_result={"id": 2},
-                    path=['A', 'D', 1],
-                    arguments={},
-                    name='D',
-                    field=ttftt.schema.types["AType"].fields["D"],
-                    location=Location(line=1, column=170,
-                                      line_end=1, column_end=171,
-                                      context=''),
+                {},
+                Info(
+                    query_field=None,
+                    schema_field=ttftt.schema.types["AType"].fields["D"],
                     schema=ttftt.schema,
-                )
+                    path=["A", "D", 1],
+                    location=Location(line=1, column=170,
+                                      line_end=1, column_end=171, context=''),
+                ),
             )
         ],
         any_order=True
     )
 
+    # TODO: improve test by replacing / wrapping default resolver
+    # class default_resolver(Mock):
+    #     async def __call__(self, parent, arguments, request_ctx, info: Info):
+    #         super(default_resolver, self).__call__(parent, arguments, request_ctx, info)
+    #         try:
+    #             return getattr(parent, info.query_field.name)
+    #         except:
+    #             return {}
     # default_field.resolver.assert_has_calls(
     #     [
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={"id": 1},
     #                 path=['A', 'F', 0],
     #                 arguments={},
@@ -321,7 +284,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={"id": 1},
     #                 path=['A', 'E', 0],
     #                 arguments={},
@@ -335,7 +298,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={"id": 2},
     #                 path=['A', 'F', 1],
     #                 arguments={},
@@ -349,7 +312,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={"id": 2},
     #                 path=['A', 'E', 1],
     #                 arguments={},
@@ -363,7 +326,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result=field_b.resolver.rtrn,
     #                 path=['A', 'B', 'C', 0],
     #                 arguments={},
@@ -377,7 +340,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result=field_b.resolver.rtrn,
     #                 path=['A', 'B', 'C', 1],
     #                 arguments={},
@@ -391,7 +354,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={"id": "b.c"},
     #                 path=['A', 'B', 'C', 'K', 0],
     #                 arguments={},
@@ -405,7 +368,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={"id": "b.c"},
     #                 path=['A', 'B', 'C', 'K', 1],
     #                 arguments={},
@@ -419,7 +382,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={},
     #                 path=['A', 'F', 'H', 1],
     #                 arguments={},
@@ -433,7 +396,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={},
     #                 path=['A', 'F', 'H', 0],
     #                 arguments={},
@@ -447,7 +410,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={},
     #                 path=['A', 'F', 'H', 'I', 1],
     #                 arguments={},
@@ -461,7 +424,7 @@ async def test_calling_get_field_by_name_with_correct_value():
     #         ),
     #         call(
     #             {},
-    #             ExecutionData(
+    #             Info(
     #                 parent_result={},
     #                 path=['A', 'F', 'H', 'I', 0],
     #                 arguments={},
@@ -479,61 +442,116 @@ async def test_calling_get_field_by_name_with_correct_value():
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    'query, expected', [
-        (
-            """
-            query LOL {
-                A
-            }
-            """, '{"data":{"A":{"iam": "A"}}}'
-        ), (
-            """
-            query a_request {
-                A {
-                    B
-                    C
-                    D
-                    E {
-                        F
-                    }
-                }
-            }
-            """,
-            '{"data":{"A":{"iam": "A", "B": {"iam":"B"}, "C": {"iam":"C"}, "D": {"iam":"D"}, "E": {"iam":"E", "F":{"iam":"F"}}}}}'
-        )
-    ]
-)
-async def test_result_value(query, expected):
-    import json
-    from tartiflette.tartiflette import Tartiflette
+async def test_full_query_execute():
+    # TODO: Add Union and Interface and NonNull, All scalars Fields.
+    schema_sdl = """
+    enum BookCategory {
+        Action
+        Adventure
+        Fiction
+        History
+    } 
 
-    class default_resolver(Mock):
-        async def __call__(self, ctx, exe):
-            super(default_resolver, self).__call__(ctx, exe)
-            return {"iam": exe.name}
-
-    def coerce_value(value: Any, execution_data: ExecutionData) -> (
-        Any, List):
-        return CoercedValue(value, None)
-
-    field = Mock()
-    field.name = "test"
-    field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)
-    field.resolver = default_resolver()
-    GraphQLSchema.wrap_field_resolver(field)
-
-    def get_field_by_name(name):
-        return field
-
-    sdm = Mock()
-    sdm.query_type = "Query"
-    sdm.get_field_by_name = get_field_by_name
-    sdm.types = {
-        "Query": GQLTypeMock(name="Query", coerce_value=coerce_value),
+    type Query {
+        libraries: [Library]
+    }
+    
+    type Library {
+        books: [Book]
+        authors: [Author]
     }
 
-    ttftt = Tartiflette(schema=sdm)
-    results = await ttftt.execute(query, context={}, variables={})
+    type Author {
+        name: String
+    }
+    
+    type Book {
+        title: String
+        author: Author
+        price: Float
+        category: BookCategory
+    }
+    """
 
-    assert json.loads(expected) == json.loads(results)
+    ttftt = Tartiflette(schema_sdl)
+
+    Library = namedtuple("Library", "books,authors")
+    Author = namedtuple("Author", "name")
+    Book = namedtuple("Book", "title,author,price,category")
+
+    AuthorRudyardKipling = Author("Rudyard Kipling")
+    AuthorHarperLee = Author("Harper Lee")
+    AuthorLeoTolstoy = Author("Leo Tolstoy")
+    BookJungleBook = Book(title="The Jungle Book", author=AuthorRudyardKipling,
+                          price=14.99, category="Adventure")
+    BookToKillAMockingbird = Book(title="To Kill a Mockingbird",
+                                  author=AuthorHarperLee, price=12.99,
+                                  category="Fiction")
+    BookAnnaKarenina = Book(title="Anna Karenina", author=AuthorLeoTolstoy,
+                            price=19.99, category="Fiction")
+    Library = Library(books=[
+        BookAnnaKarenina,
+        BookJungleBook,
+        BookToKillAMockingbird,
+    ], authors=[
+        AuthorLeoTolstoy,
+        AuthorHarperLee,
+        AuthorRudyardKipling,
+    ])
+
+    @Resolver("Query.libraries", schema=ttftt.schema)
+    async def func_field_libraries_resolver(parent, arguments, request_ctx, info: Info):
+        return [Library]
+
+    ttftt.schema.bake()
+    result = await ttftt.execute("""
+        query TestQueriesFromEnd2End{
+            libraries {
+                books {
+                    title
+                    author {
+                        name
+                    }
+                    price
+                    category
+                }
+                authors {
+                    name
+                }
+            }
+        }
+        """)
+
+    assert {
+               "data": {
+                   "libraries": [
+                       {
+                           "books": [
+                               {
+                                   "title": "Anna Karenina",
+                                   "author": {"name": "Leo Tolstoy"},
+                                   "price": 19.99,
+                                   "category": "Fiction",
+                               },
+                               {
+                                   "title": "The Jungle Book",
+                                   "author": {"name": "Rudyard Kipling"},
+                                   "price": 14.99,
+                                   "category": "Adventure",
+                               },
+                               {
+                                   "title": "To Kill a Mockingbird",
+                                   "author": {"name": "Harper Lee"},
+                                   "price": 12.99,
+                                   "category": "Fiction",
+                               },
+                           ],
+                           "authors": [
+                               {"name": "Leo Tolstoy"},
+                               {"name": "Harper Lee"},
+                               {"name": "Rudyard Kipling"},
+                           ],
+                       }
+                   ]
+               }
+           } == result

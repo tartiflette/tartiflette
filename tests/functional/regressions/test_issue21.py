@@ -3,7 +3,7 @@ from typing import Any, List
 from unittest.mock import Mock
 import pytest
 
-from tartiflette.executors.types import ExecutionData, CoercedValue
+from tartiflette.executors.types import CoercedValue, Info
 from tartiflette.schema import GraphQLSchema
 
 GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
@@ -18,7 +18,7 @@ GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
                 A(xid: $xid)
             }
             """,
-            '{"data":{"A":{"iam": "A", "args":{"xid":45}}}}',
+            {"data":{"A":{"iam": "A", "args":{"xid":45}}}},
             {"xid": 45}
         ),
         (
@@ -27,7 +27,7 @@ GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
                 A(xid: "RE")
             }
             """,
-            '{"data":{"A":{"iam": "A", "args":{"xid":"RE"}}}}',
+            {"data":{"A":{"iam": "A", "args":{"xid":"RE"}}}},
             {}
         ),
         (
@@ -36,7 +36,7 @@ GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
                 A(xid: $xid)
             }
             """,
-            '{"data":{"A":{"iam": "A", "args":{"xid":56}}}}',
+            {"data":{"A":{"iam": "A", "args":{"xid":56}}}},
             {}
         ),
         (
@@ -45,7 +45,7 @@ GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
                 A(xid: $xid)
             }
             """,
-            '{"data":{"A":{"iam": "A", "args":{"xid":[1, 6]}}}}',
+            {"data":{"A":{"iam": "A", "args":{"xid":[1, 6]}}}},
             {"xid": [1, 6]}
         ),
         (
@@ -54,21 +54,20 @@ GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
                 A(xid: $xid)
             }
             """,
-            '{"data":{"A":{"iam": "A", "args":{"xid":null}}}}',
+            {"data":{"A":{"iam": "A", "args":{"xid":None}}}},
             {}
         ),
     ]
 )
 async def test_issue21_okayquery(query, expected, varis):
-    import json
     from tartiflette.tartiflette import Tartiflette
 
     class default_resolver(Mock):
-        async def __call__(self, ctx, exe):
-            super(default_resolver, self).__call__(ctx, exe)
-            return {"iam": exe.name, "args": exe.arguments}
+        async def __call__(self, parent, arguments, request_ctx, info: Info):
+            super(default_resolver, self).__call__(parent, arguments, request_ctx, info)
+            return {"iam": info.query_field.name, "args": arguments}
 
-    def coerce_value(value: Any, execution_data: ExecutionData) -> (
+    def coerce_value(value: Any, info: Info) -> (
         Any, List):
         return CoercedValue(value, None)
 
@@ -92,7 +91,7 @@ async def test_issue21_okayquery(query, expected, varis):
     ttftt = Tartiflette(schema=sdm)
     results = await ttftt.execute(query, context={}, variables=varis)
 
-    assert json.loads(results) == json.loads(expected)
+    assert results == expected
 
 
 from tartiflette.types.exceptions.tartiflette import UnknownVariableException
@@ -146,7 +145,7 @@ async def test_issue21_exceptquery(query, expected, varis):
             super(default_resolver, self).__call__(ctx, exe)
             return {"iam": exe.name, "args": exe.arguments}
 
-    def coerce_value(value: Any, execution_data: ExecutionData) -> (
+    def coerce_value(value: Any, info: Info) -> (
         Any, List):
         return CoercedValue(value, None)
 

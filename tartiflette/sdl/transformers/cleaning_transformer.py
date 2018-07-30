@@ -1,10 +1,13 @@
+from lark import v_args
 from lark.lexer import Token
-from lark.tree import Transformer_NoRecurse, Tree
+from lark.tree import Tree
+from lark.visitors import Transformer_InPlace
 
 from tartiflette.sdl.transformers.helpers import find_token_in_ast
 
 
-class CleaningTransformer(Transformer_NoRecurse):
+@v_args(tree=True)
+class CleaningTransformer(Transformer_InPlace):
     """
     This lark Transformer cleans up `Token`s and `Tree`s
     for the SchemaTransformer

@@ -1,5 +1,3 @@
-import json
-
 import pytest
 
 from tartiflette import Resolver
@@ -103,7 +101,6 @@ async def test_tartiflette_execute_basic_type_introspection_output():
     }
     """)
 
-    dic = json.loads(result)
     assert {
         "data": {
             "__type": {
@@ -160,7 +157,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
                 ],
             },
         }
-    } == dic
+    } == result
 
 
 @pytest.mark.asyncio
@@ -197,7 +194,6 @@ async def test_tartiflette_execute_schema_introspection_output():
     }
     """)
 
-    dic = json.loads(result)
     assert {
         "data": {
             "__schema": {
@@ -212,4 +208,4 @@ async def test_tartiflette_execute_schema_introspection_output():
                 }
             },
         }
-    } == dic
+    } == result

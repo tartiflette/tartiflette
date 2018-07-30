@@ -1,11 +1,12 @@
 from collections import OrderedDict, namedtuple
 
-from lark.tree import Transformer_NoRecurse, Tree
+from lark.tree import Tree
+from lark.visitors import Transformer_InPlace, v_args
 
-from tartiflette.sdl.ast_types import String
 from tartiflette.schema import DefaultGraphQLSchema
+from tartiflette.sdl.ast_types import String
 from tartiflette.types.argument import GraphQLArgument
-from tartiflette.types.enum import GraphQLEnumValue, GraphQLEnumType
+from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumValue
 from tartiflette.types.exceptions.tartiflette import UnexpectedASTNode
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType
@@ -23,7 +24,8 @@ That way, we can do child.type and child.value in any lark.Tree.children
 """
 
 
-class SchemaTransformer(Transformer_NoRecurse):
+@v_args(tree=True)
+class SchemaTransformer(Transformer_InPlace):
     """
     SchemaTransformer converts a cleaned lark AST tree (that has been passed
     through the CleaningTransformer) into a GraphQLSchema full definition.

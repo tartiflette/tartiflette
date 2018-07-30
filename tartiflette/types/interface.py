@@ -1,5 +1,6 @@
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
+from tartiflette.executors.types import CoercedValue, Info
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
 
@@ -25,7 +26,6 @@ class GraphQLInterfaceType(GraphQLType):
         # In the function signature above, it should be `OrderedDict` but the
         # python 3.6 interpreter fails to interpret the signature correctly.
         super().__init__(name=name, description=description)
-        # TODO: This will need a "resolve_type" function at execution time (?)
         self.fields: Dict[str, GraphQLField] = fields
 
     def __repr__(self) -> str:
@@ -35,3 +35,10 @@ class GraphQLInterfaceType(GraphQLType):
 
     def __eq__(self, other) -> bool:
         return super().__eq__(other) and self.fields == other.fields
+
+    def coerce_value(
+        self, value: Any, info: Info
+    ) -> CoercedValue:
+        if value is None:
+            return CoercedValue(value, None)
+        return CoercedValue({}, None)

@@ -1,4 +1,3 @@
-import json
 from collections import namedtuple
 
 import pytest
@@ -124,7 +123,6 @@ async def test_tartiflette_execute_simple_coercion():
     }
     """)
 
-    dic = json.loads(result)
     assert {
         "data": {
             "fieldScalar": "Test",
@@ -163,7 +161,7 @@ async def test_tartiflette_execute_simple_coercion():
                 ],
             ]
         }
-    } == dic
+    } == result
 
 
 @pytest.mark.asyncio
@@ -204,7 +202,6 @@ async def test_tartiflette_execute_nested_coercion():
     }
     """)
 
-    dic = json.loads(result)
     assert {
         "data": {
             "library": [
@@ -214,4 +211,4 @@ async def test_tartiflette_execute_nested_coercion():
                  ]}
             ]
         }
-    } == dic
+    } == result

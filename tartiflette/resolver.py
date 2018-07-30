@@ -1,26 +1,24 @@
 import functools
 from inspect import iscoroutinefunction
-from typing import Optional, Callable
+from typing import Callable, Optional
 
-from tartiflette.executors.types import ExecutionData
+from tartiflette.executors.types import Info
 from tartiflette.schema import DefaultGraphQLSchema, GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
 
 
-def wrap_resolver(schema, field, resolver):
+def wrap_resolver(resolver):
     """
     Currenty unused, this allows an easy wrapping of resolvers
     (for hooks, middlewares etc.)
 
-    :param schema: The current schema
-    :param field: The current field
     :param resolver: The field resolver
     :return: Any: the resolver result
     """
 
     @functools.wraps(resolver)
-    async def wrapper(request_ctx, execution_data: ExecutionData):
-        return await resolver(request_ctx, execution_data)
+    async def wrapper(parent, arguments, request_ctx, info: Info):
+        return await resolver(parent, arguments, request_ctx, info)
 
     return wrapper
 
@@ -38,7 +36,7 @@ class Resolver:
     Use the Resolver decorator the following way:
 
         @Resolver("SomeObject.field")
-        def field_resolver(ctx, execution_data):
+        def field_resolver(parent, arguments, request_ctx, info):
             ... do your stuff
             return 42
 
@@ -57,7 +55,7 @@ class Resolver:
 
         try:
             self.field.resolver = wrap_resolver(
-                self.schema, self.field, resolver
+                resolver
             )
         except AttributeError:
             pass

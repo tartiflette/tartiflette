@@ -1,9 +1,9 @@
 import asyncio
 
 
-async def _level_execute(resolvers, request_ctx, schema):
+async def _level_execute(resolvers, request_ctx):
     coroutines = [
-        resolver(request_ctx, schema)
+        resolver(request_ctx)
         for resolver in resolvers
         if not resolver.type_condition
         or (
@@ -18,21 +18,17 @@ async def _level_execute(resolvers, request_ctx, schema):
     return await asyncio.gather(*coroutines, return_exceptions=True)
 
 
-async def execute(gql_nodes, request_ctx, schema):
+async def execute(gql_nodes, request_ctx):
     results = {"data": {}, "errors": []}
     for nodes in gql_nodes:
-        await _level_execute(nodes, request_ctx, schema)
+        errors = await _level_execute(nodes, request_ctx)
+        results["errors"] += [err.coerce_value() for err in errors if err]
         # TODO: There is probably a better way than to iterate after each level
-        # Flatten errors from each levels
-        for node in nodes:
-            if node.errors:
-                results["errors"] = []
-                for error in node.errors:
-                    # TODO: The best would be to make "errors" automatically
-                    # JSON serializable instead of doing this here.
-                    # Also, this prevents the final user of the lib to
-                    # use the source error object (which contains more info).
-                    results["errors"].append(error.coerce_value())
+        # to flatten errors from each levels
+        # TODO: The best would be to make "errors" automatically
+        # JSON serializable instead of doing this here.
+        # Also, this prevents the final user of the lib to
+        # use the source error object (which contains more info).
 
     for node in gql_nodes[0]:
         results["data"][node.name] = node.as_jsonable

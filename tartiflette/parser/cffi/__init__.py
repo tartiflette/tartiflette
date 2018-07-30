@@ -1,4 +1,5 @@
 from functools import partial
+
 from cffi import FFI
 
 from tartiflette.types.location import Location
