@@ -1,0 +1,19 @@
+recursive-include libgraphqlparser/ *.cpp
+recursive-include libgraphqlparser/ *.h
+recursive-include libgraphqlparser/ *.hh
+recursive-include libgraphqlparser/ *.lpp
+recursive-include libgraphqlparser/ *.in
+recursive-include libgraphqlparser/ *.ypp
+recursive-include libgraphqlparser/ *.hpp
+recursive-include libgraphqlparser/ *.sh
+recursive-include libgraphqlparser/ *.md
+recursive-include tartiflette/parser/cffi *.so
+recursive-include tartiflette/parser/cffi *.dylib
+recursive-include libgraphqlparser/ast *.ast
+recursive-include libgraphqlparser/ast *.py
+recursive-include libgraphqlparser/cmake *.cmake
+recursive-include libgraphqlparser/python CMakeLists.txt
+
+include libgraphqlparser/CMakeLists.txt
+include libgraphqlparser/.clang-tidy
+include libgraphqlparser/LICENSE
