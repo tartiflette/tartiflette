@@ -1,3 +1,4 @@
+import os
 from functools import partial
 
 from cffi import FFI
@@ -454,12 +455,18 @@ class LibGraphqlParser:
     def __init__(self):
         self._ffi = FFI()
         self._ffi.cdef(CDEFS_LIBGRAPHQL)
-        # TODO do a conf of this ?
+
+        # TODO use importlib.resource in Python3.7
+        self._lib_dir = os.path.dirname(
+            __file__
+        )
         try:
-            self._lib = self._ffi.dlopen("/usr/local/lib/libgraphqlparser.so")
+            self._lib = self._ffi.dlopen(
+                "%s/libgraphqlparser.so" % self._lib_dir
+            )
         except OSError:
             self._lib = self._ffi.dlopen(
-                "/usr/local/lib/libgraphqlparser.dylib"
+                "%s/libgraphqlparser.dylib" % self._lib_dir
             )
         self._lib_callbacks = self._ffi.new(
             "struct GraphQLAstVisitorCallbacks *"

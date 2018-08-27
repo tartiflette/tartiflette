@@ -12,10 +12,14 @@ The engine **IS NOT** ready to use, feel free to take a look at **[our roadmap f
 * **Performance oriented:** Performance is the core of our work.
 * **Simple is better than complex:** Built with [the Zen of Python](https://www.python.org/dev/peps/pep-0020/#id3) in mind. No over-engineering.
 
-This lib depends on libgraphqlparser (in submodule in this repository).
+## Installation
 
-You need to build and install this libgraphqlparser binary on your system before using this.
-See [here](https://github.com/graphql/libgraphqlparser) for more details.
+As this lib depends on libgraphqlparser (in submodule in this repository) (See [here](https://github.com/graphql/libgraphqlparser) for more details), you'll need to build and install this libgraphqlparser binary on your system before using this.
+
+Running `python setup.py develop` will take care of the lib compilation for your checkouted repository.
+If you don't want to checkout the code `pip install tartiflette` will also compile the lib for you.
+
+In the two cases, you'll need `cmake`, `bison` and `flex` to be installed on your system.
 
 ## Roadmap - Road to v1
 
@@ -66,7 +70,7 @@ Here are the subjects we are working on:
 ### Continuous integration
 
 * [ ] Run Code Quality checks + Tests
-* [ ] Automatize the integration of `libgraphqlparser`
+* [x] Automatize the integration of `libgraphqlparser`
 * [ ] Build & Publish artifact to pypi
 
 ## Roadmap - Milestone #2
