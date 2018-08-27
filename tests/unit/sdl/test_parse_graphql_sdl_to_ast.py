@@ -1225,7 +1225,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
     (
         True,
         """
-        directive @test(var1: Int = -42, var4: [String]) on FIELD_DEFINITION
+        directive @test(var1: Int = -42, var4: [String]) on FIELD_DEFINITION | SCHEMA
         """,
         Tree('document', [
             Tree('type_system_definition', [
@@ -1274,6 +1274,7 @@ from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
                     Token('ON', 'on'),
                     Tree('directive_locations', [
                         Token('TYPE_SYSTEM_DIRECTIVE_LOCATION', 'FIELD_DEFINITION'),
+                        Token('TYPE_SYSTEM_DIRECTIVE_LOCATION', 'SCHEMA'),
                     ]),
                 ]),
             ]),
@@ -1546,9 +1547,42 @@ def test_parse_graphql_sdl_to_ast_unit(is_valid, test_input, expected):
     (
         False,
         """
-        interfacen {
-            wheel: String
-        }
+        scalarDate
+        """,
+        UnexpectedToken,
+    ),
+    (
+        False,
+        """
+        scalarDate@directive
+        """,
+        UnexpectedToken,
+    ),
+    (
+        False,
+        """
+        scalarDate @directive
+        """,
+        UnexpectedToken,
+    ),
+    (
+        False,
+        """
+        scalar Date@directive
+        """,
+        UnexpectedToken,
+    ),
+    (
+        True,
+        """
+        scalar Date
+        """,
+        UnexpectedToken,
+    ),
+    (
+        True,
+        """
+        scalar Date @directive
         """,
         UnexpectedToken,
     ),

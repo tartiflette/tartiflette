@@ -119,14 +119,14 @@ from tartiflette.tartiflette import Tartiflette
                  [None, "Inquisition"]],
                 {"data": {"obj": {"field": None}},
                  "errors": [
-                        {
-                            "locations": [{"column": 64, "line": 1}],
-                            "message": "Invalid value "
-                                       "(value: [None, 'Inquisition']) "
-                                       "for field `field` of type `[[String!]!]`",
-                            "path": ["obj", "field", 2],
-                        },
-                    ]},
+                     {
+                         "locations": [{"column": 64, "line": 1}],
+                         "message": "Invalid value "
+                                    "(value: [None, 'Inquisition']) "
+                                    "for field `field` of type `[[String!]!]`",
+                         "path": ["obj", "field", 2],
+                     },
+                 ]},
         ),
         (
                 "[[String!]!]!",
@@ -174,9 +174,49 @@ async def test_tartiflette_execute_simple_empty_value(sdl_type, returnval,
     }
     """)
 
-    # TODO: Fix the error bubble-up mechanism.
-    # assert expected == result
+    assert expected == result
 
 
+@pytest.mark.asyncio
 async def test_tartiflette_execute_bubble_up_empty_value():
-    pass
+    schema_sdl = """
+        type SubObj {
+            fieldAgain: Int!
+        }
+    
+        type Obj {
+            field: SubObj!
+        }
+
+        type Query {
+            obj: Obj!
+        }
+        """
+
+    ttftt = Tartiflette(schema_sdl)
+
+    @Resolver("SubObj.fieldAgain", schema=ttftt.schema)
+    async def func_field_scalar_resolver(*args, **kwargs):
+        return None
+
+    ttftt.schema.bake()
+    result = await ttftt.execute("""
+        query TestExecutionEmptyValues{
+            obj {
+                field {
+                    fieldAgain
+                }
+            }
+        }
+        """)
+
+    assert result == {
+        "data": None,
+        "errors": [
+            {
+                "locations": [{"column": 104, "line": 1}],
+                "message": "Invalid value (value: None) "
+                           "for field `fieldAgain` of type `Int!`",
+                "path": ["obj", "field", "fieldAgain"],
+            },
+        ]}

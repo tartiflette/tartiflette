@@ -1,9 +1,12 @@
 import asyncio
 
+from tartiflette.executors.helpers import visualize_gql_tree_and_data
+from tartiflette.executors.types import ExecutionContext
 
-async def _level_execute(resolvers, request_ctx):
+
+async def _level_execute(resolvers, exec_ctx, request_ctx):
     coroutines = [
-        resolver(request_ctx)
+        resolver(exec_ctx, request_ctx)
         for resolver in resolvers
         if not resolver.type_condition
         or (
@@ -18,17 +21,28 @@ async def _level_execute(resolvers, request_ctx):
     return await asyncio.gather(*coroutines, return_exceptions=True)
 
 
+# def _level_coerce(gql_nodes):
+#     for node in gql_nodes:
+#         node.coerce_result()
+
+
 async def execute(gql_nodes, request_ctx):
     results = {"data": {}, "errors": []}
-    for nodes in gql_nodes:
-        errors = await _level_execute(nodes, request_ctx)
-        results["errors"] += [err.coerce_value() for err in errors if err]
-        # TODO: There is probably a better way than to iterate after each level
-        # to flatten errors from each levels
-        # TODO: The best would be to make "errors" automatically
-        # JSON serializable instead of doing this here.
-        # Also, this prevents the final user of the lib to
-        # use the source error object (which contains more info).
+    exec_ctx = ExecutionContext()
+    # TODO: We do this in two steps, it could be merged into one for better
+    # performance
+    for level, nodes in enumerate(gql_nodes):
+        await _level_execute(nodes, exec_ctx, request_ctx)
+        visualize_gql_tree_and_data(gql_nodes, level)
+        visualize_gql_tree_and_data(gql_nodes, level, value='as_jsonable')
+
+    # Coerce results
+    # for level, node in enumerate(gql_nodes[0]):
+    #     node.as_jsonable = node.coerce_result()
+    #     visualize_gql_tree_and_data(gql_nodes, level, value='coerced')
+    #     visualize_gql_tree_and_data(gql_nodes, level, value='as_jsonable')
+
+    results["errors"] += [err.coerce_value() for err in exec_ctx.errors if err]
 
     for node in gql_nodes[0]:
         results["data"][node.name] = node.as_jsonable

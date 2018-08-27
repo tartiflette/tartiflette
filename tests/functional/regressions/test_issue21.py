@@ -3,8 +3,7 @@ from typing import Any, List
 from unittest.mock import Mock
 import pytest
 
-from tartiflette.executors.types import CoercedValue, Info
-from tartiflette.schema import GraphQLSchema
+from tartiflette.executors.types import Info
 
 GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 
@@ -67,15 +66,13 @@ async def test_issue21_okayquery(query, expected, varis):
             super(default_resolver, self).__call__(parent, arguments, request_ctx, info)
             return {"iam": info.query_field.name, "args": arguments}
 
-    def coerce_value(value: Any, info: Info) -> (
-        Any, List):
-        return CoercedValue(value, None)
+    def coerce_value(value: Any, info: Info) -> Any:
+        return value
 
     field = Mock()
     field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)
     field.name = "test"
     field.resolver = default_resolver()
-    GraphQLSchema.wrap_field_resolver(field)
 
     def get_field_by_name(_):
         return field
@@ -147,13 +144,12 @@ async def test_issue21_exceptquery(query, expected, varis):
 
     def coerce_value(value: Any, info: Info) -> (
         Any, List):
-        return CoercedValue(value, None)
+        return value
 
     field = Mock()
     field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)
     field.name = "test"
     field.resolver = default_resolver()
-    GraphQLSchema.wrap_field_resolver(field)
 
     def get_field_by_name(_):
         return field

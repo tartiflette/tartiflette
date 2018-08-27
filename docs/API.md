@@ -29,7 +29,7 @@ engine = tartiflette.Engine(
 
 **When the `sdl` parameter targets a file.**
 
-The filepath specified have to contain the full schema definition language.
+The filepath specified has to contain the full schema definition language.
 
 ```python
 import tartiflette
@@ -167,8 +167,9 @@ async def my_hello_resolver(parent, args, context, info):
 
 Here are the properties:
 
-* `field_name` string - Describes the field name.
-* `field_node` tartiflette.parser.NodeField - Describes the field from the parser point of view.
-* `field_sdl` tartiflette.types.field.GraphQLField - Describes the field from the SDL point of view _(Metadata, directives, Type...)_.
-* `schema` tartiflette.Schema - Describes the entire Schema.
-* `path` list[string] - Describes the path in the Query.
+* `query_field` tartiflette.parser.NodeField - Contains the information of the field from the query's perspective.
+* `schema_field` tartiflette.types.field.GraphQLField - Contains the information of the field from the schema's perspective (type, default values, and more.)
+* `schema` tartiflette.schema.GraphQLSchema - Contains the GraphQL's server schema.
+* `path` List[string]  - Describes the path in the current query
+* `location` tartiflette.types.location.Location - Describes the location in the query
+* `execution_ctx` tartiflette.executor.types.ExecutionContext - Contains execution values (like `errors`).

@@ -138,6 +138,8 @@ class TartifletteVisitor(Visitor):
         )
 
         node.parent = self._current_node
+        if node.parent:
+            node.parent.children.append(node)
         self._current_node = node
         self._add_node(node)
 

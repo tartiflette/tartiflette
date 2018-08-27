@@ -47,10 +47,7 @@ async def test_tartiflette_execute_object_type_output():
     (
         "Test!",
         None,
-        # TODO: Not sure if this is OK: Because the type is Test!
-        # the field should be removed because it's invalid but the location
-        # of the error would be meaningless
-        {"data":{"testField": {"field1": None}},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[{"line":1,"column":26}]}]},
+        {"data": None, "errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[{"line":1,"column":26}]}]},
     ),
 ])
 async def test_tartiflette_execute_object_type_advanced(input_sdl, resolver_response, expected):

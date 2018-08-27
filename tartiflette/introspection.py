@@ -201,16 +201,25 @@ __Field = GraphQLObjectType(
 class __TypeResolvers:
     @staticmethod
     async def kind_resolver(parent, _arguments, _request_ctx, _info: Info):
-        return TypeKindEnum.type_to_kind[type(parent)]
+        try:
+            return TypeKindEnum.type_to_kind[type(parent)]
+        except Exception:
+            return None
 
     @staticmethod
     async def fields_resolver(parent, _arguments, _request_ctx, _info: Info):
-        return list(parent.fields.values())
+        try:
+            return list(parent.fields.values())
+        except Exception:
+            return None
 
     @staticmethod
     async def possible_types_resolver(parent, _arguments, _request_ctx,
                                       info: Info):
-        return info.schema.possible_types[parent.name]
+        try:
+            return info.schema.possible_types[parent.name]
+        except Exception:
+            return None
 
     # @staticmethod
     # async def enum_values_resolver(_request_ctx, execution_data):
@@ -222,7 +231,10 @@ class __TypeResolvers:
 
     @staticmethod
     async def of_type_resolver(parent, _arguments, _request_ctx, info: Info):
-        return parent.gql_type
+        try:
+            return parent.gql_type
+        except (AttributeError, TypeError):
+            return None
 
 
 __Type = GraphQLObjectType(

@@ -1,26 +1,8 @@
-import functools
 from inspect import iscoroutinefunction
 from typing import Callable, Optional
 
-from tartiflette.executors.types import Info
 from tartiflette.schema import DefaultGraphQLSchema, GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
-
-
-def wrap_resolver(resolver):
-    """
-    Currenty unused, this allows an easy wrapping of resolvers
-    (for hooks, middlewares etc.)
-
-    :param resolver: The field resolver
-    :return: Any: the resolver result
-    """
-
-    @functools.wraps(resolver)
-    async def wrapper(parent, arguments, request_ctx, info: Info):
-        return await resolver(parent, arguments, request_ctx, info)
-
-    return wrapper
 
 
 class Resolver:
@@ -54,9 +36,7 @@ class Resolver:
             )
 
         try:
-            self.field.resolver = wrap_resolver(
-                resolver
-            )
+            self.field.resolver = resolver
         except AttributeError:
             pass
 

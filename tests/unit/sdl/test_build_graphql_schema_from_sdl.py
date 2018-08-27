@@ -42,15 +42,12 @@ def test_build_schema():
     \"\"\"
     This is a docstring for the Test Object Type.
     \"\"\"
-    type Test implements Unknown & Empty @enable_cache {
+    type Test implements Unknown & Empty{
         \"\"\"
         This is a field description :D
         \"\"\"
-        field(input: InputObject): String! @deprecated(reason: "Useless field")
-        anotherField: [Int] @something(
-            lst: ["about" "stuff"]
-            obj: {some: [4, 8, 16], complex: {about: 19.4}, another: EnumVal}
-        )
+        field(input: InputObject): String!
+        anotherField: [Int] 
         fieldWithDefaultValueArg(test: String = "default"): ID
         simpleField: Date
     }

@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from tartiflette.executors.types import CoercedValue, Info
+from tartiflette.executors.types import Info
 
 
 class GraphQLType:
@@ -26,7 +26,7 @@ class GraphQLType:
 
     def coerce_value(
             self, value: Any, info: Info
-    ) -> CoercedValue:
+    ) -> Any:
         raise NotImplementedError(
             "The GraphQLType %s must implement "
             "a coerce_value(value) method." % self.__class__.__name__
