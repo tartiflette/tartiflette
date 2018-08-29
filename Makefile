@@ -1,7 +1,7 @@
 
 .PHONY: format
 format:
-	black -l 79 --py36 tartiflette setup.py
+	black -l 79 --py36 tartiflette setup.py examples/aiohttp/starwars
 
 .PHONY: check-format
 check-format:

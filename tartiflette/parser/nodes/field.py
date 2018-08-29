@@ -122,8 +122,6 @@ class NodeField(Node):
                                               self.info)
             return self.coerced
         except Exception as e:
-            print(repr(e))
-            traceback.print_tb(e.__traceback__)
             self.info.execution_ctx.add_error(e)
             self.error = e
 
@@ -184,7 +182,6 @@ class NodeField(Node):
             if self.is_leaf:
                 self.as_jsonable = None
         except Exception as e:
-            traceback.print_tb(e.__traceback__)
             if self.is_leaf:
                 self.as_jsonable = None
 
