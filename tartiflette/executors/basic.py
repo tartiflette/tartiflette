@@ -47,7 +47,7 @@ async def execute(gql_nodes, request_ctx):
     for node in gql_nodes[0]:
         results["data"][node.name] = node.as_jsonable
 
-    if len(results["errors"]) == 0:
+    if not results["errors"]:
         del results["errors"]
 
     return results

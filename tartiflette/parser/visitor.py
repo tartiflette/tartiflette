@@ -118,7 +118,7 @@ class TartifletteVisitor(Visitor):
 
         try:
             field = self.schema.get_field_by_name(
-                parent_type.name + "." + element.name
+                str(parent_type) + "." + element.name
             )
         except UnknownSchemaFieldResolver as e:
             self.continue_child = 0
