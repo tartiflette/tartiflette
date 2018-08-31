@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 
 from tartiflette import Resolver
-from tartiflette.tartiflette import Tartiflette
+from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
@@ -19,38 +19,53 @@ async def test_tartiflette_execute_object_type_output():
     }
     """
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
     @Resolver("Query.objectTest", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return {"field1": "Test"}
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query Test{
         objectTest {
             field1
         }
     }
-    """)
+    """
+    )
 
-    assert {"data":{"objectTest":{"field1":"Test"}}} == result
+    assert {"data": {"objectTest": {"field1": "Test"}}} == result
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("input_sdl,resolver_response,expected", [
-    (
-        "Test",
-        {"field1": "Test"},
-        {"data":{"testField":{"field1": "Test"}}},
-    ),
-    (
-        "Test!",
-        None,
-        {"data": None, "errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[{"line":1,"column":26}]}]},
-    ),
-])
-async def test_tartiflette_execute_object_type_advanced(input_sdl, resolver_response, expected):
+@pytest.mark.parametrize(
+    "input_sdl,resolver_response,expected",
+    [
+        (
+            "Test",
+            {"field1": "Test"},
+            {"data": {"testField": {"field1": "Test"}}},
+        ),
+        (
+            "Test!",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Shouldn't be null - testField is not nullable",
+                        "path": ["testField"],
+                        "locations": [{"line": 1, "column": 26}],
+                    }
+                ],
+            },
+        ),
+    ],
+)
+async def test_tartiflette_execute_object_type_advanced(
+    input_sdl, resolver_response, expected
+):
     schema_sdl = """
     type Test {{
         field1: String
@@ -59,22 +74,25 @@ async def test_tartiflette_execute_object_type_advanced(input_sdl, resolver_resp
     type Query {{
         testField: {}
     }}
-    """.format(input_sdl)
+    """.format(
+        input_sdl
+    )
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
     @Resolver("Query.testField", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query Test{
         testField {
             field1
         }
     }
-    """)
+    """
+    )
 
     assert expected == result
 
@@ -86,7 +104,7 @@ async def test_tartiflette_execute_object_type_unknown_field():
         content: Content
         meta_creator: String
     }
-    
+
     type Content {
         title: String
     }
@@ -96,7 +114,7 @@ async def test_tartiflette_execute_object_type_unknown_field():
     }
     """
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
     mock_call = Mock()
 
@@ -114,10 +132,12 @@ async def test_tartiflette_execute_object_type_unknown_field():
 
     @Resolver("Query.posts", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
-        return [Post(content=Content(title="Test"), meta_creator="Dailymotion")]
+        return [
+            Post(content=Content(title="Test"), meta_creator="Dailymotion")
+        ]
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query Test{
         posts {
             content {
@@ -125,7 +145,8 @@ async def test_tartiflette_execute_object_type_unknown_field():
             }
         }
     }
-    """)
+    """
+    )
 
-    assert result == {"data":{"posts":[{"content":{"title":"Test"}}]}}
+    assert result == {"data": {"posts": [{"content": {"title": "Test"}}]}}
     assert mock_call.called is True

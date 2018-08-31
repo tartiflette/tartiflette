@@ -1,7 +1,4 @@
-from typing import Any, Optional, Union
-
-from tartiflette.executors.types import Info
-from tartiflette.types.exceptions.tartiflette import NullError
+from typing import Optional, Union
 from tartiflette.types.type import GraphQLType
 
 
@@ -17,7 +14,7 @@ class GraphQLNonNull(GraphQLType):
         gql_type: Union[str, GraphQLType],
         description: Optional[str] = None,
     ):
-        super().__init__(name=None, description=description)
+        super().__init__(name=None, description=description, is_not_null=True)
         self.gql_type = gql_type
 
     def __repr__(self) -> str:
@@ -31,8 +28,10 @@ class GraphQLNonNull(GraphQLType):
     def __eq__(self, other):
         return super().__eq__(other) and self.gql_type == other.gql_type
 
-    def coerce_value(self, value: Any, info: Info) -> Any:
-        val = self.gql_type.coerce_value(value, info)
-        if val is None:
-            raise NullError(value, info)
-        return val
+    @property
+    def contains_not_null(self) -> bool:
+        return True
+
+    @property
+    def ofType(self):
+        return gql_type

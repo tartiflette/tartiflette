@@ -9,3 +9,9 @@ class Node:
 
     def __repr__(self):
         return "%s(%s)" % (self.libgraphql_type, self.name)
+
+    def add_child(self, node):
+        self.children.append(node)
+
+    def set_parent(self, node):
+        self.parent = node

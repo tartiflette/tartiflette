@@ -10,12 +10,12 @@ class TartifletteException(Exception):
 
 class GraphQLError(Exception):
     def __init__(
-            self,
-            message: str,
-            path: Optional[List[Any]] = None,
-            locations: Optional[List[Location]] = None,
-            user_message: str = None,
-            more_info: str = "",
+        self,
+        message: str,
+        path: Optional[List[Any]] = None,
+        locations: Optional[List[Location]] = None,
+        user_message: str = None,
+        more_info: str = "",
     ):
         super().__init__(message)
         self.message = message  # Developer message by default
@@ -24,10 +24,7 @@ class GraphQLError(Exception):
         self.path = path if path else None
         self.locations = locations if locations else []
 
-    def to_jsonable(self):
-        return self.collect_value()
-
-    def coerce_value(self, *args, **kwargs):
+    def coerce_value(self, *_args, **_kwargs):
         locations = []
         try:
             for loc in self.locations:
@@ -46,25 +43,26 @@ class GraphQLError(Exception):
 
 
 class InvalidValue(GraphQLError):
-    def __init__(
-            self,
-            value: Any,
-            info: Info,
-    ):
+    def __init__(self, value: Any, info: Info):
         self.value = value
         self.info = info
         message = "Invalid value (value: {!r})".format(value)
         try:
             if self.info.schema_field:
                 message += " for field `{}`".format(
-                    self.info.schema_field.name)
+                    self.info.schema_field.name
+                )
             if self.info.schema_field.gql_type:
                 message += " of type `{}`".format(
-                    str(self.info.schema_field.gql_type))
+                    str(self.info.schema_field.gql_type)
+                )
         except (AttributeError, TypeError, ValueError):
             pass
-        super().__init__(message=message, path=self.info.path,
-                         locations=[self.info.location])
+        super().__init__(
+            message=message,
+            path=self.info.path,
+            locations=[self.info.location],
+        )
 
 
 class NullError(InvalidValue):
@@ -79,7 +77,15 @@ class NonAwaitableResolver(GraphQLError):
     pass
 
 
+class NonAwaitableDirective(GraphQLError):
+    pass
+
+
 class UnknownSchemaFieldResolver(GraphQLError):
+    pass
+
+
+class UnknownDirectiveDefinition(GraphQLError):
     pass
 
 

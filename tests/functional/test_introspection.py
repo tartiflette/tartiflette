@@ -1,9 +1,10 @@
 import pytest
 
 from tartiflette import Resolver
-from tartiflette.tartiflette import Tartiflette
+from tartiflette.engine import Engine
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_tartiflette_execute_basic_type_introspection_output():
     schema_sdl = """
@@ -13,7 +14,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
         field2(arg1: Int = 42): Int
         field3: [EnumStatus!]
     }
-    
+
     enum EnumStatus {
         Active
         Inactive
@@ -24,14 +25,14 @@ async def test_tartiflette_execute_basic_type_introspection_output():
     }
     """
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
     @Resolver("Query.objectTest", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return {"field1": "Test", "field2": 42, "field3": ["Active"]}
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query Test{
         __type(name: "Test") {
             name
@@ -99,9 +100,8 @@ async def test_tartiflette_execute_basic_type_introspection_output():
             }
         }
     }
-    """)
-
-    print(result)
+    """
+    )
 
     assert {
         "data": {
@@ -131,7 +131,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
                                     "ofType": None,
                                 },
                                 "defaultValue": "42",
-                             }
+                            }
                         ],
                         "type": {
                             "kind": "SCALAR",
@@ -152,16 +152,17 @@ async def test_tartiflette_execute_basic_type_introspection_output():
                                     "kind": "ENUM",
                                     "name": "EnumStatus",
                                     "ofType": None,
-                                }
+                                },
                             },
                         },
                     },
                 ],
-            },
+            }
         }
     } == result
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_tartiflette_execute_schema_introspection_output():
     schema_sdl = """
@@ -170,44 +171,40 @@ async def test_tartiflette_execute_schema_introspection_output():
         mutation: CustomRootMutation
         subscription: CustomRootSubscription
     }
-    
+
     type CustomRootQuery {
         test: String
     }
-    
+
     type CustomRootMutation {
         test: Int
     }
-    
+
     type CustomRootSubscription {
         test: String
     }
     """
 
-    ttftt = Tartiflette(schema_sdl)
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    ttftt = Engine(schema_sdl)
+
+    result = await ttftt.execute(
+        """
     query Test{
         __schema {
             queryType { name }
             mutationType { name }
             subscriptionType { name }
-        } 
+        }
     }
-    """)
+    """
+    )
 
     assert {
         "data": {
             "__schema": {
-                "queryType": {
-                    "name": "CustomRootQuery",
-                },
-                "mutationType": {
-                    "name": "CustomRootMutation",
-                },
-                "subscriptionType": {
-                    "name": "CustomRootSubscription",
-                }
-            },
+                "queryType": {"name": "CustomRootQuery"},
+                "mutationType": {"name": "CustomRootMutation"},
+                "subscriptionType": {"name": "CustomRootSubscription"},
+            }
         }
     } == result

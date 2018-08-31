@@ -159,24 +159,6 @@ class GraphQLSchema:
             prev.gql_type = self._gql_types[gql_type]
         return root
 
-    def get_resolver(self, field_path: str) -> Optional[callable]:
-        if not field_path:
-            return None
-        field_path_pieces = field_path.split(".")
-        if not self._gql_types.get(field_path_pieces[0]):
-            field_path_pieces.insert(0, self._query_type)
-        field = self.get_field_by_name(".".join(field_path_pieces[0:2]))
-        while field_path_pieces[-1] != getattr(field, "name", None):
-            if not field:
-                break
-            field_path_pieces = [
-                                    reduce_type(field.gql_type)
-                                ] + field_path_pieces[2:]
-            field = self.get_field_by_name(".".join(field_path_pieces[0:2]))
-        if field:
-            return field.resolver
-        return None
-
     def get_field_by_name(self, name: str) -> Optional[GraphQLField]:
         try:
             object_name, field_name = name.split(".")
@@ -202,8 +184,8 @@ class GraphQLSchema:
         """
         self.validate()
         self.inject_introspection()
-        self.field_gql_types_to_real_types()
-        self.union_gql_types_to_real_types()
+        #self.field_gql_types_to_real_types()
+        #self.union_gql_types_to_real_types()
         # self.inject_default_directives()
         self.initialize_directives()
         return None
@@ -419,7 +401,7 @@ class GraphQLSchema:
             except AttributeError:
                 raise MissingImplementation(
                     "directive `{}` is missing an implementation".format(
-                        directive.name)
+                        name)
                 )
 
 

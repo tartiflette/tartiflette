@@ -1,6 +1,11 @@
+from asyncio import iscoroutinefunction
 from typing import Callable, Optional
 
 from tartiflette.schema import DefaultGraphQLSchema, GraphQLSchema
+from tartiflette.types.exceptions.tartiflette import (
+    UnknownDirectiveDefinition,
+    NonAwaitableDirective,
+)
 
 
 class Directive:
@@ -23,8 +28,19 @@ class Directive:
 
     def __init__(self, name: str, schema: Optional[GraphQLSchema] = None):
         self.schema = schema if schema else DefaultGraphQLSchema
-        self.directive = self.schema.directives[name]
+        try:
+            self.directive = self.schema.directives[name]
+        except KeyError:
+            raise UnknownDirectiveDefinition(
+                "Unknow Directive Definition %s" % name
+            )
 
-    def __call__(self, implementation: Callable, *args, **kwargs):
+    def __call__(self, implementation: Callable, *_args, **_kwargs):
+        if not iscoroutinefunction(implementation):
+            raise NonAwaitableDirective(
+                "The resolver `{}` given for the field `{}` "
+                "is not awaitable.".format(repr(implementation), self.name)
+            )
+
         self.directive.implementation = implementation
         return implementation

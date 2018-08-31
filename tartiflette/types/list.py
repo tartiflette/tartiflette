@@ -1,7 +1,5 @@
-from typing import Any, Optional, Union
+from typing import Optional, Union
 
-from tartiflette.executors.types import Info
-from tartiflette.types.exceptions.tartiflette import NullError, InvalidValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -17,7 +15,7 @@ class GraphQLList(GraphQLType):
         gql_type: Union[str, GraphQLType],
         description: Optional[str] = None,
     ):
-        super().__init__(name=None, description=description)
+        super().__init__(name=None, description=description, is_list=True)
         self.gql_type = gql_type
 
     def __repr__(self) -> str:
@@ -31,25 +29,14 @@ class GraphQLList(GraphQLType):
     def __eq__(self, other):
         return super().__eq__(other) and self.gql_type == other.gql_type
 
-    def coerce_value(self, value: Any, info: Info) -> Any:
-        if value is None:
-            return value
+    @property
+    def contains_not_null(self) -> bool:
         try:
-            results = []
-            for index, item in enumerate(value):
-                try:
-                    results.append(self.gql_type.coerce_value(
-                        item, info.clone_with_path(index)
-                    ))
-                except NullError as e:
-                    info.execution_ctx.add_error(e)
-                    return None
-                except InvalidValue as e:
-                    results.append(None)
-                    info.execution_ctx.add_error(e)
-            return results
-        except TypeError:
-            # GraphQLList accepts values of 1 element
-            # see the GraphQL.js implementation
+            return self.gql_type.contains_not_null
+        except AttributeError:
             pass
-        return [self.gql_type.coerce_value(value, info)]
+        return False
+
+    @property
+    def ofType(self):
+        return gql_type

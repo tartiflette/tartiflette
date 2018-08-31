@@ -1,6 +1,5 @@
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 
-from tartiflette.executors.types import Info
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
 
@@ -35,8 +34,3 @@ class GraphQLInterfaceType(GraphQLType):
 
     def __eq__(self, other) -> bool:
         return super().__eq__(other) and self.fields == other.fields
-
-    def coerce_value(self, value: Any, info: Info) -> Any:
-        if value is None:
-            return value
-        return {}

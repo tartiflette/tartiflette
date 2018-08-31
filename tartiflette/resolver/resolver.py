@@ -4,6 +4,8 @@ from typing import Callable, Optional
 from tartiflette.schema import DefaultGraphQLSchema, GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
 
+from .factory import ResolverExecutorFactory
+
 
 class Resolver:
     """
@@ -19,9 +21,8 @@ class Resolver:
 
         @Resolver("SomeObject.field")
         def field_resolver(parent, arguments, request_ctx, info):
-            ... do your stuff
+            do your stuff
             return 42
-
     """
 
     def __init__(self, name: str, schema: Optional[GraphQLSchema] = None):
@@ -35,9 +36,8 @@ class Resolver:
                 "is not awaitable.".format(repr(resolver), self.field.name)
             )
 
-        try:
-            self.field.resolver = resolver
-        except AttributeError:
-            pass
+        self.field.resolver = ResolverExecutorFactory.get_resolver_executor(
+            resolver, self.field
+        )
 
-        return resolver
+        return self.field.resolver

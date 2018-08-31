@@ -1,0 +1,5 @@
+{
+    "query": "query IntrospectionQuery { __schema { queryType { name } } __type(name: \"Droid\") { name fields { name type { name kind ofType { name kind } } } } }",
+    "variables": null,
+    "operationName": "IntrospectionQuery"
+}

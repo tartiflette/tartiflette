@@ -1,15 +1,15 @@
-from collections import deque
 from functools import lru_cache, partial
-from typing import Dict, Any
+from typing import Any, Dict
 
 from tartiflette.parser.cffi import Visitor, _VisitorElement
-from tartiflette.parser.nodes.node import Node
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     TartifletteException,
+    UnknownSchemaFieldResolver,
     UnknownVariableException,
-    UnknownSchemaFieldResolver)
+)
 from tartiflette.types.helpers import reduce_type
+
 from .nodes.field import NodeField
 from .nodes.fragment_definition import NodeFragmentDefinition
 from .nodes.variable_definition import NodeVariableDefinition
@@ -28,7 +28,9 @@ class TartifletteVisitor(Visitor):
             node_name = node_name + "(%s)" % name
         return node_name
 
-    def __init__(self, schema: GraphQLSchema, variables: Dict[str, Any]=None):
+    def __init__(
+        self, schema: GraphQLSchema, variables: Dict[str, Any] = None
+    ):
         super().__init__()
         self.path = ""
         self.field_path = []
@@ -58,14 +60,13 @@ class TartifletteVisitor(Visitor):
             },
         ]
         self._depth = 0
-        self.nodes = []
+        self.root_nodes = []
         self._vars = variables if variables else {}
         self._current_node = None
         self._current_argument_name = None
         self._current_type_condition = None
         self._current_fragment_definition = None
         self._fragments = {}
-        self._field_events = deque(maxlen=25)
         self.schema: GraphQLSchema = schema
         self.exception = None
 
@@ -98,21 +99,14 @@ class TartifletteVisitor(Visitor):
             self.continue_child = 0
             self.exception = UnknownVariableException(var_name)
 
-    def _add_node(self, node: Node):
-        try:
-            self.nodes[self._depth - 1]
-        except IndexError:
-            self.nodes.append([])
-
-        self.nodes[self._depth - 1].append(node)
-
     def _on_field_in(self, element: _VisitorElement):
         self.field_path.append(element.name)
         self._depth = self._depth + 1
-        self._field_events.append(("IN", element.name))
 
         try:
-            parent_type = reduce_type(self._current_node.schema_field.gql_type)
+            parent_type = reduce_type(
+                self._current_node.field_executor.schema_field.gql_type
+            )
         except (AttributeError, TypeError):
             parent_type = self.schema.types[self.schema.query_type]
 
@@ -123,40 +117,36 @@ class TartifletteVisitor(Visitor):
         except UnknownSchemaFieldResolver as e:
             self.continue_child = 0
             self.exception = e
-            # self.exception = TartifletteException(
-            #     "No field %s in %s" % (element.name, parent_type)
-            # )
             return
 
         node = NodeField(
             element.name,
             self.schema,
-            field,
+            field.resolver,
             element.get_location(),
             self.field_path[:],
             self._current_type_condition,
         )
 
-        node.parent = self._current_node
-        if node.parent:
-            node.parent.children.append(node)
+        node.set_parent(self._current_node)
+        if self._current_node:
+            self._current_node.add_child(node)
+
         self._current_node = node
-        self._add_node(node)
+
+        if self._depth == 1:
+            self.root_nodes.append(node)
 
     def _on_field_out(self, _):
-        movement, name = self._field_events[-1]
-        if movement == "IN" and name == self._current_node.name:
-            self._current_node.is_leaf = True
-        self._field_events.append(("OUT", self._current_node.name))
-        self.field_path.pop()
         self._depth = self._depth - 1
+        self.field_path.pop()
         self._current_node = self._current_node.parent
 
     def _on_variable_definition_in(self, element: _VisitorElement):
         node = NodeVariableDefinition(
             self.path, element.get_location(), element.name
         )
-        node.parent = self._current_node
+        node.set_parent(self._current_node)
         self._current_node = node
 
     def _validate_type(self, varname, a_value, a_type):

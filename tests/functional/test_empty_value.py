@@ -1,178 +1,211 @@
 import pytest
 
 from tartiflette import Resolver
-from tartiflette.tartiflette import Tartiflette
+from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    'sdl_type, returnval, expected', [
-        (
-                "String",
-                "Something",
-                {"data": {"obj": {"field": "Something"}}},
+    "sdl_type, returnval, expected",
+    [
+        pytest.param(
+            "String",
+            "Something",
+            {"data": {"obj": {"field": "Something"}}},
+            id="String",
         ),
-        (
-                "String!",
-                None,
-                {"data": {"obj": None},
-                 "errors": [
-                     {
-                         "locations": [{"column": 64, "line": 1}],
-                         "message": "Invalid value (value: None) for field "
-                                    "`field` of type `String!`",
-                         "path": ["obj", "field"],
-                     },
-                 ]},
-        ),
-        (
-                "[String]",
-                ["Before", None, "After"],
-                {"data": {"obj": {"field": ["Before", None, "After"]}}},
-        ),
-        (
-                "[String!]",
-                ["Before", None, "After"],
-                {"data": {"obj": {"field": None}}, "errors": [
+        pytest.param(
+            "String!",
+            None,
+            {
+                "data": {"obj": None},
+                "errors": [
                     {
                         "locations": [{"column": 64, "line": 1}],
-                        "message": "Invalid value (value: None) for field "
-                                   "`field` of type `[String!]`",
-                        "path": ["obj", "field", 1],
-                    },
-                ]},
+                        "message": "Shouldn't be null - field is not nullable",
+                        "path": ["obj", "field"],
+                    }
+                ],
+            },
+            id="String!",
         ),
-        (
-                "[String]!",
-                None,
-                {"data": {"obj": None},
-                 "errors": [
-                     {
-                         "locations": [{"column": 64, "line": 1}],
-                         "message": "Invalid value (value: None) for field "
-                                    "`field` of type `[String]!`",
-                         "path": ["obj", "field"],
-                     },
-                 ]},
+        pytest.param(
+            "[String]",
+            ["Before", None, "After"],
+            {"data": {"obj": {"field": ["Before", None, "After"]}}},
+            id="[String]",
         ),
-        (
-                "[String!]!",
-                ["Before", None, "After"],
-                {"data": {"obj": None},
-                 "errors": [
-                     {
-                         "locations": [{"column": 64, "line": 1}],
-                         "message": "Invalid value (value: ['Before', None, 'After']) "
-                                    "for field `field` of type `[String!]!`",
-                         "path": ["obj", "field"],
-                     },
-                 ]},
+        pytest.param(
+            "[String!]",
+            ["Before", None, "After"],
+            {
+                "data": {"obj": {"field": None}},
+                "errors": [
+                    {
+                        "locations": [{"column": 64, "line": 1}],
+                        "message": "Shouldn't be null - field is not nullable",
+                        "path": ["obj", "field"],
+                    }
+                ],
+            },
+            id="[String!]",
         ),
-        (
-                "[String!]!",
-                None,
-                {"data": {"obj": None},
-                 "errors": [
-                     {
-                         "locations": [{"column": 64, "line": 1}],
-                         "message": "Invalid value (value: None) "
-                                    "for field `field` of type `[String!]!`",
-                         "path": ["obj", "field"],
-                     },
-                 ]},
+        pytest.param(
+            "[String]!",
+            None,
+            {
+                "data": {"obj": None},
+                "errors": [
+                    {
+                        "locations": [{"column": 64, "line": 1}],
+                        "message": "Shouldn't be null - field is not nullable",
+                        "path": ["obj", "field"],
+                    }
+                ],
+            },
+            id="[String]!",
         ),
-        (
-                "[[String]]",
-                [["Nobody", "Expects"], ["The", "Spanish", "Inquisition"]],
-                {"data": {"obj": {"field": [["Nobody", "Expects"],
-                                            ["The", "Spanish",
-                                             "Inquisition"]]}}},
+        pytest.param(
+            "[String!]!",
+            ["Before", None, "After"],
+            {
+                "data": {"obj": None},
+                "errors": [
+                    {
+                        "locations": [{"column": 64, "line": 1}],
+                        "message": "Shouldn't be null - field is not nullable",
+                        "path": ["obj", "field"],
+                    }
+                ],
+            },
+            id="[String!]!",
+        ),
+        pytest.param(
+            "[String!]!",
+            None,
+            {
+                "data": {"obj": None},
+                "errors": [
+                    {
+                        "locations": [{"column": 64, "line": 1}],
+                        "message": "Shouldn't be null - field is not nullable",
+                        "path": ["obj", "field"],
+                    }
+                ],
+            },
+            id="[String!]!",
+        ),
+        pytest.param(
+            "[[String]]",
+            [["Nobody", "Expects"], ["The", "Spanish", "Inquisition"]],
+            {
+                "data": {
+                    "obj": {
+                        "field": [
+                            ["Nobody", "Expects"],
+                            ["The", "Spanish", "Inquisition"],
+                        ]
+                    }
+                }
+            },
+            id="[[String]]",
         ),
         # TODO: move below test to a coercion test
         # (it doesn't really test empty values)
-        (
-                "[[String]]",
-                [42, None, ["The", "Spanish", "Inquisition"]],
-                {"data": {"obj": {"field": [['42'], None,
-                                            ["The", "Spanish",
-                                             "Inquisition"]]}}},
+        pytest.param(
+            "[[String]]",
+            [42, None, ["The", "Spanish", "Inquisition"]],
+            {
+                "data": {
+                    "obj": {
+                        "field": [
+                            ["42"],
+                            None,
+                            ["The", "Spanish", "Inquisition"],
+                        ]
+                    }
+                }
+            },
+            id="[[String]]",
         ),
-        (
-                "[[String!]]",
-                [["Nobody", "Expects"], ["The", "Spanish"],
-                 [None, "Inquisition"]],
-                {"data": {
-                    "obj": {"field": [['Nobody', 'Expects'], ["The", "Spanish"],
-                                      None]}},
-                    "errors": [
-                        {
-                            "locations": [{"column": 64, "line": 1}],
-                            "message": "Invalid value (value: None) "
-                                       "for field `field` of type `[[String!]]`",
-                            "path": ["obj", "field", 2, 0],
-                        },
-                    ]},
+        pytest.param(
+            "[[String!]]",
+            [["Nobody", "Expects"], ["The", "Spanish"], [None, "Inquisition"]],
+            {
+                "data": {"obj": {"field": None}},
+                "errors": [
+                    {
+                        "locations": [{"column": 64, "line": 1}],
+                        "message": "Shouldn't be null - field is not nullable",
+                        "path": ["obj", "field"],
+                    }
+                ],
+            },
+            id="[[String!]]",
         ),
-        (  # Test #10
-                "[[String!]!]",
-                [["Nobody", "Expects"], ["The", "Spanish"],
-                 [None, "Inquisition"]],
-                {"data": {"obj": {"field": None}},
-                 "errors": [
-                     {
-                         "locations": [{"column": 64, "line": 1}],
-                         "message": "Invalid value "
-                                    "(value: [None, 'Inquisition']) "
-                                    "for field `field` of type `[[String!]!]`",
-                         "path": ["obj", "field", 2],
-                     },
-                 ]},
+        pytest.param(  # Test #10
+            "[[String!]!]",
+            [["Nobody", "Expects"], ["The", "Spanish"], [None, "Inquisition"]],
+            {
+                "data": {"obj": {"field": None}},
+                "errors": [
+                    {
+                        "locations": [{"column": 64, "line": 1}],
+                        "message": "Shouldn't be null - field is not nullable",
+                        "path": ["obj", "field"],
+                    }
+                ],
+            },
+            id="[[String!]!]",
         ),
-        (
-                "[[String!]!]!",
-                [["Nobody", "Expects"], ["The", "Spanish"],
-                 [None, "Inquisition"]],
-                {"data": {
-                    "obj": None},
-                    "errors": [
-                        {
-                            "locations": [{"column": 64, "line": 1}],
-                            "message": "Invalid value (value: "
-                                       "[['Nobody', 'Expects'], "
-                                       "['The', 'Spanish'], "
-                                       "[None, 'Inquisition']]) "
-                                       "for field `field` of type `[[String!]!]!`",
-                            "path": ["obj", "field"],
-                        },
-                    ]},
+        pytest.param(
+            "[[String!]!]!",
+            [["Nobody", "Expects"], ["The", "Spanish"], [None, "Inquisition"]],
+            {
+                "data": {"obj": None},
+                "errors": [
+                    {
+                        "locations": [{"column": 64, "line": 1}],
+                        "message": "Shouldn't be null - field is not nullable",
+                        "path": ["obj", "field"],
+                    }
+                ],
+            },
+            id="[[String!]!]!",
         ),
-    ])
-async def test_tartiflette_execute_simple_empty_value(sdl_type, returnval,
-                                                      expected):
-    schema_sdl = """
-    type Obj {{
-        field: {sdl_type}
-    }}
+    ],
+)
+async def test_tartiflette_execute_simple_empty_value(
+    sdl_type, returnval, expected
+):
+    schema_sdl = (
+        """
+    type Obj {
+        field: %s
+    }
 
-    type Query {{
+    type Query {
         obj: Obj
-    }}
-    """.format(sdl_type=sdl_type)
+    }
+    """
+        % sdl_type
+    )
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
     @Resolver("Obj.field", schema=ttftt.schema)
     async def func_field_scalar_resolver(*args, **kwargs):
         return returnval
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query TestExecutionEmptyValues{
         obj {
             field
         }
     }
-    """)
+    """
+    )
 
     assert expected == result
 
@@ -183,7 +216,7 @@ async def test_tartiflette_execute_bubble_up_empty_value():
         type SubObj {
             fieldAgain: Int!
         }
-    
+
         type Obj {
             field: SubObj!
         }
@@ -193,14 +226,22 @@ async def test_tartiflette_execute_bubble_up_empty_value():
         }
         """
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
     @Resolver("SubObj.fieldAgain", schema=ttftt.schema)
     async def func_field_scalar_resolver(*args, **kwargs):
         return None
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    @Resolver("Query.obj", schema=ttftt.schema)
+    async def func_field_obj_resolver(*args, **kwargs):
+        return {}
+
+    @Resolver("Obj.field", schema=ttftt.schema)
+    async def func_field_field_resolver(*args, **kwargs):
+        return {}
+
+    result = await ttftt.execute(
+        """
         query TestExecutionEmptyValues{
             obj {
                 field {
@@ -208,15 +249,16 @@ async def test_tartiflette_execute_bubble_up_empty_value():
                 }
             }
         }
-        """)
+        """
+    )
 
     assert result == {
         "data": None,
         "errors": [
             {
                 "locations": [{"column": 104, "line": 1}],
-                "message": "Invalid value (value: None) "
-                           "for field `fieldAgain` of type `Int!`",
+                "message": "Shouldn't be null - fieldAgain is not nullable",
                 "path": ["obj", "field", "fieldAgain"],
-            },
-        ]}
+            }
+        ],
+    }

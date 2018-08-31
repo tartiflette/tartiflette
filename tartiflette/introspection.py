@@ -45,37 +45,37 @@ __TypeKind = GraphQLEnumType(
         GraphQLEnumValue(
             TypeKindEnum.OBJECT,
             description="Indicates this type is an object. "
-                        "`fields` and `interfaces` are valid fields.",
+            "`fields` and `interfaces` are valid fields.",
         ),
         GraphQLEnumValue(
             TypeKindEnum.INTERFACE,
             description="Indicates this type is an interface. "
-                        "`fields` and `possibleTypes` are valid fields.",
+            "`fields` and `possibleTypes` are valid fields.",
         ),
         GraphQLEnumValue(
             TypeKindEnum.UNION,
             description="Indicates this type is a union. "
-                        "`possibleTypes` is a valid field.",
+            "`possibleTypes` is a valid field.",
         ),
         GraphQLEnumValue(
             TypeKindEnum.ENUM,
             description="Indicates this type is an enum. "
-                        "`enumValues` is a valid field.",
+            "`enumValues` is a valid field.",
         ),
         GraphQLEnumValue(
             TypeKindEnum.INPUT_OBJECT,
             description="Indicates this type is an input object. "
-                        "`inputFields` is a valid field.",
+            "`inputFields` is a valid field.",
         ),
         GraphQLEnumValue(
             TypeKindEnum.LIST,
             description="Indicates this type is a list. "
-                        "`ofType` is a valid field.",
+            "`ofType` is a valid field.",
         ),
         GraphQLEnumValue(
             TypeKindEnum.NON_NULL,
             description="Indicates this type is a non-null. "
-                        "`ofType` is a valid field.",
+            "`ofType` is a valid field.",
         ),
     ],
 )
@@ -84,19 +84,26 @@ __TypeKind = GraphQLEnumType(
 class __InputValueResolvers:
     @staticmethod
     async def type_resolver(parent, _arguments, _request_ctx, _info: Info):
-        return parent.gql_type
+        try:
+            return parent.gql_type
+        except Exception:
+            return None
 
     @staticmethod
-    async def default_value_resolver(parent, _arguments, _request_ctx,
-                                     _info: Info):
-        return parent.default_value
+    async def default_value_resolver(
+        parent, _arguments, _request_ctx, _info: Info
+    ):
+        try:
+            return parent.default_value
+        except Exception:
+            return None
 
 
 __InputValue = GraphQLObjectType(
     name="__InputValue",
     description="Arguments provided to Fields or Directives and the input "
-                "fields of an InputObject are represented as Input Values "
-                "which describe their type  and optionally a default value.",
+    "fields of an InputObject are represented as Input Values "
+    "which describe their type  and optionally a default value.",
     fields=OrderedDict(
         [
             (
@@ -130,9 +137,9 @@ __InputValue = GraphQLObjectType(
 __EnumValue = GraphQLObjectType(
     name="__EnumValue",
     description="One possible value for a given Enum. Enum values are unique "
-                "values, not a placeholder for a string or numeric value. "
-                "However an Enum value is returned in a JSON response as "
-                "a string.",
+    "values, not a placeholder for a string or numeric value. "
+    "However an Enum value is returned in a JSON response as "
+    "a string.",
     fields=OrderedDict(
         [
             (
@@ -151,7 +158,10 @@ __EnumValue = GraphQLObjectType(
 class __FieldResolvers:
     @staticmethod
     async def type_resolver(parent, _arguments, _request_ctx, _info: Info):
-        return parent.gql_type
+        try:
+            return parent.gql_type
+        except Exception:
+            return None
 
     @staticmethod
     async def args_resolver(parent, _arguments, _request_ctx, _info: Info):
@@ -161,8 +171,8 @@ class __FieldResolvers:
 __Field = GraphQLObjectType(
     name="__Field",
     description="Object and Interface types are described by a list of Fields, "
-                "each of which has a name, potentially a list of arguments, "
-                "and a return type.",
+    "each of which has a name, potentially a list of arguments, "
+    "and a return type.",
     fields=OrderedDict(
         [
             (
@@ -214,8 +224,9 @@ class __TypeResolvers:
             return None
 
     @staticmethod
-    async def possible_types_resolver(parent, _arguments, _request_ctx,
-                                      info: Info):
+    async def possible_types_resolver(
+        parent, _arguments, _request_ctx, info: Info
+    ):
         try:
             return info.schema.possible_types[parent.name]
         except Exception:
@@ -240,22 +251,22 @@ class __TypeResolvers:
 __Type = GraphQLObjectType(
     "__Type",
     description="The fundamental unit of any GraphQL Schema is the type. "
-                "There are many kinds of types in GraphQL as represented by "
-                "the `__TypeKind` enum.\n\n"
-                "Depending on the kind of a type, certain fields describe "
-                "information about that type. Scalar types provide no "
-                "information beyond a name and description, while Enum types "
-                "provide their values. Object and Interface types provide the "
-                "fields they describe. Abstract types, Union and Interface, "
-                "provide the Object types possible at runtime. List and "
-                "NonNull types compose other types.",
+    "There are many kinds of types in GraphQL as represented by "
+    "the `__TypeKind` enum.\n\n"
+    "Depending on the kind of a type, certain fields describe "
+    "information about that type. Scalar types provide no "
+    "information beyond a name and description, while Enum types "
+    "provide their values. Object and Interface types provide the "
+    "fields they describe. Abstract types, Union and Interface, "
+    "provide the Object types possible at runtime. List and "
+    "NonNull types compose other types.",
     fields=OrderedDict(
         [
             (
                 "kind",
                 GraphQLField(
                     name="kind",
-                    gql_type=GraphQLNonNull("__TypeKind"),
+                    gql_type="String",  # "__TypeKind",
                     resolver=__TypeResolvers.kind_resolver,
                 ),
             ),
@@ -306,11 +317,7 @@ __Type = GraphQLObjectType(
             ),
             (
                 "ofType",
-                GraphQLField(
-                    name="ofType",
-                    gql_type="__Type",
-                    resolver=__TypeResolvers.of_type_resolver,
-                ),
+                GraphQLField(name="ofType", gql_type="__Type", resolver=None),
             ),
         ]
     ),
@@ -323,29 +330,30 @@ class __SchemaResolvers:
         return info.schema.types
 
     @staticmethod
-    async def query_type_resolver(_parent, _arguments, _request_ctx,
-                                  info: Info):
+    async def query_type_resolver(
+        _parent, _arguments, _request_ctx, info: Info
+    ):
         return info.schema.types[info.schema.query_type]
 
     @staticmethod
-    async def mutation_type_resolver(_parent, _arguments, _request_ctx,
-                                     info: Info):
+    async def mutation_type_resolver(
+        _parent, _arguments, _request_ctx, info: Info
+    ):
         return info.schema.types[info.schema.mutation_type]
 
     @staticmethod
-    async def subscription_type_resolver(_parent, _arguments, _request_ctx,
-                                         info: Info):
-        return info.schema.types[
-            info.schema.subscription_type
-        ]
+    async def subscription_type_resolver(
+        _parent, _arguments, _request_ctx, info: Info
+    ):
+        return info.schema.types[info.schema.subscription_type]
 
 
 __Schema = GraphQLObjectType(
     name="__Schema",
     description="A GraphQL Schema defines the capabilities of a GraphQL "
-                "server. It exposes all available types and directives on "
-                "the server, as well as the entry points for query, mutation "
-                "and subscription operations.",
+    "server. It exposes all available types and directives on "
+    "the server, as well as the entry points for query, mutation "
+    "and subscription operations.",
     fields=OrderedDict(
         [
             (
@@ -373,7 +381,7 @@ __Schema = GraphQLObjectType(
                 GraphQLField(
                     name="mutationType",
                     description="If this server supports mutation, the type that "
-                                "mutation operations will be rooted at.",
+                    "mutation operations will be rooted at.",
                     gql_type=GraphQLNonNull("__Type"),
                     resolver=__SchemaResolvers.mutation_type_resolver,
                 ),
@@ -383,7 +391,7 @@ __Schema = GraphQLObjectType(
                 GraphQLField(
                     name="subscriptionType",
                     description="If this server support subscription, the type "
-                                "that subscription operations will be rooted at.",
+                    "that subscription operations will be rooted at.",
                     gql_type=GraphQLNonNull("__Type"),
                     resolver=__SchemaResolvers.subscription_type_resolver,
                 ),

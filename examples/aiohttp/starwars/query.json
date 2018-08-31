@@ -1,5 +1,5 @@
 {
-    "query": "query starwars($episode: String, $humanId: String, $droidId: String) { hero(episode: $episode) { id name friends { id appearsIn } appearsIn } human(id: $humanId) { id name friends { id appearsIn } appearsIn } droid(id: $droidId) { id name friends { id appearsIn } appearsIn } }",
+    "query": "query starwars($episode: String, $humanId: String, $droidId: String) { hero(episode: $episode) { id name friends { id appearsIn name  friends { id name appearsIn }   } appearsIn } human(id: $humanId) { id name friends { id appearsIn name  friends { id name appearsIn friends { id name } }     } appearsIn } droid(id: $droidId) { id name friends { id appearsIn name friends { id name friends { id name friends { id name }     } } } appearsIn } }",
     "variables": {
         "episode": "NEWHOPE",
         "humanId": "1001",
@@ -7,4 +7,3 @@
     },
     "operationName": "starwars"
 }
-
