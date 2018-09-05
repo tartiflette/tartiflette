@@ -89,7 +89,7 @@ setup(
         "uvloop==0.9.1",
         "cffi",
         "python-rapidjson",
-        "lark-parser==0.6.2",
+        "lark-parser==0.6.4",
     ],
     tests_require=_TEST_REQUIRE,
     extras_require={"test": _TEST_REQUIRE},
