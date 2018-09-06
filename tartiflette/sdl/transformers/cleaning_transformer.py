@@ -1,6 +1,5 @@
-from lark import v_args
+from lark import Tree, v_args
 from lark.lexer import Token
-from lark.tree import Tree
 from lark.visitors import Transformer_InPlace
 
 from tartiflette.sdl.transformers.helpers import find_token_in_ast

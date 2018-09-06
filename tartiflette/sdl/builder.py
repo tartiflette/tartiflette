@@ -1,8 +1,7 @@
 import os
 from typing import Optional
 
-from lark.lark import Lark
-from lark.tree import Tree
+from lark import Lark, Tree
 
 from tartiflette.schema import GraphQLSchema
 from tartiflette.sdl.transformers.cleaning_transformer import (
@@ -42,11 +41,10 @@ def parse_graphql_sdl_to_ast(sdl: str) -> Tree:
         __path__, "grammar", "graphql_sdl_grammar.lark"
     )
 
-    with open(grammar_filename) as f:
-        gqlsdl_parser = Lark(
-            f, start="document", parser="lalr", lexer="contextual"
-        )
-        gqlsdl = gqlsdl_parser.parse
+    gqlsdl_parser = Lark.open(
+        grammar_filename, start="document", parser="lalr", lexer="contextual"
+    )
+    gqlsdl = gqlsdl_parser.parse
 
     # try:
     return gqlsdl(sdl)
