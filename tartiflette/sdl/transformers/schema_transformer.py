@@ -1,7 +1,7 @@
 from collections import OrderedDict, namedtuple
 
-from lark.tree import Tree
-from lark.visitors import Transformer_InPlace, v_args
+from lark import Tree, v_args
+from lark.visitors import Transformer_InPlace
 
 from tartiflette.schema import DefaultGraphQLSchema
 from tartiflette.sdl.ast_types import String
