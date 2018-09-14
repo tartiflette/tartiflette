@@ -29,7 +29,8 @@ def _build_libgraphqlparser():
         sys.exit(-1)
 
     os.rename(
-        artifact_path, "tartiflette/parser/cffi/%s" % os.path.basename(artifact_path)
+        artifact_path,
+        "tartiflette/parser/cffi/%s" % os.path.basename(artifact_path),
     )
 
 
@@ -56,7 +57,7 @@ _TEST_REQUIRE = [
     "black==18.6b4",
 ]
 
-_VERSION = "0.0.1"
+_VERSION = "0.1.0"
 
 _PACKAGES = find_packages(exclude=["tests*"])
 

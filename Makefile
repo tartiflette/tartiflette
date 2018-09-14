@@ -1,4 +1,9 @@
 
+.PHONY: init
+init:
+	git submodule init
+	git submodule update
+
 .PHONY: format
 format:
 	black -l 79 --py36 tartiflette setup.py examples/aiohttp/starwars
@@ -15,8 +20,8 @@ style: check-format
 complexity:
 	xenon --max-absolute B --max-modules B --max-average A tartiflette
 
-.PHONY: test-integ
-test-integ:
+.PHONY: test-integration
+test-integration:
 	true
 
 .PHONY: test-unit
@@ -24,13 +29,10 @@ test-unit:
 	mkdir -p reports
 	py.test -s tests/unit --junitxml=reports/report_unit_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_func.xml
 
-.PHONY: test-func
-test-func:
+.PHONY: test-functional
+test-functional:
 	mkdir -p reports
 	py.test -s tests/functional --junitxml=reports/report_func_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_unit.xml
 
-.PHONY: tests
-tests: test-integ test-unit test-func
-
-.PHONY: quality
-quality: style complexity tests
+.PHONY: test
+test: test-integration test-unit test-functional
