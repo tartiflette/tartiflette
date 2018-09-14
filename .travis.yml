@@ -1,0 +1,32 @@
+language: python
+python:
+  - "3.6"
+addons:
+  apt:
+    packages:
+      - build-essential
+      - clang
+      - cmake
+      - bison
+      - flex
+#
+# Compliant with Gazr Specification
+# https://gazr.io
+# https://github.com/dailymotion/gazr
+# make style | test-unit | test-functional | init
+script:
+  - true
+  # - make style
+  # - make test-unit
+  # - make test-functional
+cache: pip
+install:
+  - make init
+  - pip install -e .[test]
+deploy:
+  provider: pypi
+  user: dailymotion-tech
+  password:
+    secure: imJqmndhriMY3gAqaHdr3xEWTe9jv3eh/X+JiWCQDyCrIKlRiURWbL/hX+NkT1CL20Y2p1Ghtkkg1AWIT5Gj9Eyt+VWY0marOVrX/2Dc9Aqb+aVZREX/6fWnthi7s+xEzpVKGNyXL1f37tRmT7neeIdS58ZhMkHQgqIz70rR0YmFcObRSdcx6l/QP6kCA1kza1Zi+AIFGnktNogsGLZzFrOpOlImsleid6++PFRpEI+FKq5RhD5P6VR1CWenF358YOzWYkVlw9IA8D8Orrt0jziB8MqoMbGCeyIn9j0x2RX4vQgX4k28kV/OhN3PtNw+U0TszJ3t9KTt3lHocxDEijAVLZW8y00tTzCS4X6Ai729LsWMtEGb/NEUucn8Qfwkq3U5aTJ2oGjKMDrlLjszbJxCMmeAXUJ1cKRpG/Poqi+/WOJnLg5O9nBB1xRU8nO/Sz/cCmbEAEHXqqz3GNPojjNDT6WXfkHCo4SpYe3uIBuyrYDlfKfNEIUz/euuMOESQ1DIgl6LJTlsXbmfG8T2/U/aLPr/y/aLzt9AByau9/rhIbmxdtjJv9myCIdga1pjdvQOsuMqnTxKzJRohZP7flY/Hx9kT1KW7GzGWX+gHrXIZ8bdGnW1lXotqUQCMq4dioVzBSaSn8tjcxD2No+v0Jh0ahLue5v1FHbxbJi4YSo=
+  on:
+    branch: master
