@@ -7,7 +7,7 @@ async def _execute(root_resolvers, exec_ctx, request_ctx):
     coroutines = [
         resolver(exec_ctx, request_ctx) for resolver in root_resolvers
     ]
-    return await asyncio.gather(*coroutines, return_exceptions=True)
+    return await asyncio.gather(*coroutines, return_exceptions=False)
 
 
 def _get_datas(root_nodes):

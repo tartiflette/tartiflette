@@ -3,8 +3,7 @@ import pytest
 from tartiflette import Resolver
 from tartiflette.engine import Engine
 
-
-@pytest.mark.skip
+# TODO reactivate enum when enum will be okay
 @pytest.mark.asyncio
 async def test_tartiflette_execute_basic_type_introspection_output():
     schema_sdl = """
@@ -12,7 +11,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
     type Test {
         field1: String
         field2(arg1: Int = 42): Int
-        field3: [EnumStatus!]
+        field3: [String!]
     }
 
     enum EnumStatus {
@@ -26,10 +25,6 @@ async def test_tartiflette_execute_basic_type_introspection_output():
     """
 
     ttftt = Engine(schema_sdl)
-
-    @Resolver("Query.objectTest", schema=ttftt.schema)
-    async def func_field_resolver(*args, **kwargs):
-        return {"field1": "Test", "field2": 42, "field3": ["Active"]}
 
     result = await ttftt.execute(
         """
@@ -149,8 +144,8 @@ async def test_tartiflette_execute_basic_type_introspection_output():
                                 "kind": "NON_NULL",
                                 "name": None,
                                 "ofType": {
-                                    "kind": "ENUM",
-                                    "name": "EnumStatus",
+                                    "kind": "SCALAR",
+                                    "name": "String",
                                     "ofType": None,
                                 },
                             },
@@ -162,7 +157,6 @@ async def test_tartiflette_execute_basic_type_introspection_output():
     } == result
 
 
-@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_tartiflette_execute_schema_introspection_output():
     schema_sdl = """

@@ -32,3 +32,7 @@ class GraphQLUnionType(GraphQLType):
 
     def __eq__(self, other) -> bool:
         return super().__eq__(other) and self.gql_types == other.gql_types
+
+    @property
+    def kind(self):
+        return "UNION"

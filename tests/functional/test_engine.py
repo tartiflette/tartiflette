@@ -22,7 +22,7 @@ async def test_tartiflette_engine_initialization_with_sdl_file_list():
     assert engine.schema.types["Author"] is not None
     assert engine.schema.types["Blog"] is not None
     assert engine.schema.types["Post"] is not None
-    assert engine.schema.types["Query"].fields["blogs"] is not None
+    assert engine.schema.types["Query"].fields_dict["blogs"] is not None
 
 
 @pytest.mark.asyncio
@@ -32,7 +32,7 @@ async def test_tartiflette_engine_initialization_with_sdl_folder():
     assert engine.schema.types["Author"] is not None
     assert engine.schema.types["Blog"] is not None
     assert engine.schema.types["Post"] is not None
-    assert engine.schema.types["Query"].fields["blogs"] is not None
+    assert engine.schema.types["Query"].fields_dict["blogs"] is not None
 
 
 @pytest.mark.asyncio
@@ -42,7 +42,7 @@ async def test_tartiflette_engine_initialization_with_single_sdl_file():
     assert engine.schema.types["Author"] is not None
     assert engine.schema.types["Blog"] is not None
     assert engine.schema.types["Post"] is not None
-    assert engine.schema.types["Query"].fields["blogs"] is not None
+    assert engine.schema.types["Query"].fields_dict["blogs"] is not None
 
 
 @pytest.mark.asyncio
@@ -91,4 +91,4 @@ async def test_tartiflette_engine_initialization_with_string_schema():
     assert engine.schema.types["Author"] is not None
     assert engine.schema.types["Blog"] is not None
     assert engine.schema.types["Post"] is not None
-    assert engine.schema.types["Query"].fields["blogs"] is not None
+    assert engine.schema.types["Query"].fields_dict["blogs"] is not None

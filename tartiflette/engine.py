@@ -22,23 +22,25 @@ class Engine:
             self.schema = schema
             return
         # Always create a file list
-        sdl_files_list = None
+        sdl_files_list = [
+            "%s/sdl/builtins/introspection.sdl" % os.path.dirname(__file__)
+        ]
         full_sdl = ""
         if isinstance(schema, list):
-            sdl_files_list = schema
+            sdl_files_list = sdl_files_list + schema
         elif os.path.isfile(schema):
-            sdl_files_list = [schema]
+            sdl_files_list = sdl_files_list + [schema]
         elif os.path.isdir(schema):
-            sdl_files_list = [
+            sdl_files_list = sdl_files_list + [
                 os.path.join(schema, f)
                 for f in os.listdir(schema)
                 if os.path.isfile(os.path.join(schema, f))
                 and f.endswith(".sdl")
             ]
         else:
-            sdl_files_list = []
             full_sdl = schema
         # Convert SDL files into big schema and parse it
+
         for filepath in sdl_files_list:
             with open(filepath, "r") as sdl_file:
                 data = sdl_file.read().replace("\n", " ")

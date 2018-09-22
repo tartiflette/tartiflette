@@ -39,4 +39,15 @@ class GraphQLList(GraphQLType):
 
     @property
     def ofType(self):
-        return gql_type
+        if isinstance(self.gql_type, GraphQLType):
+            return self.gql_type
+
+        return {
+            "name": self.gql_type,
+            "kind": "SCALAR",
+            "description": self.description,
+        }
+
+    @property
+    def kind(self):
+        return "LIST"

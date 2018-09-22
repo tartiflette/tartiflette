@@ -19,7 +19,7 @@ def test_graphql_object_init(mocked_resolver_factory):
     )
 
     assert obj.name == "Name"
-    assert obj.fields == OrderedDict(
+    assert obj.fields_dict == OrderedDict(
         [
             ("test", GraphQLField(name="arg", gql_type="Int")),
             ("another", GraphQLField(name="arg", gql_type="String")),
@@ -27,43 +27,6 @@ def test_graphql_object_init(mocked_resolver_factory):
     )
     assert obj.interfaces == ["First", "Second"]
     assert obj.description == "description"
-
-
-def test_graphql_object_repr(
-    mocked_resolver_factory, fixture_mocked_get_resolver_executor
-):
-    obj = GraphQLObjectType(
-        name="Name",
-        fields=OrderedDict(
-            [
-                ("test", GraphQLField(name="arg", gql_type="Int")),
-                ("another", GraphQLField(name="arg", gql_type="String")),
-            ]
-        ),
-        interfaces=["First", "Second"],
-        description="description",
-    )
-
-    assert (
-        obj.__repr__() == "GraphQLObjectType("
-        "name='Name', "
-        "fields=OrderedDict(["
-        "('test', GraphQLField(name='arg', "
-        "gql_type='Int', arguments=OrderedDict(), "
-        "resolver=%s, description=None, "
-        "directives=None)), "
-        "('another', GraphQLField(name='arg', "
-        "gql_type='String', arguments=OrderedDict(), "
-        "resolver=%s, description=None, "
-        "directives=None"
-        "))]), "
-        "interfaces=['First', 'Second'], "
-        "description='description')"
-        % (
-            fixture_mocked_get_resolver_executor(),
-            fixture_mocked_get_resolver_executor(),
-        )
-    )
 
 
 def test_graphql_object_eq(mocked_resolver_factory):

@@ -17,47 +17,13 @@ def test_graphql_interface_init(mocked_resolver_factory):
     )
 
     assert interface.name == "Name"
-    assert interface.fields == OrderedDict(
+    assert interface.fields_dict == OrderedDict(
         [
             ("test", GraphQLField(name="arg", gql_type="Int")),
             ("another", GraphQLField(name="arg", gql_type="String")),
         ]
     )
     assert interface.description == "description"
-
-
-def test_graphql_interface_repr(
-    mocked_resolver_factory, fixture_mocked_get_resolver_executor
-):
-    interface = GraphQLInterfaceType(
-        name="Name",
-        fields=OrderedDict(
-            [
-                ("test", GraphQLField(name="arg", gql_type="Int")),
-                ("another", GraphQLField(name="arg", gql_type="String")),
-            ]
-        ),
-        description="description",
-    )
-
-    assert (
-        interface.__repr__() == "GraphQLInterfaceType(name='Name', "
-        "fields=OrderedDict(["
-        "('test', GraphQLField(name='arg', "
-        "gql_type='Int', arguments=OrderedDict(), "
-        "resolver=%s, description=None, "
-        "directives=None)), "
-        "('another', GraphQLField(name='arg', "
-        "gql_type='String', arguments=OrderedDict(), "
-        "resolver=%s, description=None, "
-        "directives=None))"
-        "]), description='description')"
-        % (
-            fixture_mocked_get_resolver_executor(),
-            fixture_mocked_get_resolver_executor(),
-        )
-    )
-
 
 def test_graphql_interface_eq(mocked_resolver_factory):
     interface = GraphQLInterfaceType(

@@ -1,6 +1,6 @@
-from collections import OrderedDict
 from typing import Dict, Optional
 from tartiflette.resolver import ResolverExecutorFactory
+from tartiflette.types.type import GraphQLType
 
 
 class GraphQLField:
@@ -21,13 +21,13 @@ class GraphQLField:
     ):
         self.name = name
         self.gql_type = gql_type
-        self.arguments = arguments if arguments else OrderedDict()
+        self.arguments = arguments if arguments else {}
 
         self.resolver = ResolverExecutorFactory.get_resolver_executor(
             resolver, self
         )
-        self.description = description
-        self.directives = directives
+        self.description = description if description else ""
+        self.directives = directives if directives is not None else []
 
     def __repr__(self):
         return (
@@ -56,15 +56,28 @@ class GraphQLField:
             and self.directives == other.directives
         )
 
-    # TODO introspection
     @property
     def kind(self):
         try:
             return self.gql_type.kind
         except AttributeError:
-            return "SCALAR"
+            return "FIELD"
 
-    # TODO introspection
     @property
     def ofType(self):
-        return self.gql_type
+        return self.type
+
+    @property
+    def type(self):
+        if isinstance(self.gql_type, GraphQLType):
+            return self.gql_type
+
+        return {
+            "name": self.gql_type,
+            "kind": "SCALAR",
+            "description": self.description,
+        }
+
+    @property
+    def args(self):
+        return [x for _, x in self.arguments.items()]

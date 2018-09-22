@@ -43,14 +43,7 @@ class GraphQLType:
 
     @property
     def kind(self):
-        if self.is_list:
-            return "LIST"
-        if self.is_enum_value:
-            return "ENUM"
-        if self.is_not_null:
-            return "NOT_NULL"
-
-        return "SCALAR"
+        return "TYPE"
 
     def __repr__(self) -> str:
         return "{}(name={!r}, description={!r})".format(

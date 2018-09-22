@@ -20,10 +20,8 @@ class GraphQLObjectType(GraphQLType):
         interfaces: Optional[List[str]] = None,
         description: Optional[str] = None,
     ):
-        # In the function signature above, it should be `OrderedDict` but the
-        # python 3.6 interpreter fails to interpret the signature correctly.
         super().__init__(name=name, description=description)
-        self.fields: Dict[str, GraphQLField] = fields
+        self._fields: Dict[str, GraphQLField] = fields
         # TODO: specify what is in the List.
         self.interfaces: Optional[List[str]] = interfaces
 
@@ -33,7 +31,7 @@ class GraphQLObjectType(GraphQLType):
             "interfaces={!r}, description={!r})".format(
                 self.__class__.__name__,
                 self.name,
-                self.fields,
+                self._fields,
                 self.interfaces,
                 self.description,
             )
@@ -42,9 +40,27 @@ class GraphQLObjectType(GraphQLType):
     def __eq__(self, other) -> bool:
         return (
             super().__eq__(other)
-            and self.fields == other.fields
+            and self._fields == other._fields
             and self.interfaces == other.interfaces
         )
 
     def add_field(self, value: GraphQLField):
-        self.fields[value.name] = value
+        self._fields[value.name] = value
+
+    def get_field(self, name: str) -> GraphQLField:
+        return self._fields[name]
+
+    @property
+    def fields_dict(self):
+        return self._fields
+
+    @property
+    def kind(self):
+        return "OBJECT"
+
+    @property
+    def fields(self):
+        try:
+            return [x for _, x in self._fields.items()]
+        except AttributeError:
+            return []

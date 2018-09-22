@@ -1,4 +1,4 @@
-from collections import OrderedDict, namedtuple
+from collections import namedtuple
 
 from lark import Tree, v_args
 from lark.visitors import Transformer_InPlace
@@ -312,13 +312,13 @@ class SchemaTransformer(Transformer_InPlace):
         )
 
     def input_fields_definition(self, tree: Tree) -> SchemaNode:
-        fields = OrderedDict()
+        fields = {}
         for child in tree.children:
             fields[child.name] = child
         return SchemaNode("input_fields", fields)
 
     def fields_definition(self, tree: Tree) -> SchemaNode:
-        fields = OrderedDict()
+        fields = {}
         for child in tree.children:
             fields[child.name] = child
         return SchemaNode("fields", fields)
@@ -357,7 +357,7 @@ class SchemaTransformer(Transformer_InPlace):
         )
 
     def arguments_definition(self, tree: Tree) -> SchemaNode:
-        arguments = OrderedDict()
+        arguments = {}
         for child in tree.children:
             arguments[child.name] = child
         return SchemaNode("arguments", arguments)

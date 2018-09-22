@@ -37,3 +37,7 @@ class GraphQLScalarType(GraphQLType):
             and self.coerce_output == other.coerce_output
             and self.coerce_input == other.coerce_input
         )
+
+    @property
+    def kind(self):
+        return "SCALAR"

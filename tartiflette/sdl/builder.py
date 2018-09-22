@@ -21,6 +21,7 @@ def build_graphql_schema_from_sdl(
     :param schema: Specify a GraphQLSchema if needed
     :return: a GraphQLSchema object.
     """
+
     raw_tree = parse_graphql_sdl_to_ast(sdl)
     return transform_ast_to_schema(sdl, raw_tree, schema=schema)
 

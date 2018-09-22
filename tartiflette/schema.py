@@ -1,22 +1,26 @@
 import functools
-from collections import OrderedDict
 from typing import Dict, List, Optional, Union
 
 from tartiflette.executors.types import Info
-from tartiflette.introspection import (IntrospectionEnumValue,
-                                       IntrospectionField,
-                                       IntrospectionInputValue,
-                                       IntrospectionSchema, IntrospectionType,
-                                       IntrospectionTypeKind,
-                                       SchemaRootFieldDefinition,
-                                       TypeNameRootFieldDefinition,
-                                       TypeRootFieldDefinition)
-from tartiflette.types.builtins import GraphQLBoolean, GraphQLFloat, GraphQLID, \
-    GraphQLInt, GraphQLString
+from tartiflette.introspection import (
+    SCHEMA_ROOT_FIELD_DEFINITION,
+    TYPENAME_ROOT_FIELD_DEFINITION,
+    TYPE_ROOT_FIELD_DEFINITION,
+)
+from tartiflette.types.builtins import (
+    GraphQLBoolean,
+    GraphQLFloat,
+    GraphQLID,
+    GraphQLInt,
+    GraphQLString,
+)
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType
-from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError, \
-    UnknownSchemaFieldResolver, MissingImplementation
+from tartiflette.types.exceptions.tartiflette import (
+    GraphQLSchemaError,
+    UnknownSchemaFieldResolver,
+    MissingImplementation,
+)
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -48,7 +52,7 @@ class GraphQLSchema:
         self._mutation_type: Optional[str] = "Mutation"
         self._subscription_type: Optional[str] = "Subscription"
         # Types, definitions and implementations
-        self._gql_types: Dict[str, GraphQLType] = OrderedDict()
+        self._gql_types: Dict[str, GraphQLType] = {}
         # Add default objects
         self.add_definition(GraphQLBoolean)
         self.add_definition(GraphQLFloat)
@@ -56,7 +60,7 @@ class GraphQLSchema:
         self.add_definition(GraphQLInt)
         self.add_definition(GraphQLString)
         # Directives
-        self._directives: Dict[str, GraphQLDirective] = OrderedDict()
+        self._directives: Dict[str, GraphQLDirective] = {}
         # All `GraphQLObjectType`s implementing a given interface
         self._implementations: Dict[str, List[GraphQLType]] = {}
         # All non-abstract types possible for a given abstract type
@@ -79,9 +83,9 @@ class GraphQLSchema:
         if not type(self) is type(other):
             return False
         if (
-                self._query_type != other._query_type
-                or self._mutation_type != other._mutation_type
-                or self._subscription_type != other._subscription_type
+            self._query_type != other._query_type
+            or self._mutation_type != other._mutation_type
+            or self._subscription_type != other._subscription_type
         ):
             return False
         if len(self._gql_types) != len(other._gql_types):
@@ -118,6 +122,18 @@ class GraphQLSchema:
         self._subscription_type = value
 
     @property
+    def queryType(self):
+        return self.types[self.query_type]
+
+    @property
+    def subscriptionType(self):
+        return self.types[self.subscription_type]
+
+    @property
+    def mutationType(self):
+        return self.types[self.mutation_type]
+
+    @property
     def types(self):
         return self._gql_types
 
@@ -127,11 +143,12 @@ class GraphQLSchema:
 
     def add_directive(self, value: GraphQLDirective) -> None:
         if self._directives.get(value.name):
-            raise ValueError('new GraphQL directive definition `{}` '
-                             'overrides existing directive definition `{}`.'.format(
-                value.name,
-                repr(self._directives.get(value.name))
-            ))
+            raise ValueError(
+                "new GraphQL directive definition `{}` "
+                "overrides existing directive definition `{}`.".format(
+                    value.name, repr(self._directives.get(value.name))
+                )
+            )
         self._directives[value.name] = value
 
     def add_definition(self, value: GraphQLType) -> None:
@@ -169,7 +186,7 @@ class GraphQLSchema:
             ) from err
 
         try:
-            return self._gql_types[object_name].fields[field_name]
+            return self._gql_types[object_name].get_field(field_name)
         except (AttributeError, KeyError):
             raise UnknownSchemaFieldResolver(
                 "field `{}` was not found in GraphQL schema.".format(name)
@@ -184,8 +201,8 @@ class GraphQLSchema:
         """
         self.validate()
         self.inject_introspection()
-        #self.field_gql_types_to_real_types()
-        #self.union_gql_types_to_real_types()
+        # self.field_gql_types_to_real_types()
+        # self.union_gql_types_to_real_types()
         # self.inject_default_directives()
         self.initialize_directives()
         return None
@@ -222,7 +239,7 @@ class GraphQLSchema:
     def _validate_schema_named_types(self):
         for type_name, gql_type in self._gql_types.items():
             try:
-                for field_name, field in gql_type.fields.items():
+                for field_name, field in gql_type.fields_dict.items():
                     gql_type = reduce_type(field.gql_type)
                     if str(gql_type) not in self._gql_types:
                         raise GraphQLSchemaError(
@@ -256,11 +273,13 @@ class GraphQLSchema:
                             )
                         )
                     for (
-                            iface_field_name,
-                            iface_field,
-                    ) in iface_type.fields.items():
+                        iface_field_name,
+                        iface_field,
+                    ) in iface_type.fields_dict.items():
                         try:
-                            gql_type_field = gql_type.fields[iface_field_name]
+                            gql_type_field = gql_type.fields_dict[
+                                iface_field_name
+                            ]
                         except KeyError:
                             raise GraphQLSchemaError(
                                 "field `{}` is missing in GraphQL type `{}` "
@@ -292,8 +311,8 @@ class GraphQLSchema:
                 )
             )
         elif (
-                self.mutation_type != "Mutation"
-                and self.mutation_type not in self._gql_types.keys()
+            self.mutation_type != "Mutation"
+            and self.mutation_type not in self._gql_types.keys()
         ):
             raise GraphQLSchemaError(
                 "schema could not find the root `mutation` type `{}`.".format(
@@ -301,8 +320,8 @@ class GraphQLSchema:
                 )
             )
         elif (
-                self.subscription_type != "Subscription"
-                and self.subscription_type not in self._gql_types.keys()
+            self.subscription_type != "Subscription"
+            and self.subscription_type not in self._gql_types.keys()
         ):
             raise GraphQLSchemaError(
                 "schema could not find the root `subscription` type `{}`.".format(
@@ -337,13 +356,13 @@ class GraphQLSchema:
     def _validate_all_scalars_have_implementations(self):
         for type_name, gql_type in self._gql_types.items():
             if isinstance(gql_type, GraphQLScalarType):
-                if gql_type.coerce_output is None or \
-                        gql_type.coerce_input is None:
+                if (
+                    gql_type.coerce_output is None
+                    or gql_type.coerce_input is None
+                ):
                     raise GraphQLSchemaError(
                         "scalar type `{}` must have a coercion "
-                        "function for inputs and outputs.".format(
-                            type_name
-                        )
+                        "function for inputs and outputs.".format(type_name)
                     )
         return True
 
@@ -355,7 +374,7 @@ class GraphQLSchema:
                         raise GraphQLSchemaError(
                             "enum type `{}` has a value of `{}` which "
                             "is not unique in the GraphQL schema.".format(
-                                type_name, str(value.value),
+                                type_name, str(value.value)
                             )
                         )
         return True
@@ -363,7 +382,7 @@ class GraphQLSchema:
     def field_gql_types_to_real_types(self) -> None:
         for type_name, gql_type in self._gql_types.items():
             try:
-                for field_name, field in gql_type.fields.items():
+                for field in gql_type.fields:
                     field.gql_type = self.to_real_type(field.gql_type)
                     try:
                         for arg_name, arg in field.arguments.items():
@@ -382,17 +401,9 @@ class GraphQLSchema:
                 pass
 
     def inject_introspection(self):
-        # Add Introspection types
-        self.add_definition(IntrospectionSchema)
-        self.add_definition(IntrospectionType)
-        self.add_definition(IntrospectionTypeKind)
-        self.add_definition(IntrospectionField)
-        self.add_definition(IntrospectionEnumValue)
-        self.add_definition(IntrospectionInputValue)
-        # Add introspection field into root objects
-        self.types[self.query_type].add_field(SchemaRootFieldDefinition)
-        self.types[self.query_type].add_field(TypeRootFieldDefinition)
-        self.types[self.query_type].add_field(TypeNameRootFieldDefinition)
+        self.types[self.query_type].add_field(SCHEMA_ROOT_FIELD_DEFINITION)
+        self.types[self.query_type].add_field(TYPE_ROOT_FIELD_DEFINITION)
+        self.types[self.query_type].add_field(TYPENAME_ROOT_FIELD_DEFINITION)
 
     def initialize_directives(self):
         for name, directive in self._directives.items():
@@ -400,8 +411,7 @@ class GraphQLSchema:
                 directive.implementation.on_build(self)
             except AttributeError:
                 raise MissingImplementation(
-                    "directive `{}` is missing an implementation".format(
-                        name)
+                    "directive `{}` is missing an implementation".format(name)
                 )
 
 

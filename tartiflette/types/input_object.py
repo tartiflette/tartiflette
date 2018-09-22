@@ -21,8 +21,6 @@ class GraphQLInputObjectType(GraphQLType):
         description: Optional[str] = None,
     ):
         super().__init__(name=name, description=description)
-        # In the function signature above, it should be `OrderedDict` but the
-        # python 3.6 interpreter fails to interpret the signature correctly.
         self.fields: Dict[str, GraphQLArgument] = fields
 
     def __repr__(self) -> str:
@@ -32,3 +30,7 @@ class GraphQLInputObjectType(GraphQLType):
 
     def __eq__(self, other):
         return super().__eq__(other) and self.fields == other.fields
+
+    @property
+    def kind(self):
+        return "INPUT_OBJECT"

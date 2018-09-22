@@ -16,11 +16,19 @@ def _enum_coerser(val):
     return _string_coerser(val)
 
 
+def ___type_coerser(val):
+    if val is None:
+        return val
+
+    return {}
+
+
 _COERSER = {
     "String": partial(_built_in_coerser, str),
     "Int": partial(_built_in_coerser, int),
     "Float": partial(_built_in_coerser, float),
     "Boolean": partial(_built_in_coerser, bool),
+    "__Type": ___type_coerser,
 }
 
 

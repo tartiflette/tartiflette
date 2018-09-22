@@ -1,4 +1,5 @@
 from typing import Any, Optional
+from tartiflette.types.type import GraphQLType
 
 
 class GraphQLArgument:
@@ -45,3 +46,18 @@ class GraphQLArgument:
             and self.gql_type == other.gql_type
             and self.default_value == other.default_value
         )
+
+    @property  # Introspection
+    def type(self):
+        if isinstance(self.gql_type, GraphQLType):
+            return self.gql_type
+
+        return {
+            "name": self.gql_type,
+            "kind": "SCALAR",
+            "description": self.description,
+        }
+
+    @property  # Introspection
+    def defaultValue(self):
+        return self.default_value
