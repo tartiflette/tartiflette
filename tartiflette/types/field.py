@@ -23,11 +23,11 @@ class GraphQLField:
         self.gql_type = gql_type
         self.arguments = arguments if arguments else {}
 
+        self._directives = directives
         self.resolver = ResolverExecutorFactory.get_resolver_executor(
-            resolver, self
+            resolver, self, directives
         )
         self.description = description if description else ""
-        self.directives = directives if directives is not None else []
 
     def __repr__(self):
         return (
@@ -42,6 +42,13 @@ class GraphQLField:
                 self.directives,
             )
         )
+
+    @property
+    def directives(self):
+        try:
+            return [x for _, x in self._directives.items()]
+        except AttributeError:
+            return []
 
     def __str__(self):
         return self.name

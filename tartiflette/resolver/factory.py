@@ -99,12 +99,20 @@ def _get_coerser(field_type):
     return coerser
 
 
+def _surround_with_directives(func, directives):
+    for directive in reversed(directives):
+        func = partial(directive.implementation.on_execution, func)
+    return func
+
+
 class _ResolverExecutor:
-    def __init__(self, func, schema_field):
+    def __init__(self, func, schema_field, directives):
+        self._raw_func = func
         self._func = func
         self._schema_field = schema_field
         self._coerser = _get_coerser(schema_field.gql_type)
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
+        self._directives = directives or {}
 
     async def __call__(
         self, parent_result, arguments: dict, req_ctx: dict, info
@@ -115,6 +123,23 @@ class _ResolverExecutor:
             return res, coersed
         except Exception as e:  # pylint: disable=broad-except
             return e, None
+
+    def apply_directives(self, schema):
+        try:
+            self._func = _surround_with_directives(
+                self._raw_func,
+                [
+                    schema.directives[name]
+                    for name, _ in self._directives.items()
+                    if name in schema.directives
+                ],
+            )
+        except AttributeError:
+            self._func = self._raw_func
+
+    def update_func(self, func, schema):
+        self._raw_func = func
+        self.apply_directives(schema)
 
     @property
     def schema_field(self):
@@ -160,5 +185,5 @@ async def _default_resolver(
 
 class ResolverExecutorFactory:
     @staticmethod
-    def get_resolver_executor(func, field):
-        return _ResolverExecutor(func or _default_resolver, field)
+    def get_resolver_executor(func, field, directives):
+        return _ResolverExecutor(func or _default_resolver, field, directives)

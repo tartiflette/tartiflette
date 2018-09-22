@@ -36,8 +36,6 @@ class Resolver:
                 "is not awaitable.".format(repr(resolver), self.field.name)
             )
 
-        self.field.resolver = ResolverExecutorFactory.get_resolver_executor(
-            resolver, self.field
-        )
+        self.field.resolver.update_func(resolver, self.schema)
 
         return self.field.resolver

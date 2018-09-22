@@ -1,7 +1,6 @@
-import functools
+
 from typing import Dict, List, Optional, Union
 
-from tartiflette.executors.types import Info
 from tartiflette.introspection import (
     SCHEMA_ROOT_FIELD_DEFINITION,
     TYPENAME_ROOT_FIELD_DEFINITION,
@@ -30,6 +29,7 @@ from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.type import GraphQLType
 from tartiflette.types.union import GraphQLUnionType
+from tartiflette.directive import Deprecated, Directive
 
 
 class GraphQLSchema:
@@ -203,8 +203,9 @@ class GraphQLSchema:
         self.inject_introspection()
         # self.field_gql_types_to_real_types()
         # self.union_gql_types_to_real_types()
-        # self.inject_default_directives()
-        self.initialize_directives()
+        self.inject_builtin_directives()
+        self.prepare_directives()
+        # self.initialize_directives() TODO make it work (on_build)
         return None
 
     def validate(self) -> bool:
@@ -404,6 +405,18 @@ class GraphQLSchema:
         self.types[self.query_type].add_field(SCHEMA_ROOT_FIELD_DEFINITION)
         self.types[self.query_type].add_field(TYPE_ROOT_FIELD_DEFINITION)
         self.types[self.query_type].add_field(TYPENAME_ROOT_FIELD_DEFINITION)
+
+    def inject_builtin_directives(self):
+        depr = Directive(name="deprecated", schema=self)
+        depr(Deprecated)
+
+    def prepare_directives(self):
+        for _, typee in self.types.items():
+            try:
+                for field in typee.fields:
+                    field.resolver.apply_directives(self)
+            except AttributeError:
+                pass
 
     def initialize_directives(self):
         for name, directive in self._directives.items():

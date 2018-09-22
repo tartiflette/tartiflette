@@ -23,7 +23,8 @@ class Engine:
             return
         # Always create a file list
         sdl_files_list = [
-            "%s/sdl/builtins/introspection.sdl" % os.path.dirname(__file__)
+            "%s/sdl/builtins/introspection.sdl" % os.path.dirname(__file__),
+            "%s/sdl/builtins/directives.sdl" % os.path.dirname(__file__),
         ]
         full_sdl = ""
         if isinstance(schema, list):
