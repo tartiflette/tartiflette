@@ -128,6 +128,19 @@ def _introspection_directives(directives):
     return func
 
 
+def _execute_introspection_directives(elements):
+    ret = []
+    for ele in elements:
+        try:
+            directives = _introspection_directives(ele.directives)
+            res = directives(ele)
+            if res:
+                ret.append(res)
+        except AttributeError:
+            ret.append(ele)
+    return ret
+
+
 class _ResolverExecutor:
     def __init__(self, func, schema_field, directives):
         self._raw_func = func
@@ -141,20 +154,11 @@ class _ResolverExecutor:
         element = await self._func(parent_result, arguments, req_ctx, info)
         try:
             if isinstance(element, list):
-                if element:
-                    _element = element
-                    element = []
-                    for ele in _element:
-                        try:
-                            directives = _introspection_directives(
-                                ele.directives
-                            )
-                            element.append(directives(ele))
-                        except AttributeError:
-                            element = _element
+                element = _execute_introspection_directives(element)
             else:
-                directives = _introspection_directives(element.directives)
-                element = directives(element)
+                element = _execute_introspection_directives([element])
+                if element is not None:
+                    element = element[0]
         except AttributeError:
             pass
 

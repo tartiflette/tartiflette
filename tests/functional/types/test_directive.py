@@ -134,12 +134,12 @@ async def test_tartiflette_deprecated_introspection_directive():
 async def test_tartiflette_directive_declaration():
     schema_sdl = """
     directive @lol on FIELD_DEFINITION
-    directive @lol2 on FIELD_DEFINITION
+    directive @lol2( value: Int ) on FIELD_DEFINITION
 
     type Query {
         fieldLoled1: Int @lol
-        fieldLoled2: Int @lol @deprecated
-        fieldLoled3: Int @deprecated @lol @lol2
+        fieldLoled2: Int @lol @deprecated @lol2(value:2)
+        fieldLoled3: Int @deprecated @lol @lol2(value:6)
     }
     """
     # Execute directive
@@ -150,7 +150,9 @@ async def test_tartiflette_directive_declaration():
     class Loled2(CommonDirective):
         @staticmethod
         async def on_execution(_directive_args, func, pr, args, rctx, info):
-            return (await func(pr, args, rctx, info)) + 1
+            return (await func(pr, args, rctx, info)) + int(
+                _directive_args["value"]
+            )
 
     @Resolver("Query.fieldLoled1", schema=ttftt.schema)
     async def func_field_resolver4(_parent, _arguments, _request_ctx, _info):
@@ -184,5 +186,73 @@ async def test_tartiflette_directive_declaration():
     )
 
     assert {
-        "data": {"fieldLoled1": 43, "fieldLoled2": 43, "fieldLoled3": 44}
+        "data": {"fieldLoled1": 43, "fieldLoled2": 45, "fieldLoled3": 49}
+    } == result
+
+
+@pytest.mark.asyncio
+async def test_tartiflette_non_introspectable_execution_directive():
+    schema = """
+    type Query {
+        fieldNormal: Int
+        fieldHiddendToIntrospactable: Int @non_introspectable
+    }
+    """
+    ttftt = Engine(schema)
+
+    @Resolver("Query.fieldNormal", schema=ttftt.schema)
+    async def func_field_resolver4(parent, arguments, request_ctx, info):
+        return 42
+
+    @Resolver("Query.fieldHiddendToIntrospactable", schema=ttftt.schema)
+    async def func_field_resolver5(parent, arguments, request_ctx, info):
+        return 42
+
+    assert ttftt.schema.directives["non_introspectable"] is not None
+    assert (
+        ttftt.schema.directives["non_introspectable"].implementation
+        is not None
+    )
+
+    result = await ttftt.execute(
+        """
+    query Test{
+        __type(name: "Query") {
+            fields {
+                name
+                isDeprecated
+                deprecationReason
+            }
+        }
+    }
+    """
+    )
+
+    assert {
+        "data": {
+            "__type": {
+                "fields": [
+                    {
+                        "name": "fieldNormal",
+                        "isDeprecated": False,
+                        "deprecationReason": None,
+                    },
+                    {
+                        "deprecationReason": None,
+                        "name": "__schema",
+                        "isDeprecated": False,
+                    },
+                    {
+                        "deprecationReason": None,
+                        "name": "__type",
+                        "isDeprecated": False,
+                    },
+                    {
+                        "name": "__typename",
+                        "isDeprecated": False,
+                        "deprecationReason": None,
+                    },
+                ]
+            }
+        }
     } == result

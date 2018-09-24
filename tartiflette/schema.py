@@ -29,7 +29,7 @@ from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.type import GraphQLType
 from tartiflette.types.union import GraphQLUnionType
-from tartiflette.directive import Deprecated, Directive
+from tartiflette.directive import Deprecated, Directive, NonIntrospectable
 
 
 class GraphQLSchema:
@@ -409,6 +409,8 @@ class GraphQLSchema:
     def inject_builtin_directives(self):
         depr = Directive(name="deprecated", schema=self)
         depr(Deprecated)
+        non_intr = Directive(name="non_introspectable", schema=self)
+        non_intr(NonIntrospectable)
 
     def prepare_directives(self):
         for _, typee in self.types.items():
