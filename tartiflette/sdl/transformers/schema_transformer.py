@@ -354,6 +354,7 @@ class SchemaTransformer(Transformer_InPlace):
             arguments=arguments,
             description=description,
             directives=directives,
+            schema=self._schema
         )
 
     def arguments_definition(self, tree: Tree) -> SchemaNode:

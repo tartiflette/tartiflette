@@ -5,6 +5,7 @@ class ExecutionContext:
     # See if we should keep it here or move it to the visitor ?
     def __init__(self):
         self._errors: List[Exception] = []
+        self.is_introspection = False
 
     @property
     def errors(self):

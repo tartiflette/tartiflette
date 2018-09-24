@@ -414,7 +414,7 @@ class GraphQLSchema:
         for _, typee in self.types.items():
             try:
                 for field in typee.fields:
-                    field.resolver.apply_directives(self)
+                    field.resolver.apply_directives()
             except AttributeError:
                 pass
 

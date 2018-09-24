@@ -1,13 +1,12 @@
-class Deprecated:
-    @staticmethod
-    def on_build(schema):
-        pass
+from .common import CommonDirective
 
-    @staticmethod
-    async def on_execution(resolver, parent, arguments, request_ctx, info):
-        return await resolver(parent, arguments, request_ctx, info)
 
+class Deprecated(CommonDirective):
     @staticmethod
-    async def on_introspection(resolver, parent, arguments, request_ctx, info):
-        pass
-        # TODO Implement later
+    def on_introspection(directive_args, next_directive, introspected_element):
+        introspected_element = next_directive(introspected_element)
+        introspected_element.isDeprecated = True
+        setattr(
+            introspected_element, "deprecationReason", directive_args["reason"]
+        )
+        return introspected_element

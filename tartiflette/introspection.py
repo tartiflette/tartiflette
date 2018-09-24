@@ -5,14 +5,17 @@ from tartiflette.types.non_null import GraphQLNonNull
 
 
 async def __schema_resolver(_pr, _arg, _rctx, info):
+    info.execution_ctx.is_introspection = True
     return info.schema
 
 
 async def __type_resolver(_pr, args, _rctx, info):
+    info.execution_ctx.is_introspection = True
     return info.schema.types[args["name"]]
 
 
 async def __typename_resolver(_pr, _arg, _rctx, _info):
+    info.execution_ctx.is_introspection = True
     return "TODO TYPENAME"
 
 

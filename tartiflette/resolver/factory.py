@@ -99,9 +99,32 @@ def _get_coerser(field_type):
     return coerser
 
 
-def _surround_with_directives(func, directives):
+def _surround_with_execution_directives(func, directives):
     for directive in reversed(directives):
-        func = partial(directive.implementation.on_execution, func)
+        try:
+            func = partial(
+                directive["callables"].on_execution, directive["args"], func
+            )
+        except AttributeError:
+            pass
+    return func
+
+
+def _introspection_directive_endpoint(element):
+    return element
+
+
+def _introspection_directives(directives):
+    func = _introspection_directive_endpoint
+    for directive in reversed(directives):
+        try:
+            func = partial(
+                directive["callables"].on_introspection,
+                directive["args"],
+                func,
+            )
+        except AttributeError:
+            pass
     return func
 
 
@@ -114,32 +137,56 @@ class _ResolverExecutor:
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
         self._directives = directives or {}
 
+    async def _introspection(self, parent_result, arguments, req_ctx, info):
+        element = await self._func(parent_result, arguments, req_ctx, info)
+        try:
+            if isinstance(element, list):
+                if element:
+                    _element = element
+                    element = []
+                    for ele in _element:
+                        try:
+                            directives = _introspection_directives(
+                                ele.directives
+                            )
+                            element.append(directives(ele))
+                        except AttributeError:
+                            element = _element
+            else:
+                directives = _introspection_directives(element.directives)
+                element = directives(element)
+        except AttributeError:
+            pass
+
+        return element
+
     async def __call__(
         self, parent_result, arguments: dict, req_ctx: dict, info
     ) -> (Any, Any):
         try:
-            res = await self._func(parent_result, arguments, req_ctx, info)
+            if not info.execution_ctx.is_introspection:
+                res = await self._func(parent_result, arguments, req_ctx, info)
+            else:
+                res = await self._introspection(
+                    parent_result, arguments, req_ctx, info
+                )
+
             coersed = self._coerser(res)
             return res, coersed
         except Exception as e:  # pylint: disable=broad-except
             return e, None
 
-    def apply_directives(self, schema):
+    def apply_directives(self):
         try:
-            self._func = _surround_with_directives(
-                self._raw_func,
-                [
-                    schema.directives[name]
-                    for name, _ in self._directives.items()
-                    if name in schema.directives
-                ],
+            self._func = _surround_with_execution_directives(
+                self._raw_func, self._schema_field.directives
             )
         except AttributeError:
             self._func = self._raw_func
 
-    def update_func(self, func, schema):
+    def update_func(self, func):
         self._raw_func = func
-        self.apply_directives(schema)
+        self.apply_directives()
 
     @property
     def schema_field(self):

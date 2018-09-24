@@ -18,6 +18,7 @@ class GraphQLField:
         resolver: Optional[callable] = None,
         description: Optional[str] = None,
         directives: Optional[Dict] = None,
+        schema: Optional = None,
     ):
         self.name = name
         self.gql_type = gql_type
@@ -28,6 +29,8 @@ class GraphQLField:
             resolver, self, directives
         )
         self.description = description if description else ""
+        self._schema = schema
+        self._is_deprecated = False
 
     def __repr__(self):
         return (
@@ -45,9 +48,29 @@ class GraphQLField:
 
     @property
     def directives(self):
+        # TODO to simplify this we need to rework the
+        # GraphQLField->Directive->ArgumentsDef->ArgumentInstance interface
         try:
-            return [x for _, x in self._directives.items()]
-        except AttributeError:
+            directives = {
+                name: {
+                    "callables": self._schema.directives[name].implementation,
+                    "args": {
+                        arg_name: self._schema.directives[name]
+                        .arguments[arg_name]
+                        .default_value
+                        for arg_name in self._schema.directives[name].arguments
+                    },
+                }
+                for name in self._directives
+            }
+
+            for name, directive in directives.items():
+                if self._directives[name] is not None:
+                    directive["args"].update(self._directives[name])
+
+            return [v for _, v in directives.items()]
+
+        except (AttributeError, KeyError, TypeError):
             return []
 
     def __str__(self):
@@ -84,6 +107,14 @@ class GraphQLField:
             "kind": "SCALAR",
             "description": self.description,
         }
+
+    @property
+    def isDeprecated(self):
+        return self._is_deprecated
+
+    @isDeprecated.setter
+    def isDeprecated(self, value):
+        self._is_deprecated = value
 
     @property
     def args(self):

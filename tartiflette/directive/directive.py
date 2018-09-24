@@ -1,5 +1,5 @@
 from asyncio import iscoroutinefunction
-from typing import Callable, Optional
+from typing import Callable
 
 from tartiflette.types.exceptions.tartiflette import (
     UnknownDirectiveDefinition,
@@ -35,9 +35,7 @@ class Directive:
             )
 
     def __call__(self, implementation: Callable, *_args, **_kwargs):
-        if not iscoroutinefunction(
-            implementation.on_execution
-        ) or not iscoroutinefunction(implementation.on_introspection):
+        if not iscoroutinefunction(implementation.on_execution):
             raise NonAwaitableDirective(
                 "%s is not awaitable" % repr(implementation)
             )
