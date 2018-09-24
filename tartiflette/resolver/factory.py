@@ -2,21 +2,18 @@ from functools import partial
 from typing import Any
 
 from tartiflette.types.helpers import reduce_type
+from tartiflette.types.exceptions.tartiflette import NullError, InvalidValue
 
 
-def _built_in_coerser(func, val):
+def _built_in_coerser(func, val, _):
     if val is None:
         return val
 
+    # Don't pass info, cause this is a buildin python type caster
     return func(val)
 
 
-# TODO change coercer to also have _schema and validate _string(val) is in val list
-def _enum_coerser(val):
-    return _string_coerser(val)
-
-
-def ___type_coerser(val):
+def ___type_coerser(val, _):
     if val is None:
         return val
 
@@ -32,25 +29,25 @@ _COERSER = {
 }
 
 
-def _object_coerser(_v) -> dict:
+def _object_coerser(_, __) -> dict:
     return {}
 
 
-def _list_coerser(func, val) -> list:
+def _list_coerser(func, val, info) -> list:
     if val is None:
         return val
 
     if isinstance(val, list):
-        return [func(v) for v in val]
+        return [func(v, info) for v in val]
 
-    return [func(val)]
+    return [func(val, info)]
 
 
-def _not_null_coerser(func, val):
+def _not_null_coerser(func, val, info):
     if val is None:
-        raise Exception("Shouldn't be null")
+        raise NullError(val, info)
 
-    return func(val)
+    return func(val, info)
 
 
 def _get_type_coercers(field_type):
@@ -85,13 +82,31 @@ def _shall_return_a_list(field_type):
     return False
 
 
-def _get_coerser(field_type):
-    rtype = reduce_type(field_type)
+def _enum_coerser(enum_valid_values, func, val, info):
+    if val is None:
+        return val
 
+    if val not in enum_valid_values:
+        raise InvalidValue(val, info)
+    return func(val, info)
+
+
+def _get_coerser(field):
+    field_type = field.gql_type
+    rtype = reduce_type(field_type)
     coerser = _object_coerser
     try:
         coerser = _COERSER[rtype]
     except (TypeError, KeyError):
+        pass
+
+    try:
+        coerser = partial(
+            _enum_coerser,
+            [x.value for x in field.schema.enums[rtype].values],
+            _COERSER["String"],
+        )
+    except (AttributeError, KeyError, TypeError):
         pass
 
     coerser = _list_and_null_coerser(field_type, coerser)
@@ -146,7 +161,7 @@ class _ResolverExecutor:
         self._raw_func = func
         self._func = func
         self._schema_field = schema_field
-        self._coerser = _get_coerser(schema_field.gql_type)
+        self._coerser = _get_coerser(schema_field)
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
         self._directives = directives or {}
 
@@ -175,7 +190,7 @@ class _ResolverExecutor:
                     parent_result, arguments, req_ctx, info
                 )
 
-            coersed = self._coerser(res)
+            coersed = self._coerser(res, info)
             return res, coersed
         except Exception as e:  # pylint: disable=broad-except
             return e, None

@@ -25,12 +25,13 @@ class GraphQLField:
         self.arguments = arguments if arguments else {}
 
         self._directives = directives
+        self._schema = schema
+        self.description = description if description else ""
+        self._is_deprecated = False
+
         self.resolver = ResolverExecutorFactory.get_resolver_executor(
             resolver, self, directives
         )
-        self.description = description if description else ""
-        self._schema = schema
-        self._is_deprecated = False
 
     def __repr__(self):
         return (
@@ -50,6 +51,7 @@ class GraphQLField:
     def directives(self):
         # TODO to simplify this we need to rework the
         # GraphQLField->Directive->ArgumentsDef->ArgumentInstance interface
+        # Can be do "once" at schema bake time
         try:
             directives = {
                 name: {
@@ -102,11 +104,7 @@ class GraphQLField:
         if isinstance(self.gql_type, GraphQLType):
             return self.gql_type
 
-        return {
-            "name": self.gql_type,
-            "kind": "SCALAR",
-            "description": self.description,
-        }
+        return self.schema.types[self.gql_type]
 
     @property
     def isDeprecated(self):
@@ -119,3 +117,7 @@ class GraphQLField:
     @property
     def args(self):
         return [x for _, x in self.arguments.items()]
+
+    @property
+    def schema(self):
+        return self._schema

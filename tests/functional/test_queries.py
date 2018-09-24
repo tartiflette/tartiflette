@@ -39,7 +39,7 @@ async def test_full_query_execute():
         title: String
         author: Author
         price: Float
-        category: String
+        category: BookCategory
     }
     """
 

@@ -50,7 +50,7 @@ async def test_tartiflette_execute_nested_error():
         "data": {"test": {"deep": {"lastUpdate": None}}},
         "errors": [
             {
-                "message": "Shouldn't be null - lastUpdate is not nullable",
+                "message": "Invalid value (value: None) for field `lastUpdate` of type `[Float!]`",
                 "path": ["test", "deep", "lastUpdate"],
                 "locations": [{"line": 1, "column": 68}],
             }

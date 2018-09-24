@@ -13,8 +13,11 @@ class GraphQLNonNull(GraphQLType):
         self,
         gql_type: Union[str, GraphQLType],
         description: Optional[str] = None,
+        schema=None,
     ):
-        super().__init__(name=None, description=description, is_not_null=True)
+        super().__init__(
+            name=None, description=description, is_not_null=True, schema=schema
+        )
         self.gql_type = gql_type
 
     def __repr__(self) -> str:
@@ -37,11 +40,7 @@ class GraphQLNonNull(GraphQLType):
         if isinstance(self.gql_type, GraphQLType):
             return self.gql_type
 
-        return {
-            "name": self.gql_type,
-            "kind": "SCALAR",
-            "description": self.description,
-        }
+        return self.schema.types[self.gql_type]
 
     @property
     def kind(self):

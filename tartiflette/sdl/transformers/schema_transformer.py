@@ -87,12 +87,12 @@ class SchemaTransformer(Transformer_InPlace):
 
     def list_type(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
-            "list_type", GraphQLList(gql_type=tree.children[0].value)
+            "list_type", GraphQLList(gql_type=tree.children[0].value, schema=self._schema)
         )
 
     def non_null_type(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
-            "non_null_type", GraphQLNonNull(gql_type=tree.children[0].value)
+            "non_null_type", GraphQLNonNull(gql_type=tree.children[0].value, schema=self._schema)
         )
 
     def type(self, tree: Tree) -> SchemaNode:
@@ -122,7 +122,7 @@ class SchemaTransformer(Transformer_InPlace):
                         child, child.__class__.__name__
                     )
                 )
-        return GraphQLScalarType(name=name, description=description)
+        return GraphQLScalarType(name=name, description=description, schema=self._schema)
 
     def union_type_definition(self, tree: Tree) -> GraphQLUnionType:
         # TODO: Add directives
@@ -148,7 +148,7 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return GraphQLUnionType(
-            name=name, gql_types=members, description=description
+            name=name, gql_types=members, description=description, schema=self._schema
         )
 
     def union_member_types(self, tree: Tree) -> SchemaNode:
@@ -181,9 +181,11 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
 
-        return GraphQLEnumType(
-            name=name, values=values, description=description
+        enum_type = GraphQLEnumType(
+            name=name, values=values, description=description, schema=self._schema
         )
+        self._schema.add_enum_definition(enum_type)
+        return enum_type
 
     def enum_values_definition(self, tree: Tree) -> SchemaNode:
         values = []
@@ -236,7 +238,7 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return GraphQLInterfaceType(
-            name=name, fields=fields, description=description
+            name=name, fields=fields, description=description, schema=self._schema
         )
 
     def object_type_definition(self, tree: Tree) -> GraphQLObjectType:
@@ -270,6 +272,7 @@ class SchemaTransformer(Transformer_InPlace):
             fields=fields,
             interfaces=interfaces,
             description=description,
+            schema=self._schema
         )
 
     def implements_interfaces(self, tree: Tree) -> SchemaNode:
@@ -308,7 +311,7 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return GraphQLInputObjectType(
-            name=name, fields=fields, description=description
+            name=name, fields=fields, description=description, schema=self._schema
         )
 
     def input_fields_definition(self, tree: Tree) -> SchemaNode:

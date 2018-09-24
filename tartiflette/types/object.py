@@ -19,8 +19,9 @@ class GraphQLObjectType(GraphQLType):
         fields: Dict[str, GraphQLField],
         interfaces: Optional[List[str]] = None,
         description: Optional[str] = None,
+        schema=None,
     ):
-        super().__init__(name=name, description=description)
+        super().__init__(name=name, description=description, schema=schema)
         self._fields: Dict[str, GraphQLField] = fields
         # TODO: specify what is in the List.
         self.interfaces: Optional[List[str]] = interfaces

@@ -21,7 +21,7 @@ async def test_tartiflette_execute_simple_coercion():
 
     type Query {
         fieldScalar: String
-        fieldEnum: String
+        fieldEnum: EnumType
         fieldObject: Obj
         fieldNotNull: String!
         fieldList: [String]

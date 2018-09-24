@@ -17,9 +17,8 @@ enum __TypeKind {
   NON_NULL
 }
 
-""" __TypeKind! """
 type __Type {
-  kind: String
+  kind: __TypeKind
   name: String
   description: String
   fields(includeDeprecated: Boolean = false): [__Field]
@@ -53,11 +52,10 @@ type __EnumValue {
   deprecationReason: String
 }
 
-""" [__DirectiveLocation] """
 type __Directive {
   name: String
   description: String
-  locations: [String]
+  locations: [__DirectiveLocation]
   args: [__InputValue]
 }
 

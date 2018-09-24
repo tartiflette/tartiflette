@@ -21,8 +21,9 @@ class GraphQLInterfaceType(GraphQLType):
         name: str,
         fields: Dict[str, GraphQLField],
         description: Optional[str] = None,
+        schema=None,
     ):
-        super().__init__(name=name, description=description)
+        super().__init__(name=name, description=description, schema=schema)
         self._fields: Dict[str, GraphQLField] = fields
 
     def __repr__(self) -> str:

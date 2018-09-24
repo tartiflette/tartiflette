@@ -20,8 +20,9 @@ class GraphQLScalarType(GraphQLType):
         coerce_output: Optional[callable] = None,
         coerce_input: Optional[callable] = None,
         description: Optional[str] = None,
+        schema=None,
     ):
-        super().__init__(name=name, description=description)
+        super().__init__(name=name, description=description, schema=schema)
         self.coerce_output = coerce_output
         self.coerce_input = coerce_input
 

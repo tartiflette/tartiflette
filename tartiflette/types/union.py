@@ -18,8 +18,9 @@ class GraphQLUnionType(GraphQLType):
         name: str,
         gql_types: List[GraphQLType],
         description: Optional[str] = None,
+        schema=None,
     ):
-        super().__init__(name=name, description=description)
+        super().__init__(name=name, description=description, schema=schema)
         self.gql_types = gql_types
 
     def __repr__(self) -> str:

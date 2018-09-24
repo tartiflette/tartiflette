@@ -111,13 +111,12 @@ class NodeField(Node):
 
         if isinstance(raw, Exception):
             gql_error = GraphQLError(str(raw), self.path, [self.location])
-            if self.cant_be_null or self.contains_not_null:
-                gql_error.user_message = "%s - %s is not nullable" % (
-                    gql_error.message,
-                    self.name,
-                )
-                if self.parent and self.cant_be_null:
-                    self.parent.bubble_error()
+            if (
+                (self.cant_be_null or self.contains_not_null)
+                and self.parent
+                and self.cant_be_null
+            ):
+                self.parent.bubble_error()
             exec_ctx.add_error(gql_error)
         else:
             if self.children:

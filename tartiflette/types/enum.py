@@ -43,9 +43,13 @@ class GraphQLEnumType(GraphQLType):
         name: str,
         values: List[GraphQLEnumValue],
         description: Optional[str] = None,
+        schema=None,
     ):
         super().__init__(
-            name=name, description=description, is_enum_value=True
+            name=name,
+            description=description,
+            is_enum_value=True,
+            schema=schema,
         )
         self.values = values
         # TODO: This will probably need a serialization / deserialization logic

@@ -9,6 +9,7 @@ class GraphQLType:
         is_not_null: Optional[bool] = False,
         is_list: Optional[bool] = False,
         is_enum_value: Optional[bool] = False,
+        schema=None,
     ):
         self.name = name
         self.description = description
@@ -16,6 +17,8 @@ class GraphQLType:
         self._is_list = is_list
         self._is_not_null = is_not_null
         self._is_enum_value = is_enum_value
+        self._schema = schema
+        # TODO get rid of this and use a schema registry somewhere
 
     @property
     def is_list(self) -> bool:
@@ -57,3 +60,7 @@ class GraphQLType:
         return self is other or (
             type(self) is type(other) and self.name == other.name
         )
+
+    @property
+    def schema(self):
+        return self._schema

@@ -54,7 +54,7 @@ async def test_tartiflette_execute_object_type_output():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Shouldn't be null - testField is not nullable",
+                        "message": "Invalid value (value: None) for field `testField` of type `Test!`",
                         "path": ["testField"],
                         "locations": [{"line": 1, "column": 26}],
                     }

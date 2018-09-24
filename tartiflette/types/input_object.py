@@ -19,8 +19,9 @@ class GraphQLInputObjectType(GraphQLType):
         name: str,
         fields: Dict[str, GraphQLArgument],
         description: Optional[str] = None,
+        schema=None,
     ):
-        super().__init__(name=name, description=description)
+        super().__init__(name=name, description=description, schema=schema)
         self.fields: Dict[str, GraphQLArgument] = fields
 
     def __repr__(self) -> str:

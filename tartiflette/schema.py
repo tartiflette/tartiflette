@@ -65,6 +65,7 @@ class GraphQLSchema:
         self._implementations: Dict[str, List[GraphQLType]] = {}
         # All non-abstract types possible for a given abstract type
         self._possible_types: Dict[str, Dict[str, bool]] = {}
+        self._enums: Optional[str, GraphQLEnumType] = {}
 
     def __repr__(self):
         return (
@@ -141,6 +142,10 @@ class GraphQLSchema:
     def directives(self):
         return self._directives
 
+    @property
+    def enums(self):
+        return self._enums
+
     def add_directive(self, value: GraphQLDirective) -> None:
         if self._directives.get(value.name):
             raise ValueError(
@@ -160,6 +165,17 @@ class GraphQLSchema:
                 )
             )
         self._gql_types[value.name] = value
+
+    def add_enum_definition(self, value: GraphQLEnumType) -> None:
+        if self._enums.get(value.name):
+            raise ValueError(
+                "new GraphQL enum definition `{}` "
+                "overrides existing enum definition `{}`.".format(
+                    value.name, repr(self._enums.get(value.name))
+                )
+            )
+
+        self._enums[value.name] = value
 
     def to_real_type(self, gql_type: Union[str, GraphQLNonNull, GraphQLList]):
         try:

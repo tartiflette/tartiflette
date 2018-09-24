@@ -11,7 +11,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
     type Test {
         field1: String
         field2(arg1: Int = 42): Int
-        field3: [String!]
+        field3: [EnumStatus!]
     }
 
     enum EnumStatus {
@@ -144,8 +144,8 @@ async def test_tartiflette_execute_basic_type_introspection_output():
                                 "kind": "NON_NULL",
                                 "name": None,
                                 "ofType": {
-                                    "kind": "SCALAR",
-                                    "name": "String",
+                                    "kind": "ENUM",
+                                    "name": "EnumStatus",
                                     "ofType": None,
                                 },
                             },
