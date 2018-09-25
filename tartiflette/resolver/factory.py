@@ -20,15 +20,6 @@ def ___type_coerser(val, _):
     return {}
 
 
-_COERSER = {
-    "String": partial(_built_in_coerser, str),
-    "Int": partial(_built_in_coerser, int),
-    "Float": partial(_built_in_coerser, float),
-    "Boolean": partial(_built_in_coerser, bool),
-    "__Type": ___type_coerser,
-}
-
-
 def _object_coerser(_, __) -> dict:
     return {}
 
@@ -94,23 +85,39 @@ def _enum_coerser(enum_valid_values, func, val, info):
 def _get_coerser(field):
     field_type = field.gql_type
     rtype = reduce_type(field_type)
+
+    # Per default you're an object
     coerser = _object_coerser
-    try:
-        coerser = _COERSER[rtype]
-    except (TypeError, KeyError):
-        pass
 
-    try:
-        coerser = partial(
-            _enum_coerser,
-            [x.value for x in field.schema.enums[rtype].values],
-            _COERSER["String"],
-        )
-    except (AttributeError, KeyError, TypeError):
-        pass
+    if rtype == "__Type":
+        coerser = ___type_coerser
+    else:
+        # Is this an enum ?
+        try:
+            coerser = partial(
+                _enum_coerser,
+                [x.value for x in field.schema.enums[rtype].values],
+                partial(
+                    _built_in_coerser,
+                    field.schema.find_scalar("String").coerce_output,
+                ),
+            )
+        except (AttributeError, KeyError, TypeError):
+            pass
 
+        # Is this a custom scalar ?
+        try:
+            coerser = partial(
+                partial(
+                    _built_in_coerser,
+                    field.schema.find_scalar(rtype).coerce_output,
+                )
+            )
+        except (AttributeError, KeyError):
+            pass
+
+    # Manage List and NonNull
     coerser = _list_and_null_coerser(field_type, coerser)
-
     return coerser
 
 
@@ -165,8 +172,7 @@ class _ResolverExecutor:
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
         self._directives = directives or {}
 
-    async def _introspection(self, parent_result, arguments, req_ctx, info):
-        element = await self._func(parent_result, arguments, req_ctx, info)
+    async def _introspection(self, element):
         try:
             if isinstance(element, list):
                 element = _execute_introspection_directives(element)
@@ -174,7 +180,7 @@ class _ResolverExecutor:
                 element = _execute_introspection_directives([element])
                 if element is not None:
                     element = element[0]
-        except AttributeError:
+        except (AttributeError, TypeError):
             pass
 
         return element
@@ -183,12 +189,9 @@ class _ResolverExecutor:
         self, parent_result, arguments: dict, req_ctx: dict, info
     ) -> (Any, Any):
         try:
-            if not info.execution_ctx.is_introspection:
-                res = await self._func(parent_result, arguments, req_ctx, info)
-            else:
-                res = await self._introspection(
-                    parent_result, arguments, req_ctx, info
-                )
+            res = await self._func(parent_result, arguments, req_ctx, info)
+            if info.execution_ctx.is_introspection:
+                res = await self._introspection(res)
 
             coersed = self._coerser(res, info)
             return res, coersed
@@ -206,6 +209,9 @@ class _ResolverExecutor:
     def update_func(self, func):
         self._raw_func = func
         self.apply_directives()
+
+    def update_coercer(self):
+        self._coerser = _get_coerser(self.schema_field)
 
     @property
     def schema_field(self):

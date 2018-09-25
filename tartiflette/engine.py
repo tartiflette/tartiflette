@@ -14,6 +14,7 @@ class Engine:
         _resolver_middlewares=None,
         _resolvers=None,
         _directive_resolvers=None,
+        bake_later=False,
     ):
         # TODO: Use the kwargs and add them to the schema
         # schema can be: file path, file list, folder path, schema object
@@ -23,8 +24,9 @@ class Engine:
             return
         # Always create a file list
         sdl_files_list = [
-            "%s/sdl/builtins/introspection.sdl" % os.path.dirname(__file__),
+            "%s/sdl/builtins/scalar.sdl" % os.path.dirname(__file__),
             "%s/sdl/builtins/directives.sdl" % os.path.dirname(__file__),
+            "%s/sdl/builtins/introspection.sdl" % os.path.dirname(__file__),
         ]
         full_sdl = ""
         if isinstance(schema, list):
@@ -48,7 +50,8 @@ class Engine:
                 full_sdl += " " + data
         self.schema = GraphQLSchema()
         build_graphql_schema_from_sdl(full_sdl, schema=self.schema)
-        self.schema.bake()
+        if not bake_later:
+            self.schema.bake()
 
     async def execute(
         self,

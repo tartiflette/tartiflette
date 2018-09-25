@@ -5,8 +5,7 @@ import pytest
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 from tartiflette.resolver import Resolver
 from tartiflette.schema import GraphQLSchema
-from tartiflette.types.exceptions.tartiflette import \
-    NonAwaitableResolver
+from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
 
 
 @pytest.mark.asyncio
@@ -17,32 +16,32 @@ async def test_resolver_decorator():
         mutation: RootMutation
         subscription: RootSubscription
     }
-    
+
     scalar Date
-    
+
     union Group = Foo | Bar | Baz
-    
+
     interface Something {
         oneField: [Int]
         anotherField: [String]
         aLastOne: [[Date!]]!
     }
-    
+
     input UserInfo {
         name: String
         dateOfBirth: [Date]
         graphQLFan: Boolean!
     }
-    
+
     type RootQuery {
         defaultField: Int
     }
-    
+
     # Query has been replaced by RootQuery as entrypoint
     type Query {
-        nonDefaultField: String 
+        nonDefaultField: String
     }
-    
+
     \"\"\"
     This is a docstring for the Test Object Type.
     \"\"\"
@@ -57,8 +56,9 @@ async def test_resolver_decorator():
     }
     """
 
-    generated_schema = build_graphql_schema_from_sdl(schema_sdl,
-                                                     schema=GraphQLSchema())
+    generated_schema = build_graphql_schema_from_sdl(
+        schema_sdl, schema=GraphQLSchema()
+    )
 
     mock_one = Mock()
     mock_two = Mock()
@@ -74,15 +74,21 @@ async def test_resolver_decorator():
         return
 
     with pytest.raises(NonAwaitableResolver):
+
         @Resolver("Test.simpleField", schema=generated_schema)
         def func_default_resolver(*args, **kwargs):
             pass
 
-    assert generated_schema.get_field_by_name('Test.field').resolver is not None
-    assert callable(generated_schema.get_field_by_name('Test.field').resolver)
+    assert (
+        generated_schema.get_field_by_name("Test.field").resolver is not None
+    )
+    assert callable(generated_schema.get_field_by_name("Test.field").resolver)
     assert mock_one.called is False
-    assert generated_schema.get_field_by_name('RootQuery.defaultField').resolver is not None
-    assert callable(generated_schema.get_field_by_name('RootQuery.defaultField').resolver)
+    assert (
+        generated_schema.get_field_by_name("RootQuery.defaultField").resolver
+        is not None
+    )
+    assert callable(
+        generated_schema.get_field_by_name("RootQuery.defaultField").resolver
+    )
     assert mock_two.called is False
-
-

@@ -6,13 +6,7 @@ from tartiflette.introspection import (
     TYPENAME_ROOT_FIELD_DEFINITION,
     TYPE_ROOT_FIELD_DEFINITION,
 )
-from tartiflette.types.builtins import (
-    GraphQLBoolean,
-    GraphQLFloat,
-    GraphQLID,
-    GraphQLInt,
-    GraphQLString,
-)
+from tartiflette.scalar import Scalar, CUSTOM_SCALARS
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType
 from tartiflette.types.exceptions.tartiflette import (
@@ -42,30 +36,23 @@ class GraphQLSchema:
     def __init__(self, description=None):
         self.description = description
         if not description:
-            self.description = (
-                "A GraphQL Schema contains the complete definition "
-            )
-            "of the GraphQL structure: types, entrypoints (query, "
-            "mutation, subscription)."
+            self.description = """A GraphQL Schema contains the complete definition of the GraphQL structure: types, entrypoints (query, mutation, subscription)."""
+
         # Schema entry points
         self._query_type: Optional[str] = "Query"
         self._mutation_type: Optional[str] = "Mutation"
         self._subscription_type: Optional[str] = "Subscription"
         # Types, definitions and implementations
         self._gql_types: Dict[str, GraphQLType] = {}
-        # Add default objects
-        self.add_definition(GraphQLBoolean)
-        self.add_definition(GraphQLFloat)
-        self.add_definition(GraphQLID)
-        self.add_definition(GraphQLInt)
-        self.add_definition(GraphQLString)
         # Directives
         self._directives: Dict[str, GraphQLDirective] = {}
         # All `GraphQLObjectType`s implementing a given interface
         self._implementations: Dict[str, List[GraphQLType]] = {}
         # All non-abstract types possible for a given abstract type
         self._possible_types: Dict[str, Dict[str, bool]] = {}
-        self._enums: Optional[str, GraphQLEnumType] = {}
+        self._enums: Dict[str, GraphQLEnumType] = {}
+        self._custom_scalars: Dict[str, GraphQLScalarType] = {}
+
 
     def __repr__(self):
         return (
@@ -157,6 +144,9 @@ class GraphQLSchema:
     def enums(self):
         return self._enums
 
+    def find_scalar(self, name):
+        return self._custom_scalars[name]
+
     def add_directive(self, value: GraphQLDirective) -> None:
         if self._directives.get(value.name):
             raise ValueError(
@@ -187,6 +177,17 @@ class GraphQLSchema:
             )
 
         self._enums[value.name] = value
+
+    def add_custom_scalar_definition(self, value: GraphQLScalarType) -> None:
+        if self._custom_scalars.get(value.name):
+            raise ValueError(
+                "new GraphQL enum definition `{}` "
+                "overrides existing enum definition `{}`.".format(
+                    value.name, repr(self._custom_scalars.get(value.name))
+                )
+            )
+
+        self._custom_scalars[value.name] = value
 
     def to_real_type(self, gql_type: Union[str, GraphQLNonNull, GraphQLList]):
         try:
@@ -226,11 +227,13 @@ class GraphQLSchema:
 
         :return: None
         """
-        self.validate()
+        self.inject_builtin_custom_scalars()
+        self.inject_builtin_directives()
         self.inject_introspection()
+        self.validate()
         # self.field_gql_types_to_real_types()
         # self.union_gql_types_to_real_types()
-        self.inject_builtin_directives()
+        self.prepare_custom_scalars()
         self.prepare_directives()
         # self.initialize_directives() TODO make it work (on_build)
         return None
@@ -249,7 +252,10 @@ class GraphQLSchema:
             self._validate_schema_root_types_exist,
             self._validate_non_empty_object,
             self._validate_union_is_acceptable,
-            self._validate_all_scalars_have_implementations,
+            # self._validate_all_scalars_have_implementations,
+            # TODO will work when schema is baked after declaration using
+            # a schema registry and breaking the
+            # Decorator->schema instance dependance
             self._validate_enum_values_are_unique,
             # TODO: Validate Field: default value must be of given type
             # TODO: Check all objects have resolvers (at least in parent)
@@ -445,6 +451,19 @@ class GraphQLSchema:
             try:
                 for field in typee.fields:
                     field.resolver.apply_directives()
+            except AttributeError:
+                pass
+
+    def inject_builtin_custom_scalars(self):
+        for name, scalarimplem in CUSTOM_SCALARS.items():
+            deco = Scalar(name, self)
+            deco(scalarimplem)
+
+    def prepare_custom_scalars(self):
+        for typee in self.types:
+            try:
+                for field in typee.fields:
+                    field.resolver.update_coercer()
             except AttributeError:
                 pass
 

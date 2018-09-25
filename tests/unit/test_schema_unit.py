@@ -8,15 +8,13 @@ from tartiflette.types.exceptions.tartiflette import (
 )
 
 
-def test_schema_object_get_field_name():
+def test_schema_object_get_field_name(basic_schema):
     schema_sdl = """
     schema @enable_cache {
         query: RootQuery
         mutation: RootMutation
         subscription: RootSubscription
     }
-
-    scalar Date
 
     union Group = Foo | Bar | Baz
 
@@ -56,7 +54,7 @@ def test_schema_object_get_field_name():
     """
 
     generated_schema = build_graphql_schema_from_sdl(
-        schema_sdl, schema=GraphQLSchema()
+        schema_sdl, schema=basic_schema
     )
 
     with pytest.raises(ValueError):
@@ -106,7 +104,6 @@ def test_schema_object_get_field_name():
         ),
         (
             """
-        scalar Date
 
         type Query {
             placeholder: Date
@@ -120,21 +117,18 @@ def test_schema_object_get_field_name():
         type Query {
             firstField: Date
         }
-        scalar Date
         """,
             False,
             True,
         ),
         (
             """
-        type DateTime {
+        type DateTime2 {
             date: Date
             time: Time
         }
 
-        scalar Time
-
-        type Date {
+        type Date2 {
             day: Int
             month: Int
             year: Int
@@ -163,21 +157,12 @@ def test_schema_object_get_field_name():
         ),
     ],
 )
-def test_schema_validate_named_types(full_sdl, expected_error, expected_value):
+def test_schema_validate_named_types(
+    full_sdl, expected_error, expected_value, basic_schema
+):
     generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=GraphQLSchema()
+        full_sdl, schema=basic_schema
     )
-    try:
-        generated_schema.find_type("Date").coerce_input = lambda x: x
-        generated_schema.find_type("Date").coerce_output = lambda x: x
-    except KeyError:
-        pass
-
-    try:
-        generated_schema.find_type("Time").coerce_input = lambda x: x
-        generated_schema.find_type("Time").coerce_output = lambda x: x
-    except KeyError:
-        pass
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -340,11 +325,12 @@ def test_schema_validate_named_types(full_sdl, expected_error, expected_value):
     ],
 )
 def test_schema_validate_object_follow_interfaces(
-    full_sdl, expected_error, expected_value
+    full_sdl, expected_error, expected_value, basic_schema
 ):
     generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=GraphQLSchema()
+        full_sdl, schema=basic_schema
     )
+
     try:
         generated_schema.find_type("Brand").coerce_output = lambda x: x
         generated_schema.find_type("Brand").coerce_input = lambda x: x
@@ -465,11 +451,12 @@ def test_schema_validate_object_follow_interfaces(
     ],
 )
 def test_schema_validate_root_types_exist(
-    full_sdl, expected_error, expected_value
+    full_sdl, expected_error, expected_value, basic_schema
 ):
     generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=GraphQLSchema()
+        full_sdl, schema=basic_schema
     )
+
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
             generated_schema.validate()
@@ -501,11 +488,12 @@ def test_schema_validate_root_types_exist(
     ],
 )
 def test_schema_validate_non_empty_object(
-    full_sdl, expected_error, expected_value
+    full_sdl, expected_error, expected_value, basic_schema
 ):
     generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=GraphQLSchema()
+        full_sdl, schema=basic_schema
     )
+
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
             generated_schema.validate()
@@ -551,11 +539,12 @@ def test_schema_validate_non_empty_object(
     ],
 )
 def test_schema_validate_union_is_acceptable(
-    full_sdl, expected_error, expected_value
+    full_sdl, expected_error, expected_value, basic_schema
 ):
     generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=GraphQLSchema()
+        full_sdl, schema=basic_schema
     )
+
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
             generated_schema.validate()

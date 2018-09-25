@@ -215,14 +215,17 @@ async def test_tartiflette_execute_schema_introspection_output():
         "data": {
             "__schema": {
                 "types": [
-                    {"kind": "SCALAR", "name": "Boolean"},
-                    {"kind": "SCALAR", "name": "Float"},
-                    {"kind": "SCALAR", "name": "ID"},
-                    {"kind": "SCALAR", "name": "Int"},
-                    {"kind": "SCALAR", "name": "String"},
                     {"kind": "OBJECT", "name": "CustomRootQuery"},
                     {"kind": "OBJECT", "name": "CustomRootMutation"},
                     {"kind": "OBJECT", "name": "CustomRootSubscription"},
+                    {"kind": "SCALAR", "name": "Int"},
+                    {"kind": "SCALAR", "name": "String"},
+                    {"kind": "SCALAR", "name": "ID"},
+                    {"kind": "SCALAR", "name": "Float"},
+                    {"kind": "SCALAR", "name": "Boolean"},
+                    {"kind": "SCALAR", "name": "Date"},
+                    {"kind": "SCALAR", "name": "Time"},
+                    {"kind": "SCALAR", "name": "DateTime"},
                     {"kind": "OBJECT", "name": "__Schema"},
                     {"kind": "ENUM", "name": "__TypeKind"},
                     {"kind": "OBJECT", "name": "__Type"},

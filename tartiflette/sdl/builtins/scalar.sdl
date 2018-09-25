@@ -1,0 +1,8 @@
+scalar Int
+scalar String
+scalar ID
+scalar Float
+scalar Boolean
+scalar Date
+scalar Time
+scalar DateTime

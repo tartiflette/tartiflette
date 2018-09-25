@@ -2,7 +2,7 @@ from collections import OrderedDict
 from unittest.mock import Mock
 
 
-def test_build_schema(monkeypatch):
+def test_build_schema(monkeypatch, basic_schema):
     from tartiflette.resolver.factory import ResolverExecutorFactory
 
     resolver_excutor = Mock()
@@ -23,6 +23,7 @@ def test_build_schema(monkeypatch):
     from tartiflette.types.object import GraphQLObjectType
     from tartiflette.types.scalar import GraphQLScalarType
     from tartiflette.types.union import GraphQLUnionType
+    from tartiflette.engine import Engine
 
     schema_sdl = """
     schema @enable_cache {
@@ -30,8 +31,6 @@ def test_build_schema(monkeypatch):
         mutation: RootMutation
         subscription: RootSubscription
     }
-
-    scalar Date
 
     union Group = Foo | Bar | Baz
 
@@ -64,15 +63,15 @@ def test_build_schema(monkeypatch):
     """
 
     generated_schema = build_graphql_schema_from_sdl(
-        schema_sdl, schema=GraphQLSchema()
+        schema_sdl, schema=basic_schema
     )
 
-    expected_schema = GraphQLSchema()
+    expected_schema = Engine("    ", bake_later=True).schema
+    expected_schema.inject_builtin_custom_scalars()
     expected_schema.query_type = "RootQuery"
     expected_schema.mutation_type = "RootMutation"
     expected_schema.subscription_type = "RootSubscription"
 
-    expected_schema.add_definition(GraphQLScalarType(name="Date"))
     expected_schema.add_definition(
         GraphQLUnionType(name="Group", gql_types=["Foo", "Bar", "Baz"])
     )
@@ -172,10 +171,8 @@ def test_build_schema(monkeypatch):
         )
     )
 
-    assert expected_schema == generated_schema
     assert 5 < len(generated_schema._gql_types)
     assert len(expected_schema._gql_types) == len(generated_schema._gql_types)
-    # Only the default types should be in the schema
-    assert 5 == len(DefaultGraphQLSchema._gql_types)
+    assert 0 == len(DefaultGraphQLSchema._gql_types)
 
     monkeypatch.undo()

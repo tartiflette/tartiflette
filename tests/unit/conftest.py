@@ -20,3 +20,12 @@ def mocked_resolver_factory(monkeypatch, fixture_mocked_get_resolver_executor):
     yield fixture_mocked_get_resolver_executor
 
     monkeypatch.undo()
+
+
+@pytest.fixture()
+def basic_schema():
+    from tartiflette.engine import Engine
+
+    a_tartiflette = Engine("", bake_later=True)
+    a_tartiflette.schema.inject_builtin_custom_scalars()
+    return a_tartiflette.schema

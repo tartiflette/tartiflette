@@ -122,7 +122,9 @@ class SchemaTransformer(Transformer_InPlace):
                         child, child.__class__.__name__
                     )
                 )
-        return GraphQLScalarType(name=name, description=description, schema=self._schema)
+        scalar = GraphQLScalarType(name=name, description=description, schema=self._schema)
+        self._schema.add_custom_scalar_definition(scalar)
+        return scalar
 
     def union_type_definition(self, tree: Tree) -> GraphQLUnionType:
         # TODO: Add directives

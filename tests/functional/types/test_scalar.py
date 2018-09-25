@@ -6,27 +6,14 @@ from tartiflette import Resolver
 from tartiflette.engine import Engine
 
 
-@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_tartiflette_execute_scalar_type_output():
     schema_sdl = """
-    scalar Date
-
     type Query {
-        lastUpdate: Date
+        lastUpdate: DateTime
     }
     """
-
-    def from_date_to_str(datetime):
-        return datetime.isoformat()
-
-    def from_str_to_date(datetime_str):
-        return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-
     ttftt = Engine(schema_sdl)
-
-    ttftt.schema.find_type("Date").coerce_output = from_date_to_str
-    ttftt.schema.find_type("Date").coerce_input = from_str_to_date
 
     @Resolver("Query.lastUpdate", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
@@ -45,7 +32,6 @@ async def test_tartiflette_execute_scalar_type_output():
     assert {"data": {"lastUpdate": "2018-04-19T14:57:38"}} == result
 
 
-@pytest.mark.skip
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "input_sdl,resolver_response,expected",
@@ -55,7 +41,7 @@ async def test_tartiflette_execute_scalar_type_output():
             "String!",
             None,
             {
-                "data": {"testField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Invalid value (value: None) for field `testField` of type `String!`",
@@ -70,7 +56,7 @@ async def test_tartiflette_execute_scalar_type_output():
         ("Boolean", True, {"data": {"testField": True}}),
         ("Boolean", False, {"data": {"testField": False}}),
         (
-            "[Date]",
+            "[DateTime]",
             [
                 datetime(
                     year=2018, month=4, day=19, hour=14, minute=57, second=38
@@ -79,7 +65,7 @@ async def test_tartiflette_execute_scalar_type_output():
             {"data": {"testField": ["2018-04-19T14:57:38"]}},
         ),
         (
-            "[[Date!]!]!",
+            "[[DateTime!]!]!",
             [
                 [
                     datetime(
@@ -109,7 +95,7 @@ async def test_tartiflette_execute_scalar_type_output():
             },
         ),
         (
-            "[Date]",
+            "[DateTime]",
             [
                 datetime(
                     year=2017, month=3, day=18, hour=13, minute=56, second=37
@@ -131,7 +117,7 @@ async def test_tartiflette_execute_scalar_type_output():
         ),
         # TODO: Test temporarily disabled (needs a fix on error resolving etc.)
         (
-            "[Date!]",
+            "[DateTime!]",
             [
                 datetime(
                     year=2017, month=3, day=18, hour=13, minute=56, second=37
@@ -145,8 +131,8 @@ async def test_tartiflette_execute_scalar_type_output():
                 "data": {"testField": None},
                 "errors": [
                     {
-                        "message": "Invalid value (value: None) for field `testField` of type `[Date!]`",
-                        "path": ["testField", 1],
+                        "message": "Invalid value (value: None) for field `testField` of type `[DateTime!]`",
+                        "path": ["testField"],
                         "locations": [{"line": 1, "column": 26}],
                     }
                 ],
@@ -158,7 +144,6 @@ async def test_tartiflette_execute_scalar_type_advanced(
     input_sdl, resolver_response, expected
 ):
     schema_sdl = """
-    scalar Date
 
     type Query {{
         testField: {}
@@ -167,16 +152,7 @@ async def test_tartiflette_execute_scalar_type_advanced(
         input_sdl
     )
 
-    def from_date_to_str(datetime):
-        try:
-            return datetime.isoformat()
-        except AttributeError:
-            return None
-
     ttftt = Engine(schema_sdl)
-
-    ttftt.schema.find_type("Date").coerce_input = lambda x: x
-    ttftt.schema.find_type("Date").coerce_output = from_date_to_str
 
     @Resolver("Query.testField", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
@@ -191,3 +167,52 @@ async def test_tartiflette_execute_scalar_type_advanced(
     )
 
     assert expected == result
+
+
+@pytest.mark.asyncio
+async def test_tartiflette_declare_custom_scalar():
+    from tartiflette.scalar import Scalar
+
+    sdl = """
+        scalar Ntm
+
+        type Lol {
+            joey: Ntm
+        }
+
+        type Query {
+            alol: Lol
+        }
+    """
+
+    ttftt = Engine(schema=sdl)
+
+    @Resolver("Query.alol", schema=ttftt.schema)
+    async def alol_resolver(*_, **__):
+        class customobject:
+            def __init__(self, p1):
+                self.p1 = p1
+
+        return {"joey": customobject("OL")}
+
+    @Scalar(name="Ntm", schema=ttftt.schema)
+    class Ntm:
+        @staticmethod
+        def coerce_output(val):
+            return "I'am a val %s " % val.p1
+
+        @staticmethod
+        def coerce_input(val):
+            return val
+
+    result = await ttftt.execute(
+        query="""
+        query {
+            alol {
+                joey
+            }
+        }
+        """
+    )
+
+    assert {'data': {'alol': {'joey': "I'am a val OL "}}} == result
