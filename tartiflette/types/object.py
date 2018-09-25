@@ -48,17 +48,15 @@ class GraphQLObjectType(GraphQLType):
     def add_field(self, value: GraphQLField):
         self._fields[value.name] = value
 
-    def get_field(self, name: str) -> GraphQLField:
+    def find_field(self, name: str) -> GraphQLField:
         return self._fields[name]
 
-    @property
-    def fields_dict(self):
-        return self._fields
-
+    # Introspection Attribute
     @property
     def kind(self):
         return "OBJECT"
 
+    # Introspection Attribute
     @property
     def fields(self):
         try:

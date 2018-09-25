@@ -47,7 +47,8 @@ class GraphQLArgument:
             and self.default_value == other.default_value
         )
 
-    @property  # Introspection
+    # Introspection Attribute
+    @property
     def type(self):
         if isinstance(self.gql_type, GraphQLType):
             return self.gql_type
@@ -58,6 +59,7 @@ class GraphQLArgument:
             "description": self.description,
         }
 
-    @property  # Introspection
+    # Introspection Attribute
+    @property
     def defaultValue(self):
         return self.default_value

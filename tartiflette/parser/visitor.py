@@ -108,7 +108,7 @@ class TartifletteVisitor(Visitor):
                 self._current_node.field_executor.schema_field.gql_type
             )
         except (AttributeError, TypeError):
-            parent_type = self.schema.types[self.schema.query_type]
+            parent_type = self.schema.find_type(self.schema.query_type)
 
         try:
             field = self.schema.get_field_by_name(

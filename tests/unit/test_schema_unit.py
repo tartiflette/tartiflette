@@ -168,14 +168,14 @@ def test_schema_validate_named_types(full_sdl, expected_error, expected_value):
         full_sdl, schema=GraphQLSchema()
     )
     try:
-        generated_schema.types["Date"].coerce_input = lambda x: x
-        generated_schema.types["Date"].coerce_output = lambda x: x
+        generated_schema.find_type("Date").coerce_input = lambda x: x
+        generated_schema.find_type("Date").coerce_output = lambda x: x
     except KeyError:
         pass
 
     try:
-        generated_schema.types["Time"].coerce_input = lambda x: x
-        generated_schema.types["Time"].coerce_output = lambda x: x
+        generated_schema.find_type("Time").coerce_input = lambda x: x
+        generated_schema.find_type("Time").coerce_output = lambda x: x
     except KeyError:
         pass
 
@@ -346,14 +346,14 @@ def test_schema_validate_object_follow_interfaces(
         full_sdl, schema=GraphQLSchema()
     )
     try:
-        generated_schema.types["Brand"].coerce_output = lambda x: x
-        generated_schema.types["Brand"].coerce_input = lambda x: x
+        generated_schema.find_type("Brand").coerce_output = lambda x: x
+        generated_schema.find_type("Brand").coerce_input = lambda x: x
     except KeyError:
         pass
 
     try:
-        generated_schema.types["Part"].coerce_output = lambda x: x
-        generated_schema.types["Part"].coerce_input = lambda x: x
+        generated_schema.find_type("Part").coerce_output = lambda x: x
+        generated_schema.find_type("Part").coerce_input = lambda x: x
     except KeyError:
         pass
 

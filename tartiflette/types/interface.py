@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
@@ -34,19 +34,16 @@ class GraphQLInterfaceType(GraphQLType):
     def __eq__(self, other) -> bool:
         return super().__eq__(other) and self._fields == other._fields
 
+    # Introspection Attribute
     @property
-    def kind(self):
+    def kind(self) -> str:
         return "INTERFACE"
 
-    @property
-    def fields_dict(self):
-        return self._fields
-
-    def get_field(self, name: str) -> GraphQLField:
+    def find_field(self, name: str) -> GraphQLField:
         return self._fields[name]
 
     @property
-    def fields(self):
+    def fields(self) -> List[GraphQLField]:
         try:
             return [x for _, x in self._fields.items()]
         except AttributeError:

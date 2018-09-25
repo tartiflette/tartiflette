@@ -3,7 +3,7 @@ import pytest
 from tartiflette import Resolver
 from tartiflette.engine import Engine
 
-# TODO reactivate enum when enum will be okay
+
 @pytest.mark.asyncio
 async def test_tartiflette_execute_basic_type_introspection_output():
     schema_sdl = """
@@ -188,6 +188,24 @@ async def test_tartiflette_execute_schema_introspection_output():
             queryType { name }
             mutationType { name }
             subscriptionType { name }
+            types {
+                kind
+                name
+            }
+            directives {
+                name
+                description
+                locations
+                args {
+                    name
+                    description
+                    type {
+                        kind
+                        name
+                    }
+                    defaultValue
+                }
+            }
         }
     }
     """
@@ -196,6 +214,45 @@ async def test_tartiflette_execute_schema_introspection_output():
     assert {
         "data": {
             "__schema": {
+                "types": [
+                    {"kind": "SCALAR", "name": "Boolean"},
+                    {"kind": "SCALAR", "name": "Float"},
+                    {"kind": "SCALAR", "name": "ID"},
+                    {"kind": "SCALAR", "name": "Int"},
+                    {"kind": "SCALAR", "name": "String"},
+                    {"kind": "OBJECT", "name": "CustomRootQuery"},
+                    {"kind": "OBJECT", "name": "CustomRootMutation"},
+                    {"kind": "OBJECT", "name": "CustomRootSubscription"},
+                    {"kind": "OBJECT", "name": "__Schema"},
+                    {"kind": "ENUM", "name": "__TypeKind"},
+                    {"kind": "OBJECT", "name": "__Type"},
+                    {"kind": "OBJECT", "name": "__Field"},
+                    {"kind": "OBJECT", "name": "__InputValue"},
+                    {"kind": "OBJECT", "name": "__EnumValue"},
+                    {"name": "__DirectiveLocation", "kind": "ENUM"},
+                    {"kind": "OBJECT", "name": "__Directive"},
+                ],
+                "directives": [
+                    {
+                        "description": None,
+                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
+                        "args": [
+                            {
+                                "name": "reason",
+                                "type": {"kind": "SCALAR", "name": "String"},
+                                "description": None,
+                                "defaultValue": "No longer supported",
+                            }
+                        ],
+                        "name": "deprecated",
+                    },
+                    {
+                        "args": [],
+                        "name": "non_introspectable",
+                        "description": None,
+                        "locations": ["FIELD_DEFINITION"],
+                    },
+                ],
                 "queryType": {"name": "CustomRootQuery"},
                 "mutationType": {"name": "CustomRootMutation"},
                 "subscriptionType": {"name": "CustomRootSubscription"},

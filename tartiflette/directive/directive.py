@@ -28,7 +28,7 @@ class Directive:
     def __init__(self, name: str, schema):
         self.schema = schema
         try:
-            self.directive = self.schema.directives[name]
+            self.directive = self.schema.find_directive(name)
         except KeyError:
             raise UnknownDirectiveDefinition(
                 "Unknow Directive Definition %s" % name

@@ -1,7 +1,6 @@
 
 import asyncio
 from typing import Any, Callable, Dict, List
-from uuid import uuid4
 
 from tartiflette.executors.types import ExecutionContext, Info
 from tartiflette.schema import GraphQLSchema
@@ -28,7 +27,6 @@ class NodeField(Node):
         self.arguments = {}
         self.type_condition = type_condition
         self.marshalled = {}
-        self.uuid = str(uuid4())
 
     @property
     def cant_be_null(self) -> bool:
@@ -123,6 +121,3 @@ class NodeField(Node):
                 await self._execute_children(
                     exec_ctx, request_ctx, result=raw, coerced=coerced
                 )
-
-    def __eq__(self, other):
-        return self.uuid == other.uuid

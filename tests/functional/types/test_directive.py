@@ -28,8 +28,8 @@ async def test_tartiflette_deprecated_execution_directive():
     async def func_field_resolver6(parent, arguments, request_ctx, info):
         return 42
 
-    assert ttftt.schema.directives["deprecated"] is not None
-    assert ttftt.schema.directives["deprecated"].implementation is not None
+    assert ttftt.schema.find_directive("deprecated") is not None
+    assert ttftt.schema.find_directive("deprecated").implementation is not None
 
     result = await ttftt.execute(
         """
@@ -73,8 +73,8 @@ async def test_tartiflette_deprecated_introspection_directive():
     async def func_field_resolver6(parent, arguments, request_ctx, info):
         return 42
 
-    assert ttftt.schema.directives["deprecated"] is not None
-    assert ttftt.schema.directives["deprecated"].implementation is not None
+    assert ttftt.schema.find_directive("deprecated") is not None
+    assert ttftt.schema.find_directive("deprecated").implementation is not None
 
     result = await ttftt.execute(
         """
@@ -172,8 +172,8 @@ async def test_tartiflette_directive_declaration():
         async def on_execution(_directive_arg, func, pr, args, rctx, info):
             return (await func(pr, args, rctx, info)) + 1
 
-    assert ttftt.schema.directives["lol"] is not None
-    assert ttftt.schema.directives["lol"].implementation is not None
+    assert ttftt.schema.find_directive("lol") is not None
+    assert ttftt.schema.find_directive("lol").implementation is not None
 
     result = await ttftt.execute(
         """
@@ -208,9 +208,9 @@ async def test_tartiflette_non_introspectable_execution_directive():
     async def func_field_resolver5(parent, arguments, request_ctx, info):
         return 42
 
-    assert ttftt.schema.directives["non_introspectable"] is not None
+    assert ttftt.schema.find_directive("non_introspectable") is not None
     assert (
-        ttftt.schema.directives["non_introspectable"].implementation
+        ttftt.schema.find_directive("non_introspectable").implementation
         is not None
     )
 

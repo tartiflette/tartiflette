@@ -39,6 +39,7 @@ class GraphQLScalarType(GraphQLType):
             and self.coerce_input == other.coerce_input
         )
 
+    # Introspection Attribute
     @property
     def kind(self):
         return "SCALAR"

@@ -122,25 +122,36 @@ class GraphQLSchema:
     def subscription_type(self, value: str) -> None:
         self._subscription_type = value
 
+    #  Introspection Attribute
     @property
     def queryType(self):
-        return self.types[self.query_type]
+        return self._gql_types[self.query_type]
 
+    #  Introspection Attribute
     @property
     def subscriptionType(self):
-        return self.types[self.subscription_type]
+        return self._gql_types[self.subscription_type]
 
+    #  Introspection Attribute
     @property
     def mutationType(self):
-        return self.types[self.mutation_type]
+        return self._gql_types[self.mutation_type]
 
+    #  Introspection Attribute
     @property
     def types(self):
-        return self._gql_types
+        return [x for _, x in self._gql_types.items()]
 
+    def find_type(self, name):
+        return self._gql_types[name]
+
+    #  Introspection Attribute
     @property
     def directives(self):
-        return self._directives
+        return [x for _, x in self._directives.items()]
+
+    def find_directive(self, name):
+        return self._directives[name]
 
     @property
     def enums(self):
@@ -202,7 +213,7 @@ class GraphQLSchema:
             ) from err
 
         try:
-            return self._gql_types[object_name].get_field(field_name)
+            return self._gql_types[object_name].find_field(field_name)
         except (AttributeError, KeyError):
             raise UnknownSchemaFieldResolver(
                 "field `{}` was not found in GraphQL schema.".format(name)
@@ -256,13 +267,13 @@ class GraphQLSchema:
     def _validate_schema_named_types(self):
         for type_name, gql_type in self._gql_types.items():
             try:
-                for field_name, field in gql_type.fields_dict.items():
+                for field in gql_type.fields:
                     gql_type = reduce_type(field.gql_type)
                     if str(gql_type) not in self._gql_types:
                         raise GraphQLSchemaError(
                             "field `{}` in GraphQL type `{}` is invalid, "
                             "the given type `{}` does not exist!".format(
-                                field_name, type_name, gql_type
+                                field.name, type_name, gql_type
                             )
                         )
             except AttributeError:
@@ -289,19 +300,16 @@ class GraphQLSchema:
                                 gql_type.name, iface_name
                             )
                         )
-                    for (
-                        iface_field_name,
-                        iface_field,
-                    ) in iface_type.fields_dict.items():
+                    for iface_field in iface_type.fields:
                         try:
-                            gql_type_field = gql_type.fields_dict[
-                                iface_field_name
-                            ]
+                            gql_type_field = gql_type.find_field(
+                                iface_field.name
+                            )
                         except KeyError:
                             raise GraphQLSchemaError(
                                 "field `{}` is missing in GraphQL type `{}` "
                                 "that implements the `{}` interface.".format(
-                                    iface_field_name, gql_type.name, iface_name
+                                    iface_field.name, gql_type.name, iface_name
                                 )
                             )
                         if gql_type_field.gql_type != iface_field.gql_type:
@@ -309,7 +317,7 @@ class GraphQLSchema:
                                 "field `{}` in GraphQL type `{}` that "
                                 "implements the `{}` interface does not follow "
                                 "the interface field type `{}`.".format(
-                                    iface_field_name,
+                                    iface_field.name,
                                     gql_type.name,
                                     iface_name,
                                     iface_field.gql_type,
@@ -418,9 +426,13 @@ class GraphQLSchema:
                 pass
 
     def inject_introspection(self):
-        self.types[self.query_type].add_field(SCHEMA_ROOT_FIELD_DEFINITION)
-        self.types[self.query_type].add_field(TYPE_ROOT_FIELD_DEFINITION)
-        self.types[self.query_type].add_field(TYPENAME_ROOT_FIELD_DEFINITION)
+        self._gql_types[self.query_type].add_field(
+            SCHEMA_ROOT_FIELD_DEFINITION
+        )
+        self._gql_types[self.query_type].add_field(TYPE_ROOT_FIELD_DEFINITION)
+        self._gql_types[self.query_type].add_field(
+            TYPENAME_ROOT_FIELD_DEFINITION
+        )
 
     def inject_builtin_directives(self):
         depr = Directive(name="deprecated", schema=self)
@@ -429,7 +441,7 @@ class GraphQLSchema:
         non_intr(NonIntrospectable)
 
     def prepare_directives(self):
-        for _, typee in self.types.items():
+        for typee in self.types:
             try:
                 for field in typee.fields:
                     field.resolver.apply_directives()

@@ -44,7 +44,7 @@ class GraphQLDirective:
         implementation: Optional[Callable] = None,
     ):
         self.name = name
-        self.on = on
+        self.where = on
         self.arguments = arguments if arguments else {}
         self.description = description
         self.implementation = implementation or None
@@ -53,7 +53,7 @@ class GraphQLDirective:
         return "{}(name={!r}, on={!r}, arguments={!r}, description={!r})".format(
             self.__class__.__name__,
             self.name,
-            self.on,
+            self.where,
             self.arguments,
             self.description,
         )
@@ -65,6 +65,16 @@ class GraphQLDirective:
         return self is other or (
             type(self) is type(other)
             and self.name == other.name
-            and self.on == other.on
+            and self.where == other.where
             and self.arguments == other.arguments
         )
+
+    # Introspection property
+    @property
+    def args(self):
+        return [x for _, x in self.arguments.items()]
+
+    # Introspection Attribute
+    @property
+    def locations(self):
+        return self.where

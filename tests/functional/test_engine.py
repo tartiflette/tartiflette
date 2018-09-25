@@ -19,39 +19,39 @@ async def test_tartiflette_engine_initialization_with_sdl_file_list():
         ]
     )
 
-    assert engine.schema.types["Author"] is not None
-    assert engine.schema.types["Blog"] is not None
-    assert engine.schema.types["Post"] is not None
-    assert engine.schema.types["Query"].fields_dict["blogs"] is not None
+    assert engine.schema.find_type("Author") is not None
+    assert engine.schema.find_type("Blog") is not None
+    assert engine.schema.find_type("Post") is not None
+    assert engine.schema.find_type("Query").find_field("blogs") is not None
 
 
 @pytest.mark.asyncio
 async def test_tartiflette_engine_initialization_with_sdl_folder():
     engine = Engine(_curr_path + "/data/splitted_sdl")
 
-    assert engine.schema.types["Author"] is not None
-    assert engine.schema.types["Blog"] is not None
-    assert engine.schema.types["Post"] is not None
-    assert engine.schema.types["Query"].fields_dict["blogs"] is not None
+    assert engine.schema.find_type("Author") is not None
+    assert engine.schema.find_type("Blog") is not None
+    assert engine.schema.find_type("Post") is not None
+    assert engine.schema.find_type("Query").find_field("blogs") is not None
 
 
 @pytest.mark.asyncio
 async def test_tartiflette_engine_initialization_with_single_sdl_file():
     engine = Engine(_curr_path + "/data/simple_full_sdl/simple_full.sdl")
 
-    assert engine.schema.types["Author"] is not None
-    assert engine.schema.types["Blog"] is not None
-    assert engine.schema.types["Post"] is not None
-    assert engine.schema.types["Query"].fields_dict["blogs"] is not None
+    assert engine.schema.find_type("Author") is not None
+    assert engine.schema.find_type("Blog") is not None
+    assert engine.schema.find_type("Post") is not None
+    assert engine.schema.find_type("Query").find_field("blogs") is not None
 
 
 @pytest.mark.asyncio
 async def test_tartiflette_engine_initialization_by_passing_schema():
     schema = GraphQLSchema()
-    schema.types["test"] = "test"
+    schema._gql_types["test"] = "test"
     engine = Engine(schema)
 
-    assert engine.schema.types["test"] == "test"
+    assert engine.schema.find_type("test") == "test"
 
 
 @pytest.mark.asyncio
@@ -88,7 +88,7 @@ async def test_tartiflette_engine_initialization_with_string_schema():
     """
     )
 
-    assert engine.schema.types["Author"] is not None
-    assert engine.schema.types["Blog"] is not None
-    assert engine.schema.types["Post"] is not None
-    assert engine.schema.types["Query"].fields_dict["blogs"] is not None
+    assert engine.schema.find_type("Author") is not None
+    assert engine.schema.find_type("Blog") is not None
+    assert engine.schema.find_type("Post") is not None
+    assert engine.schema.find_type("Query").find_field("blogs") is not None

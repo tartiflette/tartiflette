@@ -32,6 +32,7 @@ class GraphQLInputObjectType(GraphQLType):
     def __eq__(self, other):
         return super().__eq__(other) and self.fields == other.fields
 
+    # Introspection Attribute
     @property
     def kind(self):
         return "INPUT_OBJECT"

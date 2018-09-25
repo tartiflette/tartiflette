@@ -17,13 +17,14 @@ def test_graphql_interface_init(mocked_resolver_factory):
     )
 
     assert interface.name == "Name"
-    assert interface.fields_dict == OrderedDict(
-        [
-            ("test", GraphQLField(name="arg", gql_type="Int")),
-            ("another", GraphQLField(name="arg", gql_type="String")),
-        ]
+    assert interface.find_field("test") == GraphQLField(
+        name="arg", gql_type="Int"
+    )
+    assert interface.find_field("another") == GraphQLField(
+        name="arg", gql_type="String"
     )
     assert interface.description == "description"
+
 
 def test_graphql_interface_eq(mocked_resolver_factory):
     interface = GraphQLInterfaceType(

@@ -40,10 +40,12 @@ class GraphQLType:
     def contains_not_null(self) -> bool:
         return False
 
+    # Introspection Attribute
     @property
     def ofType(self):
         return None
 
+    # Introspection Attribute
     @property
     def kind(self):
         return "TYPE"

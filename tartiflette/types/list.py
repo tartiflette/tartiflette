@@ -40,13 +40,15 @@ class GraphQLList(GraphQLType):
             pass
         return False
 
+    # Introspection Attribute
     @property
     def ofType(self):
         if isinstance(self.gql_type, GraphQLType):
             return self.gql_type
 
-        return self.schema.types[self.gql_type]
+        return self.schema.find_type(self.gql_type)
 
+    # Introspection Attribute
     @property
     def kind(self):
         return "LIST"

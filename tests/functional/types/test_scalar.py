@@ -25,8 +25,8 @@ async def test_tartiflette_execute_scalar_type_output():
 
     ttftt = Engine(schema_sdl)
 
-    ttftt.schema.types["Date"].coerce_output = from_date_to_str
-    ttftt.schema.types["Date"].coerce_input = from_str_to_date
+    ttftt.schema.find_type("Date").coerce_output = from_date_to_str
+    ttftt.schema.find_type("Date").coerce_input = from_str_to_date
 
     @Resolver("Query.lastUpdate", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
@@ -43,6 +43,7 @@ async def test_tartiflette_execute_scalar_type_output():
     )
 
     assert {"data": {"lastUpdate": "2018-04-19T14:57:38"}} == result
+
 
 @pytest.mark.skip
 @pytest.mark.asyncio
@@ -174,8 +175,8 @@ async def test_tartiflette_execute_scalar_type_advanced(
 
     ttftt = Engine(schema_sdl)
 
-    ttftt.schema.types["Date"].coerce_input = lambda x: x
-    ttftt.schema.types["Date"].coerce_output = from_date_to_str
+    ttftt.schema.find_type("Date").coerce_input = lambda x: x
+    ttftt.schema.find_type("Date").coerce_output = from_date_to_str
 
     @Resolver("Query.testField", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):

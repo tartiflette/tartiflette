@@ -55,12 +55,16 @@ class GraphQLField:
         try:
             directives = {
                 name: {
-                    "callables": self._schema.directives[name].implementation,
+                    "callables": self._schema.find_directive(
+                        name
+                    ).implementation,
                     "args": {
-                        arg_name: self._schema.directives[name]
+                        arg_name: self._schema.find_directive(name)
                         .arguments[arg_name]
                         .default_value
-                        for arg_name in self._schema.directives[name].arguments
+                        for arg_name in self._schema.find_directive(
+                            name
+                        ).arguments
                     },
                 }
                 for name in self._directives
@@ -88,6 +92,7 @@ class GraphQLField:
             and self.directives == other.directives
         )
 
+    # Introspection Attribute
     @property
     def kind(self):
         try:
@@ -95,17 +100,15 @@ class GraphQLField:
         except AttributeError:
             return "FIELD"
 
-    @property
-    def ofType(self):
-        return self.type
-
+    # Introspection Attribute
     @property
     def type(self):
         if isinstance(self.gql_type, GraphQLType):
             return self.gql_type
 
-        return self.schema.types[self.gql_type]
+        return self.schema.find_type(self.gql_type)
 
+    # Introspection Attribute
     @property
     def isDeprecated(self):
         return self._is_deprecated
@@ -114,6 +117,7 @@ class GraphQLField:
     def isDeprecated(self, value):
         self._is_deprecated = value
 
+    # Introspection Attribute
     @property
     def args(self):
         return [x for _, x in self.arguments.items()]

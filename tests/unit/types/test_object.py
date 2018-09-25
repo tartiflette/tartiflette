@@ -19,11 +19,9 @@ def test_graphql_object_init(mocked_resolver_factory):
     )
 
     assert obj.name == "Name"
-    assert obj.fields_dict == OrderedDict(
-        [
-            ("test", GraphQLField(name="arg", gql_type="Int")),
-            ("another", GraphQLField(name="arg", gql_type="String")),
-        ]
+    assert obj.find_field("test") == GraphQLField(name="arg", gql_type="Int")
+    assert obj.find_field("another") == GraphQLField(
+        name="arg", gql_type="String"
     )
     assert obj.interfaces == ["First", "Second"]
     assert obj.description == "description"

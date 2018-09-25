@@ -52,13 +52,6 @@ type __EnumValue {
   deprecationReason: String
 }
 
-type __Directive {
-  name: String
-  description: String
-  locations: [__DirectiveLocation]
-  args: [__InputValue]
-}
-
 enum __DirectiveLocation {
   QUERY
   MUTATION
@@ -78,4 +71,11 @@ enum __DirectiveLocation {
   ENUM_VALUE
   INPUT_OBJECT
   INPUT_FIELD_DEFINITION
+}
+
+type __Directive {
+  name: String
+  description: String
+  locations: [__DirectiveLocation]
+  args: [__InputValue]
 }
