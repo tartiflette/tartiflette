@@ -53,7 +53,6 @@ class GraphQLSchema:
         self._enums: Dict[str, GraphQLEnumType] = {}
         self._custom_scalars: Dict[str, GraphQLScalarType] = {}
 
-
     def __repr__(self):
         return (
             "GraphQLSchema(query: {}, "

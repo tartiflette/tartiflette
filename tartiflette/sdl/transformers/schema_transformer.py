@@ -8,8 +8,7 @@ from tartiflette.sdl.ast_types import String
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumValue
-from tartiflette.types.exceptions.tartiflette import \
-    UnexpectedASTNode
+from tartiflette.types.exceptions.tartiflette import UnexpectedASTNode
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -87,12 +86,16 @@ class SchemaTransformer(Transformer_InPlace):
 
     def list_type(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
-            "list_type", GraphQLList(gql_type=tree.children[0].value, schema=self._schema)
+            "list_type",
+            GraphQLList(gql_type=tree.children[0].value, schema=self._schema),
         )
 
     def non_null_type(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
-            "non_null_type", GraphQLNonNull(gql_type=tree.children[0].value, schema=self._schema)
+            "non_null_type",
+            GraphQLNonNull(
+                gql_type=tree.children[0].value, schema=self._schema
+            ),
         )
 
     def type(self, tree: Tree) -> SchemaNode:
@@ -122,7 +125,9 @@ class SchemaTransformer(Transformer_InPlace):
                         child, child.__class__.__name__
                     )
                 )
-        scalar = GraphQLScalarType(name=name, description=description, schema=self._schema)
+        scalar = GraphQLScalarType(
+            name=name, description=description, schema=self._schema
+        )
         self._schema.add_custom_scalar_definition(scalar)
         return scalar
 
@@ -150,7 +155,10 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return GraphQLUnionType(
-            name=name, gql_types=members, description=description, schema=self._schema
+            name=name,
+            gql_types=members,
+            description=description,
+            schema=self._schema,
         )
 
     def union_member_types(self, tree: Tree) -> SchemaNode:
@@ -184,7 +192,10 @@ class SchemaTransformer(Transformer_InPlace):
                 )
 
         enum_type = GraphQLEnumType(
-            name=name, values=values, description=description, schema=self._schema
+            name=name,
+            values=values,
+            description=description,
+            schema=self._schema,
         )
         self._schema.add_enum_definition(enum_type)
         return enum_type
@@ -240,7 +251,10 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return GraphQLInterfaceType(
-            name=name, fields=fields, description=description, schema=self._schema
+            name=name,
+            fields=fields,
+            description=description,
+            schema=self._schema,
         )
 
     def object_type_definition(self, tree: Tree) -> GraphQLObjectType:
@@ -274,7 +288,7 @@ class SchemaTransformer(Transformer_InPlace):
             fields=fields,
             interfaces=interfaces,
             description=description,
-            schema=self._schema
+            schema=self._schema,
         )
 
     def implements_interfaces(self, tree: Tree) -> SchemaNode:
@@ -288,7 +302,7 @@ class SchemaTransformer(Transformer_InPlace):
         return SchemaNode("interfaces", interfaces)
 
     def input_object_type_definition(
-            self, tree: Tree
+        self, tree: Tree
     ) -> GraphQLInputObjectType:
         # TODO: Add directives
         description = None
@@ -313,7 +327,10 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return GraphQLInputObjectType(
-            name=name, fields=fields, description=description, schema=self._schema
+            name=name,
+            fields=fields,
+            description=description,
+            schema=self._schema,
         )
 
     def input_fields_definition(self, tree: Tree) -> SchemaNode:
@@ -359,7 +376,7 @@ class SchemaTransformer(Transformer_InPlace):
             arguments=arguments,
             description=description,
             directives=directives,
-            schema=self._schema
+            schema=self._schema,
         )
 
     def arguments_definition(self, tree: Tree) -> SchemaNode:
@@ -405,32 +422,31 @@ class SchemaTransformer(Transformer_InPlace):
         on = None
         arguments = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'DIRECTIVE':
+            elif child.type == "DIRECTIVE":
                 ast_node = child
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'arguments':
+            elif child.type == "arguments":
                 arguments = child.value
-            elif child.type == 'ON':
+            elif child.type == "ON":
                 pass
-            elif child.type == 'directive_locations':
+            elif child.type == "directive_locations":
                 on = child.value
-            elif child.type == 'discard':
+            elif child.type == "discard":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
         directive = GraphQLDirective(
-            name=name,
-            on=on,
-            arguments=arguments,
-            description=description
+            name=name, on=on, arguments=arguments, description=description
         )
         self._schema.add_directive(directive)
-        return Tree('directive_definition', [directive])
+        return Tree("directive_definition", [directive])
 
     def directive_locations(self, tree: Tree):
         locations = []
@@ -441,7 +457,7 @@ class SchemaTransformer(Transformer_InPlace):
                 raise ValueError(
                     "Invalid directive location `{}`".format(child.value)
                 )
-        return SchemaNode('directive_locations', locations)
+        return SchemaNode("directive_locations", locations)
 
     def description(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
@@ -541,7 +557,7 @@ class SchemaTransformer(Transformer_InPlace):
     def directives(self, tree: Tree) -> SchemaNode:
         directives = {}
         for child in tree.children:
-            if child.type == 'directive':
+            if child.type == "directive":
                 directives[child.value[0]] = child.value[1]
         return SchemaNode("directives", directives)
 
@@ -551,7 +567,7 @@ class SchemaTransformer(Transformer_InPlace):
         for child in tree.children:
             if child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'arguments':
+            elif child.type == "arguments":
                 arguments = child.value
             else:
                 raise UnexpectedASTNode(

@@ -457,9 +457,7 @@ class LibGraphqlParser:
         self._ffi.cdef(CDEFS_LIBGRAPHQL)
 
         # TODO use importlib.resource in Python3.7
-        self._lib_dir = os.path.dirname(
-            __file__
-        )
+        self._lib_dir = os.path.dirname(__file__)
         try:
             self._lib = self._ffi.dlopen(
                 "%s/libgraphqlparser.so" % self._lib_dir
