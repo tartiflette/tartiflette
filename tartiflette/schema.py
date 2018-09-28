@@ -1,4 +1,3 @@
-
 from typing import Dict, List, Optional, Union
 
 from tartiflette.introspection import (
@@ -70,17 +69,17 @@ class GraphQLSchema:
         if not type(self) is type(other):
             return False
         if (
-            self._query_type != other._query_type
-            or self._mutation_type != other._mutation_type
-            or self._subscription_type != other._subscription_type
+            self._query_type != other.query_type
+            or self._mutation_type != other.mutation_type
+            or self._subscription_type != other.subscription_type
         ):
             return False
-        if len(self._gql_types) != len(other._gql_types):
+        if len(self._gql_types) != len(other.types):
             return False
         for key in self._gql_types:
-            if key not in other._gql_types:
+            if key not in other.gql_types:
                 return False
-            elif self._gql_types[key] != other._gql_types[key]:
+            if self._gql_types[key] != other.gql_types[key]:
                 return False
         return True
 
@@ -110,17 +109,17 @@ class GraphQLSchema:
 
     #  Introspection Attribute
     @property
-    def queryType(self):
+    def queryType(self):  # pylint: disable=invalid-name
         return self._gql_types[self.query_type]
 
     #  Introspection Attribute
     @property
-    def subscriptionType(self):
+    def subscriptionType(self):  # pylint: disable=invalid-name
         return self._gql_types[self.subscription_type]
 
     #  Introspection Attribute
     @property
-    def mutationType(self):
+    def mutationType(self):  # pylint: disable=invalid-name
         return self._gql_types[self.mutation_type]
 
     #  Introspection Attribute
@@ -130,6 +129,10 @@ class GraphQLSchema:
 
     def find_type(self, name):
         return self._gql_types[name]
+
+    @property
+    def gql_types(self):
+        return self._gql_types
 
     #  Introspection Attribute
     @property
@@ -235,7 +238,6 @@ class GraphQLSchema:
         self.prepare_custom_scalars()
         self.prepare_directives()
         # self.initialize_directives() TODO make it work (on_build)
-        return None
 
     def validate(self) -> bool:
         """
@@ -286,7 +288,7 @@ class GraphQLSchema:
         return True
 
     def _validate_object_follow_interfaces(self):
-        for type_name, gql_type in self._gql_types.items():
+        for gql_type in self.types:
             try:
                 for iface_name in gql_type.interfaces:
                     try:
@@ -410,12 +412,12 @@ class GraphQLSchema:
         return True
 
     def field_gql_types_to_real_types(self) -> None:
-        for type_name, gql_type in self._gql_types.items():
+        for gql_type in self.types:
             try:
                 for field in gql_type.fields:
                     field.gql_type = self.to_real_type(field.gql_type)
                     try:
-                        for arg_name, arg in field.arguments.items():
+                        for _, arg in field.arguments.items():
                             arg.gql_type = self.to_real_type(arg.gql_type)
                     except AttributeError:
                         pass
@@ -423,11 +425,11 @@ class GraphQLSchema:
                 pass
 
     def union_gql_types_to_real_types(self) -> None:
-        for type_name, gql_type in self._gql_types.items():
+        for gql_type in self.types:
             try:
                 for idx, local_gql_type in enumerate(gql_type.gql_types):
                     gql_type.gql_types[idx] = self.to_real_type(local_gql_type)
-            except AttributeError as e:
+            except AttributeError:
                 pass
 
     def inject_introspection(self):
@@ -476,4 +478,4 @@ class GraphQLSchema:
                 )
 
 
-DefaultGraphQLSchema = GraphQLSchema()
+DEFAULT_GRAPHQL_SCHEMA = GraphQLSchema()

@@ -42,7 +42,7 @@ class GraphQLType:
 
     # Introspection Attribute
     @property
-    def ofType(self):
+    def ofType(self):  # pylint: disable=invalid-name
         return None
 
     # Introspection Attribute

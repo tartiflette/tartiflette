@@ -13,7 +13,7 @@ def test_build_schema(monkeypatch, basic_schema):
     )
 
     from tartiflette.sdl.builder import build_graphql_schema_from_sdl
-    from tartiflette.schema import GraphQLSchema, DefaultGraphQLSchema
+    from tartiflette.schema import GraphQLSchema, DEFAULT_GRAPHQL_SCHEMA
     from tartiflette.types.argument import GraphQLArgument
     from tartiflette.types.field import GraphQLField
     from tartiflette.types.input_object import GraphQLInputObjectType
@@ -173,6 +173,6 @@ def test_build_schema(monkeypatch, basic_schema):
 
     assert 5 < len(generated_schema._gql_types)
     assert len(expected_schema._gql_types) == len(generated_schema._gql_types)
-    assert 0 == len(DefaultGraphQLSchema._gql_types)
+    assert 0 == len(DEFAULT_GRAPHQL_SCHEMA._gql_types)
 
     monkeypatch.undo()

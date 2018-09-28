@@ -17,8 +17,8 @@ addons:
 script:
   - make test-unit
   - make test-functional
-  - make check-format
-  # - make style
+  - make style
+  # - make complexity
 cache: pip
 install:
   - make init

@@ -4,6 +4,8 @@ from lark.visitors import Transformer_InPlace
 
 from tartiflette.sdl.transformers.helpers import find_token_in_ast
 
+# pylint: disable=no-self-use
+
 
 @v_args(tree=True)
 class CleaningTransformer(Transformer_InPlace):

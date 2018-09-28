@@ -68,7 +68,7 @@ class TartifletteVisitor(Visitor):
         self._current_fragment_definition = None
         self._fragments = {}
         self.schema: GraphQLSchema = schema
-        self.exception = None
+        self.exception: Exception = None
 
     def _on_argument_in(self, element: _VisitorElement):
         self._current_argument_name = element.name

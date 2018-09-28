@@ -499,7 +499,6 @@ class LibGraphqlParser:
                 Visitor.OUT,
                 self._create_visitor_element(libgraphql_type, element),
             )
-        return None
 
     def _set_callback(self, proto, func, attr):
         c_func = self._ffi.callback(proto)(func)

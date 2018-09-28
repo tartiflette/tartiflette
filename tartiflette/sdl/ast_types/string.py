@@ -1,3 +1,6 @@
+# pylint: disable=no-member
+
+
 class String(str):
     """
     String wraps a simple Python string and encapsulates the ast_node if there

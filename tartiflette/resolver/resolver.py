@@ -1,10 +1,8 @@
 from inspect import iscoroutinefunction
 from typing import Callable, Optional
 
-from tartiflette.schema import DefaultGraphQLSchema, GraphQLSchema
+from tartiflette.schema import DEFAULT_GRAPHQL_SCHEMA, GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
-
-from .factory import ResolverExecutorFactory
 
 
 class Resolver:
@@ -26,7 +24,7 @@ class Resolver:
     """
 
     def __init__(self, name: str, schema: Optional[GraphQLSchema] = None):
-        self.schema = schema if schema else DefaultGraphQLSchema
+        self.schema = schema if schema else DEFAULT_GRAPHQL_SCHEMA
         self.field = self.schema.get_field_by_name(name=name)
 
     def __call__(self, resolver: Callable, *args, **kwargs):

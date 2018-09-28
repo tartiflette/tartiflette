@@ -52,9 +52,9 @@ _TEST_REQUIRE = [
     "pytest-cov",
     "pytest-asyncio",
     "pytz",
-    "pylint==1.8.1",
+    "pylint==2.1.1",
     "xenon",
-    "black==18.6b4",
+    "black==18.9b0",
 ]
 
 _VERSION = "0.1.0"

@@ -110,11 +110,11 @@ class GraphQLField:
 
     # Introspection Attribute
     @property
-    def isDeprecated(self):
+    def isDeprecated(self):  # pylint: disable=invalid-name
         return self._is_deprecated
 
     @isDeprecated.setter
-    def isDeprecated(self, value):
+    def isDeprecated(self, value):  # pylint: disable=invalid-name
         self._is_deprecated = value
 
     # Introspection Attribute

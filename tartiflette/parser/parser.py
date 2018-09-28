@@ -16,5 +16,5 @@ class TartifletteRequestParser(LibGraphqlParser):
         visitor = TartifletteVisitor(schema, variables)
         self.parse_and_visit(query, visitor)
         if visitor.exception:
-            raise visitor.exception
+            raise visitor.exception  # pylint: disable=raising-bad-type
         return visitor.root_nodes

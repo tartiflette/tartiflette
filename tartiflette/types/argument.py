@@ -61,5 +61,5 @@ class GraphQLArgument:
 
     # Introspection Attribute
     @property
-    def defaultValue(self):
+    def defaultValue(self):  # pylint: disable=invalid-name
         return self.default_value
