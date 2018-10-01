@@ -1,7 +1,5 @@
-from typing import Any, Optional
+from typing import Optional
 
-from tartiflette.executors.types import Info
-from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -22,8 +20,9 @@ class GraphQLScalarType(GraphQLType):
         coerce_output: Optional[callable] = None,
         coerce_input: Optional[callable] = None,
         description: Optional[str] = None,
+        schema=None,
     ):
-        super().__init__(name=name, description=description)
+        super().__init__(name=name, description=description, schema=schema)
         self.coerce_output = coerce_output
         self.coerce_input = coerce_input
 
@@ -40,12 +39,7 @@ class GraphQLScalarType(GraphQLType):
             and self.coerce_input == other.coerce_input
         )
 
-    def coerce_value(
-        self, value: Any, info: Info
-    ) -> Any:
-        if value is None:
-            return value
-        try:
-            return self.coerce_output(value)
-        except (TypeError, ValueError) as e:
-            raise InvalidValue(value, info)
+    # Introspection Attribute
+    @property
+    def kind(self):
+        return "SCALAR"

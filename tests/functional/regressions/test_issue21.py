@@ -4,88 +4,92 @@ from unittest.mock import Mock
 import pytest
 
 from tartiflette.executors.types import Info
+from tartiflette.resolver import Resolver
 
 GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    'query, expected, varis', [
+    "query, expected, typee, varis",
+    [
         (
             """
             query LOL($xid: Int) {
-                A(xid: $xid)
+                a(xid: $xid) { iam args { xid }}
             }
             """,
-            {"data":{"A":{"iam": "A", "args":{"xid":45}}}},
-            {"xid": 45}
+            {"data": {"a": {"iam": "a", "args": {"xid": 45}}}},
+            "Int",
+            {"xid": 45},
         ),
         (
             """
             query LOL {
-                A(xid: "RE")
+                a(xid: "RE") { iam args { xid }}
             }
             """,
-            {"data":{"A":{"iam": "A", "args":{"xid":"RE"}}}},
-            {}
+            {"data": {"a": {"iam": "a", "args": {"xid": "RE"}}}},
+            "String",
+            {},
         ),
         (
             """
             query LOL($xid: Int = 56) {
-                A(xid: $xid)
+                a(xid: $xid) { iam args { xid }}
             }
             """,
-            {"data":{"A":{"iam": "A", "args":{"xid":56}}}},
-            {}
+            {"data": {"a": {"iam": "a", "args": {"xid": 56}}}},
+            "Int",
+            {},
         ),
         (
             """
             query LOL($xid: [Int]) {
-                A(xid: $xid)
+                a(xid: $xid) { iam args { xid }}
             }
             """,
-            {"data":{"A":{"iam": "A", "args":{"xid":[1, 6]}}}},
-            {"xid": [1, 6]}
+            {"data": {"a": {"iam": "a", "args": {"xid": [1, 6]}}}},
+            "[Int]",
+            {"xid": [1, 6]},
         ),
         (
             """
             query LOL($xid: Int) {
-                A(xid: $xid)
+                a(xid: $xid) { iam args { xid }}
             }
             """,
-            {"data":{"A":{"iam": "A", "args":{"xid":None}}}},
-            {}
+            {"data": {"a": {"iam": "a", "args": {"xid": None}}}},
+            "Int",
+            {},
         ),
-    ]
+    ],
 )
-async def test_issue21_okayquery(query, expected, varis):
-    from tartiflette.tartiflette import Tartiflette
+async def test_issue21_okayquery(query, expected, typee, varis):
+    from tartiflette.engine import Engine
 
-    class default_resolver(Mock):
-        async def __call__(self, parent, arguments, request_ctx, info: Info):
-            super(default_resolver, self).__call__(parent, arguments, request_ctx, info)
-            return {"iam": info.query_field.name, "args": arguments}
-
-    def coerce_value(value: Any, info: Info) -> Any:
-        return value
-
-    field = Mock()
-    field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)
-    field.name = "test"
-    field.resolver = default_resolver()
-
-    def get_field_by_name(_):
-        return field
-
-    sdm = Mock()
-    sdm.query_type = "Query"
-    sdm.get_field_by_name = get_field_by_name
-    sdm.types = {
-        "Query": GQLTypeMock(name="Query", coerce_value=coerce_value),
-        "Test": GQLTypeMock(name="Test", coerce_value=coerce_value),
+    ttftt = Engine(
+        schema="""
+    type Args{
+        xid: %s
     }
 
-    ttftt = Tartiflette(schema=sdm)
+    type Obj {
+        iam: String
+        args: Args
+    }
+
+    type Query {
+        a: Obj
+    }
+    """
+        % typee
+    )
+
+    @Resolver("Query.a", schema=ttftt.schema)
+    async def a_resolver(_, arguments, __, info: Info):
+        return {"iam": info.query_field.name, "args": arguments}
+
     results = await ttftt.execute(query, context={}, variables=varis)
 
     assert results == expected
@@ -93,76 +97,74 @@ async def test_issue21_okayquery(query, expected, varis):
 
 from tartiflette.types.exceptions.tartiflette import UnknownVariableException
 
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    'query, expected, varis', [
+    "query, expected, varis",
+    [
         (
             """
             query LOL($xid: Int!) {
-                A(xid: $xid)
+                a(xid: $xid)
             }
             """,
             UnknownVariableException,
-            {}
+            {},
         ),
         (
             """
             query LOL($xid: Int) {
-                A(xid: $xid)
+                a(xid: $xid)
             }
             """,
             TypeError,
-            {"xid": "RE"}
+            {"xid": "RE"},
         ),
         (
             """
             query LOL($xid: [Int]) {
-                A(xid: $xid)
+                a(xid: $xid)
             }
             """,
             TypeError,
-            {"xid": "RE"}
+            {"xid": "RE"},
         ),
         (
             """
             query LOL($xid: [Int]) {
-                A(xid: $xid)
+                a(xid: $xid)
             }
             """,
             TypeError,
-            {"xid": ["RE"]}
+            {"xid": ["RE"]},
         ),
-    ]
+    ],
 )
 async def test_issue21_exceptquery(query, expected, varis):
-    from tartiflette.tartiflette import Tartiflette
+    from tartiflette.engine import Engine
 
-    class default_resolver(Mock):
-        async def __call__(self, ctx, exe):
-            super(default_resolver, self).__call__(ctx, exe)
-            return {"iam": exe.name, "args": exe.arguments}
+    from tartiflette.engine import Engine
 
-    def coerce_value(value: Any, info: Info) -> (
-        Any, List):
-        return value
-
-    field = Mock()
-    field.gql_type = GQLTypeMock(name="Test", coerce_value=coerce_value)
-    field.name = "test"
-    field.resolver = default_resolver()
-
-    def get_field_by_name(_):
-        return field
-
-    sdm = Mock()
-    sdm.query_type = "Query"
-    sdm.get_field_by_name = get_field_by_name
-    sdm.types = {
-        "Query": GQLTypeMock(name="Query", coerce_value=coerce_value),
+    ttftt = Engine(
+        schema="""
+    type Args{
+        xid: Int
     }
 
-    ttftt = Tartiflette(schema=sdm)
+    type Obj {
+        iam: String
+        args: Args
+    }
+
+    type Query {
+        a: Obj
+    }
+    """
+    )
+
+    @Resolver("Query.a", schema=ttftt.schema)
+    async def a_resolver(_, arguments, __, info: Info):
+        return {"iam": info.query_field.name, "args": arguments}
+
     with pytest.raises(expected):
-        results = await ttftt.execute(query, context={}, variables=varis)
-
-
+        await ttftt.execute(query, context={}, variables=varis)

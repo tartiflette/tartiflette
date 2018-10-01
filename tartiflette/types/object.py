@@ -1,8 +1,5 @@
-from collections import OrderedDict
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
-from tartiflette.executors.types import Info
-from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
 
@@ -17,16 +14,15 @@ class GraphQLObjectType(GraphQLType):
     """
 
     def __init__(
-            self,
-            name: str,
-            fields: Dict[str, GraphQLField],
-            interfaces: Optional[List[str]] = None,
-            description: Optional[str] = None,
+        self,
+        name: str,
+        fields: Dict[str, GraphQLField],
+        interfaces: Optional[List[str]] = None,
+        description: Optional[str] = None,
+        schema=None,
     ):
-        # In the function signature above, it should be `OrderedDict` but the
-        # python 3.6 interpreter fails to interpret the signature correctly.
-        super().__init__(name=name, description=description)
-        self.fields: OrderedDict[str, GraphQLField] = fields
+        super().__init__(name=name, description=description, schema=schema)
+        self._fields: Dict[str, GraphQLField] = fields
         # TODO: specify what is in the List.
         self.interfaces: Optional[List[str]] = interfaces
 
@@ -36,7 +32,7 @@ class GraphQLObjectType(GraphQLType):
             "interfaces={!r}, description={!r})".format(
                 self.__class__.__name__,
                 self.name,
-                self.fields,
+                self._fields,
                 self.interfaces,
                 self.description,
             )
@@ -44,27 +40,26 @@ class GraphQLObjectType(GraphQLType):
 
     def __eq__(self, other) -> bool:
         return (
-                super().__eq__(other)
-                and self.fields == other.fields
-                and self.interfaces == other.interfaces
+            super().__eq__(other)
+            and self._fields == other._fields
+            and self.interfaces == other.interfaces
         )
 
     def add_field(self, value: GraphQLField):
-        self.fields[value.name] = value
+        self._fields[value.name] = value
 
-    def coerce_value(self, value: Any, info: Info) -> Any:
-        # This needs rework linked to the coercing logic...
-        # result = {}
-        # for index, subnode in enumerate(info.query_field.children):
-        #     if subnode.parent and isinstance(subnode.parent.result, list):
-        #         result = subnode.result[index]
-        #     else:
-        #         result = subnode.result
-        #
-        #     result[subnode.name] = subnode.info.schema_field.gql_type.coerce_value(
-        #         result,
-        #         subnode.info.clone(),
-        #     )
-        # if len(result) == 0:
-        #     raise InvalidValue(value, info)
-        return {}
+    def find_field(self, name: str) -> GraphQLField:
+        return self._fields[name]
+
+    # Introspection Attribute
+    @property
+    def kind(self):
+        return "OBJECT"
+
+    # Introspection Attribute
+    @property
+    def fields(self):
+        try:
+            return [x for _, x in self._fields.items()]
+        except AttributeError:
+            return []

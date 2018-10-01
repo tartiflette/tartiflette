@@ -1,6 +1,5 @@
-from typing import Any, Dict, Optional
+from typing import Dict, Optional, List
 
-from tartiflette.executors.types import Info
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
 
@@ -22,21 +21,30 @@ class GraphQLInterfaceType(GraphQLType):
         name: str,
         fields: Dict[str, GraphQLField],
         description: Optional[str] = None,
+        schema=None,
     ):
-        # In the function signature above, it should be `OrderedDict` but the
-        # python 3.6 interpreter fails to interpret the signature correctly.
-        super().__init__(name=name, description=description)
-        self.fields: Dict[str, GraphQLField] = fields
+        super().__init__(name=name, description=description, schema=schema)
+        self._fields: Dict[str, GraphQLField] = fields
 
     def __repr__(self) -> str:
         return "{}(name={!r}, fields={!r}, description={!r})".format(
-            self.__class__.__name__, self.name, self.fields, self.description
+            self.__class__.__name__, self.name, self._fields, self.description
         )
 
     def __eq__(self, other) -> bool:
-        return super().__eq__(other) and self.fields == other.fields
+        return super().__eq__(other) and self._fields == other._fields
 
-    def coerce_value(self, value: Any, info: Info) -> Any:
-        if value is None:
-            return value
-        return {}
+    # Introspection Attribute
+    @property
+    def kind(self) -> str:
+        return "INTERFACE"
+
+    def find_field(self, name: str) -> GraphQLField:
+        return self._fields[name]
+
+    @property
+    def fields(self) -> List[GraphQLField]:
+        try:
+            return [x for _, x in self._fields.items()]
+        except AttributeError:
+            return []

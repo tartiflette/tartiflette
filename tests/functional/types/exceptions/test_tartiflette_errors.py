@@ -3,20 +3,19 @@ from datetime import datetime
 import pytest
 
 from tartiflette import Resolver
-from tartiflette.tartiflette import Tartiflette
+from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
 async def test_tartiflette_execute_nested_error():
     schema_sdl = """
-    scalar Date
-    
+
     type Obj {
-        deep: Nested  # Try [Nested!] later
+        deep: Nested
     }
-    
+
     type Nested {
-        lastUpdate: [Date!]
+        lastUpdate: [Float!]
     }
 
     type Query {
@@ -24,24 +23,19 @@ async def test_tartiflette_execute_nested_error():
     }
     """
 
-    def from_date_to_str(datetime):
-        return datetime.isoformat()
-
-    def from_str_to_date(datetime_str):
-        return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-
-    ttftt = Tartiflette(schema_sdl)
-
-    ttftt.schema.types["Date"].coerce_output = from_date_to_str
-    ttftt.schema.types["Date"].coerce_input = from_str_to_date
+    ttftt = Engine(schema_sdl)
 
     @Resolver("Nested.lastUpdate", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
-        return [datetime(year=2018, month=4, day=19,
-                        hour=14, minute=57, second=38), None]
+        return [
+            datetime(
+                year=2018, month=4, day=19, hour=14, minute=57, second=38
+            ).timestamp(),
+            None,
+        ]
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query Test{
         test {
             deep {
@@ -49,6 +43,16 @@ async def test_tartiflette_execute_nested_error():
             }
         }
     }
-    """)
+    """
+    )
 
-    assert {"data":{"test":{"deep":{"lastUpdate":None}}},"errors":[{"message":"Invalid value (value: None) for field `lastUpdate` of type `[Date!]`","path":["test","deep","lastUpdate",1],"locations":[{"line":1,"column":68}]}]} == result
+    assert {
+        "data": {"test": {"deep": {"lastUpdate": None}}},
+        "errors": [
+            {
+                "message": "Invalid value (value: None) for field `lastUpdate` of type `[Float!]`",
+                "path": ["test", "deep", "lastUpdate"],
+                "locations": [{"line": 1, "column": 68}],
+            }
+        ],
+    } == result

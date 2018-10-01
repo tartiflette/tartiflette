@@ -17,8 +17,10 @@ def test_graphql_scalar_init():
 def test_graphql_scalar_repr():
     scalar = GraphQLScalarType(name="Name", description="description")
 
-    assert scalar.__repr__() == "GraphQLScalarType(name='Name', " \
-                                "description='description')"
+    assert (
+        scalar.__repr__() == "GraphQLScalarType(name='Name', "
+        "description='description')"
+    )
     assert scalar == eval(repr(scalar))
 
 
@@ -33,24 +35,3 @@ def test_graphql_scalar_eq():
 
     ## Different
     assert scalar != GraphQLScalarType(name="OtherName")
-
-
-def test_graphql_scalar_coerce_value():
-    scalar = GraphQLScalarType(name="Name", description="description",
-                               coerce_input=int, coerce_output=int)
-
-    info = Info(
-        None, None, None, None, None, None
-    )
-    # Coercing None returns None
-    coerced_value = scalar.coerce_value(None, info)
-    assert coerced_value is None
-
-    # Coercing a float returns an int (int() worked)
-    src_val = 42.0
-    coerced_value = scalar.coerce_value(src_val, info)
-    assert coerced_value == 42
-
-    # Coercing something unknown returns an empty dict
-    with pytest.raises(InvalidValue):
-        scalar.coerce_value("invalid string", info)

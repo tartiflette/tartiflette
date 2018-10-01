@@ -1,7 +1,4 @@
 from typing import Any, List, Optional
-
-from tartiflette.executors.types import Info
-from tartiflette.types.exceptions.tartiflette import InvalidValue
 from tartiflette.types.type import GraphQLType
 
 
@@ -46,8 +43,14 @@ class GraphQLEnumType(GraphQLType):
         name: str,
         values: List[GraphQLEnumValue],
         description: Optional[str] = None,
+        schema=None,
     ):
-        super().__init__(name=name, description=description)
+        super().__init__(
+            name=name,
+            description=description,
+            is_enum_value=True,
+            schema=schema,
+        )
         self.values = values
         # TODO: This will probably need a serialization / deserialization logic
         # and more
@@ -60,10 +63,7 @@ class GraphQLEnumType(GraphQLType):
     def __eq__(self, other):
         return super().__eq__(other) and self.values == other.values
 
-    def coerce_value(self, value: Any, info: Info,) -> Any:
-        if value is None:
-            return value
-        for enumval in self.values:
-            if enumval.value == value:
-                return enumval.value
-        raise InvalidValue(value, info)
+    # Introspection Attribute
+    @property
+    def kind(self):
+        return "ENUM"

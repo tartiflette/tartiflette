@@ -1,5 +1,5 @@
 import os
-from tartiflette.tartiflette import Tartiflette
+from tartiflette import Engine
 
 
 def _starwars_schema():
@@ -8,6 +8,6 @@ def _starwars_schema():
         return sdl_file.read()
 
 
-STARWARSTIFLETTE = Tartiflette(sdl=_starwars_schema())
+STARWARSTIFLETTE = Engine(schema=_starwars_schema())
 
 __all__ = ["STARWARSTIFLETTE"]

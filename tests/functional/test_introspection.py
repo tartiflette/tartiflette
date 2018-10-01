@@ -1,7 +1,7 @@
 import pytest
 
 from tartiflette import Resolver
-from tartiflette.tartiflette import Tartiflette
+from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
@@ -13,7 +13,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
         field2(arg1: Int = 42): Int
         field3: [EnumStatus!]
     }
-    
+
     enum EnumStatus {
         Active
         Inactive
@@ -24,14 +24,10 @@ async def test_tartiflette_execute_basic_type_introspection_output():
     }
     """
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
-    @Resolver("Query.objectTest", schema=ttftt.schema)
-    async def func_field_resolver(*args, **kwargs):
-        return {"field1": "Test", "field2": 42, "field3": ["Active"]}
-
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query Test{
         __type(name: "Test") {
             name
@@ -99,9 +95,8 @@ async def test_tartiflette_execute_basic_type_introspection_output():
             }
         }
     }
-    """)
-
-    print(result)
+    """
+    )
 
     assert {
         "data": {
@@ -131,7 +126,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
                                     "ofType": None,
                                 },
                                 "defaultValue": "42",
-                             }
+                            }
                         ],
                         "type": {
                             "kind": "SCALAR",
@@ -152,12 +147,12 @@ async def test_tartiflette_execute_basic_type_introspection_output():
                                     "kind": "ENUM",
                                     "name": "EnumStatus",
                                     "ofType": None,
-                                }
+                                },
                             },
                         },
                     },
                 ],
-            },
+            }
         }
     } == result
 
@@ -170,44 +165,100 @@ async def test_tartiflette_execute_schema_introspection_output():
         mutation: CustomRootMutation
         subscription: CustomRootSubscription
     }
-    
+
     type CustomRootQuery {
         test: String
     }
-    
+
     type CustomRootMutation {
         test: Int
     }
-    
+
     type CustomRootSubscription {
         test: String
     }
     """
 
-    ttftt = Tartiflette(schema_sdl)
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    ttftt = Engine(schema_sdl)
+
+    result = await ttftt.execute(
+        """
     query Test{
         __schema {
             queryType { name }
             mutationType { name }
             subscriptionType { name }
-        } 
+            types {
+                kind
+                name
+            }
+            directives {
+                name
+                description
+                locations
+                args {
+                    name
+                    description
+                    type {
+                        kind
+                        name
+                    }
+                    defaultValue
+                }
+            }
+        }
     }
-    """)
+    """
+    )
 
     assert {
         "data": {
             "__schema": {
-                "queryType": {
-                    "name": "CustomRootQuery",
-                },
-                "mutationType": {
-                    "name": "CustomRootMutation",
-                },
-                "subscriptionType": {
-                    "name": "CustomRootSubscription",
-                }
-            },
+                "types": [
+                    {"kind": "OBJECT", "name": "CustomRootQuery"},
+                    {"kind": "OBJECT", "name": "CustomRootMutation"},
+                    {"kind": "OBJECT", "name": "CustomRootSubscription"},
+                    {"kind": "SCALAR", "name": "Int"},
+                    {"kind": "SCALAR", "name": "String"},
+                    {"kind": "SCALAR", "name": "ID"},
+                    {"kind": "SCALAR", "name": "Float"},
+                    {"kind": "SCALAR", "name": "Boolean"},
+                    {"kind": "SCALAR", "name": "Date"},
+                    {"kind": "SCALAR", "name": "Time"},
+                    {"kind": "SCALAR", "name": "DateTime"},
+                    {"kind": "OBJECT", "name": "__Schema"},
+                    {"kind": "ENUM", "name": "__TypeKind"},
+                    {"kind": "OBJECT", "name": "__Type"},
+                    {"kind": "OBJECT", "name": "__Field"},
+                    {"kind": "OBJECT", "name": "__InputValue"},
+                    {"kind": "OBJECT", "name": "__EnumValue"},
+                    {"name": "__DirectiveLocation", "kind": "ENUM"},
+                    {"kind": "OBJECT", "name": "__Directive"},
+                ],
+                "directives": [
+                    {
+                        "description": None,
+                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
+                        "args": [
+                            {
+                                "name": "reason",
+                                "type": {"kind": "SCALAR", "name": "String"},
+                                "description": None,
+                                "defaultValue": "No longer supported",
+                            }
+                        ],
+                        "name": "deprecated",
+                    },
+                    {
+                        "args": [],
+                        "name": "non_introspectable",
+                        "description": None,
+                        "locations": ["FIELD_DEFINITION"],
+                    },
+                ],
+                "queryType": {"name": "CustomRootQuery"},
+                "mutationType": {"name": "CustomRootMutation"},
+                "subscriptionType": {"name": "CustomRootSubscription"},
+            }
         }
     } == result

@@ -1,7 +1,7 @@
 import pytest
 
 from tartiflette import Resolver
-from tartiflette.tartiflette import Tartiflette
+from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
@@ -18,46 +18,66 @@ async def test_tartiflette_execute_enum_type_output():
     }
     """
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
     @Resolver("Query.enumTest", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return "Value1"
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query Test{
         enumTest
     }
-    """)
+    """
+    )
 
-    assert {"data":{"enumTest":"Value1"}} == result
+    assert {"data": {"enumTest": "Value1"}} == result
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("input_sdl,resolver_response,expected", [
-    (
-        "Test",
-        "Value1",
-        {"data":{"testField":"Value1"}},
-    ),
-    (
-        "Test!",
-        None,
-        {"data":{"testField":None},"errors":[{"message":"Invalid value (value: None) for field `testField` of type `Test!`","path":["testField"],"locations":[{"line":1,"column":26}]}]},
-    ),
-    (
-        "[Test]",
-        ["Value3", "Value1"],
-        {"data":{"testField":["Value3","Value1"]}},
-    ),
-    (
-        "[Test]",
-        ["Value3", "UnknownValue"],
-        {"data":{"testField":["Value3",None]},"errors":[{"message":"Invalid value (value: \'UnknownValue\') for field `testField` of type `[Test]`","path":["testField",1],"locations":[{"line":1,"column":26}]}]},
-    ),
-])
-async def test_tartiflette_execute_enum_type_advanced(input_sdl, resolver_response, expected):
+@pytest.mark.parametrize(
+    "input_sdl,resolver_response,expected",
+    [
+        ("Test", "Value1", {"data": {"testField": "Value1"}}),
+        (
+            "Test!",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Invalid value (value: None) for field `testField` of type `Test!`",
+                        "path": ["testField"],
+                        "locations": [{"line": 1, "column": 26}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[Test]",
+            ["Value3", "Value1"],
+            {"data": {"testField": ["Value3", "Value1"]}},
+        ),
+        (
+            "[Test]",
+            ["Value3", "UnknownValue"],
+            {
+                "data": {"testField": None},
+                "errors": [
+                    {
+                        "message": "Invalid value (value: 'UnknownValue') for field `testField` of type `[Test]`",
+                        "path": ["testField"],
+                        "locations": [{"line": 1, "column": 26}],
+                    }
+                ],
+            },
+        ),
+    ],
+)
+async def test_tartiflette_execute_enum_type_advanced(
+    input_sdl, resolver_response, expected
+):
     schema_sdl = """
     enum Test {{
         Value1
@@ -68,19 +88,22 @@ async def test_tartiflette_execute_enum_type_advanced(input_sdl, resolver_respon
     type Query {{
         testField: {}
     }}
-    """.format(input_sdl)
+    """.format(
+        input_sdl
+    )
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
     @Resolver("Query.testField", schema=ttftt.schema)
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query Test{
         testField
     }
-    """)
+    """
+    )
 
     assert expected == result

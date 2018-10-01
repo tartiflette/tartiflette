@@ -1,7 +1,7 @@
 from inspect import iscoroutinefunction
 from typing import Callable, Optional
 
-from tartiflette.schema import DefaultGraphQLSchema, GraphQLSchema
+from tartiflette.schema import DEFAULT_GRAPHQL_SCHEMA, GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
 
 
@@ -19,13 +19,12 @@ class Resolver:
 
         @Resolver("SomeObject.field")
         def field_resolver(parent, arguments, request_ctx, info):
-            ... do your stuff
+            do your stuff
             return 42
-
     """
 
     def __init__(self, name: str, schema: Optional[GraphQLSchema] = None):
-        self.schema = schema if schema else DefaultGraphQLSchema
+        self.schema = schema if schema else DEFAULT_GRAPHQL_SCHEMA
         self.field = self.schema.get_field_by_name(name=name)
 
     def __call__(self, resolver: Callable, *args, **kwargs):
@@ -35,9 +34,6 @@ class Resolver:
                 "is not awaitable.".format(repr(resolver), self.field.name)
             )
 
-        try:
-            self.field.resolver = resolver
-        except AttributeError:
-            pass
+        self.field.resolver.update_func(resolver)
 
-        return resolver
+        return self.field.resolver

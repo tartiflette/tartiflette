@@ -1,15 +1,14 @@
-from collections import OrderedDict, namedtuple
+from collections import namedtuple
 
 from lark import Tree, v_args
 from lark.visitors import Transformer_InPlace
 
-from tartiflette.schema import DefaultGraphQLSchema
+from tartiflette.schema import DEFAULT_GRAPHQL_SCHEMA
 from tartiflette.sdl.ast_types import String
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumValue
-from tartiflette.types.exceptions.tartiflette import \
-    UnexpectedASTNode
+from tartiflette.types.exceptions.tartiflette import UnexpectedASTNode
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -18,6 +17,9 @@ from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.union import GraphQLUnionType
+
+# pylint: disable=no-self-use
+# pylint: disable=too-many-public-methods
 
 SchemaNode = namedtuple("SchemaNode", ["type", "value"])
 """
@@ -42,7 +44,7 @@ class SchemaTransformer(Transformer_InPlace):
 
     def __init__(self, sdl: str, schema=None):
         self.sdl = sdl
-        self._schema = schema if schema else DefaultGraphQLSchema
+        self._schema = schema if schema else DEFAULT_GRAPHQL_SCHEMA
 
     def document(self, tree: Tree):
         return tree.children
@@ -87,12 +89,16 @@ class SchemaTransformer(Transformer_InPlace):
 
     def list_type(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
-            "list_type", GraphQLList(gql_type=tree.children[0].value)
+            "list_type",
+            GraphQLList(gql_type=tree.children[0].value, schema=self._schema),
         )
 
     def non_null_type(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
-            "non_null_type", GraphQLNonNull(gql_type=tree.children[0].value)
+            "non_null_type",
+            GraphQLNonNull(
+                gql_type=tree.children[0].value, schema=self._schema
+            ),
         )
 
     def type(self, tree: Tree) -> SchemaNode:
@@ -105,16 +111,13 @@ class SchemaTransformer(Transformer_InPlace):
     def scalar_type_definition(self, tree: Tree) -> GraphQLScalarType:
         # TODO: Add directives
         description = None
-        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
-            elif child.type == "SCALAR":
-                ast_node = child
             elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == "discard":
+            elif child.type == "discard" or child.type == "SCALAR":
                 pass
             else:
                 raise UnexpectedASTNode(
@@ -122,24 +125,25 @@ class SchemaTransformer(Transformer_InPlace):
                         child, child.__class__.__name__
                     )
                 )
-        return GraphQLScalarType(name=name, description=description)
+        scalar = GraphQLScalarType(
+            name=name, description=description, schema=self._schema
+        )
+        self._schema.add_custom_scalar_definition(scalar)
+        return scalar
 
     def union_type_definition(self, tree: Tree) -> GraphQLUnionType:
         # TODO: Add directives
         description = None
-        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
         members = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
-            elif child.type == "UNION":
-                ast_node = child
             elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
             elif child.type == "union_members":
                 members = child.value
-            elif child.type == "discard":
+            elif child.type == "discard" or child.type == "UNION":
                 pass
             else:
                 raise UnexpectedASTNode(
@@ -148,7 +152,10 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return GraphQLUnionType(
-            name=name, gql_types=members, description=description
+            name=name,
+            gql_types=members,
+            description=description,
+            schema=self._schema,
         )
 
     def union_member_types(self, tree: Tree) -> SchemaNode:
@@ -160,19 +167,16 @@ class SchemaTransformer(Transformer_InPlace):
     def enum_type_definition(self, tree: Tree):
         # TODO: Add directives
         description = None
-        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
         values = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
-            elif child.type == "ENUM":
-                ast_node = child
             elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
             elif child.type == "enum_values":
                 values = child.value
-            elif child.type == "discard":
+            elif child.type == "discard" or child.type == "ENUM":
                 pass
             else:
                 raise UnexpectedASTNode(
@@ -181,9 +185,14 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
 
-        return GraphQLEnumType(
-            name=name, values=values, description=description
+        enum_type = GraphQLEnumType(
+            name=name,
+            values=values,
+            description=description,
+            schema=self._schema,
         )
+        self._schema.add_enum_definition(enum_type)
+        return enum_type
 
     def enum_values_definition(self, tree: Tree) -> SchemaNode:
         values = []
@@ -215,19 +224,16 @@ class SchemaTransformer(Transformer_InPlace):
     def interface_type_definition(self, tree: Tree) -> GraphQLInterfaceType:
         # TODO: Add directives
         description = None
-        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
         fields = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
-            elif child.type == "INTERFACE":
-                ast_node = child
             elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
             elif child.type == "fields":
                 fields = child.value
-            elif child.type == "discard":
+            elif child.type == "discard" or child.type == "INTERFACE":
                 pass
             else:
                 raise UnexpectedASTNode(
@@ -236,28 +242,28 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return GraphQLInterfaceType(
-            name=name, fields=fields, description=description
+            name=name,
+            fields=fields,
+            description=description,
+            schema=self._schema,
         )
 
     def object_type_definition(self, tree: Tree) -> GraphQLObjectType:
         # TODO: Add directives
         description = None
-        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
         interfaces = None
         fields = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
-            elif child.type == "TYPE":
-                ast_node = child
             elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
             elif child.type == "interfaces":
                 interfaces = child.value
             elif child.type == "fields":
                 fields = child.value
-            elif child.type == "discard":
+            elif child.type == "discard" or child.type == "TYPE":
                 pass
             else:
                 raise UnexpectedASTNode(
@@ -270,36 +276,31 @@ class SchemaTransformer(Transformer_InPlace):
             fields=fields,
             interfaces=interfaces,
             description=description,
+            schema=self._schema,
         )
 
     def implements_interfaces(self, tree: Tree) -> SchemaNode:
         interfaces = []
-        ast_node = None  # TODO: Should we keep it or discard it ?
         for child in tree.children:
-            if child.type == "IMPLEMENTS":
-                ast_node = child
-            else:
+            if child.type != "IMPLEMENTS":
                 interfaces.append(child.value)
         return SchemaNode("interfaces", interfaces)
 
     def input_object_type_definition(
-            self, tree: Tree
+        self, tree: Tree
     ) -> GraphQLInputObjectType:
         # TODO: Add directives
         description = None
-        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
         fields = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
-            elif child.type == "INPUT":
-                ast_node = child
             elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
             elif child.type == "input_fields":
                 fields = child.value
-            elif child.type == "discard":
+            elif child.type == "discard" or child.type == "INPUT":
                 pass
             else:
                 raise UnexpectedASTNode(
@@ -308,17 +309,20 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return GraphQLInputObjectType(
-            name=name, fields=fields, description=description
+            name=name,
+            fields=fields,
+            description=description,
+            schema=self._schema,
         )
 
     def input_fields_definition(self, tree: Tree) -> SchemaNode:
-        fields = OrderedDict()
+        fields = {}
         for child in tree.children:
             fields[child.name] = child
         return SchemaNode("input_fields", fields)
 
     def fields_definition(self, tree: Tree) -> SchemaNode:
-        fields = OrderedDict()
+        fields = {}
         for child in tree.children:
             fields[child.name] = child
         return SchemaNode("fields", fields)
@@ -354,10 +358,11 @@ class SchemaTransformer(Transformer_InPlace):
             arguments=arguments,
             description=description,
             directives=directives,
+            schema=self._schema,
         )
 
     def arguments_definition(self, tree: Tree) -> SchemaNode:
-        arguments = OrderedDict()
+        arguments = {}
         for child in tree.children:
             arguments[child.name] = child
         return SchemaNode("arguments", arguments)
@@ -394,37 +399,36 @@ class SchemaTransformer(Transformer_InPlace):
 
     def directive_definition(self, tree: Tree):
         description = None
-        ast_node = None  # TODO: Should we discard it or keep it ?
         name = None
-        on = None
+        applies_on = None
         arguments = None
         for child in tree.children:
-            if child.type == 'description':
+            if child.type == "description":
                 description = child.value
-            elif child.type == 'DIRECTIVE':
-                ast_node = child
-            elif child.type == 'IDENT':
+            elif child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'arguments':
+            elif child.type == "arguments":
                 arguments = child.value
-            elif child.type == 'ON':
+            elif child.type == "ON":
                 pass
-            elif child.type == 'directive_locations':
-                on = child.value
-            elif child.type == 'discard':
+            elif child.type == "directive_locations":
+                applies_on = child.value
+            elif child.type == "discard" or child.type == "DIRECTIVE":
                 pass
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
-                        child, child.__class__.__name__))
+                        child, child.__class__.__name__
+                    )
+                )
         directive = GraphQLDirective(
             name=name,
-            on=on,
+            on=applies_on,
             arguments=arguments,
-            description=description
+            description=description,
         )
         self._schema.add_directive(directive)
-        return Tree('directive_definition', [directive])
+        return Tree("directive_definition", [directive])
 
     def directive_locations(self, tree: Tree):
         locations = []
@@ -435,7 +439,7 @@ class SchemaTransformer(Transformer_InPlace):
                 raise ValueError(
                     "Invalid directive location `{}`".format(child.value)
                 )
-        return SchemaNode('directive_locations', locations)
+        return SchemaNode("directive_locations", locations)
 
     def description(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
@@ -535,7 +539,7 @@ class SchemaTransformer(Transformer_InPlace):
     def directives(self, tree: Tree) -> SchemaNode:
         directives = {}
         for child in tree.children:
-            if child.type == 'directive':
+            if child.type == "directive":
                 directives[child.value[0]] = child.value[1]
         return SchemaNode("directives", directives)
 
@@ -545,7 +549,7 @@ class SchemaTransformer(Transformer_InPlace):
         for child in tree.children:
             if child.type == "IDENT":
                 name = String(str(child.value), ast_node=child)
-            elif child.type == 'arguments':
+            elif child.type == "arguments":
                 arguments = child.value
             else:
                 raise UnexpectedASTNode(

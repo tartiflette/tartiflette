@@ -1,97 +1,83 @@
 import pytest
 
 from tartiflette import Resolver
-from tartiflette.directive import Directive
-from tartiflette.executors.types import Info
-from tartiflette.schema import GraphQLSchema
-from tartiflette.tartiflette import Tartiflette
-from tartiflette.types.field import GraphQLField
+from tartiflette.directive import Directive, CommonDirective
+from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_directive_declaration():
-    schema_sdl = """
-    directive @deprecated(
-        reason: String = "No longer supported"
-    ) on FIELD_DEFINITION | ENUM_VALUE
-    
+async def test_tartiflette_deprecated_execution_directive():
+    schema = """
     type Query {
         fieldNormal: Int
         fieldDeprecatedDefault: Int @deprecated
         fieldDeprecatedCustom: Int @deprecated(reason: "Unused anymore")
     }
     """
-    # Execute directive
-
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema)
 
     @Resolver("Query.fieldNormal", schema=ttftt.schema)
-    async def func_field_resolver(parent, arguments, request_ctx, info):
+    async def func_field_resolver4(parent, arguments, request_ctx, info):
         return 42
 
     @Resolver("Query.fieldDeprecatedDefault", schema=ttftt.schema)
-    async def func_field_resolver(parent, arguments, request_ctx, info):
+    async def func_field_resolver5(parent, arguments, request_ctx, info):
         return 42
 
     @Resolver("Query.fieldDeprecatedCustom", schema=ttftt.schema)
-    async def func_field_resolver(parent, arguments, request_ctx, info):
+    async def func_field_resolver6(parent, arguments, request_ctx, info):
         return 42
 
-    @Directive("deprecated", schema=ttftt.schema)
-    class Deprecated:
-        @staticmethod
-        def on_build(schema: GraphQLSchema):
-            for name, type in schema.types.items():
-                try:
-                    type.isDeprecated = False
-                    type.deprecationReason = ""
-                except AttributeError:
-                    pass
+    assert ttftt.schema.find_directive("deprecated") is not None
+    assert ttftt.schema.find_directive("deprecated").implementation is not None
 
-            async def is_deprecated_resolver(parent, arguments, context, info: Info):
-                try:
-                    return info.schema_field.isDeprecated
-                except AttributeError:
-                    return None
+    result = await ttftt.execute(
+        """
+    query Test{
+        fieldNormal
+        fieldDeprecatedDefault
+        fieldDeprecatedCustom
+    }
+    """
+    )
 
-            async def deprecation_reason_resolver(parent, arguments, context, info: Info):
-                try:
-                    return info.schema_field.deprecationReason
-                except AttributeError:
-                    return None
+    assert {
+        "data": {
+            "fieldNormal": 42,
+            "fieldDeprecatedDefault": 42,
+            "fieldDeprecatedCustom": 42,
+        }
+    } == result
 
-            schema.types["__Field"].fields["isDeprecated"] = GraphQLField(
-                name="isDeprecated",
-                gql_type=schema.types["Boolean"],
-                arguments={},
-                description="Description",
-                resolver=is_deprecated_resolver,
-            )
-            schema.types["__Field"].fields["deprecationReason"] = GraphQLField(
-                name="deprecationReason",
-                gql_type=schema.types["String"],
-                arguments={},
-                description="Description",
-                resolver=deprecation_reason_resolver,
-            )
 
-        @staticmethod
-        async def on_execute(resolver, parent, arguments, request_ctx, info):
-            # Directives should be able to:
-            # - change result (post-process) = CHECK.
-            # - change parent value (pre-process ? = CHECK.
-            # - remove field from result (pre-execution filter ?) => None + no error ?
-            # - add field to result (pre-execution filter ?) => Return value ?
-            # - it can do all this on the default resolver too !
-            # to modify the introspection, it should modify the introspection types & resolvers.
-            return await resolver(parent, arguments, request_ctx, info)
+@pytest.mark.asyncio
+async def test_tartiflette_deprecated_introspection_directive():
+    schema = """
+    type Query {
+        fieldNormal: Int
+        fieldDeprecatedDefault: Int @deprecated
+        fieldDeprecatedCustom: Int @deprecated(reason: "Unused anymore")
+    }
+    """
+    ttftt = Engine(schema)
 
-    ttftt.schema.bake()
-    assert len(ttftt.schema.directives) == 1
-    assert ttftt.schema.directives["deprecated"] is not None
-    assert ttftt.schema.directives["deprecated"].implementation is not None
+    @Resolver("Query.fieldNormal", schema=ttftt.schema)
+    async def func_field_resolver4(parent, arguments, request_ctx, info):
+        return 42
 
-    result = await ttftt.execute("""
+    @Resolver("Query.fieldDeprecatedDefault", schema=ttftt.schema)
+    async def func_field_resolver5(parent, arguments, request_ctx, info):
+        return 42
+
+    @Resolver("Query.fieldDeprecatedCustom", schema=ttftt.schema)
+    async def func_field_resolver6(parent, arguments, request_ctx, info):
+        return 42
+
+    assert ttftt.schema.find_directive("deprecated") is not None
+    assert ttftt.schema.find_directive("deprecated").implementation is not None
+
+    result = await ttftt.execute(
+        """
     query Test{
         __type(name: "Query") {
             fields {
@@ -101,18 +87,172 @@ async def test_tartiflette_directive_declaration():
             }
         }
     }
-    """)
+    """
+    )
 
-    assert {"data": {"__type": {
-        "fields": [
-            {"name": "fieldNormal",
-             "isDeprecated": False,
-             "deprecationReason": "No longer supported"},
-            {"name": "fieldDeprecatedDefault",
-             "isDeprecated": True,
-             "deprecationReason": "No longer supported"},
-            {"name": "fieldDeprecatedCustom",
-             "isDeprecated": True,
-             "deprecationReason": "Unused anymore"}
-        ],
-    }}} == result
+    assert {
+        "data": {
+            "__type": {
+                "fields": [
+                    {
+                        "name": "fieldNormal",
+                        "isDeprecated": False,
+                        "deprecationReason": None,
+                    },
+                    {
+                        "isDeprecated": True,
+                        "deprecationReason": "No longer supported",
+                        "name": "fieldDeprecatedDefault",
+                    },
+                    {
+                        "name": "fieldDeprecatedCustom",
+                        "isDeprecated": True,
+                        "deprecationReason": "Unused anymore",
+                    },
+                    {
+                        "deprecationReason": None,
+                        "name": "__schema",
+                        "isDeprecated": False,
+                    },
+                    {
+                        "deprecationReason": None,
+                        "name": "__type",
+                        "isDeprecated": False,
+                    },
+                    {
+                        "name": "__typename",
+                        "isDeprecated": False,
+                        "deprecationReason": None,
+                    },
+                ]
+            }
+        }
+    } == result
+
+
+@pytest.mark.asyncio
+async def test_tartiflette_directive_declaration():
+    schema_sdl = """
+    directive @lol on FIELD_DEFINITION
+    directive @lol2( value: Int ) on FIELD_DEFINITION
+
+    type Query {
+        fieldLoled1: Int @lol
+        fieldLoled2: Int @lol @deprecated @lol2(value:2)
+        fieldLoled3: Int @deprecated @lol @lol2(value:6)
+    }
+    """
+    # Execute directive
+
+    ttftt = Engine(schema_sdl)
+
+    @Directive("lol2", schema=ttftt.schema)
+    class Loled2(CommonDirective):
+        @staticmethod
+        async def on_execution(_directive_args, func, pr, args, rctx, info):
+            return (await func(pr, args, rctx, info)) + int(
+                _directive_args["value"]
+            )
+
+    @Resolver("Query.fieldLoled1", schema=ttftt.schema)
+    async def func_field_resolver4(_parent, _arguments, _request_ctx, _info):
+        return 42
+
+    @Resolver("Query.fieldLoled2", schema=ttftt.schema)
+    async def func_field_resolver5(_parent, _arguments, _request_ctx, _info):
+        return 42
+
+    @Resolver("Query.fieldLoled3", schema=ttftt.schema)
+    async def func_field_resolver6(_parent, _arguments, _request_ctx, _info):
+        return 42
+
+    @Directive("lol", schema=ttftt.schema)
+    class Loled(CommonDirective):
+        @staticmethod
+        async def on_execution(_directive_arg, func, pr, args, rctx, info):
+            return (await func(pr, args, rctx, info)) + 1
+
+    assert ttftt.schema.find_directive("lol") is not None
+    assert ttftt.schema.find_directive("lol").implementation is not None
+
+    result = await ttftt.execute(
+        """
+    query Test{
+        fieldLoled1
+        fieldLoled2
+        fieldLoled3
+    }
+    """
+    )
+
+    assert {
+        "data": {"fieldLoled1": 43, "fieldLoled2": 45, "fieldLoled3": 49}
+    } == result
+
+
+@pytest.mark.asyncio
+async def test_tartiflette_non_introspectable_execution_directive():
+    schema = """
+    type Query {
+        fieldNormal: Int
+        fieldHiddendToIntrospactable: Int @non_introspectable
+    }
+    """
+    ttftt = Engine(schema)
+
+    @Resolver("Query.fieldNormal", schema=ttftt.schema)
+    async def func_field_resolver4(parent, arguments, request_ctx, info):
+        return 42
+
+    @Resolver("Query.fieldHiddendToIntrospactable", schema=ttftt.schema)
+    async def func_field_resolver5(parent, arguments, request_ctx, info):
+        return 42
+
+    assert ttftt.schema.find_directive("non_introspectable") is not None
+    assert (
+        ttftt.schema.find_directive("non_introspectable").implementation
+        is not None
+    )
+
+    result = await ttftt.execute(
+        """
+    query Test{
+        __type(name: "Query") {
+            fields {
+                name
+                isDeprecated
+                deprecationReason
+            }
+        }
+    }
+    """
+    )
+
+    assert {
+        "data": {
+            "__type": {
+                "fields": [
+                    {
+                        "name": "fieldNormal",
+                        "isDeprecated": False,
+                        "deprecationReason": None,
+                    },
+                    {
+                        "deprecationReason": None,
+                        "name": "__schema",
+                        "isDeprecated": False,
+                    },
+                    {
+                        "deprecationReason": None,
+                        "name": "__type",
+                        "isDeprecated": False,
+                    },
+                    {
+                        "name": "__typename",
+                        "isDeprecated": False,
+                        "deprecationReason": None,
+                    },
+                ]
+            }
+        }
+    } == result

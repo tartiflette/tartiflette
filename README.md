@@ -69,7 +69,7 @@ Here are the subjects we are working on:
 
 ### Continuous integration
 
-* [ ] Run Code Quality checks + Tests
+* [x] Run Code Quality checks + Tests
 * [x] Automatize the integration of `libgraphqlparser`
 * [ ] Build & Publish artifact to pypi
 

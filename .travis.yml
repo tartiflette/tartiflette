@@ -15,10 +15,10 @@ addons:
 # https://github.com/dailymotion/gazr
 # make style | test-unit | test-functional | init
 script:
-  - true
-  # - make style
-  # - make test-unit
-  # - make test-functional
+  - make test-unit
+  - make test-functional
+  - make style
+  # - make complexity
 cache: pip
 install:
   - make init

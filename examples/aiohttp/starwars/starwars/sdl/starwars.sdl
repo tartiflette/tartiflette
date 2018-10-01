@@ -4,14 +4,14 @@ interface Character {
   id: String!
   name: String
   friends: [Character]
-  appearsIn: [Episode]
+  appearsIn: [String]
 }
 
 type Human implements Character {
   id: String!
   name: String
   friends: [Character]
-  appearsIn: [Episode]
+  appearsIn: [String]
   homePlanet: String
 }
 
@@ -19,7 +19,7 @@ type Droid implements Character {
   id: String!
   name: String
   friends: [Character]
-  appearsIn: [Episode]
+  appearsIn: [String]
   primaryFunction: String
 }
 
@@ -28,3 +28,6 @@ type Query {
   human(id: String!): Human
   droid(id: String!): Droid
 }
+
+
+# appearsIn to list string waiting for FullEnum Support

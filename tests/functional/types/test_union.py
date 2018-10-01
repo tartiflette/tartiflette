@@ -2,11 +2,26 @@ import pytest
 
 from tartiflette import Resolver
 from tartiflette.executors.types import Info
-from tartiflette.tartiflette import Tartiflette
+from tartiflette.engine import Engine
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
-async def test_tartiflette_execute_union_type_output():
+@pytest.mark.parametrize(
+    "query,expected",
+    [
+        ("query Test{ test(choose: 1)}", {"data": {"test": "Value1"}}),
+        ("query Test{ test(choose: 2)}", {"data": {"test": {"field": 42}}}),
+        (
+            "query Test{ test(choose: 3)}",
+            {
+                "data": {"test": None},
+                "errors": ["... add the true error here..."],
+            },
+        ),
+    ],
+)
+async def test_tartiflette_execute_union_type_output(query, expected):
     schema_sdl = """
     enum Test {
         Value1
@@ -17,7 +32,7 @@ async def test_tartiflette_execute_union_type_output():
     type SomethingElse {
         field: Int!
     }
-    
+
     union Mixed = Test | SomethingElse
 
     type Query {
@@ -25,7 +40,7 @@ async def test_tartiflette_execute_union_type_output():
     }
     """
 
-    ttftt = Tartiflette(schema_sdl)
+    ttftt = Engine(schema_sdl)
 
     @Resolver("Query.test", schema=ttftt.schema)
     async def func_field_resolver(parent, arguments, request_ctx, info: Info):
@@ -38,34 +53,6 @@ async def test_tartiflette_execute_union_type_output():
         else:
             return None
 
-    ttftt.schema.bake()
-    result = await ttftt.execute("""
-    query Test{
-        test(choose: 1)
-    }
-    """)
+    result = await ttftt.execute(query)
 
-    assert {"data":{"test":"Value1"}} == result
-
-    # TODO: Fix this.
-    # result = await ttftt.execute("""
-    # query Test{
-    #     test(choose: 2)
-    # }
-    # """)
-    #
-    # # TODO: This is not possible: unions can only work on same type unions
-    # assert {"data":{"test":{"field":42}}} == result
-
-    # TODO: Fix this test. See comment below.
-    # result = await ttftt.execute("""
-    # query Test{
-    #     test(choose: 3)
-    # }
-    # """)
-    #
-    # # This should fail but succeeds because we don't check fields on object types.
-    # # We currently use the resolver logic to validate a field exists that's
-    # # why this works and doesn't fail. See the GraphQLObjectType coerce_value
-    # # to understand.
-    # assert {"data":{"test": None},"errors":["... add the true error here..."]} == result
+    assert expected == result

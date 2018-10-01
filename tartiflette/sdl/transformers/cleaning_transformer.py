@@ -4,6 +4,8 @@ from lark.visitors import Transformer_InPlace
 
 from tartiflette.sdl.transformers.helpers import find_token_in_ast
 
+# pylint: disable=no-self-use
+
 
 @v_args(tree=True)
 class CleaningTransformer(Transformer_InPlace):
@@ -104,7 +106,7 @@ class CleaningTransformer(Transformer_InPlace):
         return tree
 
     def true_value(self, tree: Tree) -> Tree:
-        token = find_token_in_ast(tree.children, ['TRUE'])
+        token = find_token_in_ast(tree.children, ["TRUE"])
         newtoken = Token(
             token.type, True, token.pos_in_stream, token.line, token.column
         )
@@ -112,7 +114,7 @@ class CleaningTransformer(Transformer_InPlace):
         return tree
 
     def false_value(self, tree: Tree) -> Tree:
-        token = find_token_in_ast(tree.children, ['FALSE'])
+        token = find_token_in_ast(tree.children, ["FALSE"])
         newtoken = Token(
             token.type, False, token.pos_in_stream, token.line, token.column
         )
@@ -120,7 +122,7 @@ class CleaningTransformer(Transformer_InPlace):
         return tree
 
     def null_value(self, tree: Tree) -> Tree:
-        token = find_token_in_ast(tree.children, ['NULL'])
+        token = find_token_in_ast(tree.children, ["NULL"])
         newtoken = Token(
             token.type, None, token.pos_in_stream, token.line, token.column
         )

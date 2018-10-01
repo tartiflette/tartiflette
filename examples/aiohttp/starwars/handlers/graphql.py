@@ -56,9 +56,6 @@ async def _handle_query(req, query, query_vars, query_name):
     else:
         data = query_result
 
-        if "errors" in query_result:
-            data["errors"] = _format_errors(query_result.errors)
-
     resp = prepare_response(data)
 
     resp.log = {

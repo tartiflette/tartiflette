@@ -2,7 +2,7 @@
 data_file = reports/.coverage
 omit =
     tests/*
-    *__init__.py
+    __init__.py
 
 [report]
     show_missing = True
