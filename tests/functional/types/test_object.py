@@ -8,7 +8,7 @@ from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_object_type_output():
+async def test_tartiflette_execute_object_type_output(clean_registry):
     schema_sdl = """
     type Test {
         field1: String
@@ -19,11 +19,11 @@ async def test_tartiflette_execute_object_type_output():
     }
     """
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("Query.objectTest", schema=ttftt.schema)
+    @Resolver("Query.objectTest")
     async def func_field_resolver(*args, **kwargs):
         return {"field1": "Test"}
+
+    ttftt = Engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -64,7 +64,7 @@ async def test_tartiflette_execute_object_type_output():
     ],
 )
 async def test_tartiflette_execute_object_type_advanced(
-    input_sdl, resolver_response, expected
+    input_sdl, resolver_response, expected, clean_registry
 ):
     schema_sdl = """
     type Test {{
@@ -78,11 +78,11 @@ async def test_tartiflette_execute_object_type_advanced(
         input_sdl
     )
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("Query.testField", schema=ttftt.schema)
+    @Resolver("Query.testField")
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
+
+    ttftt = Engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -98,7 +98,7 @@ async def test_tartiflette_execute_object_type_advanced(
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_object_type_unknown_field():
+async def test_tartiflette_execute_object_type_unknown_field(clean_registry):
     schema_sdl = """
     type Post {
         content: Content
@@ -114,27 +114,27 @@ async def test_tartiflette_execute_object_type_unknown_field():
     }
     """
 
-    ttftt = Engine(schema_sdl)
-
     mock_call = Mock()
 
-    @Resolver("Content.title", schema=ttftt.schema)
+    @Resolver("Content.title")
     async def func_field_resolver(*args, **kwargs):
         mock_call()
         return "Test"
 
-    @Resolver("Post.content", schema=ttftt.schema)
+    @Resolver("Post.content")
     async def func_field_resolver(*args, **kwargs):
         return {"title": "Stuff"}
 
     Post = namedtuple("Post", ["content", "meta_creator"])
     Content = namedtuple("Content", ["title"])
 
-    @Resolver("Query.posts", schema=ttftt.schema)
+    @Resolver("Query.posts")
     async def func_field_resolver(*args, **kwargs):
         return [
             Post(content=Content(title="Test"), meta_creator="Dailymotion")
         ]
+
+    ttftt = Engine(schema_sdl)
 
     result = await ttftt.execute(
         """

@@ -9,7 +9,9 @@ _curr_path = os.path.dirname(os.path.abspath(__file__))
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_engine_initialization_with_sdl_file_list():
+async def test_tartiflette_engine_initialization_with_sdl_file_list(
+    clean_registry
+):
     engine = Engine(
         [
             _curr_path + "/data/splitted_sdl/author.sdl",
@@ -19,43 +21,49 @@ async def test_tartiflette_engine_initialization_with_sdl_file_list():
         ]
     )
 
-    assert engine.schema.find_type("Author") is not None
-    assert engine.schema.find_type("Blog") is not None
-    assert engine.schema.find_type("Post") is not None
-    assert engine.schema.find_type("Query").find_field("blogs") is not None
+    assert clean_registry.find_schema().find_type("Author") is not None
+    assert clean_registry.find_schema().find_type("Blog") is not None
+    assert clean_registry.find_schema().find_type("Post") is not None
+    assert (
+        clean_registry.find_schema().find_type("Query").find_field("blogs")
+        is not None
+    )
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_engine_initialization_with_sdl_folder():
+async def test_tartiflette_engine_initialization_with_sdl_folder(
+    clean_registry
+):
     engine = Engine(_curr_path + "/data/splitted_sdl")
 
-    assert engine.schema.find_type("Author") is not None
-    assert engine.schema.find_type("Blog") is not None
-    assert engine.schema.find_type("Post") is not None
-    assert engine.schema.find_type("Query").find_field("blogs") is not None
+    assert clean_registry.find_schema().find_type("Author") is not None
+    assert clean_registry.find_schema().find_type("Blog") is not None
+    assert clean_registry.find_schema().find_type("Post") is not None
+    assert (
+        clean_registry.find_schema().find_type("Query").find_field("blogs")
+        is not None
+    )
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_engine_initialization_with_single_sdl_file():
+async def test_tartiflette_engine_initialization_with_single_sdl_file(
+    clean_registry
+):
     engine = Engine(_curr_path + "/data/simple_full_sdl/simple_full.sdl")
 
-    assert engine.schema.find_type("Author") is not None
-    assert engine.schema.find_type("Blog") is not None
-    assert engine.schema.find_type("Post") is not None
-    assert engine.schema.find_type("Query").find_field("blogs") is not None
+    assert clean_registry.find_schema().find_type("Author") is not None
+    assert clean_registry.find_schema().find_type("Blog") is not None
+    assert clean_registry.find_schema().find_type("Post") is not None
+    assert (
+        clean_registry.find_schema().find_type("Query").find_field("blogs")
+        is not None
+    )
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_engine_initialization_by_passing_schema():
-    schema = GraphQLSchema()
-    schema._gql_types["test"] = "test"
-    engine = Engine(schema)
-
-    assert engine.schema.find_type("test") == "test"
-
-
-@pytest.mark.asyncio
-async def test_tartiflette_engine_initialization_with_string_schema():
+async def test_tartiflette_engine_initialization_with_string_schema(
+    clean_registry
+):
     engine = Engine(
         """
     type Post {
@@ -88,7 +96,10 @@ async def test_tartiflette_engine_initialization_with_string_schema():
     """
     )
 
-    assert engine.schema.find_type("Author") is not None
-    assert engine.schema.find_type("Blog") is not None
-    assert engine.schema.find_type("Post") is not None
-    assert engine.schema.find_type("Query").find_field("blogs") is not None
+    assert clean_registry.find_schema().find_type("Author") is not None
+    assert clean_registry.find_schema().find_type("Blog") is not None
+    assert clean_registry.find_schema().find_type("Post") is not None
+    assert (
+        clean_registry.find_schema().find_type("Query").find_field("blogs")
+        is not None
+    )

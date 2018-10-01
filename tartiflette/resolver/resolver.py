@@ -1,8 +1,8 @@
 from inspect import iscoroutinefunction
-from typing import Callable, Optional
+from typing import Callable
 
-from tartiflette.schema import DEFAULT_GRAPHQL_SCHEMA, GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
+from tartiflette.schema.registry import SchemaRegistry
 
 
 class Resolver:
@@ -23,17 +23,32 @@ class Resolver:
             return 42
     """
 
-    def __init__(self, name: str, schema: Optional[GraphQLSchema] = None):
-        self.schema = schema if schema else DEFAULT_GRAPHQL_SCHEMA
-        self.field = self.schema.get_field_by_name(name=name)
+    def __init__(self, name: str, schema_name: str = "default"):
+        self._name = name
+        self._implementation = None
+        self._schema_name = schema_name
 
-    def __call__(self, resolver: Callable, *args, **kwargs):
-        if not iscoroutinefunction(resolver):
-            raise NonAwaitableResolver(
-                "The resolver `{}` given for the field `{}` "
-                "is not awaitable.".format(repr(resolver), self.field.name)
+    def bake(self, schema):
+        if not self._implementation:
+            raise Exception("No implementation given")
+
+        try:
+            field = schema.get_field_by_name(self._name)
+            field.resolver.update_func(self._implementation)
+
+        except KeyError:
+            raise UnknownDirectiveDefinition(
+                "Unknow Directive Definition %s" % self._name
             )
 
-        self.field.resolver.update_func(resolver)
+    def __call__(self, resolver: Callable):
+        if not iscoroutinefunction(resolver):
+            raise NonAwaitableResolver(
+                "The resolver `{}` given is not awaitable.".format(
+                    repr(resolver)
+                )
+            )
 
-        return self.field.resolver
+        SchemaRegistry.register_resolver(self._schema_name, self)
+        self._implementation = resolver
+        return resolver

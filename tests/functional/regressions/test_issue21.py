@@ -65,11 +65,17 @@ GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
         ),
     ],
 )
-async def test_issue21_okayquery(query, expected, typee, varis):
+async def test_issue21_okayquery(
+    query, expected, typee, varis, clean_registry
+):
     from tartiflette.engine import Engine
 
+    @Resolver("Query.a")
+    async def a_resolver(_, arguments, __, info: Info):
+        return {"iam": info.query_field.name, "args": arguments}
+
     ttftt = Engine(
-        schema="""
+        """
     type Args{
         xid: %s
     }
@@ -85,10 +91,6 @@ async def test_issue21_okayquery(query, expected, typee, varis):
     """
         % typee
     )
-
-    @Resolver("Query.a", schema=ttftt.schema)
-    async def a_resolver(_, arguments, __, info: Info):
-        return {"iam": info.query_field.name, "args": arguments}
 
     results = await ttftt.execute(query, context={}, variables=varis)
 
@@ -140,13 +142,15 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
         ),
     ],
 )
-async def test_issue21_exceptquery(query, expected, varis):
+async def test_issue21_exceptquery(query, expected, varis, clean_registry):
     from tartiflette.engine import Engine
 
-    from tartiflette.engine import Engine
+    @Resolver("Query.a")
+    async def a_resolver(_, arguments, __, info: Info):
+        return {"iam": info.query_field.name, "args": arguments}
 
     ttftt = Engine(
-        schema="""
+        """
     type Args{
         xid: Int
     }
@@ -161,10 +165,6 @@ async def test_issue21_exceptquery(query, expected, varis):
     }
     """
     )
-
-    @Resolver("Query.a", schema=ttftt.schema)
-    async def a_resolver(_, arguments, __, info: Info):
-        return {"iam": info.query_field.name, "args": arguments}
 
     with pytest.raises(expected):
         await ttftt.execute(query, context={}, variables=varis)

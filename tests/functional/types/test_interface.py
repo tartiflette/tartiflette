@@ -5,7 +5,7 @@ from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_interface_type_output():
+async def test_tartiflette_execute_interface_type_output(clean_registry):
     schema_sdl = """
     type Obj1 implements Iface {
         field1: String
@@ -26,28 +26,20 @@ async def test_tartiflette_execute_interface_type_output():
     }
     """
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("Query.test", schema=ttftt.schema)
+    @Resolver("Query.test")
     async def func_field_resolver(parent, arguments, request_ctx, info):
         return {"field2": 42}
 
+    ttftt = Engine(schema_sdl)
 
-    result = await ttftt.execute("""
-    query Test{
-        test
-    }
-    """)
-
-    # TODO: This should return an error (there is no sub-field selection)
-    # assert {"data":None,"errors":["...the test field should select sub-fields error..."]} == result
-
-    result = await ttftt.execute("""
+    result = await ttftt.execute(
+        """
     query Test{
         test {
             field2
         }
     }
-    """)
+    """
+    )
 
-    assert {"data":{"test":{"field2":42}}} == result
+    assert {"data": {"test": {"field2": 42}}} == result

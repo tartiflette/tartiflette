@@ -3,7 +3,6 @@ from collections import namedtuple
 from lark import Tree, v_args
 from lark.visitors import Transformer_InPlace
 
-from tartiflette.schema import DEFAULT_GRAPHQL_SCHEMA
 from tartiflette.sdl.ast_types import String
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.directive import GraphQLDirective
@@ -42,9 +41,9 @@ class SchemaTransformer(Transformer_InPlace):
     # TODO: Add type extensions
     # TODO: Cleanup errors & custom type (format, line number etc.).
 
-    def __init__(self, sdl: str, schema=None):
+    def __init__(self, sdl: str, schema):
         self.sdl = sdl
-        self._schema = schema if schema else DEFAULT_GRAPHQL_SCHEMA
+        self._schema = schema
 
     def document(self, tree: Tree):
         return tree.children

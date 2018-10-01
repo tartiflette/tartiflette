@@ -2,7 +2,7 @@ from collections import OrderedDict
 from unittest.mock import Mock
 
 
-def test_build_schema(monkeypatch, basic_schema):
+def test_build_schema(monkeypatch, clean_registry):
     from tartiflette.resolver.factory import ResolverExecutorFactory
 
     resolver_excutor = Mock()
@@ -12,8 +12,7 @@ def test_build_schema(monkeypatch, basic_schema):
         Mock(return_value=resolver_excutor),
     )
 
-    from tartiflette.sdl.builder import build_graphql_schema_from_sdl
-    from tartiflette.schema import GraphQLSchema, DEFAULT_GRAPHQL_SCHEMA
+    from tartiflette.schema.bakery import SchemaBakery
     from tartiflette.types.argument import GraphQLArgument
     from tartiflette.types.field import GraphQLField
     from tartiflette.types.input_object import GraphQLInputObjectType
@@ -21,7 +20,6 @@ def test_build_schema(monkeypatch, basic_schema):
     from tartiflette.types.list import GraphQLList
     from tartiflette.types.non_null import GraphQLNonNull
     from tartiflette.types.object import GraphQLObjectType
-    from tartiflette.types.scalar import GraphQLScalarType
     from tartiflette.types.union import GraphQLUnionType
     from tartiflette.engine import Engine
 
@@ -62,12 +60,10 @@ def test_build_schema(monkeypatch, basic_schema):
     }
     """
 
-    generated_schema = build_graphql_schema_from_sdl(
-        schema_sdl, schema=basic_schema
-    )
-
-    expected_schema = Engine("    ", bake_later=True).schema
-    expected_schema.inject_builtin_custom_scalars()
+    clean_registry.register_sdls("G", schema_sdl)
+    clean_registry.register_sdls("E", "")
+    generated_schema = SchemaBakery._preheat("G")
+    expected_schema = SchemaBakery._preheat("E")
     expected_schema.query_type = "RootQuery"
     expected_schema.mutation_type = "RootMutation"
     expected_schema.subscription_type = "RootSubscription"
@@ -173,6 +169,5 @@ def test_build_schema(monkeypatch, basic_schema):
 
     assert 5 < len(generated_schema._gql_types)
     assert len(expected_schema._gql_types) == len(generated_schema._gql_types)
-    assert 0 == len(DEFAULT_GRAPHQL_SCHEMA._gql_types)
 
     monkeypatch.undo()

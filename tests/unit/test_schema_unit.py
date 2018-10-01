@@ -1,19 +1,19 @@
 import pytest
 
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
-from tartiflette.schema import GraphQLSchema
+from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
     UnknownSchemaFieldResolver,
 )
 
 
-def test_schema_object_get_field_name(basic_schema):
+def test_schema_object_get_field_name(clean_registry):
     schema_sdl = """
-    schema @enable_cache {
+    schema {
         query: RootQuery
-        mutation: RootMutation
-        subscription: RootSubscription
+        mutation: Mutation
+        subscription: Subscription
     }
 
     union Group = Foo | Bar | Baz
@@ -42,7 +42,7 @@ def test_schema_object_get_field_name(basic_schema):
     \"\"\"
     This is a docstring for the Test Object Type.
     \"\"\"
-    type Test implements Unknown & Empty {
+    type Test {
         \"\"\"
         This is a field description :D
         \"\"\"
@@ -53,9 +53,8 @@ def test_schema_object_get_field_name(basic_schema):
     }
     """
 
-    generated_schema = build_graphql_schema_from_sdl(
-        schema_sdl, schema=basic_schema
-    )
+    clean_registry.register_sdls("A", schema_sdl)
+    generated_schema = SchemaBakery._preheat("A")
 
     with pytest.raises(ValueError):
         generated_schema.get_field_by_name("Invalid.Field.name")
@@ -158,11 +157,11 @@ def test_schema_object_get_field_name(basic_schema):
     ],
 )
 def test_schema_validate_named_types(
-    full_sdl, expected_error, expected_value, basic_schema
+    full_sdl, expected_error, expected_value, clean_registry
 ):
-    generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=basic_schema
-    )
+
+    clean_registry.register_sdls("A", full_sdl)
+    generated_schema = SchemaBakery._preheat("A")
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -325,11 +324,10 @@ def test_schema_validate_named_types(
     ],
 )
 def test_schema_validate_object_follow_interfaces(
-    full_sdl, expected_error, expected_value, basic_schema
+    full_sdl, expected_error, expected_value, clean_registry
 ):
-    generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=basic_schema
-    )
+    clean_registry.register_sdls("A", full_sdl)
+    generated_schema = SchemaBakery._preheat("A")
 
     try:
         generated_schema.find_type("Brand").coerce_output = lambda x: x
@@ -451,11 +449,10 @@ def test_schema_validate_object_follow_interfaces(
     ],
 )
 def test_schema_validate_root_types_exist(
-    full_sdl, expected_error, expected_value, basic_schema
+    full_sdl, expected_error, expected_value, clean_registry
 ):
-    generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=basic_schema
-    )
+    clean_registry.register_sdls("a", full_sdl)
+    generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -488,11 +485,10 @@ def test_schema_validate_root_types_exist(
     ],
 )
 def test_schema_validate_non_empty_object(
-    full_sdl, expected_error, expected_value, basic_schema
+    full_sdl, expected_error, expected_value, clean_registry
 ):
-    generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=basic_schema
-    )
+    clean_registry.register_sdls("a", full_sdl)
+    generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -539,11 +535,10 @@ def test_schema_validate_non_empty_object(
     ],
 )
 def test_schema_validate_union_is_acceptable(
-    full_sdl, expected_error, expected_value, basic_schema
+    full_sdl, expected_error, expected_value, clean_registry
 ):
-    generated_schema = build_graphql_schema_from_sdl(
-        full_sdl, schema=basic_schema
-    )
+    clean_registry.register_sdls("a", full_sdl)
+    generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -552,6 +547,13 @@ def test_schema_validate_union_is_acceptable(
         assert generated_schema.validate() == expected_value
 
 
-def test_schema_bake_schema():
-    # TODO
-    pass
+def test_schema_bake_schema(clean_registry):
+    clean_registry.register_sdls(
+        "a",
+        """
+        type Query {
+            lol: Int
+        }
+    """,
+    )
+    assert SchemaBakery.bake("a") is not None

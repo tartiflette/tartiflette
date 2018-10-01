@@ -1,5 +1,6 @@
 import os
 from tartiflette import Engine
+import starwars.resolvers  # so your resolver will be defined
 
 
 def _starwars_schema():
@@ -8,6 +9,6 @@ def _starwars_schema():
         return sdl_file.read()
 
 
-STARWARSTIFLETTE = Engine(schema=_starwars_schema())
+STARWARSTIFLETTE = Engine(_starwars_schema())
 
 __all__ = ["STARWARSTIFLETTE"]

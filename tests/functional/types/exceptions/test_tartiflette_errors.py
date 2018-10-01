@@ -7,7 +7,7 @@ from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_nested_error():
+async def test_tartiflette_execute_nested_error(clean_registry):
     schema_sdl = """
 
     type Obj {
@@ -23,9 +23,7 @@ async def test_tartiflette_execute_nested_error():
     }
     """
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("Nested.lastUpdate", schema=ttftt.schema)
+    @Resolver("Nested.lastUpdate")
     async def func_field_resolver(*args, **kwargs):
         return [
             datetime(
@@ -33,6 +31,8 @@ async def test_tartiflette_execute_nested_error():
             ).timestamp(),
             None,
         ]
+
+    ttftt = Engine(schema_sdl)
 
     result = await ttftt.execute(
         """
