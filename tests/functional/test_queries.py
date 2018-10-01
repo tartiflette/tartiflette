@@ -11,7 +11,7 @@ from tartiflette.types.location import Location
 
 
 @pytest.mark.asyncio
-async def test_full_query_execute():
+async def test_full_query_execute(clean_registry):
     # TODO: Add Union and Interface and NonNull, All scalars Fields.
     schema_sdl = """
     enum BookCategory {
@@ -44,9 +44,6 @@ async def test_full_query_execute():
     """
 
     # Support of enum is broken, TODO, find why
-
-    ttftt = Engine(schema_sdl)
-
     Library = namedtuple("Library", "books,authors")
     Author = namedtuple("Author", "name")
     Book = namedtuple("Book", "title,author,price,category")
@@ -88,11 +85,11 @@ async def test_full_query_execute():
         authors=[AuthorJaneAustin, AuthorRudyardKipling],
     )
 
-    @Resolver("Query.libraries", schema=ttftt.schema)
-    async def func_field_libraries_resolver(
-        parent, arguments, request_ctx, info: Info
-    ):
+    @Resolver("Query.libraries")
+    async def func_field_libraries_resolver(*_args, **_kwargs):
         return [LibraryOne, LibraryTwo]
+
+    ttftt = Engine(schema_sdl)
 
     result = await ttftt.execute(
         """

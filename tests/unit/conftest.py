@@ -22,10 +22,11 @@ def mocked_resolver_factory(monkeypatch, fixture_mocked_get_resolver_executor):
     monkeypatch.undo()
 
 
-@pytest.fixture()
-def basic_schema():
-    from tartiflette.engine import Engine
+from tartiflette.schema.registry import SchemaRegistry
 
-    a_tartiflette = Engine("", bake_later=True)
-    a_tartiflette.schema.inject_builtin_custom_scalars()
-    return a_tartiflette.schema
+
+@pytest.yield_fixture
+def clean_registry():
+    SchemaRegistry._schemas = {}
+    yield SchemaRegistry
+    SchemaRegistry._schemas = {}

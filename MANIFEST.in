@@ -9,7 +9,7 @@ recursive-include libgraphqlparser/ *.sh
 recursive-include libgraphqlparser/ *.md
 recursive-include tartiflette/parser/cffi *.so
 recursive-include tartiflette/parser/cffi *.dylib
-recursive-include tartiflette/sdl/builtins *.sdl
+recursive-include tartiflette/schema/builtins *.sdl
 recursive-include libgraphqlparser/ast *.ast
 recursive-include libgraphqlparser/ast *.py
 recursive-include libgraphqlparser/cmake *.cmake

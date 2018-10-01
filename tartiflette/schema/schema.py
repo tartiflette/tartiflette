@@ -5,7 +5,6 @@ from tartiflette.introspection import (
     TYPENAME_ROOT_FIELD_DEFINITION,
     TYPE_ROOT_FIELD_DEFINITION,
 )
-from tartiflette.scalar import Scalar, CUSTOM_SCALARS
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType
 from tartiflette.types.exceptions.tartiflette import (
@@ -22,7 +21,6 @@ from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.type import GraphQLType
 from tartiflette.types.union import GraphQLUnionType
-from tartiflette.directive import Deprecated, Directive, NonIntrospectable
 
 
 class GraphQLSchema:
@@ -229,15 +227,14 @@ class GraphQLSchema:
 
         :return: None
         """
-        self.inject_builtin_custom_scalars()
-        self.inject_builtin_directives()
+
         self.inject_introspection()
+        self.prepare_custom_scalars()
+        self.prepare_directives()
+        self.initialize_directives()
         self.validate()
         # self.field_gql_types_to_real_types()
         # self.union_gql_types_to_real_types()
-        self.prepare_custom_scalars()
-        self.prepare_directives()
-        # self.initialize_directives() TODO make it work (on_build)
 
     def validate(self) -> bool:
         """
@@ -253,10 +250,7 @@ class GraphQLSchema:
             self._validate_schema_root_types_exist,
             self._validate_non_empty_object,
             self._validate_union_is_acceptable,
-            # self._validate_all_scalars_have_implementations,
-            # TODO will work when schema is baked after declaration using
-            # a schema registry and breaking the
-            # Decorator->schema instance dependance
+            self._validate_all_scalars_have_implementations,
             self._validate_enum_values_are_unique,
             # TODO: Validate Field: default value must be of given type
             # TODO: Check all objects have resolvers (at least in parent)
@@ -441,12 +435,6 @@ class GraphQLSchema:
             TYPENAME_ROOT_FIELD_DEFINITION
         )
 
-    def inject_builtin_directives(self):
-        depr = Directive(name="deprecated", schema=self)
-        depr(Deprecated)
-        non_intr = Directive(name="non_introspectable", schema=self)
-        non_intr(NonIntrospectable)
-
     def prepare_directives(self):
         for typee in self.types:
             try:
@@ -454,11 +442,6 @@ class GraphQLSchema:
                     field.resolver.apply_directives()
             except AttributeError:
                 pass
-
-    def inject_builtin_custom_scalars(self):
-        for name, scalarimplem in CUSTOM_SCALARS.items():
-            deco = Scalar(name, self)
-            deco(scalarimplem)
 
     def prepare_custom_scalars(self):
         for typee in self.types:
@@ -476,6 +459,3 @@ class GraphQLSchema:
                 raise MissingImplementation(
                     "directive `{}` is missing an implementation".format(name)
                 )
-
-
-DEFAULT_GRAPHQL_SCHEMA = GraphQLSchema()

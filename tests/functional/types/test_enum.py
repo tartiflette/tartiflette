@@ -5,7 +5,7 @@ from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_enum_type_output():
+async def test_tartiflette_execute_enum_type_output(clean_registry):
     schema_sdl = """
     enum Test {
         Value1
@@ -18,11 +18,11 @@ async def test_tartiflette_execute_enum_type_output():
     }
     """
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("Query.enumTest", schema=ttftt.schema)
+    @Resolver("Query.enumTest")
     async def func_field_resolver(*args, **kwargs):
         return "Value1"
+
+    ttftt = Engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -76,7 +76,7 @@ async def test_tartiflette_execute_enum_type_output():
     ],
 )
 async def test_tartiflette_execute_enum_type_advanced(
-    input_sdl, resolver_response, expected
+    input_sdl, resolver_response, expected, clean_registry
 ):
     schema_sdl = """
     enum Test {{
@@ -92,11 +92,11 @@ async def test_tartiflette_execute_enum_type_advanced(
         input_sdl
     )
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("Query.testField", schema=ttftt.schema)
+    @Resolver("Query.testField")
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
+
+    ttftt = Engine(schema_sdl)
 
     result = await ttftt.execute(
         """

@@ -7,3 +7,8 @@ from .common import (
     OnIntrospectionDirective,
     CommonDirective,
 )
+
+BUILT_IN_DIRECTIVES = {
+    "deprecated": Deprecated,
+    "non_introspectable": NonIntrospectable,
+}

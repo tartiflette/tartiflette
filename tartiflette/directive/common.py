@@ -1,6 +1,6 @@
 class OnBuildDirective:
     @staticmethod
-    def on_build(_schema, _directive_args):
+    def on_build(_schema):
         pass
 
 

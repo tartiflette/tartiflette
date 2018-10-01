@@ -7,7 +7,7 @@ from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_simple_coercion():
+async def test_tartiflette_execute_simple_coercion(clean_registry):
     schema_sdl = """
     enum EnumType {
         Val1
@@ -35,41 +35,39 @@ async def test_tartiflette_execute_simple_coercion():
     #    fieldAdvanced5: [[Obj!]!]!
     #    fieldAdvanced6: [[[Obj!]!]!]!  add this to the thing, but, maybe we could enforce relay here ?
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("Query.fieldScalar", schema=ttftt.schema)
+    @Resolver("Query.fieldScalar")
     async def func_field_scalar_resolver(*args, **kwargs):
         return "Test"
 
-    @Resolver("Query.fieldEnum", schema=ttftt.schema)
+    @Resolver("Query.fieldEnum")
     async def func_field_enum_resolver(*args, **kwargs):
         return "Val2"
 
-    @Resolver("Query.fieldObject", schema=ttftt.schema)
+    @Resolver("Query.fieldObject")
     async def func_field_object_resolver(*args, **kwargs):
         return {"data": "DataString"}
 
-    @Resolver("Query.fieldNotNull", schema=ttftt.schema)
+    @Resolver("Query.fieldNotNull")
     async def func_field_not_null_resolver(*args, **kwargs):
         return "Test"
 
-    @Resolver("Query.fieldList", schema=ttftt.schema)
+    @Resolver("Query.fieldList")
     async def func_field_list_resolver(*args, **kwargs):
         return ["A", "List", "Of", "Strings"]
 
-    @Resolver("Query.fieldAdvanced1", schema=ttftt.schema)
+    @Resolver("Query.fieldAdvanced1")
     async def func_field_advanced1_resolver(*args, **kwargs):
         return [{"data": "DataString1A"}, {"data": "DataString1B"}]
 
-    @Resolver("Query.fieldAdvanced2", schema=ttftt.schema)
+    @Resolver("Query.fieldAdvanced2")
     async def func_field_advanced2_resolver(*args, **kwargs):
         return [{"data": "DataString2A"}, {"data": "DataString2B"}]
 
-    @Resolver("Query.fieldAdvanced3", schema=ttftt.schema)
+    @Resolver("Query.fieldAdvanced3")
     async def func_field_advanced3_resolver(*args, **kwargs):
         return [{"data": "DataString3A"}, {"data": "DataString3B"}]
 
-    @Resolver("Query.fieldAdvanced4", schema=ttftt.schema)
+    @Resolver("Query.fieldAdvanced4")
     async def func_field_advanced4_resolver(*args, **kwargs):
         return [{"data": "DataString4A"}, {"data": "DataString4B"}]
 
@@ -92,6 +90,8 @@ async def test_tartiflette_execute_simple_coercion():
     #             [{"data": "DataString6G"}, {"data": "DataString6H"}],
     #         ],
     #     ]
+
+    ttftt = Engine(sdls=schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -147,7 +147,7 @@ async def test_tartiflette_execute_simple_coercion():
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_nested_coercion():
+async def test_tartiflette_execute_nested_coercion(clean_registry):
     schema_sdl = """
     type Book {
         title: String!
@@ -163,14 +163,14 @@ async def test_tartiflette_execute_nested_coercion():
     }
     """
 
-    ttftt = Engine(schema_sdl)
-
     Book = namedtuple("Book", "title,authors")
     Author = namedtuple("Author", "name")
 
-    @Resolver("Query.library", schema=ttftt.schema)
+    @Resolver("Query.library")
     async def func_field_library_resolver(*args, **kwargs):
         return [Book("A new beginning", [Author("Lemony Snicket")])]
+
+    ttftt = Engine(sdls=schema_sdl)
 
     result = await ttftt.execute(
         """

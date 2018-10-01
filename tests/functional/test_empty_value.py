@@ -176,7 +176,7 @@ from tartiflette.engine import Engine
     ],
 )
 async def test_tartiflette_execute_simple_empty_value(
-    sdl_type, returnval, expected
+    sdl_type, returnval, expected, clean_registry
 ):
     schema_sdl = (
         """
@@ -191,11 +191,11 @@ async def test_tartiflette_execute_simple_empty_value(
         % sdl_type
     )
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("Obj.field", schema=ttftt.schema)
+    @Resolver("Obj.field")
     async def func_field_scalar_resolver(*args, **kwargs):
         return returnval
+
+    ttftt = Engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -211,7 +211,7 @@ async def test_tartiflette_execute_simple_empty_value(
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_bubble_up_empty_value():
+async def test_tartiflette_execute_bubble_up_empty_value(clean_registry):
     schema_sdl = """
         type SubObj {
             fieldAgain: Int!
@@ -226,19 +226,19 @@ async def test_tartiflette_execute_bubble_up_empty_value():
         }
         """
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("SubObj.fieldAgain", schema=ttftt.schema)
+    @Resolver("SubObj.fieldAgain")
     async def func_field_scalar_resolver(*args, **kwargs):
         return None
 
-    @Resolver("Query.obj", schema=ttftt.schema)
+    @Resolver("Query.obj")
     async def func_field_obj_resolver(*args, **kwargs):
         return {}
 
-    @Resolver("Obj.field", schema=ttftt.schema)
+    @Resolver("Obj.field")
     async def func_field_field_resolver(*args, **kwargs):
         return {}
+
+    ttftt = Engine(schema_sdl)
 
     result = await ttftt.execute(
         """

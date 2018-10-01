@@ -5,7 +5,9 @@ from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_basic_type_introspection_output():
+async def test_tartiflette_execute_basic_type_introspection_output(
+    clean_registry
+):
     schema_sdl = """
     \"\"\"This is the description\"\"\"
     type Test {
@@ -158,7 +160,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_schema_introspection_output():
+async def test_tartiflette_execute_schema_introspection_output(clean_registry):
     schema_sdl = """
     schema {
         query: CustomRootQuery

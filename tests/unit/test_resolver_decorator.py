@@ -6,18 +6,17 @@ from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 from tartiflette.resolver import Resolver
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
+from tartiflette.schema.bakery import SchemaBakery
 
 
 @pytest.mark.asyncio
-async def test_resolver_decorator():
+async def test_resolver_decorator(clean_registry):
     schema_sdl = """
     schema {
         query: RootQuery
-        mutation: RootMutation
-        subscription: RootSubscription
+        mutation: Mutation
+        subscription: Subscription
     }
-
-    scalar Date
 
     union Group = Foo | Bar | Baz
 
@@ -45,7 +44,7 @@ async def test_resolver_decorator():
     \"\"\"
     This is a docstring for the Test Object Type.
     \"\"\"
-    type Test implements Unknown & Empty {
+    type Test {
         \"\"\"
         This is a field description :D
         \"\"\"
@@ -56,28 +55,28 @@ async def test_resolver_decorator():
     }
     """
 
-    generated_schema = build_graphql_schema_from_sdl(
-        schema_sdl, schema=GraphQLSchema()
-    )
+    clean_registry.register_sdls("default", schema_sdl)
 
     mock_one = Mock()
     mock_two = Mock()
 
-    @Resolver("Test.field", schema=generated_schema)
+    @Resolver("Test.field")
     async def func_field_resolver(*args, **kwargs):
         mock_one()
         return
 
-    @Resolver("RootQuery.defaultField", schema=generated_schema)
+    @Resolver("RootQuery.defaultField")
     async def func_default_resolver(*args, **kwargs):
         mock_two()
         return
 
     with pytest.raises(NonAwaitableResolver):
 
-        @Resolver("Test.simpleField", schema=generated_schema)
+        @Resolver("Test.simpleField")
         def func_default_resolver(*args, **kwargs):
             pass
+
+    generated_schema = SchemaBakery.bake("default")
 
     assert (
         generated_schema.get_field_by_name("Test.field").resolver is not None

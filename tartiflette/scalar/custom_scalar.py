@@ -1,11 +1,27 @@
+from tartiflette.schema.registry import SchemaRegistry
+
+
 class Scalar:
-    def __init__(self, name: str, schema):
-        self.schema = schema
-        self.name = name
-        self.scalar = self.schema.find_scalar(self.name)
+    def __init__(self, name: str, schema_name: str = "default"):
+        self._name = name
+        self._implementation = None
+        self._schema_name = schema_name
+
+    def bake(self, schema):
+        if not self._implementation:
+            raise Exception("No implementation given")
+
+        try:
+            scalar = schema.find_scalar(self._name)
+            scalar.coerce_output = self._implementation.coerce_output
+            scalar.coerce_input = self._implementation.coerce_input
+
+        except KeyError:
+            raise UnknownDirectiveDefinition(
+                "Unknow Directive Definition %s" % self._name
+            )
 
     def __call__(self, implementation):
-        self.scalar.coerce_output = implementation.coerce_output
-        self.scalar.coerce_input = implementation.coerce_input
-        self.schema.prepare_custom_scalars()
+        SchemaRegistry.register_scalar(self._schema_name, self)
+        self._implementation = implementation
         return implementation

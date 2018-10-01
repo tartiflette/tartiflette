@@ -4,6 +4,7 @@ from tartiflette.types.exceptions.tartiflette import (
     UnknownDirectiveDefinition,
     NonAwaitableDirective,
 )
+from tartiflette.schema.registry import SchemaRegistry
 
 
 class Directive:
@@ -24,13 +25,21 @@ class Directive:
 
     """
 
-    def __init__(self, name: str, schema):
-        self.schema = schema
+    def __init__(self, name: str, schema_name="default"):
+        self._name = name
+        self._implementation = None
+        self._schema_name = schema_name
+
+    def bake(self, schema):
+        if not self._implementation:
+            raise Exception("No implementation given")
+
         try:
-            self.directive = self.schema.find_directive(name)
+            directive = schema.find_directive(self._name)
+            directive.implementation = self._implementation
         except KeyError:
             raise UnknownDirectiveDefinition(
-                "Unknow Directive Definition %s" % name
+                "Unknow Directive Definition %s" % self._name
             )
 
     def __call__(self, implementation):
@@ -38,6 +47,8 @@ class Directive:
             raise NonAwaitableDirective(
                 "%s is not awaitable" % repr(implementation)
             )
-        self.directive.implementation = implementation
-        self.schema.prepare_directives()
+
+        SchemaRegistry.register_directive(self._schema_name, self)
+
+        self._implementation = implementation
         return implementation

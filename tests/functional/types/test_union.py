@@ -21,7 +21,9 @@ from tartiflette.engine import Engine
         ),
     ],
 )
-async def test_tartiflette_execute_union_type_output(query, expected):
+async def test_tartiflette_execute_union_type_output(
+    query, expected, clean_registry
+):
     schema_sdl = """
     enum Test {
         Value1
@@ -40,9 +42,7 @@ async def test_tartiflette_execute_union_type_output(query, expected):
     }
     """
 
-    ttftt = Engine(schema_sdl)
-
-    @Resolver("Query.test", schema=ttftt.schema)
+    @Resolver("Query.test")
     async def func_field_resolver(parent, arguments, request_ctx, info: Info):
         if arguments.get("choose", 0) == 1:
             return "Value1"  # First Union type
@@ -52,6 +52,8 @@ async def test_tartiflette_execute_union_type_output(query, expected):
             return "Unknown Value"  # Unknown value => error
         else:
             return None
+
+    ttftt = Engine(sdl)
 
     result = await ttftt.execute(query)
 

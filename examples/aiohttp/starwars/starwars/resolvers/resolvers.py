@@ -1,6 +1,5 @@
 import asyncio
 from tartiflette.resolver import Resolver
-from starwars.sdl import STARWARSTIFLETTE
 
 _LUKE = {
     "type": "Human",
@@ -76,7 +75,7 @@ _DROID_DATA = {"2000": _THREEPIO, "2001": _ARTOO}
 _EPISODE = {4: "NEWHOPE", 5: "EMPIRE", 6: "JEDI"}
 
 
-@Resolver("Query.hero", schema=STARWARSTIFLETTE.schema)
+@Resolver("Query.hero")
 async def resolver_hero(_, arguments, __, ___):
     if arguments.get("episode", "NEWHOPE") == "NEWHOPE":
         return _LUKE
@@ -100,53 +99,53 @@ def appears_in(appears_in_ids):
     return ret
 
 
-@Resolver("Character.friends", schema=STARWARSTIFLETTE.schema)
+@Resolver("Character.friends")
 async def resolver_character_friends(parent_result, *_, **__):
     await asyncio.sleep(0.020)
     return friends(parent_result["friends"])
 
 
-@Resolver("Character.appearsIn", schema=STARWARSTIFLETTE.schema)
+@Resolver("Character.appearsIn")
 async def resolver_character_appear_in(parent_result, *_, **__):
     await asyncio.sleep(0.020)
     return appears_in(parent_result["appearsIn"])
 
 
-@Resolver("Query.human", schema=STARWARSTIFLETTE.schema)
+@Resolver("Query.human")
 async def resolver_human(_, arguments, __, ___):
     await asyncio.sleep(0.020)
     return _HUMAN_DATA[arguments["id"]]
 
 
-@Resolver("Query.droid", schema=STARWARSTIFLETTE.schema)
+@Resolver("Query.droid")
 async def resolver_droid(_, arguments, __, ___):
     await asyncio.sleep(0.020)
     return _DROID_DATA[arguments["id"]]
 
 
 # TODO delete when "implement" for sdl is supported on resolver finding.
-@Resolver("Human.appearsIn", schema=STARWARSTIFLETTE.schema)
+@Resolver("Human.appearsIn")
 async def resolver_human_appear_in(parent_result, *_, **__):
     await asyncio.sleep(0.020)
     return appears_in(parent_result["appearsIn"])
 
 
 # TODO delete when "implement" for sdl is supported on resolver finding.
-@Resolver("Droid.appearsIn", schema=STARWARSTIFLETTE.schema)
+@Resolver("Droid.appearsIn")
 async def resolver_droid_appear_in(parent_result, *_, **__):
     await asyncio.sleep(0.020)
     return appears_in(parent_result["appearsIn"])
 
 
 # TODO delete when "implement" for sdl is supported on resolver finding.
-@Resolver("Droid.friends", schema=STARWARSTIFLETTE.schema)
+@Resolver("Droid.friends")
 async def resolver_droid_friends(parent_result, *_, **__):
     await asyncio.sleep(0.020)
     return friends(parent_result["friends"])
 
 
 # TODO delete when "implement" for sdl is supported on resolver finding.
-@Resolver("Human.friends", schema=STARWARSTIFLETTE.schema)
+@Resolver("Human.friends")
 async def resolver_human_friends(parent_result, *_, **__):
     await asyncio.sleep(0.020)
     return friends(parent_result["friends"])
