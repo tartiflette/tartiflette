@@ -61,12 +61,6 @@ _VERSION = "0.1.0"
 
 _PACKAGES = find_packages(exclude=["tests*"])
 
-# Builder = BuBuBuilder(
-#     # STEP 1, cmake & make.
-#     # STEP 2, mv lib to the corrects place
-#     # STEP 3 kifflalife
-# )
-
 
 setup(
     name="tartiflette",
