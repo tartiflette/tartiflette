@@ -5,26 +5,19 @@ from tartiflette.types.helpers import reduce_type
 from tartiflette.types.exceptions.tartiflette import NullError, InvalidValue
 
 
-def _built_in_coerser(func, val, _):
+def _built_in_coercer(func, val, _):
     if val is None:
         return val
 
-    # Don't pass info, cause this is a buildin python type caster
+    # Don't pass info, cause this is a builtin python type
     return func(val)
 
 
-def ___type_coerser(val, _):
-    if val is None:
-        return val
-
+def _object_coercer(*_, **__) -> dict:
     return {}
 
 
-def _object_coerser(_, __) -> dict:
-    return {}
-
-
-def _list_coerser(func, val, info) -> list:
+def _list_coercer(func, val, info) -> list:
     if val is None:
         return val
 
@@ -34,7 +27,7 @@ def _list_coerser(func, val, info) -> list:
     return [func(val, info)]
 
 
-def _not_null_coerser(func, val, info):
+def _not_null_coercer(func, val, info):
     if val is None:
         raise NullError(val, info)
 
@@ -46,21 +39,21 @@ def _get_type_coercers(field_type):
     current_type = field_type
     while hasattr(current_type, "gql_type"):
         if current_type.is_list:
-            coercer_list.append(_list_coerser)
+            coercer_list.append(_list_coercer)
         if current_type.is_not_null:
-            coercer_list.append(_not_null_coerser)
+            coercer_list.append(_not_null_coercer)
 
         current_type = current_type.gql_type
 
     return coercer_list
 
 
-def _list_and_null_coerser(field_type, coerser):
-    coerser_list = _get_type_coercers(field_type)
-    for coer in reversed(coerser_list):
-        coerser = partial(coer, coerser)
+def _list_and_null_coercer(field_type, coercer):
+    coercer_list = _get_type_coercers(field_type)
+    for coer in reversed(coercer_list):
+        coercer = partial(coer, coercer)
 
-    return coerser
+    return coercer
 
 
 def _shall_return_a_list(field_type):
@@ -73,7 +66,7 @@ def _shall_return_a_list(field_type):
     return False
 
 
-def _enum_coerser(enum_valid_values, func, val, info):
+def _enum_coercer(enum_valid_values, func, val, info):
     if val is None:
         return val
 
@@ -82,23 +75,23 @@ def _enum_coerser(enum_valid_values, func, val, info):
     return func(val, info)
 
 
-def _get_coerser(field):
+def _get_coercer(field):
     field_type = field.gql_type
     rtype = reduce_type(field_type)
 
     # Per default you're an object
-    coerser = _object_coerser
+    coercer = _object_coercer
 
     if rtype == "__Type":
-        coerser = ___type_coerser
+        coercer = partial(_built_in_coercer, _object_coercer)
     else:
         # Is this an enum ?
         try:
-            coerser = partial(
-                _enum_coerser,
+            coercer = partial(
+                _enum_coercer,
                 [x.value for x in field.schema.enums[rtype].values],
                 partial(
-                    _built_in_coerser,
+                    _built_in_coercer,
                     field.schema.find_scalar("String").coerce_output,
                 ),
             )
@@ -107,9 +100,9 @@ def _get_coerser(field):
 
         # Is this a custom scalar ?
         try:
-            coerser = partial(
+            coercer = partial(
                 partial(
-                    _built_in_coerser,
+                    _built_in_coercer,
                     field.schema.find_scalar(rtype).coerce_output,
                 )
             )
@@ -117,8 +110,8 @@ def _get_coerser(field):
             pass
 
     # Manage List and NonNull
-    coerser = _list_and_null_coerser(field_type, coerser)
-    return coerser
+    coercer = _list_and_null_coercer(field_type, coercer)
+    return coercer
 
 
 def _surround_with_execution_directives(func, directives):
@@ -168,7 +161,7 @@ class _ResolverExecutor:
         self._raw_func = func
         self._func = func
         self._schema_field = schema_field
-        self._coerser = _get_coerser(schema_field)
+        self._coercer = _get_coercer(schema_field)
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
         self._directives = directives or {}
 
@@ -193,8 +186,8 @@ class _ResolverExecutor:
             if info.execution_ctx.is_introspection:
                 res = await self._introspection(res)
 
-            coersed = self._coerser(res, info)
-            return res, coersed
+            coerced = self._coercer(res, info)
+            return res, coerced
         except Exception as e:  # pylint: disable=broad-except
             return e, None
 
@@ -211,7 +204,7 @@ class _ResolverExecutor:
         self.apply_directives()
 
     def update_coercer(self):
-        self._coerser = _get_coerser(self.schema_field)
+        self._coercer = _get_coercer(self.schema_field)
 
     @property
     def schema_field(self):
