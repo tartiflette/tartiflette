@@ -1,4 +1,6 @@
 language: python
+dist: xenial
+sudo: true
 python:
   - "3.6"
 addons:
@@ -21,12 +23,12 @@ script:
   # - make complexity
 cache: pip
 install:
-  - make init
-  - pip install -e .[test]
+- make init
+- pip install -e .[test]
 deploy:
   provider: pypi
-  user: dailymotion-tech
+  user: dailymotion
   password:
-    secure: Qg3c8iFRx4dB+vNaz/WgETK4i5jDFeRy+7liOBkgZHuYByTlC4TeMG7l19J+xQpTsCD5ZLaYqaA5YaldsTkQ2G5hCPhk7ULCv1SQXZmzl7c5UQ+2H22tW3KzI7cFfsWlYya8ItaayTE+HfYGLjZTvr+UCh4Td3Ea4xxTNk/cfgpdsOMpEFOWjHWlCtQsg8iT4Rv+VSokflyU+tSK4ibr76Deg7X3DTldKO3FpiQCyDSd2HzsCaAG03OCL7qSmmWsvzF8BLj+KntJNbINENJVXHATe88pXZe80vEe7/QTo6q24zdPIzVm2/BOqybconNN1jLJVogYeI7cu2BzRYtZJVzPEFDBu9QHX7aZC2zIgIDOWHidh+lxYx8FxpMVtFGfjWlx1Eq3OcypyYqIQhy6+BoJqOgfMoO+r3ANCjYsQksfWT6Wd/hTvF8/97zuZlF4n8tZhlBYmYZZ5BcJhuRgkydEHDKwNvH9ROyv4clM/iAiGTd7h7Plwt4jdDZU2XAVF5XZFxrrWVNx8ZqbDQNkCE2yIhnikNDWkAcX2PA/2u9rWNDtLjuNeMw5NZRum0lgdlrBU+6oDF7OZgzedCY2XrRF/D64JGVyUCCl3MK2xsvCBv4n6SekML0dzsmn6CO0NgdERU0fr+1zdvllfuOTwkvh7UHSUEgQ2+IUqhKWu4k=
+    secure: oCtzt6+b8/dY3A4qP/i1kOMT2BXjFZZRWX0owtcXL9nHMlyWFKuAd/6hGlXZP4NJLIa5iO5ovQ+lkP20C6kQDCii361xuFuIX/VWJZxZuzkHh9WUSPgp4LmCicrTK48VPbDm5sjuBbItb38L2sEb9ommD1FJ7jzzuRufLLnUyf1dezp2tONWfwDz6WZfq/BuA4oKMnUiLsHD3Luy/G05v1HZeXyQtd/fQZVLtZZ3SBVGbn3rlwjP7cAwthuKUQ2gK473qQdvH+Bs4zy6QAlBI37oH1B9HOnjbMZ7pWrCbSuBrVyGB+80/PkOGRj4zsFBjoftsoLGUX/QSfm+pdgpYjxVWO2JqabxuZljjvOMzBlFLNhE8TUITwYe+uQBj28JvaB7JiWNf1/hi3sf5ccpZ6R2jLLy6buDWe87Qx5WF0yUARfh+nCSSoZk3yX0KlWXTeAN1O8p3xBY+W4Iza+AnsaS9frOOoRbXF817n6KpcRZG11Vl0bxFzKDnhoH5Pdk+Bu61xzSInEkshfZAOHNd7j5Olqaof4vn7Wd/Bqw7OeMBM6PDaHCmqKlW5n01Zm6vNuBkdX83+dEoPUntdaHr5/7DEHb+9ugirbVox9BaY/ua2IWWWS3jLe8MLQasNXmZRNdEBvEnlIMlWi+WGSzpBpcp7+Nf4/odU1aMdjAUQQ=
   on:
     branch: master
