@@ -14,6 +14,7 @@ recursive-include libgraphqlparser/ast *.ast
 recursive-include libgraphqlparser/ast *.py
 recursive-include libgraphqlparser/cmake *.cmake
 recursive-include libgraphqlparser/python CMakeLists.txt
+recursive-include tartiflette/sdl/grammar *.lark
 
 include libgraphqlparser/CMakeLists.txt
 include libgraphqlparser/.clang-tidy
