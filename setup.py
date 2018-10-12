@@ -57,7 +57,7 @@ _TEST_REQUIRE = [
     "black==18.9b0",
 ]
 
-_VERSION = "0.1.4"
+_VERSION = "0.1.5"
 
 _PACKAGES = find_packages(exclude=["tests*"])
 
@@ -65,7 +65,7 @@ _PACKAGES = find_packages(exclude=["tests*"])
 setup(
     name="tartiflette",
     version=_VERSION,
-    description="GraphQL Request Executor for python",
+    description="GraphQL Engine for python",
     long_description=open("README.md").read(),
     url="https://github.com/dailymotion/tartiflette",
     author="Dailymotion Core API Team",
