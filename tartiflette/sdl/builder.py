@@ -43,7 +43,11 @@ def parse_graphql_sdl_to_ast(sdl: str) -> Tree:
     )
 
     gqlsdl_parser = Lark.open(
-        grammar_filename, start="document", parser="lalr", lexer="contextual"
+        grammar_filename,
+        start="document",
+        parser="lalr",
+        lexer="contextual",
+        propagate_positions=True,
     )
     gqlsdl = gqlsdl_parser.parse
 
