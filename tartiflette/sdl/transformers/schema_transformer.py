@@ -3,7 +3,6 @@ from collections import namedtuple
 from lark import Tree, v_args
 from lark.visitors import Transformer_InPlace
 
-from tartiflette.sdl.ast_types import String
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumValue
@@ -81,10 +80,7 @@ class SchemaTransformer(Transformer_InPlace):
         return self._operation_type_definition(tree, "subscription")
 
     def named_type(self, tree: Tree) -> SchemaNode:
-        return SchemaNode(
-            "named_type",
-            String(str(tree.children[0].value), ast_node=tree.children[0]),
-        )
+        return SchemaNode("named_type", tree.children[0].value)
 
     def list_type(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
@@ -115,7 +111,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "discard" or child.type == "SCALAR":
                 pass
             else:
@@ -139,7 +135,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "union_members":
                 members = child.value
             elif child.type == "discard" or child.type == "UNION":
@@ -172,7 +168,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "enum_values":
                 values = child.value
             elif child.type == "discard" or child.type == "ENUM":
@@ -229,7 +225,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "fields":
                 fields = child.value
             elif child.type == "discard" or child.type == "INTERFACE":
@@ -257,7 +253,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "interfaces":
                 interfaces = child.value
             elif child.type == "fields":
@@ -296,7 +292,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "input_fields":
                 fields = child.value
             elif child.type == "discard" or child.type == "INPUT":
@@ -336,7 +332,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "type":
                 gql_type = child.value
             elif child.type == "arguments":
@@ -376,7 +372,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "type":
                 gql_type = child.value
             elif child.type == "value":
@@ -405,7 +401,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "arguments":
                 arguments = child.value
             elif child.type == "ON":
@@ -433,7 +429,7 @@ class SchemaTransformer(Transformer_InPlace):
         locations = []
         for child in tree.children:
             if child.value in GraphQLDirective.POSSIBLE_LOCATIONS:
-                locations.append(String(str(child.value), ast_node=child))
+                locations.append(child.value)
             else:
                 raise ValueError(
                     "Invalid directive location `{}`".format(child.value)
@@ -441,10 +437,7 @@ class SchemaTransformer(Transformer_InPlace):
         return SchemaNode("directive_locations", locations)
 
     def description(self, tree: Tree) -> SchemaNode:
-        return SchemaNode(
-            "description",
-            String(str(tree.children[0].value), ast_node=tree.children[0]),
-        )
+        return SchemaNode("description", tree.children[0].value)
 
     def default_value(self, tree: Tree) -> SchemaNode:
         # Ignore this node and return the value contained
@@ -502,7 +495,7 @@ class SchemaTransformer(Transformer_InPlace):
         value = None
         for child in tree.children:
             if child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "value":
                 value = child.value
             else:
@@ -524,7 +517,7 @@ class SchemaTransformer(Transformer_InPlace):
         value = None
         for child in tree.children:
             if child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "value":
                 value = child.value
             else:
@@ -547,7 +540,7 @@ class SchemaTransformer(Transformer_InPlace):
         arguments = None
         for child in tree.children:
             if child.type == "IDENT":
-                name = String(str(child.value), ast_node=child)
+                name = child.value
             elif child.type == "arguments":
                 arguments = child.value
             else:
