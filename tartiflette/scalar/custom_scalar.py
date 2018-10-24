@@ -1,4 +1,5 @@
 from tartiflette.schema.registry import SchemaRegistry
+from tartiflette.types.exceptions.tartiflette import UnknownDirectiveDefinition
 
 
 class Scalar:
