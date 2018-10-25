@@ -1,7 +1,10 @@
 from inspect import iscoroutinefunction
 from typing import Callable
 
-from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
+from tartiflette.types.exceptions.tartiflette import (
+    NonAwaitableResolver,
+    UnknownDirectiveDefinition,
+)
 from tartiflette.schema.registry import SchemaRegistry
 
 
