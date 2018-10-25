@@ -442,12 +442,25 @@ class _VisitorElementFragmentDefinition(_VisitorElement):
         return None
 
 
+class _VisitorElementOperationDefinition(_VisitorElement):
+    def __init__(self, lib, ffi, internal_element):
+        super().__init__(lib, ffi, "OperationDefinition", internal_element)
+
+    def get_operation(self):
+        return self._from_char_to_string(
+            self._lib.GraphQLAstOperationDefinition_get_operation(
+                self._internal_element
+            )
+        ).capitalize()
+
+
 _LIBGRAPHQL_TYPE_TO_CLASS = {
     "IntValue": _VisitorElementIntValue,
     "StringValue": _VisitorElementStringValue,
     "FloatValue": _VisitorElementFloatValue,
     "BooleanValue": _VisitorElementBooleanValue,
     "FragmentDefinition": _VisitorElementFragmentDefinition,
+    "OperationDefinition": _VisitorElementOperationDefinition,
 }
 
 

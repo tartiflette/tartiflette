@@ -1,7 +1,11 @@
 from functools import lru_cache, partial
 from typing import Any, Dict
 
-from tartiflette.parser.cffi import Visitor, _VisitorElement
+from tartiflette.parser.cffi import (
+    Visitor,
+    _VisitorElement,
+    _VisitorElementOperationDefinition,
+)
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     TartifletteException,
@@ -16,6 +20,7 @@ from .nodes.variable_definition import NodeVariableDefinition
 
 
 class TartifletteVisitor(Visitor):
+    # pylint: disable=too-many-instance-attributes
 
     #  TODO is usefull only for debug, will
     # be removed when everythings works
@@ -49,6 +54,7 @@ class TartifletteVisitor(Visitor):
                 "NonNullType": self._on_non_null_type_in,
                 "VariableDefinition": self._on_variable_definition_in,
                 "FragmentDefinition": self._on_fragment_definition_in,
+                "OperationDefinition": self._on_operation_definition_in,
             },
             {
                 "default": self._out,
@@ -57,9 +63,11 @@ class TartifletteVisitor(Visitor):
                 "VariableDefinition": self._on_variable_definition_out,
                 "FragmentDefinition": self._on_fragment_definition_out,
                 "FragmentSpread": self._on_fragment_spread_out,
+                "OperationDefinition": self._on_operation_definition_out,
             },
         ]
         self._depth = 0
+        self._operation_type = None
         self.root_nodes = []
         self._vars = variables if variables else {}
         self._current_node = None
@@ -108,7 +116,9 @@ class TartifletteVisitor(Visitor):
                 self._current_node.field_executor.schema_field.gql_type
             )
         except (AttributeError, TypeError):
-            parent_type = self.schema.find_type(self.schema.query_type)
+            parent_type = self.schema.find_type(
+                self.schema.get_operation_type(self._operation_type)
+            )
 
         try:
             field = self.schema.get_field_by_name(
@@ -234,6 +244,14 @@ class TartifletteVisitor(Visitor):
         for saved_callback in cfd.callbacks:
             saved_callback()  # Simulate calling a the right place.
         self._current_type_condition = None
+
+    def _on_operation_definition_in(
+        self, element: _VisitorElementOperationDefinition
+    ):
+        self._operation_type = element.get_operation()
+
+    def _on_operation_definition_out(self, _):
+        self._operation_type = None
 
     def _in(self, element: _VisitorElement):
         self.path = self.path + "/%s" % TartifletteVisitor.create_node_name(

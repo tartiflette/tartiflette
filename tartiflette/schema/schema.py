@@ -22,6 +22,10 @@ from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.type import GraphQLType
 from tartiflette.types.union import GraphQLUnionType
 
+_DEFAULT_QUERY_TYPE = "Query"
+_DEFAULT_MUTATION_TYPE = "Mutation"
+_DEFAULT_SUBSCRIPTION_TYPE = "Subscription"
+
 
 class GraphQLSchema:
     """
@@ -36,9 +40,9 @@ class GraphQLSchema:
             self.description = """A GraphQL Schema contains the complete definition of the GraphQL structure: types, entrypoints (query, mutation, subscription)."""
 
         # Schema entry points
-        self._query_type: Optional[str] = "Query"
-        self._mutation_type: Optional[str] = "Mutation"
-        self._subscription_type: Optional[str] = "Subscription"
+        self._query_type: Optional[str] = _DEFAULT_QUERY_TYPE
+        self._mutation_type: Optional[str] = _DEFAULT_MUTATION_TYPE
+        self._subscription_type: Optional[str] = _DEFAULT_SUBSCRIPTION_TYPE
         # Types, definitions and implementations
         self._gql_types: Dict[str, GraphQLType] = {}
         # Directives
@@ -104,6 +108,15 @@ class GraphQLSchema:
     @subscription_type.setter
     def subscription_type(self, value: str) -> None:
         self._subscription_type = value
+
+    def get_operation_type(self, operation_name):
+        if operation_name == _DEFAULT_QUERY_TYPE:
+            return self.query_type
+        if operation_name == _DEFAULT_MUTATION_TYPE:
+            return self.mutation_type
+        if operation_name == _DEFAULT_SUBSCRIPTION_TYPE:
+            return self.subscription_type
+        return None
 
     #  Introspection Attribute
     @property
