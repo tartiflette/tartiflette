@@ -2,13 +2,9 @@
 
 ## Prerequisites
 
-Before getting started, you should have Python 3.5+ installed. As we are using [libgraphqlparser](https://github.com/graphql/libgraphqlparser), a C++ query parser, you should have the necessary to compile that library (Cmake etc.). **We suggest you use the provided docker image, which contains everything needed**.
+Before getting started, you should have installed the `tartfilette` package through Pypi.
 
-To create a new project with Tartiflette, just execute this command:
-
-```bash
-pip install tartiflette
-```
+[Follow the instructions details in the README](../README.md#installation).
 
 ## Your first Tartiflette!
 
@@ -19,31 +15,28 @@ The smallest recipe to make a tartiflette is pretty easy. Let's start with a hel
 
 ```python
 import asyncio
+
 from tartiflette import Engine, Resolver
 
-engine = Engine(
-    """
+@Resolver("Query.hello")
+async def resolver_hello(parent, args, ctx, info):
+    return "hello " + args["name"]
+
+async def run():
+    tftt_engine = Engine("""
     type Query {
-        hello: String
+        hello(name: String): String
     }
-    """
-)
+    """)
 
-@Resolver("hello")
-async def hello_resolver():
-    return "World"
-
-def run():
-    result = await engine.execute(
-        """
-        query {
-            hello
-        }
-        """
+    result = await tftt_engine.execute(
+        query='query { hello(name: "Chuck") }'
     )
-    print(result["data"]["hello"])
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(run())
-loop.close()
+    print(result)
+    # {'data': {'hello': 'hello Chuck'}}
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run())
 ```
