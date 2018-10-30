@@ -2,9 +2,9 @@
 
 **Tartiflette** is a GraphQL Server implementation built with **Python 3.5+**.
 
-**Tartiflette is under heavy development. [Feel free to join us to build Tartiflette](./docs/CONTRIBUTING.md).**
+**Tartiflette is not production ready, we are working on it heavily. [Feel free to join us to build Tartiflette](./docs/CONTRIBUTING.md).**
 
-The engine **IS NOT** ready to use, feel free to take a look at **[our roadmap for v1](#roadmap---road-to-v1)**.
+**[Take a look of our roadmap for v1](#roadmap---road-to-v1)**.
 
 **DNA**
 
@@ -12,14 +12,67 @@ The engine **IS NOT** ready to use, feel free to take a look at **[our roadmap f
 * **Performance oriented:** Performance is the core of our work.
 * **Simple is better than complex:** Built with [the Zen of Python](https://www.python.org/dev/peps/pep-0020/#id3) in mind. No over-engineering.
 
+**Summary**
+
+* [Usage](#usage)
+* [Installation](#installation)
+  * [installation dependencies](#installation-dependencies)
+* [Getting Started](./docs/getting-started.md)
+* [API](./docs/API.md)
+* [Roadmap - Road to v1](#roadmap---road-to-v1)
+* [Roadmap - Milestone 2](#roadmap---milestone-2)
+
+## Usage
+
+```python
+import asyncio
+
+from tartiflette import Engine, Resolver
+
+@Resolver("Query.hello")
+async def resolver_hello(parent, args, ctx, info):
+    return "hello " + args["name"]
+
+async def run():
+    tftt_engine = Engine("""
+    type Query {
+        hello(name: String): String
+    }
+    """)
+
+    result = await tftt_engine.execute(
+        query='query { hello(name: "Chuck") }'
+    )
+
+    print(result)
+    # {'data': {'hello': 'hello Chuck'}}
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run())
+```
+
 ## Installation
 
-As this lib depends on libgraphqlparser (in submodule in this repository) (See [here](https://github.com/graphql/libgraphqlparser) for more details), you'll need to build and install this libgraphqlparser binary on your system before using this.
+Tartiflette is available on [pypi.org](https://pypi.org/project/tartiflette/).
 
-Running `python setup.py develop` will take care of the lib compilation for your checkouted repository.
-If you don't want to checkout the code `pip install tartiflette` will also compile the lib for you.
+```bash
+pip install tartiflette
+```
 
-In the two cases, you'll need `cmake`, `bison` and `flex` to be installed on your system.
+### Installation dependencies
+
+As Tartiflette based its Executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*. You'll need these following commands on your environment to use the library. `cmake`, `bison` and `flex`.
+
+*MacOSX*
+```bash
+brew install cmake flex bison
+```
+
+*Ubuntu*
+```bash
+apt-get install cmake flex bison
+```
 
 ## Roadmap - Road to v1
 
@@ -32,15 +85,16 @@ Here are the subjects we are working on:
 ### Communication and documentation
 
 * [x] Define Open Source guidelines (Contributing, Code of conduct, Issue Template, PR Template).
-* [ ] (API) Describe the API that will be used by the Tartiflette users.
-  * [x] (API) [Engine constructor](https://github.com/dailymotion/tartiflette/blob/master/docs/API.md#engine-initialization) - _[#19](https://github.com/dailymotion/tartiflette/issues/19)_.
-  * [ ] (API) How to declare custom directives in the Engine Constructor.
-  * [ ] (API) How to declare middleware on a resolver.
-  * [ ] (API) Executor.
-  * [x] (API) Resolver - _[#19](https://github.com/dailymotion/tartiflette/issues/19)_.
-  * [x] (API) Resolver - `Info` parameter - _[#19](https://github.com/dailymotion/tartiflette/issues/19)_.
+* [X] (API) Describe the API that will be used by the Tartiflette users.
+  * [x] (API) [Engine constructor](https://github.com/dailymotion/tartiflette/blob/master/docs/API.md#engine-initialization)
+  * [X] (API) How to declare custom directives in the Engine Constructor.
+  * [X] (API) How to declare middleware on a resolver.
+  * [X] (API) Executor.
+  * [x] (API) Resolver.
+  * [x] (API) Resolver - `Info` parameter.
 * [ ] (Website) Landing page for https://tartiflette.io
 * [ ] (Website) Expose documentation on https://tartiflette.io
+
 ### Query Parser
 
 * [x] Build communication interface between [libgraphqlparser](https://github.com/graphql/libgraphqlparser) & Tartiflette through [CFFI](https://cffi.readthedocs.io).
@@ -50,31 +104,31 @@ Here are the subjects we are working on:
 ### Executor
 
 * [x] Bind the Types specified in the SDL to the `Executor`.
-* [x] Typing [resolver outputs](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/visitor.py#L191) - _[#17](https://github.com/dailymotion/tartiflette/issues/17)_
+* [x] Typing resolver outputs
 * [x] Error management
-* [ ] Abstract and Compound Types: Unions, Interfaces, …
-* [ ] NodeDefinition: Check that the [Type exists](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/parser/nodes/definition.py#L26)
-* [ ] (Directive) Integrate the directive's execution in the Executor.
-* [ ] Integrate the middleware in the Executor.
+* [X] Abstract and Compound Types: Interfaces
+* [ ] Abstract and Compound Types: Unions
+* [X] NodeDefinition: Check that the Type exists.
+* [X] (Directive) Integrate the directive's execution in the Executor.
+* [X] (Directive) introspection based on directive
 
 ### SDL - Schema Definition Language
 
 * [x] Build a `Parser` which parse the [Schema Definition Language](https://github.com/facebook/graphql/blob/master/spec/Section%202%20--%20Language.md) and created the associated schema and types as Python objects.
-* [ ] Think about custom Scalar API
-* [x] (Introspection) Implement the `__type` Field. - _[#15](https://github.com/dailymotion/tartiflette/issues/15)_
-* [x] (Introspection) Implement the `__schema`Field. - _[#16](https://github.com/dailymotion/tartiflette/issues/16)_
-* [ ] (Directive) Append directive informations _(from SDL)_ as metadata on Fields / Types.
-* [ ] (Directive) Implement the declaration of the custom directives into the Engine constructor.
-* [ ] (Directive) Implement @deprecated
+* [X] Think about custom Scalar API
+* [x] (Introspection) Implement the `__type` Field.
+* [x] (Introspection) Implement the `__schema`Field.
+* [X] (Directive) Append directive informations _(from SDL)_ as metadata on Fields / Types.
+* [X] (Directive) Implement the declaration of the custom directives into the Engine constructor.
+* [X] (Directive) Implement @deprecated
 
 ### Continuous integration
 
 * [x] Run Code Quality checks + Tests
 * [x] Automatize the integration of `libgraphqlparser`
-* [ ] Build & Publish artifact to pypi
+* [X] Build & Publish artifact to pypi
 
-## Roadmap - Milestone #2
+## Roadmap - Milestone 2
 
 * [ ] Implement **[Apollo Cache Control](https://github.com/apollographql/apollo-cache-control)**
-* [ ] Implement dynamic introspection based on directive
 * [ ] Think about `subscriptions`
