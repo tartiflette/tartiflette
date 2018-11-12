@@ -18,6 +18,7 @@ class NodeField(Node):
         location: Location,
         path: List[str],
         type_condition: str,
+        alias: str = None,
     ):
         super().__init__(path, "Field", location, name)
         # Execution
@@ -26,6 +27,7 @@ class NodeField(Node):
         self.arguments = {}
         self.type_condition = type_condition
         self.marshalled = {}
+        self.alias = alias if alias is not None else self.name
 
     @property
     def cant_be_null(self) -> bool:
@@ -43,7 +45,7 @@ class NodeField(Node):
         if self.cant_be_null is False:
             # mean i can be null
             if self.parent:
-                self.parent.marshalled[self.name] = None
+                self.parent.marshalled[self.alias] = None
             else:
                 self.marshalled = None
         else:
@@ -102,7 +104,7 @@ class NodeField(Node):
         )
 
         if parent_marshalled is not None:
-            parent_marshalled[self.name] = coerced
+            parent_marshalled[self.alias] = coerced
         else:
             self.marshalled = coerced
 

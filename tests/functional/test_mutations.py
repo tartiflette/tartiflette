@@ -7,7 +7,7 @@ from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio
-async def test_full_mutation_execute():
+async def test_full_mutation_execute(clean_registry):
     schema_sdl = """
     enum Status {
         SUCCESS
@@ -46,15 +46,12 @@ async def test_full_mutation_execute():
 
     Book = namedtuple("Book", ("title", "price"))
 
-    data_store = [
-        Book(title="The Jungle Book", price=14.99),
-    ]
+    data_store = [Book(title="The Jungle Book", price=14.99)]
 
     @Resolver("CustomRootMutation.addBook")
     async def add_book_resolver(_, args, *__):
         added_book = Book(
-            title=args["input"]["title"],
-            price=args["input"]["price"],
+            title=args["input"]["title"], price=args["input"]["price"]
         )
         data_store.append(added_book)
         return {
@@ -67,7 +64,7 @@ async def test_full_mutation_execute():
 
     ttftt = Engine(schema_sdl)
 
-    result = await  ttftt.execute(
+    result = await ttftt.execute(
         """
         mutation AddBook($input: AddBookInput!) {
           addBook(input: $input) {
@@ -81,12 +78,8 @@ async def test_full_mutation_execute():
         }
         """,
         variables={
-            "input": {
-                "clientMutationId": 1,
-                "title": "My Book",
-                "price": 9.99,
-            }
-        }
+            "input": {"clientMutationId": 1, "title": "My Book", "price": 9.99}
+        },
     )
 
     assert len(data_store) == 2
@@ -96,10 +89,7 @@ async def test_full_mutation_execute():
             "addBook": {
                 "clientMutationId": "1",
                 "status": "SUCCESS",
-                "book": {
-                    "title": "My Book",
-                    "price": 9.99,
-                },
-            },
-        },
+                "book": {"title": "My Book", "price": 9.99},
+            }
+        }
     } == result
