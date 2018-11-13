@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+## [Unreleased]
+### Fixed
+- Change the way README.md is read in setup.py for long_description, now file is closed after reading.
+
 ## [0.1.7] - 2018-11-12
 ### Added
 - (Query) Support Alias in Query and Mutation

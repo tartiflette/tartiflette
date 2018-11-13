@@ -62,11 +62,16 @@ _VERSION = "0.1.7"
 _PACKAGES = find_packages(exclude=["tests*"])
 
 
+def _read_file(filename):
+    with open(filename) as afile:
+        return afile.read()
+
+
 setup(
     name="tartiflette",
     version=_VERSION,
     description="GraphQL Engine for python",
-    long_description=open("README.md").read(),
+    long_description=_read_file("README.md"),
     url="https://github.com/dailymotion/tartiflette",
     author="Dailymotion Core API Team",
     author_email="team@tartiflette.io",
