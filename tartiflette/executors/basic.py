@@ -15,7 +15,7 @@ def _get_datas(root_nodes):
     for node in root_nodes:
         if node.cant_be_null and node.marshalled is None:
             return None
-        data[node.name] = node.marshalled
+        data[node.alias] = node.marshalled
 
     return data
 

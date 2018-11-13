@@ -11,7 +11,7 @@ from tartiflette.types.location import Location
 
 
 @pytest.mark.asyncio
-async def test_full_query_execute(clean_registry):
+async def test_full_query_with_alias(clean_registry):
     # TODO: Add Union and Interface and NonNull, All scalars Fields.
     schema_sdl = """
     enum BookCategory {
@@ -94,7 +94,7 @@ async def test_full_query_execute(clean_registry):
         """
         query TestQueriesFromEnd2End{
             libraries {
-                books {
+                anAlias: books {
                     title
                     price
                     category
@@ -114,7 +114,7 @@ async def test_full_query_execute(clean_registry):
         "data": {
             "libraries": [
                 {
-                    "books": [
+                    "anAlias": [
                         {
                             "title": "Anna Karenina",
                             "author": {"name": "Leo Tolstoy"},
@@ -141,7 +141,7 @@ async def test_full_query_execute(clean_registry):
                     ],
                 },
                 {
-                    "books": [
+                    "anAlias": [
                         {
                             "title": "Pride and Prejudice",
                             "author": {"name": "Jane Austin"},
@@ -161,5 +161,102 @@ async def test_full_query_execute(clean_registry):
                     ],
                 },
             ]
+        }
+    } == result
+
+
+from collections import namedtuple
+
+import pytest
+
+from tartiflette import Resolver
+from tartiflette.engine import Engine
+
+
+@pytest.mark.asyncio
+async def test_full_mutation_execute_alias(clean_registry):
+    schema_sdl = """
+    enum Status {
+        SUCCESS
+    }
+
+    schema {
+        query: CustomRootQuery
+        mutation: CustomRootMutation
+    }
+
+    type CustomRootQuery {
+        books: [Book]
+    }
+
+    type Book {
+        title: String
+        price: Float
+    }
+
+    type CustomRootMutation {
+        addBook(input: AddBookInput!): AddBookPayload
+    }
+
+    input AddBookInput {
+        clientMutationId: String
+        title: String!
+        price: Float!
+    }
+
+    type AddBookPayload {
+        status: Status
+        clientMutationId: String
+        book: Book
+    }
+    """
+
+    Book = namedtuple("Book", ("title", "price"))
+
+    data_store = [Book(title="The Jungle Book", price=14.99)]
+
+    @Resolver("CustomRootMutation.addBook")
+    async def add_book_resolver(_, args, *__):
+        added_book = Book(
+            title=args["input"]["title"], price=args["input"]["price"]
+        )
+        data_store.append(added_book)
+        return {
+            "clientMutationId": args["input"].get("clientMutationId"),
+            "status": "SUCCESS",
+            "book": added_book,
+        }
+
+    assert len(data_store) == 1
+
+    ttftt = Engine(schema_sdl)
+
+    result = await ttftt.execute(
+        """
+        mutation AddBook($input: AddBookInput!) {
+          lol: addBook(input: $input) {
+            status
+            clientMutationId
+            booooook: book {
+                title
+                price
+            }
+          }
+        }
+        """,
+        variables={
+            "input": {"clientMutationId": 1, "title": "My Book", "price": 9.99}
+        },
+    )
+
+    assert len(data_store) == 2
+
+    assert {
+        "data": {
+            "lol": {
+                "clientMutationId": "1",
+                "status": "SUCCESS",
+                "booooook": {"title": "My Book", "price": 9.99},
+            }
         }
     } == result

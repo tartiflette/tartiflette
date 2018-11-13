@@ -454,6 +454,16 @@ class _VisitorElementOperationDefinition(_VisitorElement):
         ).capitalize()
 
 
+class _VisitorElementField(_VisitorElement):
+    def __init__(self, lib, ffi, internal_element):
+        super().__init__(lib, ffi, "Field", internal_element)
+
+    def get_alias(self):
+        return self._get_name_string(
+            self._lib.GraphQLAstField_get_alias(self._internal_element)
+        )
+
+
 _LIBGRAPHQL_TYPE_TO_CLASS = {
     "IntValue": _VisitorElementIntValue,
     "StringValue": _VisitorElementStringValue,
@@ -461,6 +471,7 @@ _LIBGRAPHQL_TYPE_TO_CLASS = {
     "BooleanValue": _VisitorElementBooleanValue,
     "FragmentDefinition": _VisitorElementFragmentDefinition,
     "OperationDefinition": _VisitorElementOperationDefinition,
+    "Field": _VisitorElementField,
 }
 
 

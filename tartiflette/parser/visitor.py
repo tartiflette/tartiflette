@@ -136,6 +136,7 @@ class TartifletteVisitor(Visitor):
             element.get_location(),
             self.field_path[:],
             self._current_type_condition,
+            element.get_alias(),
         )
 
         node.set_parent(self._current_node)
@@ -160,11 +161,17 @@ class TartifletteVisitor(Visitor):
         self._current_node = node
 
     def _validate_type(self, varname, a_value, a_type):
-        if not isinstance(a_value, a_type):
-            self.continue_child = 0
-            self.exception = TypeError(
-                "Given value for < %s > is not type < %s >" % (varname, a_type)
-            )
+        try:
+            if not isinstance(a_value, a_type):
+                self.continue_child = 0
+                self.exception = TypeError(
+                    "Given value for < %s > is not type < %s >"
+                    % (varname, a_type)
+                )
+        except TypeError:
+            # TODO remove this, and handle the case it's an InputValue
+            # (look at registered input values and compare fields)
+            pass
 
     def _validates_vars(self):
         # validate given var are okay
