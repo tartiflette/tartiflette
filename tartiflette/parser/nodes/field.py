@@ -9,6 +9,20 @@ from tartiflette.types.location import Location
 from .node import Node
 
 
+def _get_typename(raw):
+    try:
+        return raw["_typename"]
+    except (KeyError, TypeError):
+        pass
+
+    try:
+        return raw._typename  # pylint: disable=protected-access
+    except AttributeError:
+        pass
+
+    return raw.__class__.__name__
+
+
 class NodeField(Node):
     def __init__(
         self,
@@ -54,30 +68,39 @@ class NodeField(Node):
             else:
                 self.marshalled = None
 
+    def _get_coroutz_from_child(
+        self, exec_ctx, request_ctx, result, coerced, raw_typename
+    ):
+        coroutz = []
+        for child in self.children:
+            if (
+                child.type_condition
+                and child.type_condition == raw_typename
+                or not child.type_condition
+            ):
+                coroutz.append(
+                    child(
+                        exec_ctx,
+                        request_ctx,
+                        parent_result=result,
+                        parent_marshalled=coerced,
+                    )
+                )
+        return coroutz
+
     async def _execute_children(self, exec_ctx, request_ctx, result, coerced):
-        # TODO also filter regarding OnType thingy
         coroutz = []
         if self.shall_produce_list:
             for index, raw in enumerate(result):
-                for child in self.children:
-                    coroutz.append(
-                        child(
-                            exec_ctx,
-                            request_ctx,
-                            parent_result=raw,
-                            parent_marshalled=coerced[index],
-                        )
-                    )
-        else:
-            coroutz = [
-                child(
-                    exec_ctx,
-                    request_ctx,
-                    parent_result=result,
-                    parent_marshalled=coerced,
+                raw_typename = _get_typename(raw)
+                coroutz = coroutz + self._get_coroutz_from_child(
+                    exec_ctx, request_ctx, raw, coerced[index], raw_typename
                 )
-                for child in self.children
-            ]
+        else:
+            raw_typename = _get_typename(result)
+            coroutz = self._get_coroutz_from_child(
+                exec_ctx, request_ctx, result, coerced, raw_typename
+            )
 
         await asyncio.gather(*coroutz, return_exceptions=False)
 
