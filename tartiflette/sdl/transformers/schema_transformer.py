@@ -470,11 +470,10 @@ class SchemaTransformer(Transformer_InPlace):
         return SchemaNode("value", tree.children[0].value)
 
     def list_value(self, tree: Tree) -> SchemaNode:
-        lst = []
-        for child in tree.children:
-            if child.type == "value":
-                lst.append(child.value)
-        return SchemaNode("list_value", lst)
+        return SchemaNode(
+            "list_value",
+            [child.value for child in tree.children if child.type == "value"],
+        )
 
     def object_value(self, tree: Tree) -> SchemaNode:
         obj = {}
