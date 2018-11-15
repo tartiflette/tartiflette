@@ -136,9 +136,9 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
                         "isDeprecated": False,
                     },
                     {
+                        "deprecationReason": None,
                         "name": "__typename",
                         "isDeprecated": False,
-                        "deprecationReason": None,
                     },
                 ]
             }
@@ -275,9 +275,9 @@ async def test_tartiflette_non_introspectable_execution_directive(
                         "isDeprecated": False,
                     },
                     {
+                        "deprecationReason": None,
                         "name": "__typename",
                         "isDeprecated": False,
-                        "deprecationReason": None,
                     },
                 ]
             }

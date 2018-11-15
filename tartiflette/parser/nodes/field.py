@@ -5,22 +5,9 @@ from tartiflette.executors.types import ExecutionContext, Info
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import GraphQLError
 from tartiflette.types.location import Location
+from tartiflette.types.helpers import get_typename
 
 from .node import Node
-
-
-def _get_typename(raw):
-    try:
-        return raw["_typename"]
-    except (KeyError, TypeError):
-        pass
-
-    try:
-        return raw._typename  # pylint: disable=protected-access
-    except AttributeError:
-        pass
-
-    return raw.__class__.__name__
 
 
 class NodeField(Node):
@@ -92,12 +79,12 @@ class NodeField(Node):
         coroutz = []
         if self.shall_produce_list:
             for index, raw in enumerate(result):
-                raw_typename = _get_typename(raw)
+                raw_typename = get_typename(raw)
                 coroutz = coroutz + self._get_coroutz_from_child(
                     exec_ctx, request_ctx, raw, coerced[index], raw_typename
                 )
         else:
-            raw_typename = _get_typename(result)
+            raw_typename = get_typename(result)
             coroutz = self._get_coroutz_from_child(
                 exec_ctx, request_ctx, result, coerced, raw_typename
             )

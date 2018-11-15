@@ -63,3 +63,12 @@ class GraphQLObjectType(GraphQLType):
             return [x for _, x in self._fields.items()]
         except AttributeError:
             return []
+
+    def bake(self, schema):
+        super().bake(schema)
+
+        for field in self.fields:
+            try:
+                field.bake(schema, self)
+            except AttributeError:
+                pass
