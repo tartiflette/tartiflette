@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Release]
 
+### [0.1.9] - 2018-11-16
+
+#### Added
+
+- Support for `__typename` meta field
+
 ### [0.1.8] - 2018-11-15
 
 #### Added
