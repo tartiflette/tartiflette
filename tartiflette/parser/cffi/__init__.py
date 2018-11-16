@@ -464,6 +464,20 @@ class _VisitorElementField(_VisitorElement):
         )
 
 
+class _VisitorElementInlineFragment(_VisitorElement):
+    def __init__(self, lib, ffi, internal_element):
+        super().__init__(lib, ffi, "InlineFragment", internal_element)
+
+    def get_named_type(self):
+        return self._get_name_string(
+            self._lib.GraphQLAstNamedType_get_name(
+                self._lib.GraphQLAstInlineFragment_get_type_condition(
+                    self._internal_element
+                )
+            )
+        )
+
+
 _LIBGRAPHQL_TYPE_TO_CLASS = {
     "IntValue": _VisitorElementIntValue,
     "StringValue": _VisitorElementStringValue,
@@ -472,6 +486,7 @@ _LIBGRAPHQL_TYPE_TO_CLASS = {
     "FragmentDefinition": _VisitorElementFragmentDefinition,
     "OperationDefinition": _VisitorElementOperationDefinition,
     "Field": _VisitorElementField,
+    "InlineFragment": _VisitorElementInlineFragment,
 }
 
 

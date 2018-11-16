@@ -12,7 +12,6 @@ from tartiflette.types.location import Location
 
 @pytest.mark.asyncio
 async def test_full_query_execute(clean_registry):
-    # TODO: Add Union and Interface and NonNull, All scalars Fields.
     schema_sdl = """
     enum BookCategory {
         Action

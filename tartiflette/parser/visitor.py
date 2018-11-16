@@ -55,6 +55,7 @@ class TartifletteVisitor(Visitor):
                 "VariableDefinition": self._on_variable_definition_in,
                 "FragmentDefinition": self._on_fragment_definition_in,
                 "OperationDefinition": self._on_operation_definition_in,
+                "InlineFragment": self._on_inline_fragment_in,
             },
             {
                 "default": self._out,
@@ -64,6 +65,7 @@ class TartifletteVisitor(Visitor):
                 "FragmentDefinition": self._on_fragment_definition_out,
                 "FragmentSpread": self._on_fragment_spread_out,
                 "OperationDefinition": self._on_operation_definition_out,
+                "InlineFragment": self._on_inline_fragment_out,
             },
         ]
         self._depth = 0
@@ -77,6 +79,7 @@ class TartifletteVisitor(Visitor):
         self._fragments = {}
         self.schema: GraphQLSchema = schema
         self.exception: Exception = None
+        self._inline_fragment_type = None
 
     def _on_argument_in(self, element: _VisitorElement):
         self._current_argument_name = element.name
@@ -125,9 +128,14 @@ class TartifletteVisitor(Visitor):
                 str(parent_type) + "." + element.name
             )
         except UnknownSchemaFieldResolver as e:
-            self.continue_child = 0
-            self.exception = e
-            return
+            try:
+                field = self.schema.get_field_by_name(
+                    self._inline_fragment_type + "." + element.name
+                )
+            except UnknownSchemaFieldResolver as e:
+                self.continue_child = 0
+                self.exception = e
+                return
 
         node = NodeField(
             element.name,
@@ -259,6 +267,14 @@ class TartifletteVisitor(Visitor):
 
     def _on_operation_definition_out(self, _):
         self._operation_type = None
+
+    def _on_inline_fragment_in(self, element):
+        self._inline_fragment_type = element.get_named_type()
+        self._current_type_condition = self._inline_fragment_type
+
+    def _on_inline_fragment_out(self, _):
+        self._inline_fragment_type = None
+        self._current_type_condition = None
 
     def _in(self, element: _VisitorElement):
         self.path = self.path + "/%s" % TartifletteVisitor.create_node_name(
