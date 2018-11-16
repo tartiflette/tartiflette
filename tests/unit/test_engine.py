@@ -22,4 +22,26 @@ async def test_engine_execute(clean_registry):
 
     e = Engine("type Query { a:String }")
 
-    await e.execute("")
+    result = await e.execute("query aquery { a }")
+
+    assert result == {"data": {"a": None}}
+
+
+@pytest.mark.asyncio
+async def test_engine_execute_empty_req_except(clean_registry):
+    from tartiflette.engine import Engine
+
+    e = Engine("type Query { a:String }")
+
+    with pytest.raises(Exception):
+        await e.execute("")
+
+
+@pytest.mark.asyncio
+async def test_engine_execute_syntax_error(clean_registry):
+    from tartiflette.engine import Engine
+
+    e = Engine("type Query { a:String }")
+
+    with pytest.raises(Exception):
+        await e.execute("query { a { }")
