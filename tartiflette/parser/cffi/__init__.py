@@ -332,9 +332,6 @@ class Visitor:
         self.event = self.UKN
         self.continue_child = 1
 
-    def update(self, _, __):
-        pass
-
 
 class _VisitorElement:
     def __init__(self, lib, ffi, libgraphql_type, internal_element):
