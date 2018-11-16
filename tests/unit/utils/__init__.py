@@ -19,17 +19,4 @@ def call_with_mocked_resolver_factory(acallable, *args, **kargs):
     return ret
 
 
-from unittest.mock import MagicMock
-
-
-class AsyncMock(MagicMock):
-    async def __call__(self, *args, **kwargs):
-        #  super(AsyncMock, self).__call__(*args, **kwargs)
-        pass
-
-
-__all__ = [
-    "MOCKED_GET_RESOLVER_EXECUTOR",
-    "call_with_mocked_resolver_factory",
-    "AsyncMock",
-]
+__all__ = ["MOCKED_GET_RESOLVER_EXECUTOR", "call_with_mocked_resolver_factory"]
