@@ -27,12 +27,12 @@ test-integration: clean
 .PHONY: test-unit
 test-unit: clean
 	mkdir -p reports
-	py.test -s tests/unit --junitxml=reports/report_unit_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_func.xml
+	py.test -s tests/unit -n 4 --junitxml=reports/report_unit_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_func.xml $(EXTRA_VERBOSE) $(EXTRA_FILTER)
 
 .PHONY: test-functional
 test-functional: clean
 	mkdir -p reports
-	py.test -s tests/functional --junitxml=reports/report_func_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_unit.xml
+	py.test -s tests/functional -n 3 --junitxml=reports/report_func_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_unit.xml
 
 .PHONY: test
 test: test-integration test-unit test-functional

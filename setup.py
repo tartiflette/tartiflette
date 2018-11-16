@@ -48,14 +48,16 @@ class BuildPyCmd(build_py):
 
 _TEST_REQUIRE = [
     "pytest",
-    "pytest-benchmark",
     "pytest-cov",
     "pytest-asyncio",
+    "pytest-xdist",
     "pytz",
     "pylint==2.1.1",
     "xenon",
     "black==18.9b0",
 ]
+
+_BENCHMARK_REQUIRE = ["pytest-benchmark"]
 
 _VERSION = "0.1.9"
 
@@ -92,7 +94,7 @@ setup(
         "lark-parser==0.6.4",
     ],
     tests_require=_TEST_REQUIRE,
-    extras_require={"test": _TEST_REQUIRE},
+    extras_require={"test": _TEST_REQUIRE, "benchmark": _BENCHMARK_REQUIRE},
     cmdclass={"build_ext": BuildExtCmd, "build_py": BuildPyCmd},
     include_package_data=True,
 )
