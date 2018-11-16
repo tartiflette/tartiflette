@@ -29,6 +29,7 @@ from tartiflette.engine import Engine
                     fField
                 }
             }
+            __typename
         }
         """,
             {
@@ -37,7 +38,8 @@ from tartiflette.engine import Engine
                         "__typename": "One",
                         "aField": "aValue",
                         "bField": 1,
-                    }
+                    },
+                    "__typename": "Query",
                 }
             },
         ),
@@ -61,6 +63,7 @@ from tartiflette.engine import Engine
                     fField
                 }
             }
+            __typename
         }
         """,
             {
@@ -69,7 +72,8 @@ from tartiflette.engine import Engine
                         "__typename": "Two",
                         "cField": 2,
                         "dField": "dValue",
-                    }
+                    },
+                    "__typename": "Query",
                 }
             },
         ),
@@ -94,6 +98,7 @@ from tartiflette.engine import Engine
                     fField
                 }
             }
+            __typename
         }
         """,
             {
@@ -102,15 +107,14 @@ from tartiflette.engine import Engine
                         "__typename": "Three",
                         "eField": 3.6,
                         "fField": "fValue",
-                    }
+                    },
+                    "__typename": "Query",
                 }
             },
         ),
     ],
 )
-async def test_tartiflette_execute_union_type_output(
-    query, expected, clean_registry
-):
+async def test_tartiflette_typename(query, expected, clean_registry):
     schema_sdl = """
     type One {
         aField: String
