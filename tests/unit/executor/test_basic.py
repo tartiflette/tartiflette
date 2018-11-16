@@ -79,7 +79,7 @@ async def test_executor_basic_execute(errors, expected, monkeypatch):
 
     async def my_execute(_, exec_ctx, __):
         for err in errors:
-            exec_ctx.errors.append(err)
+            exec_ctx.add_error(err)
 
     monkeypatch.setattr(basic, "_execute", my_execute)
 

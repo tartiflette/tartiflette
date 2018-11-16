@@ -68,34 +68,3 @@ class Info:
                 and self.execution_ctx == other.execution_ctx
             )
         )
-
-    def clone(
-        self,
-        query_field=__SAMEVALUE__,
-        schema_field=__SAMEVALUE__,
-        schema=__SAMEVALUE__,
-        path=__SAMEVALUE__,
-        location=__SAMEVALUE__,
-        execution_ctx=__SAMEVALUE__,
-    ):
-        return Info(
-            query_field=self.query_field
-            if query_field == self.__SAMEVALUE__
-            else query_field,
-            schema_field=self.schema_field
-            if schema_field == self.__SAMEVALUE__
-            else schema_field,
-            schema=self.schema if schema == self.__SAMEVALUE__ else schema,
-            path=self.path[:] if path == self.__SAMEVALUE__ else path,
-            location=self.location
-            if location == self.__SAMEVALUE__
-            else location,
-            execution_ctx=self.execution_ctx
-            if execution_ctx == self.__SAMEVALUE__
-            else execution_ctx,
-        )
-
-    def clone_with_path(self, new_path_part):
-        new_path = self.path[:]
-        new_path.append(new_path_part)
-        return self.clone(path=new_path)
