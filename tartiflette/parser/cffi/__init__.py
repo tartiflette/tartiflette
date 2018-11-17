@@ -346,14 +346,17 @@ class _VisitorElement:
             pass
 
     def _get_name_object(self):
-        return self._lib.__getattr__(
-            "GraphQLAst%s_get_name" % self.libgraphql_type
-        )(self._internal_element)
+        if self._internal_element != self._ffi.NULL:
+            return self._lib.__getattr__(
+                "GraphQLAst%s_get_name" % self.libgraphql_type
+            )(self._internal_element)
+        return self._ffi.NULL
 
     def _get_name_string(self, name_object):
         if self._ffi.NULL != name_object:
-            nval = self._lib.GraphQLAstName_get_value(name_object)
-            return self._from_char_to_string(nval)
+            return self._from_char_to_string(
+                self._lib.GraphQLAstName_get_value(name_object)
+            )
         return None
 
     def _from_char_to_string(self, val):
