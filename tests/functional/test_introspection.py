@@ -153,6 +153,19 @@ async def test_tartiflette_execute_basic_type_introspection_output(
                             },
                         },
                     },
+                    {
+                        "name": "__typename",
+                        "args": [],
+                        "type": {
+                            "kind": "NON_NULL",
+                            "name": None,
+                            "ofType": {
+                                "kind": "SCALAR",
+                                "name": "String",
+                                "ofType": None,
+                            },
+                        },
+                    },
                 ],
             }
         }

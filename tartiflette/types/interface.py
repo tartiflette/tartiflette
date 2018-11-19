@@ -48,3 +48,9 @@ class GraphQLInterfaceType(GraphQLType):
             return [x for _, x in self._fields.items()]
         except AttributeError:
             return []
+
+    def bake(self, schema):
+        super().bake(schema)
+
+        for field in self.fields:
+            field.bake(schema, self)

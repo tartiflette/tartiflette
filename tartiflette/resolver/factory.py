@@ -111,6 +111,7 @@ def _get_coercer(field):
 
     # Manage List and NonNull
     coercer = _list_and_null_coercer(field_type, coercer)
+
     return coercer
 
 

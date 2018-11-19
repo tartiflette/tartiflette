@@ -2,8 +2,8 @@ from typing import Dict, List, Optional, Union
 
 from tartiflette.introspection import (
     SCHEMA_ROOT_FIELD_DEFINITION,
-    TYPENAME_ROOT_FIELD_DEFINITION,
     TYPE_ROOT_FIELD_DEFINITION,
+    TYPENAME_ROOT_FIELD_DEFINITION,
 )
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType
@@ -242,9 +242,8 @@ class GraphQLSchema:
         """
 
         self.inject_introspection()
-        self.prepare_custom_scalars()
-        self.prepare_directives()
-        self.initialize_directives()
+        self.bake_types()
+        self.call_onbuild_directives()
         self.validate()
         # self.field_gql_types_to_real_types()
         # self.union_gql_types_to_real_types()
@@ -441,30 +440,29 @@ class GraphQLSchema:
 
     def inject_introspection(self):
         self._gql_types[self.query_type].add_field(
-            SCHEMA_ROOT_FIELD_DEFINITION
+            SCHEMA_ROOT_FIELD_DEFINITION(
+                gql_type=GraphQLNonNull("__Schema", schema=self)
+            )
         )
-        self._gql_types[self.query_type].add_field(TYPE_ROOT_FIELD_DEFINITION)
         self._gql_types[self.query_type].add_field(
-            TYPENAME_ROOT_FIELD_DEFINITION
+            TYPE_ROOT_FIELD_DEFINITION(schema=self, gql_type="__Type")
         )
 
-    def prepare_directives(self):
-        for typee in self.types:
+        for _, gql_type in self._gql_types.items():
             try:
-                for field in typee.fields:
-                    field.resolver.apply_directives()
+                __typename = TYPENAME_ROOT_FIELD_DEFINITION(
+                    schema=self,
+                    gql_type=GraphQLNonNull(gql_type="String", schema=self),
+                )
+                gql_type.add_field(__typename)
             except AttributeError:
                 pass
 
-    def prepare_custom_scalars(self):
+    def bake_types(self):
         for typee in self.types:
-            try:
-                for field in typee.fields:
-                    field.resolver.update_coercer()
-            except AttributeError:
-                pass
+            typee.bake(self)
 
-    def initialize_directives(self):
+    def call_onbuild_directives(self):
         for name, directive in self._directives.items():
             try:
                 directive.implementation.on_build(self)

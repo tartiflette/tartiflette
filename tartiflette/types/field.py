@@ -32,6 +32,7 @@ class GraphQLField:
         self.resolver = ResolverExecutorFactory.get_resolver_executor(
             resolver, self, directives
         )
+        self.parent_type = None
 
     def __repr__(self):
         return (
@@ -125,3 +126,10 @@ class GraphQLField:
     @property
     def schema(self):
         return self._schema
+
+    def bake(self, schema, parent_type):
+        self._schema = schema
+
+        self.resolver.update_coercer()
+        self.resolver.apply_directives()
+        self.parent_type = parent_type

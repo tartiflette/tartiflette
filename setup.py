@@ -57,7 +57,7 @@ _TEST_REQUIRE = [
     "black==18.9b0",
 ]
 
-_VERSION = "0.1.8"
+_VERSION = "0.1.9"
 
 _PACKAGES = find_packages(exclude=["tests*"])
 

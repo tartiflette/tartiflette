@@ -66,3 +66,6 @@ class GraphQLType:
     @property
     def schema(self):
         return self._schema
+
+    def bake(self, schema):
+        self._schema = schema
