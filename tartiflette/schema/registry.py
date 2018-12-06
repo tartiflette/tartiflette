@@ -31,7 +31,7 @@ class SchemaRegistry:
         SchemaRegistry._register(schema_name, "scalars", scalar)
 
     @staticmethod
-    def register_sdls(schema_name, sdls):
+    def register_sdl(schema_name, sdl):
         if not SchemaRegistry._schemas.get(schema_name):
             SchemaRegistry._schemas[schema_name] = {}
 
@@ -42,22 +42,22 @@ class SchemaRegistry:
             "%s/builtins/introspection.sdl" % os.path.dirname(__file__),
         ]
         full_sdl = ""
-        if not isinstance(sdls, GraphQLSchema):
-            if isinstance(sdls, list):
-                sdl_files_list = sdl_files_list + sdls
-            elif os.path.isfile(sdls):
-                sdl_files_list = sdl_files_list + [sdls]
-            elif os.path.isdir(sdls):
+        if not isinstance(sdl, GraphQLSchema):
+            if isinstance(sdl, list):
+                sdl_files_list = sdl_files_list + sdl
+            elif os.path.isfile(sdl):
+                sdl_files_list = sdl_files_list + [sdl]
+            elif os.path.isdir(sdl):
                 sdl_files_list = sdl_files_list + [
-                    os.path.join(sdls, f)
-                    for f in os.listdir(sdls)
-                    if os.path.isfile(os.path.join(sdls, f))
+                    os.path.join(sdl, f)
+                    for f in os.listdir(sdl)
+                    if os.path.isfile(os.path.join(sdl, f))
                     and f.endswith(".sdl")
                 ]
             else:
-                full_sdl = sdls
+                full_sdl = sdl
         else:
-            SchemaRegistry._schemas[schema_name]["inst"] = sdls
+            SchemaRegistry._schemas[schema_name]["inst"] = sdl
 
         # Convert SDL files into big schema and parse it
         for filepath in sdl_files_list:

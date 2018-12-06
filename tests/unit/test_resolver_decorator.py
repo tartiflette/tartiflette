@@ -55,7 +55,7 @@ async def test_resolver_decorator(clean_registry):
     }
     """
 
-    clean_registry.register_sdls("default", schema_sdl)
+    clean_registry.register_sdl("default", schema_sdl)
 
     mock_one = Mock()
     mock_two = Mock()

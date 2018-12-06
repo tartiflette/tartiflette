@@ -91,7 +91,7 @@ async def test_tartiflette_execute_simple_coercion(clean_registry):
     #         ],
     #     ]
 
-    ttftt = Engine(sdls=schema_sdl)
+    ttftt = Engine(sdl=schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -170,7 +170,7 @@ async def test_tartiflette_execute_nested_coercion(clean_registry):
     async def func_field_library_resolver(*args, **kwargs):
         return [Book("A new beginning", [Author("Lemony Snicket")])]
 
-    ttftt = Engine(sdls=schema_sdl)
+    ttftt = Engine(sdl=schema_sdl)
 
     result = await ttftt.execute(
         """
