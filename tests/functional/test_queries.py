@@ -91,18 +91,22 @@ async def test_full_query_execute(clean_registry):
 
     result = await ttftt.execute(
         """
+        fragment boby on Author {
+            name
+        }
+
         query TestQueriesFromEnd2End{
             libraries {
                 books {
                     title
-                    price
+                    price(number: 3.6)
                     category
                     author {
-                        name
+                        name(useless: true)
                     }
                 }
                 authors {
-                    name
+                    ...boby
                 }
             }
         }

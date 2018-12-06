@@ -60,8 +60,8 @@ def test_build_schema(monkeypatch, clean_registry):
     }
     """
 
-    clean_registry.register_sdls("G", schema_sdl)
-    clean_registry.register_sdls("E", "")
+    clean_registry.register_sdl("G", schema_sdl)
+    clean_registry.register_sdl("E", "")
     generated_schema = SchemaBakery._preheat("G")
     expected_schema = SchemaBakery._preheat("E")
     expected_schema.query_type = "RootQuery"

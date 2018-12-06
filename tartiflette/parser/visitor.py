@@ -27,7 +27,7 @@ class TartifletteVisitor(Visitor):
     #  Same as path information
     @staticmethod
     @lru_cache(maxsize=10)
-    def create_node_name(gql_type, name):
+    def create_node_name(gql_type, name=None):
         node_name = gql_type
         if name:
             node_name = node_name + "(%s)" % name
@@ -233,19 +233,19 @@ class TartifletteVisitor(Visitor):
         self._current_node.is_nullable = False
 
     def _on_fragment_definition_in(self, element: _VisitorElement):
-        nfd = NodeFragmentDefinition(
-            self.path,
-            element.get_location(),
-            element.name,
-            type_condition=element.get_type_condition(),
-        )
-
         if element.name in self._fragments:
             self.continue_child = 0
             self.exception = TartifletteException(
                 "Fragment < %s > already defined" % element.name
             )
             return
+
+        nfd = NodeFragmentDefinition(
+            self.path,
+            element.get_location(),
+            element.name,
+            type_condition=element.get_type_condition(),
+        )
 
         self._current_fragment_definition = nfd
         self._fragments[element.name] = nfd

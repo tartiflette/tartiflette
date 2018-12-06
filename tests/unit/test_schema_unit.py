@@ -53,7 +53,7 @@ def test_schema_object_get_field_name(clean_registry):
     }
     """
 
-    clean_registry.register_sdls("A", schema_sdl)
+    clean_registry.register_sdl("A", schema_sdl)
     generated_schema = SchemaBakery._preheat("A")
 
     with pytest.raises(ValueError):
@@ -160,7 +160,7 @@ def test_schema_validate_named_types(
     full_sdl, expected_error, expected_value, clean_registry
 ):
 
-    clean_registry.register_sdls("A", full_sdl)
+    clean_registry.register_sdl("A", full_sdl)
     generated_schema = SchemaBakery._preheat("A")
 
     if expected_error:
@@ -326,7 +326,7 @@ def test_schema_validate_named_types(
 def test_schema_validate_object_follow_interfaces(
     full_sdl, expected_error, expected_value, clean_registry
 ):
-    clean_registry.register_sdls("A", full_sdl)
+    clean_registry.register_sdl("A", full_sdl)
     generated_schema = SchemaBakery._preheat("A")
 
     try:
@@ -451,7 +451,7 @@ def test_schema_validate_object_follow_interfaces(
 def test_schema_validate_root_types_exist(
     full_sdl, expected_error, expected_value, clean_registry
 ):
-    clean_registry.register_sdls("a", full_sdl)
+    clean_registry.register_sdl("a", full_sdl)
     generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
@@ -487,7 +487,7 @@ def test_schema_validate_root_types_exist(
 def test_schema_validate_non_empty_object(
     full_sdl, expected_error, expected_value, clean_registry
 ):
-    clean_registry.register_sdls("a", full_sdl)
+    clean_registry.register_sdl("a", full_sdl)
     generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
@@ -537,7 +537,7 @@ def test_schema_validate_non_empty_object(
 def test_schema_validate_union_is_acceptable(
     full_sdl, expected_error, expected_value, clean_registry
 ):
-    clean_registry.register_sdls("a", full_sdl)
+    clean_registry.register_sdl("a", full_sdl)
     generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
@@ -548,7 +548,7 @@ def test_schema_validate_union_is_acceptable(
 
 
 def test_schema_bake_schema(clean_registry):
-    clean_registry.register_sdls(
+    clean_registry.register_sdl(
         "a",
         """
         type Query {
