@@ -5,27 +5,27 @@ import pytest
 def test_directive_implementation():
     from tartiflette.directive.directive import Directive
 
-    class NTM:
+    class dontcare:
         async def on_execution(self, *args, **kwargs):
             pass
 
     a_directive = Directive("deprecated", schema_name="Ninja")
 
-    assert a_directive(NTM) == NTM
+    assert a_directive(dontcare) == dontcare
 
 
 def test_directive_implementation_except():
     from tartiflette.directive.directive import Directive
     from tartiflette.types.exceptions.tartiflette import NonAwaitableDirective
 
-    class NTM:
+    class dontcare:
         def on_execution(self, *args, **kwargs):
             pass
 
     a_directive = Directive("deprecated", schema_name="Ninja")
 
     with pytest.raises(NonAwaitableDirective):
-        a_directive(NTM)
+        a_directive(dontcare)
 
 
 def test_directive_bake_except_no_implem():
@@ -51,11 +51,11 @@ def test_directive_bake_except_unknowdirective():
     schema = Mock()
     schema.find_directive = schema_find_directive
 
-    class NTM:
+    class dontcare:
         async def on_execution(self, *args, **kwargs):
             pass
 
-    a_directive(NTM)
+    a_directive(dontcare)
 
     with pytest.raises(UnknownDirectiveDefinition):
         a_directive.bake(schema)
@@ -73,11 +73,11 @@ def test_directive_bake():
     schema = Mock()
     schema.find_directive = schema_find_directive
 
-    class NTM:
+    class dontcare:
         async def on_execution(self, *args, **kwargs):
             pass
 
-    a_directive(NTM)
+    a_directive(dontcare)
 
     assert a_directive.bake(schema) is None
-    assert directive_internal.implementation == NTM
+    assert directive_internal.implementation == dontcare

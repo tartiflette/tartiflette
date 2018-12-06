@@ -522,43 +522,43 @@ def test_parser_visitor__on_inline_fragment_out(a_visitor, an_element):
 
 
 def test_parser_visitor__in(a_visitor, an_element):
-    a_visitor.path = "/NTM"
+    a_visitor.path = "/dontcare"
     an_element.libgraphql_type = "LOL"
     a_callback = Mock()
     a_visitor._events[a_visitor.IN]["LOL"] = a_callback
 
     a_visitor._in(an_element)
 
-    assert a_visitor.path == "/NTM/LOL(a_name)"
+    assert a_visitor.path == "/dontcare/LOL(a_name)"
     assert a_callback.called
 
 
 def test_parser_visitor__in_no_callback(a_visitor, an_element):
-    a_visitor.path = "/NTM"
+    a_visitor.path = "/dontcare"
     an_element.libgraphql_type = "LOL"
 
     assert a_visitor._in(an_element) is None
-    assert a_visitor.path == "/NTM/LOL(a_name)"
+    assert a_visitor.path == "/dontcare/LOL(a_name)"
 
 
 def test_parser_visitor__out(a_visitor, an_element):
-    a_visitor.path = "/NTM/LOL(a_name)"
+    a_visitor.path = "/dontcare/LOL(a_name)"
     an_element.libgraphql_type = "LOL"
     a_callback = Mock()
     a_visitor._events[a_visitor.OUT]["LOL"] = a_callback
 
     a_visitor._out(an_element)
 
-    assert a_visitor.path == "/NTM"
+    assert a_visitor.path == "/dontcare"
     assert a_callback.called
 
 
 def test_parser_visitor__out_no_callback(a_visitor, an_element):
-    a_visitor.path = "/NTM/LOL(a_name)"
+    a_visitor.path = "/dontcare/LOL(a_name)"
     an_element.libgraphql_type = "LOL"
 
     assert a_visitor._out(an_element) is None
-    assert a_visitor.path == "/NTM"
+    assert a_visitor.path == "/dontcare"
 
 
 def test_parser_visitor_update_dont_care(a_visitor, an_element):

@@ -47,7 +47,7 @@ def _get_parent_results_mock(typename):
     "parent_result,expected",
     [
         (_get_parent_results_mock("LOL"), "LOL2"),
-        (_get_parent_results_mock("NTM"), "Ninja"),
+        (_get_parent_results_mock("dontcare"), "Ninja"),
     ],
 )
 async def test_introspection___typename_resolver(parent_result, expected):
