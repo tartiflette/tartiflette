@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Release]
 
+### [0.2.0] - 2018-12-06
+
+#### Changed
+
+- Drop plural of `Engine` `sdls` constructor parameter.
+  Went from :
+
+  ```python
+  class Engine():
+      def __init__(sdls, ....):
+  ```
+
+  to
+
+  ```python
+  class Engine():
+      def __init__(sdl, ...):
+  ```
+
 ### [0.1.9] - 2018-11-16
 
 #### Added
