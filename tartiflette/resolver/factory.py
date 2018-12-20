@@ -202,10 +202,15 @@ class _ResolverExecutor:
 
     def update_func(self, func):
         self._raw_func = func
-        self.apply_directives()
 
     def update_coercer(self):
         self._coercer = _get_coercer(self.schema_field)
+
+    def bake(self, custom_default_resolver):
+        self.update_coercer()
+        if self._raw_func is default_resolver and custom_default_resolver is not None:
+            self.update_func(custom_default_resolver)
+        self.apply_directives()
 
     @property
     def schema_field(self):
@@ -233,7 +238,7 @@ class _ResolverExecutor:
         return False
 
 
-async def _default_resolver(
+async def default_resolver(
     parent_result, _arguments: dict, _request_ctx: dict, info
 ) -> Any:
     try:
@@ -252,4 +257,4 @@ async def _default_resolver(
 class ResolverExecutorFactory:
     @staticmethod
     def get_resolver_executor(func, field, directives):
-        return _ResolverExecutor(func or _default_resolver, field, directives)
+        return _ResolverExecutor(func or default_resolver, field, directives)

@@ -88,7 +88,7 @@ setup(
     packages=_PACKAGES,
     install_requires=[
         "cython",
-        "uvloop==0.9.1",
+        "uvloop",
         "cffi",
         "python-rapidjson",
         "lark-parser==0.6.4",

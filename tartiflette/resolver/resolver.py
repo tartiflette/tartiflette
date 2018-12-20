@@ -41,7 +41,7 @@ class Resolver:
 
         except KeyError:
             raise UnknownDirectiveDefinition(
-                "Unknow Directive Definition %s" % self._name
+                "Unknown Directive Definition %s" % self._name
             )
 
     def __call__(self, resolver: Callable):
