@@ -208,7 +208,10 @@ class _ResolverExecutor:
 
     def bake(self, custom_default_resolver):
         self.update_coercer()
-        if self._raw_func is default_resolver and custom_default_resolver is not None:
+        if (
+            self._raw_func is default_resolver
+            and custom_default_resolver is not None
+        ):
             self.update_func(custom_default_resolver)
         self.apply_directives()
 
