@@ -23,6 +23,10 @@ e = Engine("my_sdl.sdl", custom_default_resolver=my_default_resolver)
 
 ```
 
+#### Removed
+
+- Dependancy to `python-rapidjson`, `uvloop`, `cython`.
+
 ## [Release]
 
 ### [0.2.0] - 2018-12-06
