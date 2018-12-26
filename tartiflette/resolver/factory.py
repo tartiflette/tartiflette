@@ -125,12 +125,9 @@ def _get_coercer(field):
 
 def _surround_with_execution_directives(func, directives):
     for directive in reversed(directives):
-        try:
-            func = partial(
-                directive["callables"].on_execution, directive["args"], func
-            )
-        except AttributeError:
-            pass
+        func = partial(
+            directive["callables"].on_execution, directive["args"], func
+        )
     return func
 
 
@@ -141,14 +138,9 @@ def _introspection_directive_endpoint(element):
 def _introspection_directives(directives):
     func = _introspection_directive_endpoint
     for directive in reversed(directives):
-        try:
-            func = partial(
-                directive["callables"].on_introspection,
-                directive["args"],
-                func,
-            )
-        except AttributeError:
-            pass
+        func = partial(
+            directive["callables"].on_introspection, directive["args"], func
+        )
     return func
 
 
@@ -160,30 +152,26 @@ def _execute_introspection_directives(elements):
             res = directives(ele)
             if res:
                 ret.append(res)
-        except AttributeError:
+        except (AttributeError, TypeError):
             ret.append(ele)
     return ret
 
 
 class _ResolverExecutor:
-    def __init__(self, func, schema_field, directives):
+    def __init__(self, func, schema_field):
         self._raw_func = func
         self._func = func
         self._schema_field = schema_field
         self._coercer = _get_coercer(schema_field)
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
-        self._directives = directives or {}
 
     async def _introspection(self, element):
-        try:
-            if isinstance(element, list):
-                element = _execute_introspection_directives(element)
-            else:
-                element = _execute_introspection_directives([element])
-                if element is not None:
-                    element = element[0]
-        except (AttributeError, TypeError):
-            pass
+        if isinstance(element, list):
+            return _execute_introspection_directives(element)
+
+        element = _execute_introspection_directives([element])
+        if element is not None:
+            element = element[0]
 
         return element
 
@@ -267,5 +255,5 @@ async def default_resolver(
 
 class ResolverExecutorFactory:
     @staticmethod
-    def get_resolver_executor(func, field, directives):
-        return _ResolverExecutor(func or default_resolver, field, directives)
+    def get_resolver_executor(func, field):
+        return _ResolverExecutor(func or default_resolver, field)

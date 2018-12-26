@@ -30,7 +30,7 @@ class GraphQLField:
         self._is_deprecated = False
 
         self.resolver = ResolverExecutorFactory.get_resolver_executor(
-            resolver, self, directives
+            resolver, self
         )
         self.parent_type = None
 

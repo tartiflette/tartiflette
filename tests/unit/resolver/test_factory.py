@@ -325,3 +325,121 @@ def test_resolver_factory__get_coercer_no_schema():
     f.schema = None
 
     assert _get_coercer(f) is None
+
+
+def test_resolver_factory__surround_with_execution_directives():
+    from tartiflette.resolver.factory import (
+        _surround_with_execution_directives,
+    )
+
+    cllbs_a = Mock()
+    cllbs_a.on_execution = Mock()
+    cllbs_b = Mock()
+    cllbs_b.on_execution = Mock()
+
+    directives = [
+        {"callables": cllbs_a, "args": {"a": "b"}},
+        {"callables": cllbs_b, "args": {"c": "d"}},
+    ]
+
+    r = _surround_with_execution_directives("A", directives)
+    assert r is not None
+    assert r.func is cllbs_a.on_execution
+    a, b = r.args
+    assert a == {"a": "b"}
+    assert b.func is cllbs_b.on_execution
+    a, b = b.args
+    assert a == {"c": "d"}
+    assert b == "A"
+
+    assert _surround_with_execution_directives("A", []) == "A"
+
+
+def test_resolver_factory__introspection_directive_endpoint():
+    from tartiflette.resolver.factory import _introspection_directive_endpoint
+
+    assert _introspection_directive_endpoint("A") == "A"
+    assert _introspection_directive_endpoint(None) is None
+
+
+@pytest.fixture
+def directive_list_mock():
+    cllbs_a = Mock()
+    cllbs_a.on_introspection = Mock(return_val="intro_a")
+    cllbs_b = Mock()
+    cllbs_b.on_introspection = Mock(return_val="intro_b")
+
+    directives = [
+        {"callables": cllbs_a, "args": {"a": "b"}},
+        {"callables": cllbs_b, "args": {"c": "d"}},
+    ]
+    return directives
+
+
+def test_resolver_factory__introspection_directives(directive_list_mock):
+    from tartiflette.resolver.factory import _introspection_directives
+    from tartiflette.resolver.factory import _introspection_directive_endpoint
+
+    r = _introspection_directives(directive_list_mock)
+    assert r is not None
+    assert r.func is directive_list_mock[0]["callables"].on_introspection
+    a, b = r.args
+    assert a == directive_list_mock[0]["args"]
+    assert b.func is directive_list_mock[1]["callables"].on_introspection
+    a, b = b.args
+    assert a == directive_list_mock[1]["args"]
+    assert b is _introspection_directive_endpoint
+
+    assert _introspection_directives([]) is _introspection_directive_endpoint
+
+
+def test_resolver_factory__execute_introspection_directives(
+    directive_list_mock
+):
+    from tartiflette.resolver.factory import _execute_introspection_directives
+
+    elements = ["A", "B"]
+
+    assert _execute_introspection_directives(elements) == elements
+
+    elem = Mock()
+    elem.directives = directive_list_mock
+
+    assert _execute_introspection_directives([elem]) is not None
+    directive_list_mock[0]["callables"].on_introspection.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_resolver_factory_default_resolver():
+    from tartiflette.resolver.factory import default_resolver
+
+    info = Mock()
+    info.schema_field = Mock()
+    info.schema_field.name = "aField"
+
+    assert await default_resolver(None, None, None, info) is None
+
+    bob = Mock()
+    bob.aField = "Lol"
+
+    assert await default_resolver(bob, None, None, info) == "Lol"
+    assert await default_resolver({"aField": "TTP"}, None, None, info) == "TTP"
+
+
+def test_resolver_factory_resolver_executor_factory():
+    from tartiflette.resolver.factory import ResolverExecutorFactory
+    from tartiflette.resolver.factory import default_resolver
+
+    field = Mock()
+    field.gql_type = "aType"
+    field.schema = None
+
+    res_ex = ResolverExecutorFactory.get_resolver_executor(
+        "A", field
+    )
+    assert res_ex._raw_func == "A"
+    assert res_ex._schema_field == field
+
+    res_ex = ResolverExecutorFactory.get_resolver_executor(None, field)
+    assert res_ex._raw_func is default_resolver
+    assert res_ex._schema_field == field
