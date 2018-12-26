@@ -21,7 +21,6 @@ def test_build_schema(monkeypatch, clean_registry):
     from tartiflette.types.non_null import GraphQLNonNull
     from tartiflette.types.object import GraphQLObjectType
     from tartiflette.types.union import GraphQLUnionType
-    from tartiflette.engine import Engine
 
     schema_sdl = """
     schema @enable_cache {

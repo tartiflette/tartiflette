@@ -34,7 +34,7 @@ class GraphQLSchema:
     Contains the complete GraphQL Schema: types, entrypoints and directives.
     """
 
-    def __init__(self, description=None):
+    def __init__(self, name="default", description=None):
         self.description = description
         if not description:
             self.description = """A GraphQL Schema contains the complete definition of the GraphQL structure: types, entrypoints (query, mutation, subscription)."""
@@ -53,13 +53,15 @@ class GraphQLSchema:
         self._possible_types: Dict[str, Dict[str, bool]] = {}
         self._enums: Dict[str, GraphQLEnumType] = {}
         self._custom_scalars: Dict[str, GraphQLScalarType] = {}
+        self.name = name
 
     def __repr__(self):
         return (
-            "GraphQLSchema(query: {}, "
+            "GraphQLSchema(name: {}, query: {}, "
             "mutation: {}, "
             "subscription: {}, "
             "types: {})".format(
+                self.name,
                 self._query_type,
                 self._mutation_type,
                 self.subscription_type,
@@ -157,8 +159,11 @@ class GraphQLSchema:
     def enums(self):
         return self._enums
 
+    def find_enum(self, name):
+        return self._enums.get(name)
+
     def find_scalar(self, name):
-        return self._custom_scalars[name]
+        return self._custom_scalars.get(name)
 
     def add_directive(self, value: GraphQLDirective) -> None:
         if self._directives.get(value.name):
@@ -233,7 +238,7 @@ class GraphQLSchema:
                 "field `{}` was not found in GraphQL schema.".format(name)
             )
 
-    def bake(self) -> None:
+    def bake(self, custom_default_resolver=None) -> None:
         """
         Bake the final schema (it should not change after this) used for
         execution.
@@ -242,7 +247,7 @@ class GraphQLSchema:
         """
 
         self.inject_introspection()
-        self.bake_types()
+        self.bake_types(custom_default_resolver)
         self.call_onbuild_directives()
         self.validate()
         # self.field_gql_types_to_real_types()
@@ -458,9 +463,9 @@ class GraphQLSchema:
             except AttributeError:
                 pass
 
-    def bake_types(self):
+    def bake_types(self, custom_default_resolver=None):
         for typee in self.types:
-            typee.bake(self)
+            typee.bake(self, custom_default_resolver)
 
     def call_onbuild_directives(self):
         for name, directive in self._directives.items():

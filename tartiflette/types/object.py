@@ -64,11 +64,11 @@ class GraphQLObjectType(GraphQLType):
         except AttributeError:
             return []
 
-    def bake(self, schema):
-        super().bake(schema)
+    def bake(self, schema, custom_default_resolver):
+        super().bake(schema, custom_default_resolver)
 
         for field in self.fields:
             try:
-                field.bake(schema, self)
+                field.bake(schema, self, custom_default_resolver)
             except AttributeError:
                 pass

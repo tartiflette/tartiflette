@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from tartiflette.types.field import GraphQLField
-from tartiflette.resolver.factory import _default_resolver
+from tartiflette.resolver.factory import default_resolver
 
 from tests.unit.utils import call_with_mocked_resolver_factory
 
@@ -17,7 +17,7 @@ def test_graphql_field_init():
     assert field.name == "Name"
     assert field.gql_type == "Test"
     assert field.arguments == OrderedDict([("test", 42), ("another", 24)])
-    assert field.resolver._func is _default_resolver
+    assert field.resolver._func is default_resolver
     assert field.description == "description"
 
 

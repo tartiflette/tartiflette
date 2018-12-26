@@ -30,7 +30,7 @@ class GraphQLField:
         self._is_deprecated = False
 
         self.resolver = ResolverExecutorFactory.get_resolver_executor(
-            resolver, self, directives
+            resolver, self
         )
         self.parent_type = None
 
@@ -127,9 +127,7 @@ class GraphQLField:
     def schema(self):
         return self._schema
 
-    def bake(self, schema, parent_type):
+    def bake(self, schema, parent_type, custom_default_resolver):
         self._schema = schema
-
-        self.resolver.update_coercer()
-        self.resolver.apply_directives()
+        self.resolver.bake(custom_default_resolver)
         self.parent_type = parent_type
