@@ -188,7 +188,90 @@ def test_resolver_factory__enum_coercer():
     assert a.call_args_list == [((4, info),)]
 
 
-def test_resolver_factory__get_coercer():
+@pytest.fixture
+def scalar_mock():
+    a_scalar = Mock()
+    a_scalar.coerce_output = Mock()
+    return a_scalar
+
+
+@pytest.fixture
+def enum_mock():
+    a_type = Mock()
+    val_a = Mock()
+    val_a.value = "A"
+    val_b = Mock()
+    val_b.value = "B"
+    a_type.values = [val_a, val_b]
+    return a_type
+
+
+@pytest.fixture
+def schema_mock(scalar_mock, enum_mock):
+    schema = Mock()
+    schema.find_enum = Mock(return_value=enum_mock)
+    schema.find_scalar = Mock(return_value=scalar_mock)
+
+    return schema
+
+
+@pytest.fixture
+def field_mock(schema_mock):
+    field = Mock()
+    field.gql_type = "aType"
+    field.schema = schema_mock
+
+    return field
+
+
+def test_resovler_factory__is_an_enum(schema_mock, scalar_mock):
+    from tartiflette.resolver.factory import _is_an_enum
+    from tartiflette.resolver.factory import _built_in_coercer
+    from tartiflette.resolver.factory import _enum_coercer
+
+    r = _is_an_enum("A", schema_mock)
+
+    assert r.func is _enum_coercer
+    assert schema_mock.find_scalar.call_args_list == [(("String",),)]
+    a, b = r.args
+    assert a == ["A", "B"]
+    assert b.func == _built_in_coercer
+    assert scalar_mock.coerce_output in b.args
+
+
+def test_resovler_factory__is_an_enum_not():
+    from tartiflette.resolver.factory import _is_an_enum
+
+    sch = Mock()
+    sch.find_enum = Mock(return_value=None)
+
+    assert _is_an_enum("A", sch) is None
+
+
+def test_resolver_factory__is_a_scalar(schema_mock, scalar_mock):
+    from tartiflette.resolver.factory import _is_a_scalar
+    from tartiflette.resolver.factory import _built_in_coercer
+
+    schema_mock.find_enum = Mock(return_value=None)
+
+    r = _is_a_scalar("A", schema_mock)
+
+    assert schema_mock.find_scalar.call_args_list == [(("A",),)]
+
+    assert r.func is _built_in_coercer
+    assert scalar_mock.coerce_output in r.args
+
+
+def test_resolver_factory__is_a_scalar_not():
+    from tartiflette.resolver.factory import _is_a_scalar
+
+    sch = Mock()
+    sch.find_scalar = Mock(return_value=None)
+
+    assert _is_a_scalar("A", sch) is None
+
+
+def test_resolver_factory__get_coercer___Type():
     from tartiflette.resolver.factory import _get_coercer
     from tartiflette.resolver.factory import _built_in_coercer
     from tartiflette.resolver.factory import _object_coercer
@@ -200,3 +283,45 @@ def test_resolver_factory__get_coercer():
 
     assert c.func is _built_in_coercer
     assert _object_coercer in c.args
+
+
+def test_resolver_factory__get_coercer(field_mock):
+    from tartiflette.resolver.factory import _get_coercer
+
+    assert _get_coercer(field_mock) is not None
+    assert field_mock.schema.find_enum.call_args_list == [(("aType",),)]
+    assert field_mock.schema.find_scalar.call_args_list == [(("String",),)]
+
+    field_mock.schema.find_enum = Mock(return_value=None)
+
+    assert _get_coercer(field_mock) is not None
+    assert field_mock.schema.find_enum.call_args_list == [(("aType",),)]
+    assert field_mock.schema.find_scalar.call_args_list == [
+        (("String",),),
+        (("aType",),),
+    ]
+
+    field_mock.schema.find_scalar = Mock(return_value=None)
+
+    assert _get_coercer(field_mock) is not None
+    assert field_mock.schema.find_enum.call_args_list == [
+        (("aType",),),
+        (("aType",),),
+    ]
+    assert field_mock.schema.find_scalar.call_args_list == [(("aType",),)]
+
+
+def test_resolver_factory__get_coercer_not_ok(field_mock):
+    from tartiflette.resolver.factory import _get_coercer
+
+    field_mock.schema.find_scalar = Mock(return_value=None)
+    assert _get_coercer(field_mock) is not None
+
+
+def test_resolver_factory__get_coercer_no_schema():
+    from tartiflette.resolver.factory import _get_coercer
+
+    f = Mock()
+    f.schema = None
+
+    assert _get_coercer(f) is None

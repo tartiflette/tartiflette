@@ -159,8 +159,11 @@ class GraphQLSchema:
     def enums(self):
         return self._enums
 
+    def find_enum(self, name):
+        return self._enums.get(name)
+
     def find_scalar(self, name):
-        return self._custom_scalars[name]
+        return self._custom_scalars.get(name)
 
     def add_directive(self, value: GraphQLDirective) -> None:
         if self._directives.get(value.name):

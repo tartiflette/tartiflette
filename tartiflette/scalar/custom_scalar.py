@@ -1,5 +1,5 @@
 from tartiflette.schema.registry import SchemaRegistry
-from tartiflette.types.exceptions.tartiflette import UnknownDirectiveDefinition
+from tartiflette.types.exceptions.tartiflette import UnknownScalarDefinition
 
 
 class Scalar:
@@ -12,14 +12,13 @@ class Scalar:
         if not self._implementation:
             raise Exception("No implementation given")
 
-        try:
-            scalar = schema.find_scalar(self._name)
+        scalar = schema.find_scalar(self._name)
+        if scalar:
             scalar.coerce_output = self._implementation.coerce_output
             scalar.coerce_input = self._implementation.coerce_input
-
-        except KeyError:
-            raise UnknownDirectiveDefinition(
-                "Unknow Directive Definition %s" % self._name
+        else:
+            raise UnknownScalarDefinition(
+                "Unknow Scalar Definition %s" % self._name
             )
 
     def __call__(self, implementation):

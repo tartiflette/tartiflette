@@ -89,6 +89,10 @@ class UnknownDirectiveDefinition(GraphQLError):
     pass
 
 
+class UnknownScalarDefinition(GraphQLError):
+    pass
+
+
 class MissingImplementation(GraphQLError):
     pass
 

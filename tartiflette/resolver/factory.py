@@ -75,39 +75,47 @@ def _enum_coercer(enum_valid_values, func, val, info):
     return func(val, info)
 
 
-def _get_coercer(field):
-    field_type = field.gql_type
-    rtype = reduce_type(field_type)
+def _is_an_enum(rtype, schema):
+    enum = schema.find_enum(rtype)
+    if enum:
+        return partial(
+            _enum_coercer,
+            [x.value for x in enum.values],
+            partial(
+                _built_in_coercer, schema.find_scalar("String").coerce_output
+            ),
+        )
 
-    # Per default you're an object
-    coercer = _object_coercer
+    return None
+
+
+def _is_a_scalar(rtype, schema):
+    scalar = schema.find_scalar(rtype)
+    if scalar:
+        return partial(_built_in_coercer, scalar.coerce_output)
+    return None
+
+
+def _get_coercer(field):
+    if not field.schema:
+        return None
+
+    field_type = field.gql_type
+    rtype = reduce_type(field.gql_type)
 
     if rtype == "__Type":
+        # preserve None
         coercer = partial(_built_in_coercer, _object_coercer)
     else:
-        # Is this an enum ?
         try:
-            coercer = partial(
-                _enum_coercer,
-                [x.value for x in field.schema.enums[rtype].values],
-                partial(
-                    _built_in_coercer,
-                    field.schema.find_scalar("String").coerce_output,
-                ),
-            )
-        except (AttributeError, KeyError, TypeError):
-            pass
-
-        # Is this a custom scalar ?
-        try:
-            coercer = partial(
-                partial(
-                    _built_in_coercer,
-                    field.schema.find_scalar(rtype).coerce_output,
-                )
-            )
-        except (AttributeError, KeyError):
-            pass
+            coercer = _is_an_enum(rtype, field.schema)
+            if not coercer:
+                coercer = _is_a_scalar(rtype, field.schema)
+                if not coercer:
+                    # per default you're an object
+                    coercer = _object_coercer
+        except AttributeError:
+            coercer = _object_coercer
 
     # Manage List and NonNull
     coercer = _list_and_null_coercer(field_type, coercer)
