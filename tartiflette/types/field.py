@@ -131,3 +131,11 @@ class GraphQLField:
         self._schema = schema
         self.resolver.bake(custom_default_resolver)
         self.parent_type = parent_type
+
+    def get_arguments_default_values(self):
+        # return a new instance each call cause we don't want caller to modify ours.
+        return {
+            key: val.default_value
+            for key, val in self.arguments.items()
+            if val.default_value
+        }

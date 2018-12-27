@@ -179,7 +179,9 @@ class _ResolverExecutor:
         self, parent_result, arguments: dict, req_ctx: dict, info
     ) -> (Any, Any):
         try:
-            res = await self._func(parent_result, arguments, req_ctx, info)
+            dfv = self._schema_field.get_arguments_default_values()
+            dfv.update(arguments)
+            res = await self._func(parent_result, dfv, req_ctx, info)
             if info.execution_ctx.is_introspection:
                 res = await self._introspection(res)
 
