@@ -3,7 +3,7 @@ from typing import Callable
 
 from tartiflette.types.exceptions.tartiflette import (
     NonAwaitableResolver,
-    UnknownDirectiveDefinition,
+    UnknownFieldDefinition,
 )
 from tartiflette.schema.registry import SchemaRegistry
 
@@ -38,10 +38,9 @@ class Resolver:
         try:
             field = schema.get_field_by_name(self._name)
             field.resolver.update_func(self._implementation)
-
         except KeyError:
-            raise UnknownDirectiveDefinition(
-                "Unknown Directive Definition %s" % self._name
+            raise UnknownFieldDefinition(
+                "Unknown Field Definition %s" % self._name
             )
 
     def __call__(self, resolver: Callable):

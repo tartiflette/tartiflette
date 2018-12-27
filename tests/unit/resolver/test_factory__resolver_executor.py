@@ -38,6 +38,7 @@ def _resolver_executor_mock():
     field = Mock()
     field.schema = None
     field.gql_type = "aType"
+    field.get_arguments_default_values = Mock(return_value={})
 
     res_ex = _ResolverExecutor(AsyncMock(), field)
     return res_ex

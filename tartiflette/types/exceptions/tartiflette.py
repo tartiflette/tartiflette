@@ -93,6 +93,10 @@ class UnknownScalarDefinition(GraphQLError):
     pass
 
 
+class UnknownFieldDefinition(GraphQLError):
+    pass
+
+
 class MissingImplementation(GraphQLError):
     pass
 

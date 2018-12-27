@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Next Release]
+## [Release]
 
-### [0.2.1] - NoDate
+### [0.2.1] - 2018-12-27
 
 #### Added
 
@@ -27,7 +27,9 @@ e = Engine("my_sdl.sdl", custom_default_resolver=my_default_resolver)
 
 - Dependancy to `python-rapidjson`, `uvloop`, `cython`.
 
-## [Release]
+#### Fixed
+
+- Default values for arguments setted in SDL where ignored, now they aren't anymore.
 
 ### [0.2.0] - 2018-12-06
 
