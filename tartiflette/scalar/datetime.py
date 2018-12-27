@@ -8,4 +8,4 @@ class ScalarDateTime:
 
     @staticmethod
     def coerce_input(val: str) -> datetime:
-        return datetime.strptime(val, "%Y-%m-%dT%Y-%m-%dZ")
+        return datetime.strptime(val, "%Y-%m-%dT%H:%M:%S")
