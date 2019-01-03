@@ -37,14 +37,9 @@ class SchemaRegistry:
     def _register(schema_name, where, obj):
         if not obj:
             return
-
-        if not SchemaRegistry._schemas.get(schema_name):
-            SchemaRegistry._schemas[schema_name] = {}
-
-        if not SchemaRegistry._schemas[schema_name].get(where):
-            SchemaRegistry._schemas[schema_name][where] = []
-
-        SchemaRegistry._schemas[schema_name][where].append(obj)
+        SchemaRegistry._schemas.setdefault(schema_name, {}).setdefault(
+            where, []
+        ).append(obj)
 
     @staticmethod
     def register_directive(schema_name="default", directive=None):
