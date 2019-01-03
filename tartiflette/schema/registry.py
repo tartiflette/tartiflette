@@ -3,6 +3,7 @@ from tartiflette.schema import GraphQLSchema
 
 _DIR_PATH = os.path.dirname(__file__)
 
+# TODO: re-use "CUSTOM_SCALARS" from tartiflette.scalar (impossible for now  due to cyclic import)
 _BUILTINS_SCALARS = [
     "Boolean",
     "Date",
