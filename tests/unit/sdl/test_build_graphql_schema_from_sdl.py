@@ -61,8 +61,8 @@ def test_build_schema(monkeypatch, clean_registry):
 
     clean_registry.register_sdl("G", schema_sdl)
     clean_registry.register_sdl("E", "")
-    generated_schema = SchemaBakery._preheat("G")
-    expected_schema = SchemaBakery._preheat("E")
+    generated_schema = SchemaBakery._preheat("G", None)
+    expected_schema = SchemaBakery._preheat("E", None)
     expected_schema.query_type = "RootQuery"
     expected_schema.mutation_type = "RootMutation"
     expected_schema.subscription_type = "RootSubscription"
