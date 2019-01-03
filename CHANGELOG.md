@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Release]
 
+### [0.2.2] - 2019-01-03
+
+### Added
+
+- Enable you to exclude builtins scalars at Engine initialization time with `exclude_builtins_scalars` parameter.
+
+```python
+e = Engine("my_sdl.sdl", exclude_builtins_scalars=["Date", "DateTime"])
+```
+
 ### [0.2.1] - 2018-12-27
 
 #### Added
