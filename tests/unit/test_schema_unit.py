@@ -1,5 +1,8 @@
 import pytest
+from unittest import mock
+from unittest.mock import patch
 
+from tartiflette.schema.registry import SchemaRegistry, _get_builtins_sdl_files
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.types.exceptions.tartiflette import (
@@ -54,7 +57,7 @@ def test_schema_object_get_field_name(clean_registry):
     """
 
     clean_registry.register_sdl("A", schema_sdl)
-    generated_schema = SchemaBakery._preheat("A")
+    generated_schema = SchemaBakery._preheat("A", None)
 
     with pytest.raises(ValueError):
         generated_schema.get_field_by_name("Invalid.Field.name")
@@ -161,7 +164,7 @@ def test_schema_validate_named_types(
 ):
 
     clean_registry.register_sdl("A", full_sdl)
-    generated_schema = SchemaBakery._preheat("A")
+    generated_schema = SchemaBakery._preheat("A", None)
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -327,7 +330,7 @@ def test_schema_validate_object_follow_interfaces(
     full_sdl, expected_error, expected_value, clean_registry
 ):
     clean_registry.register_sdl("A", full_sdl)
-    generated_schema = SchemaBakery._preheat("A")
+    generated_schema = SchemaBakery._preheat("A", None)
 
     try:
         generated_schema.find_type("Brand").coerce_output = lambda x: x
@@ -452,7 +455,7 @@ def test_schema_validate_root_types_exist(
     full_sdl, expected_error, expected_value, clean_registry
 ):
     clean_registry.register_sdl("a", full_sdl)
-    generated_schema = SchemaBakery._preheat("a")
+    generated_schema = SchemaBakery._preheat("a", None)
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -488,7 +491,7 @@ def test_schema_validate_non_empty_object(
     full_sdl, expected_error, expected_value, clean_registry
 ):
     clean_registry.register_sdl("a", full_sdl)
-    generated_schema = SchemaBakery._preheat("a")
+    generated_schema = SchemaBakery._preheat("a", None)
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -538,7 +541,7 @@ def test_schema_validate_union_is_acceptable(
     full_sdl, expected_error, expected_value, clean_registry
 ):
     clean_registry.register_sdl("a", full_sdl)
-    generated_schema = SchemaBakery._preheat("a")
+    generated_schema = SchemaBakery._preheat("a", None)
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -557,3 +560,83 @@ def test_schema_bake_schema(clean_registry):
     """,
     )
     assert SchemaBakery.bake("a") is not None
+
+
+@pytest.mark.parametrize("exclude_date_scalar", [True, False])
+def test_schema_bake_schema_exclude_builtins_scalars(
+        clean_registry, exclude_date_scalar
+):
+    exclude_builtins_scalars = ["Date"] if exclude_date_scalar else None
+
+    clean_registry.register_sdl(
+        "exclude",
+        """
+        type Query {
+            lol: Int
+        }
+    """,
+        exclude_builtins_scalars=exclude_builtins_scalars,
+    )
+
+    schema = SchemaBakery.bake(
+        "exclude",
+        exclude_builtins_scalars=exclude_builtins_scalars,
+    )
+
+    assert schema is not None
+    assert len([
+        scalar
+        for scalar in SchemaRegistry._schemas["exclude"]["scalars"]
+        if scalar._name == "Date"
+    ]) == 0 if exclude_date_scalar else 1
+
+
+@patch("tartiflette.schema.registry._DIR_PATH", "/dir")
+@pytest.mark.parametrize("exclude_builtins_scalars,expected", [
+    (
+        None,
+        [
+            "/dir/builtins/scalars/boolean.sdl",
+            "/dir/builtins/scalars/date.sdl",
+            "/dir/builtins/scalars/datetime.sdl",
+            "/dir/builtins/scalars/float.sdl",
+            "/dir/builtins/scalars/id.sdl",
+            "/dir/builtins/scalars/int.sdl",
+            "/dir/builtins/scalars/string.sdl",
+            "/dir/builtins/scalars/time.sdl",
+            "/dir/builtins/directives.sdl",
+            "/dir/builtins/introspection.sdl",
+        ],
+    ),
+    (
+        ["Date", "Time"],
+        [
+            "/dir/builtins/scalars/boolean.sdl",
+            "/dir/builtins/scalars/datetime.sdl",
+            "/dir/builtins/scalars/float.sdl",
+            "/dir/builtins/scalars/id.sdl",
+            "/dir/builtins/scalars/int.sdl",
+            "/dir/builtins/scalars/string.sdl",
+            "/dir/builtins/directives.sdl",
+            "/dir/builtins/introspection.sdl",
+        ],
+    ),
+    (
+        ["date", "Time"],
+        [
+            "/dir/builtins/scalars/boolean.sdl",
+            "/dir/builtins/scalars/date.sdl",
+            "/dir/builtins/scalars/datetime.sdl",
+            "/dir/builtins/scalars/float.sdl",
+            "/dir/builtins/scalars/id.sdl",
+            "/dir/builtins/scalars/int.sdl",
+            "/dir/builtins/scalars/string.sdl",
+            "/dir/builtins/directives.sdl",
+            "/dir/builtins/introspection.sdl",
+        ],
+    ),
+])
+def test_schema_registry_get_builtins_sdl_files(
+    exclude_builtins_scalars, expected
+):
+    assert _get_builtins_sdl_files(exclude_builtins_scalars) == expected

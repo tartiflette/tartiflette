@@ -1,6 +1,35 @@
 import os
 from tartiflette.schema import GraphQLSchema
 
+_DIR_PATH = os.path.dirname(__file__)
+
+# TODO: re-use "CUSTOM_SCALARS" from tartiflette.scalar (impossible for now  due to cyclic import)
+_BUILTINS_SCALARS = [
+    "Boolean",
+    "Date",
+    "DateTime",
+    "Float",
+    "ID",
+    "Int",
+    "String",
+    "Time",
+]
+
+
+def _get_builtins_sdl_files(exclude_builtins_scalars):
+    return [
+        *[
+            "%s/builtins/scalars/%s.sdl" % (_DIR_PATH, builtin_scalar.lower())
+            for builtin_scalar in _BUILTINS_SCALARS
+            if (
+                exclude_builtins_scalars is None
+                or builtin_scalar not in exclude_builtins_scalars
+            )
+        ],
+        "%s/builtins/directives.sdl" % _DIR_PATH,
+        "%s/builtins/introspection.sdl" % _DIR_PATH,
+    ]
+
 
 class SchemaRegistry:
     _schemas = {}
@@ -9,14 +38,9 @@ class SchemaRegistry:
     def _register(schema_name, where, obj):
         if not obj:
             return
-
-        if not SchemaRegistry._schemas.get(schema_name):
-            SchemaRegistry._schemas[schema_name] = {}
-
-        if not SchemaRegistry._schemas[schema_name].get(where):
-            SchemaRegistry._schemas[schema_name][where] = []
-
-        SchemaRegistry._schemas[schema_name][where].append(obj)
+        SchemaRegistry._schemas.setdefault(schema_name, {}).setdefault(
+            where, []
+        ).append(obj)
 
     @staticmethod
     def register_directive(schema_name="default", directive=None):
@@ -31,16 +55,12 @@ class SchemaRegistry:
         SchemaRegistry._register(schema_name, "scalars", scalar)
 
     @staticmethod
-    def register_sdl(schema_name, sdl):
-        if not SchemaRegistry._schemas.get(schema_name):
-            SchemaRegistry._schemas[schema_name] = {}
+    def register_sdl(schema_name, sdl, exclude_builtins_scalars=None):
+        SchemaRegistry._schemas.setdefault(schema_name, {})
 
         # Maybe read them one and use them a lot :p
-        sdl_files_list = [
-            "%s/builtins/scalar.sdl" % os.path.dirname(__file__),
-            "%s/builtins/directives.sdl" % os.path.dirname(__file__),
-            "%s/builtins/introspection.sdl" % os.path.dirname(__file__),
-        ]
+        sdl_files_list = _get_builtins_sdl_files(exclude_builtins_scalars)
+
         full_sdl = ""
         if not isinstance(sdl, GraphQLSchema):
             if isinstance(sdl, list):

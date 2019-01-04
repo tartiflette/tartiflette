@@ -7,13 +7,19 @@ from tartiflette.executors.basic import execute as basic_execute
 
 class Engine:
     def __init__(
-        self, sdl, schema_name="default", custom_default_resolver=None
+        self,
+        sdl,
+        schema_name="default",
+        custom_default_resolver=None,
+        exclude_builtins_scalars=None,
     ):
         # TODO: Use the kwargs and add them to the schema
         # schema can be: file path, file list, folder path, schema object
         self._parser = TartifletteRequestParser()
-        SchemaRegistry.register_sdl(schema_name, sdl)
-        self._schema = SchemaBakery.bake(schema_name, custom_default_resolver)
+        SchemaRegistry.register_sdl(schema_name, sdl, exclude_builtins_scalars)
+        self._schema = SchemaBakery.bake(
+            schema_name, custom_default_resolver, exclude_builtins_scalars
+        )
 
     async def execute(
         self,
