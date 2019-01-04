@@ -23,12 +23,22 @@ script:
   # - make complexity
 cache: pip
 install:
-- make init
-- pip install -e .[test]
+  - make init
+  - make set-version
+  - pip install -e .[test]
 deploy:
-  provider: pypi
-  user: dailymotion
-  password:
-    secure: oCtzt6+b8/dY3A4qP/i1kOMT2BXjFZZRWX0owtcXL9nHMlyWFKuAd/6hGlXZP4NJLIa5iO5ovQ+lkP20C6kQDCii361xuFuIX/VWJZxZuzkHh9WUSPgp4LmCicrTK48VPbDm5sjuBbItb38L2sEb9ommD1FJ7jzzuRufLLnUyf1dezp2tONWfwDz6WZfq/BuA4oKMnUiLsHD3Luy/G05v1HZeXyQtd/fQZVLtZZ3SBVGbn3rlwjP7cAwthuKUQ2gK473qQdvH+Bs4zy6QAlBI37oH1B9HOnjbMZ7pWrCbSuBrVyGB+80/PkOGRj4zsFBjoftsoLGUX/QSfm+pdgpYjxVWO2JqabxuZljjvOMzBlFLNhE8TUITwYe+uQBj28JvaB7JiWNf1/hi3sf5ccpZ6R2jLLy6buDWe87Qx5WF0yUARfh+nCSSoZk3yX0KlWXTeAN1O8p3xBY+W4Iza+AnsaS9frOOoRbXF817n6KpcRZG11Vl0bxFzKDnhoH5Pdk+Bu61xzSInEkshfZAOHNd7j5Olqaof4vn7Wd/Bqw7OeMBM6PDaHCmqKlW5n01Zm6vNuBkdX83+dEoPUntdaHr5/7DEHb+9ugirbVox9BaY/ua2IWWWS3jLe8MLQasNXmZRNdEBvEnlIMlWi+WGSzpBpcp7+Nf4/odU1aMdjAUQQ=
-  on:
-    branch: master
+  - provider: pypi
+    user: dailymotion
+    password:
+      secure: oCtzt6+b8/dY3A4qP/i1kOMT2BXjFZZRWX0owtcXL9nHMlyWFKuAd/6hGlXZP4NJLIa5iO5ovQ+lkP20C6kQDCii361xuFuIX/VWJZxZuzkHh9WUSPgp4LmCicrTK48VPbDm5sjuBbItb38L2sEb9ommD1FJ7jzzuRufLLnUyf1dezp2tONWfwDz6WZfq/BuA4oKMnUiLsHD3Luy/G05v1HZeXyQtd/fQZVLtZZ3SBVGbn3rlwjP7cAwthuKUQ2gK473qQdvH+Bs4zy6QAlBI37oH1B9HOnjbMZ7pWrCbSuBrVyGB+80/PkOGRj4zsFBjoftsoLGUX/QSfm+pdgpYjxVWO2JqabxuZljjvOMzBlFLNhE8TUITwYe+uQBj28JvaB7JiWNf1/hi3sf5ccpZ6R2jLLy6buDWe87Qx5WF0yUARfh+nCSSoZk3yX0KlWXTeAN1O8p3xBY+W4Iza+AnsaS9frOOoRbXF817n6KpcRZG11Vl0bxFzKDnhoH5Pdk+Bu61xzSInEkshfZAOHNd7j5Olqaof4vn7Wd/Bqw7OeMBM6PDaHCmqKlW5n01Zm6vNuBkdX83+dEoPUntdaHr5/7DEHb+9ugirbVox9BaY/ua2IWWWS3jLe8MLQasNXmZRNdEBvEnlIMlWi+WGSzpBpcp7+Nf4/odU1aMdjAUQQ=
+    on:
+      branch: master
+  - provider: pypi
+    server: https://test.pypi.org/legacy/
+    user: dailymotion
+    password:
+      secure: oCtzt6+b8/dY3A4qP/i1kOMT2BXjFZZRWX0owtcXL9nHMlyWFKuAd/6hGlXZP4NJLIa5iO5ovQ+lkP20C6kQDCii361xuFuIX/VWJZxZuzkHh9WUSPgp4LmCicrTK48VPbDm5sjuBbItb38L2sEb9ommD1FJ7jzzuRufLLnUyf1dezp2tONWfwDz6WZfq/BuA4oKMnUiLsHD3Luy/G05v1HZeXyQtd/fQZVLtZZ3SBVGbn3rlwjP7cAwthuKUQ2gK473qQdvH+Bs4zy6QAlBI37oH1B9HOnjbMZ7pWrCbSuBrVyGB+80/PkOGRj4zsFBjoftsoLGUX/QSfm+pdgpYjxVWO2JqabxuZljjvOMzBlFLNhE8TUITwYe+uQBj28JvaB7JiWNf1/hi3sf5ccpZ6R2jLLy6buDWe87Qx5WF0yUARfh+nCSSoZk3yX0KlWXTeAN1O8p3xBY+W4Iza+AnsaS9frOOoRbXF817n6KpcRZG11Vl0bxFzKDnhoH5Pdk+Bu61xzSInEkshfZAOHNd7j5Olqaof4vn7Wd/Bqw7OeMBM6PDaHCmqKlW5n01Zm6vNuBkdX83+dEoPUntdaHr5/7DEHb+9ugirbVox9BaY/ua2IWWWS3jLe8MLQasNXmZRNdEBvEnlIMlWi+WGSzpBpcp7+Nf4/odU1aMdjAUQQ=
+    skip_cleanup: true
+    on:
+      all_branches: true
+      condition: $TRAVIS_BRANCH != master
