@@ -1,3 +1,11 @@
+SET_ALPHA_VERSION = 0
+PKG_VERSION := $(shell cat setup.py | grep "_VERSION =" | egrep -o "([0-9]+\\.[0-9]+\\.[0-9]+)")
+ifneq ($(and $(TRAVIS_BRANCH),$(TRAVIS_BUILD_NUMBER)),)
+ifneq ($(TRAVIS_BRANCH), master)
+PKG_VERSION := $(shell echo | awk -v pkg_version="$(PKG_VERSION)" -v travis_build_number="$(TRAVIS_BUILD_NUMBER)" '{print pkg_version "a" travis_build_number}')
+SET_ALPHA_VERSION = 1
+endif
+endif
 
 .PHONY: init
 init:
@@ -42,3 +50,9 @@ clean:
 	find . -name '*.pyc' -exec rm -fv {} +
 	find . -name '*.pyo' -exec rm -fv {} +
 	find . -name '__pycache__' -exec rm -frv {} +
+
+.PHONY: set-version
+set-version:
+ifneq ($(SET_ALPHA_VERSION), 0)
+	bash -c "sed -i \"s@_VERSION[ ]*=[ ]*[\\\"\'][0-9]\+\\.[0-9]\+\\.[0-9]\+[\\\"\'].*@_VERSION = \\\"$(PKG_VERSION)\\\"@\" setup.py"
+endif
