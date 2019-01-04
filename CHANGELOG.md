@@ -5,19 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
-
-- Publish package to Test PyPi on each working branch.
-
 ## [Release]
 
-### [0.2.2] - 2019-01-03
+### [0.2.2] - 2019-01-04
 
 ### Added
 
 - Enable you to exclude builtins scalars at Engine initialization time with `exclude_builtins_scalars` parameter.
+- Publish package to Test PyPi on each working branch.
 
 ```python
 e = Engine("my_sdl.sdl", exclude_builtins_scalars=["Date", "DateTime"])
