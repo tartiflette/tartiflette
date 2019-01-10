@@ -136,6 +136,8 @@ class TartifletteVisitor(Visitor):
                 )
             except UnknownSchemaFieldResolver as e:
                 self.continue_child = 0
+                e.path = self.field_path[:]
+                e.locations = [element.get_location()]
                 self.exception = e
                 return
 
