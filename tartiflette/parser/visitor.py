@@ -129,8 +129,10 @@ class TartifletteVisitor(Visitor):
             )
         except UnknownSchemaFieldResolver as e:
             try:
+                if not self._inline_fragment_type:
+                    raise
                 field = self.schema.get_field_by_name(
-                    self._inline_fragment_type + "." + element.name
+                    str(self._inline_fragment_type) + "." + element.name
                 )
             except UnknownSchemaFieldResolver as e:
                 self.continue_child = 0
