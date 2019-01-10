@@ -52,7 +52,7 @@ async def test_tartiflette_execute_nested_error(clean_registry):
             {
                 "message": "Invalid value (value: None) for field `lastUpdate` of type `[Float!]`",
                 "path": ["test", "deep", "lastUpdate"],
-                "locations": [{"line": 1, "column": 68}],
+                "locations": [{"line": 5, "column": 17}],
             }
         ],
     } == result
