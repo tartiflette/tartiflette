@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Allows to handle custom exeception errors.
 
+- Coerce exception raised during query parsing instead of throwing them.
+
 ```python
 class BadRequestError(Exception):
     def coerce_value(self, *_args, path=None, locations=None, **_kwargs):

@@ -35,23 +35,84 @@ async def test_engine_execute(clean_registry):
 
 
 @pytest.mark.asyncio
+async def test_engine_execute_parse_error(clean_registry):
+    from tartiflette.engine import Engine
+
+    e = Engine("type Query { a: String }")
+
+    assert await e.execute("query { unknownNode }") == {
+        "data": None,
+        "errors": [
+            {
+                "message": "field `Query.unknownNode` was not found in GraphQL schema.",
+                "path": ["unknownNode"],
+                "locations": [
+                    {
+                        "column": 9,
+                        "line": 1,
+                    },
+                ],
+            },
+        ],
+    }
+
+
+@pytest.mark.asyncio
 async def test_engine_execute_empty_req_except(clean_registry):
     from tartiflette.engine import Engine
 
-    e = Engine("type Query { a:String }")
+    e = Engine("type Query { a: String }")
 
-    with pytest.raises(Exception):
-        await e.execute("")
+    assert await e.execute("") == {
+        "data": None,
+        "errors": [
+            {
+                "message": "Server encountered an error.",
+                "path": None,
+                "locations": [],
+            },
+        ],
+    }
 
 
 @pytest.mark.asyncio
 async def test_engine_execute_syntax_error(clean_registry):
     from tartiflette.engine import Engine
 
-    e = Engine("type Query { a:String }")
+    e = Engine("type Query { a: String }")
 
-    with pytest.raises(Exception):
-        await e.execute("query { a { }")
+    assert await e.execute("query { a { }") == {
+        "data": None,
+        "errors": [
+            {
+                "message": "Server encountered an error.",
+                "path": None,
+                "locations": [],
+            },
+        ],
+    }
+
+
+@pytest.mark.asyncio
+async def test_engine_execute_unhandled_exception(clean_registry):
+    from tartiflette.engine import Engine
+
+    e = Engine("type Query { a: Ninja } type Ninja { a: String }")
+
+    assert await e.execute("""
+        fragment AFragment on Ninja { a }
+        fragment AFragment on Ninja { a }
+        query { a { } }
+    """) == {
+        "data": None,
+        "errors": [
+            {
+                "message": "Server encountered an error.",
+                "path": None,
+                "locations": [],
+            },
+        ],
+    }
 
 
 @pytest.mark.asyncio

@@ -110,7 +110,16 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 a(xid: $xid)
             }
             """,
-            UnknownVariableException,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "< xid > is not known",
+                        "locations": [],
+                        "path": None,
+                    },
+                ],
+            },
             {},
         ),
         (
@@ -119,7 +128,16 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 a(xid: $xid)
             }
             """,
-            TypeError,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Server encountered an error.",
+                        "locations": [],
+                        "path": None,
+                    },
+                ],
+            },
             {"xid": "RE"},
         ),
         (
@@ -128,7 +146,16 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 a(xid: $xid)
             }
             """,
-            TypeError,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Server encountered an error.",
+                        "locations": [],
+                        "path": None,
+                    },
+                ],
+            },
             {"xid": "RE"},
         ),
         (
@@ -137,7 +164,16 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 a(xid: $xid)
             }
             """,
-            TypeError,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Server encountered an error.",
+                        "locations": [],
+                        "path": None,
+                    },
+                ],
+            },
             {"xid": ["RE"]},
         ),
     ],
@@ -166,5 +202,4 @@ async def test_issue21_exceptquery(query, expected, varis, clean_registry):
     """
     )
 
-    with pytest.raises(expected):
-        await ttftt.execute(query, context={}, variables=varis)
+    assert await ttftt.execute(query, context={}, variables=varis) == expected
