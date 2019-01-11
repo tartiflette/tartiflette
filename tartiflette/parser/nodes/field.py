@@ -63,10 +63,8 @@ class NodeField(Node):
         coroutz = []
         for child in self.children:
             if (
-                child.type_condition
-                and child.type_condition == raw_typename
-                or not child.type_condition
-            ):
+                child.type_condition and child.type_condition == raw_typename
+            ) or not child.type_condition:
                 coroutz.append(
                     child(
                         exec_ctx,

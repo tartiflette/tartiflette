@@ -148,7 +148,10 @@ class TartifletteVisitor(Visitor):
             field.resolver,
             element.get_location(),
             self.field_path[:],
-            self._current_type_condition,
+            self._current_type_condition
+            if (self._current_node and not self._current_node.type_condition)
+            or not self._current_node
+            else None,
             element.get_alias(),
         )
 

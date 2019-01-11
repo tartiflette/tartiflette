@@ -1,6 +1,4 @@
 from collections import namedtuple
-from typing import Any, List
-from unittest.mock import Mock
 import pytest
 
 from tartiflette.executors.types import Info

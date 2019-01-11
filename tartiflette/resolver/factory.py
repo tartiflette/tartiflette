@@ -1,7 +1,7 @@
 from functools import partial
 from typing import Any
 
-from tartiflette.types.helpers import reduce_type
+from tartiflette.types.helpers import reduce_type, has_typename
 from tartiflette.types.exceptions.tartiflette import NullError, InvalidValue
 
 
@@ -13,7 +13,8 @@ def _built_in_coercer(func, val, _):
     return func(val)
 
 
-def _object_coercer(*_, **__) -> dict:
+def _object_coercer(raw_type, val, *_, **__) -> dict:
+    _set_typename(val, raw_type)
     return {}
 
 
@@ -96,16 +97,29 @@ def _is_a_scalar(rtype, schema):
     return None
 
 
+def _is_union(rtype, schema):
+    try:
+        return schema.find_type(rtype).is_union
+    except (AttributeError, KeyError):
+        pass
+
+    return False
+
+
 def _get_coercer(field):
     if not field.schema:
         return None
 
     field_type = field.gql_type
-    rtype = reduce_type(field.gql_type)
+    rtype = reduce_type(field_type)
+    is_union = _is_union(rtype, field.schema)
 
     if rtype == "__Type":
         # preserve None
-        coercer = partial(_built_in_coercer, _object_coercer)
+        coercer = partial(
+            _built_in_coercer,
+            partial(_object_coercer, rtype if not is_union else None),
+        )
     else:
         try:
             coercer = _is_an_enum(rtype, field.schema)
@@ -113,9 +127,11 @@ def _get_coercer(field):
                 coercer = _is_a_scalar(rtype, field.schema)
                 if not coercer:
                     # per default you're an object
-                    coercer = _object_coercer
+                    coercer = partial(
+                        _object_coercer, rtype if not is_union else None
+                    )
         except AttributeError:
-            coercer = _object_coercer
+            coercer = partial(_object_coercer, rtype if not is_union else None)
 
     # Manage List and NonNull
     coercer = _list_and_null_coercer(field_type, coercer)
@@ -155,6 +171,24 @@ def _execute_introspection_directives(elements):
         except (AttributeError, TypeError):
             ret.append(ele)
     return ret
+
+
+def _set_typename(res, typename):
+    if res is None or typename is None or has_typename(res):
+        return
+
+    try:
+        res["_typename"] = typename
+        return
+    except TypeError:
+        pass
+
+    try:
+        setattr(res, "_typename", typename)
+    except AttributeError:
+        pass  # Res is unmutable
+
+    return
 
 
 class _ResolverExecutor:

@@ -282,7 +282,9 @@ def test_resolver_factory__get_coercer___Type():
     c = _get_coercer(field)
 
     assert c.func is _built_in_coercer
-    assert _object_coercer in c.args
+    a, = c.args
+    assert a.func is _object_coercer
+    assert a.args == (None,)
 
 
 def test_resolver_factory__get_coercer(field_mock):
