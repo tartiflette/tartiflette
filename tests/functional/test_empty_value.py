@@ -21,7 +21,7 @@ from tartiflette.engine import Engine
                 "data": {"obj": None},
                 "errors": [
                     {
-                        "locations": [{"column": 64, "line": 1}],
+                        "locations": [{"column": 13, "line": 4}],
                         "message": "Invalid value (value: None) for field `field` of type `String!`",
                         "path": ["obj", "field"],
                     }
@@ -42,7 +42,7 @@ from tartiflette.engine import Engine
                 "data": {"obj": {"field": None}},
                 "errors": [
                     {
-                        "locations": [{"column": 64, "line": 1}],
+                        "locations": [{"column": 13, "line": 4}],
                         "message": "Invalid value (value: None) for field `field` of type `[String!]`",
                         "path": ["obj", "field"],
                     }
@@ -57,7 +57,7 @@ from tartiflette.engine import Engine
                 "data": {"obj": None},
                 "errors": [
                     {
-                        "locations": [{"column": 64, "line": 1}],
+                        "locations": [{"column": 13, "line": 4}],
                         "message": "Invalid value (value: None) for field `field` of type `[String]!`",
                         "path": ["obj", "field"],
                     }
@@ -72,7 +72,7 @@ from tartiflette.engine import Engine
                 "data": {"obj": None},
                 "errors": [
                     {
-                        "locations": [{"column": 64, "line": 1}],
+                        "locations": [{"column": 13, "line": 4}],
                         "message": "Invalid value (value: None) for field `field` of type `[String!]!`",
                         "path": ["obj", "field"],
                     }
@@ -87,7 +87,7 @@ from tartiflette.engine import Engine
                 "data": {"obj": None},
                 "errors": [
                     {
-                        "locations": [{"column": 64, "line": 1}],
+                        "locations": [{"column": 13, "line": 4}],
                         "message": "Invalid value (value: None) for field `field` of type `[String!]!`",
                         "path": ["obj", "field"],
                     }
@@ -135,7 +135,7 @@ from tartiflette.engine import Engine
                 "data": {"obj": {"field": None}},
                 "errors": [
                     {
-                        "locations": [{"column": 64, "line": 1}],
+                        "locations": [{"column": 13, "line": 4}],
                         "message": "Invalid value (value: None) for field `field` of type `[[String!]]`",
                         "path": ["obj", "field"],
                     }
@@ -150,7 +150,7 @@ from tartiflette.engine import Engine
                 "data": {"obj": {"field": None}},
                 "errors": [
                     {
-                        "locations": [{"column": 64, "line": 1}],
+                        "locations": [{"column": 13, "line": 4}],
                         "message": "Invalid value (value: None) for field `field` of type `[[String!]!]`",
                         "path": ["obj", "field"],
                     }
@@ -165,7 +165,7 @@ from tartiflette.engine import Engine
                 "data": {"obj": None},
                 "errors": [
                     {
-                        "locations": [{"column": 64, "line": 1}],
+                        "locations": [{"column": 13, "line": 4}],
                         "message": "Invalid value (value: None) for field `field` of type `[[String!]!]!`",
                         "path": ["obj", "field"],
                     }
@@ -256,7 +256,7 @@ async def test_tartiflette_execute_bubble_up_empty_value(clean_registry):
         "data": None,
         "errors": [
             {
-                "locations": [{"column": 104, "line": 1}],
+                "locations": [{"column": 21, "line": 5}],
                 "message": "Invalid value (value: None) for field `fieldAgain` of type `Int!`",
                 "path": ["obj", "field", "fieldAgain"],
             }

@@ -570,8 +570,7 @@ class LibGraphqlParser:
 
     def _parse(self, query):
         if isinstance(query, str):
-            # TODO don't replace here.
-            query = query.replace("\n", " ").encode("UTF-8")
+            query = query.encode("UTF-8")
 
         c_query = self._ffi.new("char[]", query)
         parsed_data = _ParsedData(

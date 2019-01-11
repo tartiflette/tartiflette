@@ -49,7 +49,7 @@ async def test_tartiflette_execute_enum_type_output(clean_registry):
                     {
                         "message": "Invalid value (value: None) for field `testField` of type `Test!`",
                         "path": ["testField"],
-                        "locations": [{"line": 1, "column": 26}],
+                        "locations": [{"line": 3, "column": 9}],
                     }
                 ],
             },
@@ -68,7 +68,7 @@ async def test_tartiflette_execute_enum_type_output(clean_registry):
                     {
                         "message": "Invalid value (value: 'UnknownValue') for field `testField` of type `[Test]`",
                         "path": ["testField"],
-                        "locations": [{"line": 1, "column": 26}],
+                        "locations": [{"line": 3, "column": 9}],
                     }
                 ],
             },
