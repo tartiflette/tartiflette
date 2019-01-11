@@ -1,4 +1,6 @@
 import pytest
+from tartiflette.executors.types import ExecutionContext
+from tartiflette.types.exceptions.tartiflette import GraphQLError
 from unittest.mock import Mock
 
 
@@ -347,3 +349,92 @@ async def test_parser_node_nodefield___call___fe_is_excepting():
     assert prm["B"] == coerced
     assert nf.parent.bubble_error.called
     assert exectx.add_error.called
+
+
+@pytest.mark.asyncio
+async def test_parser_node_nodefield__call__exception():
+    from tartiflette.parser.nodes.field import NodeField
+    from tests.unit.utils import AsyncMock
+
+    raw = Exception("ninja")
+    coerced = None
+
+    class fex:
+        async def __call__(self, *_, **__):
+            return raw, coerced
+
+    fe = fex()
+    fe.schema_field = Mock()
+    fe.cant_be_null = True
+
+    nf = NodeField("B", None, fe, None, None, None, None)
+    nf.children = [Mock()]
+    nf._execute_children = AsyncMock()
+    nf.parent = Mock()
+    nf.parent.bubble_error = Mock()
+
+    exectx = ExecutionContext()
+    reqctx = Mock()
+
+    prm = {}
+
+    assert not bool(exectx.errors)
+
+    await nf(exectx, reqctx, parent_marshalled=prm)
+
+    assert bool(exectx.errors)
+
+    assert exectx.errors[0] is not raw
+    assert isinstance(exectx.errors[0], GraphQLError)
+    assert exectx.errors[0].coerce_value() == {
+        "message": "ninja",
+        "path": None,
+        "locations": [],
+    }
+
+
+@pytest.mark.asyncio
+async def test_parser_node_nodefield__call__custom_exception():
+    from tartiflette.parser.nodes.field import NodeField
+    from tests.unit.utils import AsyncMock
+
+    class CustomException(Exception):
+        def coerce_value(self, *_args, path=None, locations=None, **_kwargs):
+            return {
+                "msg": "error",
+                "type": "bad_request",
+            }
+
+    raw = CustomException("ninja")
+    coerced = None
+
+    class fex:
+        async def __call__(self, *_, **__):
+            return raw, coerced
+
+    fe = fex()
+    fe.schema_field = Mock()
+    fe.cant_be_null = True
+
+    nf = NodeField("B", None, fe, None, None, None, None)
+    nf.children = [Mock()]
+    nf._execute_children = AsyncMock()
+    nf.parent = Mock()
+    nf.parent.bubble_error = Mock()
+
+    exectx = ExecutionContext()
+    reqctx = Mock()
+
+    prm = {}
+
+    assert not bool(exectx.errors)
+
+    await nf(exectx, reqctx, parent_marshalled=prm)
+
+    assert bool(exectx.errors)
+
+    assert exectx.errors[0] is raw
+    assert exectx.errors[0].coerce_value() == {
+        "msg": "error",
+        "type": "bad_request",
+    }
