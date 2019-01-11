@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Allows to handle custom exeception errors.
+
+```python
+class BadRequestError(Exception):
+    def coerce_value(self, *_args, path=None, locations=None, **_kwargs):
+        return your_coerced_error
+
+
+@Resolver("Query.hello")
+async def resolver_hello(parent, args, ctx, info):
+    if args["name"] == "":
+        raise BadRequestError("`name` argument shouldn't by empty.")
+    return "hello " + args["name"]
+```
+
 - Adds manually path & locations attributes to the `UnknownSchemaFieldResolver` raised exception.
 
 ### Fixed
