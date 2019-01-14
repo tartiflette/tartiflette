@@ -262,3 +262,147 @@ async def test_issue70_okayquery():
             }
         }
     }
+
+
+@pytest.mark.asyncio
+async def test_issue70_fragment_in_inline():
+    query = """
+    fragment OwnerFields on RepositoryOwner {
+        login
+        bob {
+            c
+            d {
+                e
+                petaleColor
+            }
+        }
+    }
+
+    fragment SchacalFields on Rascal {
+        gigi
+        owner {
+            ...OwnerFields
+        }
+    }
+
+    fragment RepositoryBase on Repository {
+        name
+    }
+
+    query {
+        viewer {
+            repositories(first: 10) {
+                edges {
+                    node {
+                        ... on Repository {
+                            ...RepositoryBase
+                            owner {
+                                login
+                                bob {
+                                    c
+                                    d {
+                                        e
+                                        petaleColor
+                                    }
+                                }
+                            }
+                            rascal {
+                                ...SchacalFields
+                            }
+                        }
+                    }
+                }
+            }
+            rascal {
+                ... on Rascal {
+                    gigi
+                    owner {
+                        login
+                        bob {
+                            c
+                            d {
+                                e
+                                petaleColor
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+"""
+
+    results = await _TTFTT_ENGINE.execute(query)
+    assert results == {
+        "data": {
+            "viewer": {
+                "repositories": {
+                    "edges": [
+                        {
+                            "node": {
+                                "rascal": {
+                                    "owner": {
+                                        "login": "OK",
+                                        "bob": {
+                                            "d": {
+                                                "petaleColor": "Green",
+                                                "e": 33.6,
+                                            },
+                                            "c": 9,
+                                        },
+                                    },
+                                    "gigi": "GG",
+                                },
+                                "owner": {
+                                    "login": "LOL",
+                                    "bob": {
+                                        "c": 1,
+                                        "d": {"petaleColor": "Blue", "e": 3.6},
+                                    },
+                                },
+                                "name": "N1",
+                            }
+                        },
+                        {
+                            "node": {
+                                "rascal": {
+                                    "gigi": "GGdfs",
+                                    "owner": {
+                                        "bob": {
+                                            "d": {
+                                                "e": 2.6,
+                                                "petaleColor": "Black",
+                                            },
+                                            "c": 99,
+                                        },
+                                        "login": "OssssK",
+                                    },
+                                },
+                                "owner": {
+                                    "bob": {
+                                        "c": 17,
+                                        "d": {
+                                            "petaleColor": "Purple",
+                                            "e": 0.66,
+                                        },
+                                    },
+                                    "login": "AA",
+                                },
+                                "name": "N2",
+                            }
+                        },
+                    ]
+                },
+                "rascal": {
+                    "gigi": "GGeeeee",
+                    "owner": {
+                        "login": "OKssss",
+                        "bob": {
+                            "d": {"e": 54564.3, "petaleColor": "Red"},
+                            "c": 30,
+                        },
+                    },
+                },
+            }
+        }
+    }
