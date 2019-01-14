@@ -20,6 +20,12 @@ from .nodes.fragment_definition import NodeFragmentDefinition
 from .nodes.variable_definition import NodeVariableDefinition
 
 
+class InlineFragmentInfo:
+    def __init__(self, atype, depth):
+        self.type = atype
+        self.depth = depth
+
+
 class TartifletteVisitor(Visitor):
     # pylint: disable=too-many-instance-attributes
 
@@ -80,15 +86,15 @@ class TartifletteVisitor(Visitor):
         self._fragments = {}
         self.schema: GraphQLSchema = schema
         self.exceptions: List[Exception] = []
-        self._inline_fragment_type = None
+        self._inline_fragment_info = None
 
-    def _on_argument_in(self, element: _VisitorElement):
+    def _on_argument_in(self, element: _VisitorElement, *_args, **_kwargs):
         self._current_argument_name = element.name
 
-    def _on_argument_out(self, _):
+    def _on_argument_out(self, *_args, **_kwargs):
         self._current_argument_name = None
 
-    def _on_value_in(self, element: _VisitorElement):
+    def _on_value_in(self, element: _VisitorElement, *_args, **_kwargs):
         if hasattr(self._current_node, "default_value"):
             self._current_node.default_value = element.get_value()
             return
@@ -97,7 +103,7 @@ class TartifletteVisitor(Visitor):
             {self._current_argument_name: element.get_value()}
         )
 
-    def _on_variable_in(self, element: _VisitorElement):
+    def _on_variable_in(self, element: _VisitorElement, *_args, **_kwargs):
         if hasattr(self._current_node, "var_name"):
             self._current_node.var_name = element.name
             return
@@ -111,7 +117,9 @@ class TartifletteVisitor(Visitor):
             self.continue_child = 0
             self.exceptions.append(UnknownVariableException(var_name))
 
-    def _on_field_in(self, element: _VisitorElement):
+    def _on_field_in(
+        self, element: _VisitorElement, *_args, type_cond_depth=-1, **_kwargs
+    ):
         self.field_path.append(element.name)
         self._depth = self._depth + 1
 
@@ -130,10 +138,10 @@ class TartifletteVisitor(Visitor):
             )
         except UnknownSchemaFieldResolver as e:
             try:
-                if not self._inline_fragment_type:
+                if not self._inline_fragment_info:
                     raise
                 field = self.schema.get_field_by_name(
-                    str(self._inline_fragment_type) + "." + element.name
+                    str(self._inline_fragment_info.type) + "." + element.name
                 )
             except UnknownSchemaFieldResolver as e:
                 self.continue_child = 0
@@ -142,16 +150,20 @@ class TartifletteVisitor(Visitor):
                 self.exceptions.append(e)
                 return
 
+        type_cond = None
+        if self._depth == type_cond_depth or (
+            self._inline_fragment_info
+            and self._depth-1 == self._inline_fragment_info.depth
+        ):
+            type_cond = self._current_type_condition
+
         node = NodeField(
             element.name,
             self.schema,
             field.resolver,
             element.get_location(),
             self.field_path[:],
-            self._current_type_condition
-            if (self._current_node and not self._current_node.type_condition)
-            or not self._current_node
-            else None,
+            type_cond,
             element.get_alias(),
         )
 
@@ -164,12 +176,14 @@ class TartifletteVisitor(Visitor):
         if self._depth == 1:
             self.root_nodes.append(node)
 
-    def _on_field_out(self, _):
+    def _on_field_out(self, *_args, **_kwargs):
         self._depth = self._depth - 1
         self.field_path.pop()
         self._current_node = self._current_node.parent
 
-    def _on_variable_definition_in(self, element: _VisitorElement):
+    def _on_variable_definition_in(
+        self, element: _VisitorElement, *_args, **_kwargs
+    ):
         node = NodeVariableDefinition(
             self.path, element.get_location(), element.name
         )
@@ -222,27 +236,29 @@ class TartifletteVisitor(Visitor):
         self._validate_type(name, a_value, a_type)
         return None
 
-    def _on_variable_definition_out(self, _):
+    def _on_variable_definition_out(self, *_args, **_kwargs):
         self._validates_vars()
         # now the VariableDefinition Node is useless so kill it
         self._current_node = self._current_node.parent
 
-    def _on_named_type_in(self, element: _VisitorElement):
+    def _on_named_type_in(self, element: _VisitorElement, *_args, **_kwargs):
         try:
             self._current_node.var_type = element.name
         except AttributeError:
             pass
 
-    def _on_list_type_in(self, _):
+    def _on_list_type_in(self, *_args, **_kwargs):
         try:
             self._current_node.is_list = True
         except AttributeError:
             pass
 
-    def _on_non_null_type_in(self, _):
+    def _on_non_null_type_in(self, *_args, **_kwargs):
         self._current_node.is_nullable = False
 
-    def _on_fragment_definition_in(self, element: _VisitorElement):
+    def _on_fragment_definition_in(
+        self, element: _VisitorElement, *_args, **_kwargs
+    ):
         if element.name in self._fragments:
             self.continue_child = 0
             self.exceptions.append(
@@ -262,47 +278,57 @@ class TartifletteVisitor(Visitor):
         self._current_fragment_definition = nfd
         self._fragments[element.name] = nfd
 
-    def _on_fragment_definition_out(self, _):
+    def _on_fragment_definition_out(self, *_args, **_kwargs):
         self._current_fragment_definition = None
 
-    def _on_fragment_spread_out(self, element: _VisitorElement):
+    def _on_fragment_spread_out(
+        self, element: _VisitorElement, *_args, **_kwargs
+    ):
         cfd = self._fragments[element.name]
         self._current_type_condition = cfd.type_condition
+
         for saved_callback in cfd.callbacks:
-            saved_callback()  # Simulate calling a the right place.
+            saved_callback(
+                type_cond_depth=self._depth
+            )  # Simulate calling a the right place.
         self._current_type_condition = None
 
     def _on_operation_definition_in(
-        self, element: _VisitorElementOperationDefinition
+        self, element: _VisitorElementOperationDefinition, *_args, **_kwargs
     ):
         self._operation_type = element.get_operation()
 
-    def _on_operation_definition_out(self, _):
+    def _on_operation_definition_out(self, *_args, **_kwargs):
         self._operation_type = None
 
-    def _on_inline_fragment_in(self, element):
-        self._inline_fragment_type = element.get_named_type()
-        self._current_type_condition = self._inline_fragment_type
+    def _on_inline_fragment_in(self, element, *_args, **_kwargs):
+        a_type = element.get_named_type()
+        self._inline_fragment_info = InlineFragmentInfo(a_type, self._depth)
+        self._current_type_condition = a_type
 
-    def _on_inline_fragment_out(self, _):
-        self._inline_fragment_type = None
+    def _on_inline_fragment_out(self, *_args, **_kwargs):
+        self._inline_fragment_info = None
         self._current_type_condition = None
 
-    def _in(self, element: _VisitorElement):
+    def _in(self, element: _VisitorElement, *args, **kwargs):
         self.path = self.path + "/%s" % TartifletteVisitor.create_node_name(
             element.libgraphql_type, element.name
         )
 
         try:
-            self._events[self.IN][element.libgraphql_type](element)
+            self._events[self.IN][element.libgraphql_type](
+                element, *args, **kwargs
+            )
         except KeyError:
             pass
 
-    def _out(self, element: _VisitorElement):
+    def _out(self, element: _VisitorElement, *args, **kwargs):
         self.path = "/".join(self.path.split("/")[:-1])
 
         try:
-            self._events[self.OUT][element.libgraphql_type](element)
+            self._events[self.OUT][element.libgraphql_type](
+                element, *args, **kwargs
+            )
         except KeyError:
             pass
 
