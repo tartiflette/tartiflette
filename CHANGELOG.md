@@ -33,12 +33,14 @@ e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 ```
 - Adds manually path & locations attributes to the `UnknownSchemaFieldResolver` raised exception.
 - Returns all encountered errors during query parsing instead of only the last one.
+- _typename tartiflette attribute is now automatically set by coercion except inside union type where it is deduce at execution time.
 
 ### Fixed
 
 - Parse raw GraphQL query in order to have the correct locations on raised errors.
 - Avoid `TypeError` by re-raising `UnknownSchemaFieldResolver` or casting `_inline_fragment_type` to string.
 - Raise `GraphQLError` instead of builtin exceptions.
+- ISSUE-70: Now Typecondition is correctly unset for nested fields inside a fragment.
 
 ## [Release]
 
