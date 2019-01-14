@@ -13,7 +13,9 @@ class Scalar:
 
     def bake(self, schema):
         if not self._implementation:
-            raise MissingImplementation("No implementation given")
+            raise MissingImplementation(
+                "No implementation given for scalar < %s >" % self._name
+            )
 
         scalar = schema.find_scalar(self._name)
         if scalar:

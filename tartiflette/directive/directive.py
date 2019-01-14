@@ -33,7 +33,9 @@ class Directive:
 
     def bake(self, schema):
         if not self._implementation:
-            raise MissingImplementation("No implementation given")
+            raise MissingImplementation(
+                "No implementation given for directive < %s >" % self._name
+            )
 
         try:
             directive = schema.find_directive(self._name)

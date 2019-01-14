@@ -34,7 +34,9 @@ class Resolver:
 
     def bake(self, schema):
         if not self._implementation:
-            raise MissingImplementation("No implementation given")
+            raise MissingImplementation(
+                "No implementation given for resolver < %s >" % self._name
+            )
 
         try:
             field = schema.get_field_by_name(self._name)

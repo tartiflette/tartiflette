@@ -582,7 +582,7 @@ class LibGraphqlParser:
         )
 
         if errors[0] != self._ffi.NULL:
-            # TODO specialize Exception here
+            # TODO Parse libgraphql error string and fill location
             e = GraphQLSyntaxError(
                 self._ffi.string(errors[0]).decode("UTF-8", "replace")
             )
