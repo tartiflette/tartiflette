@@ -406,3 +406,77 @@ async def test_issue70_fragment_in_inline():
             }
         }
     }
+
+
+@pytest.mark.asyncio
+async def test_issue70_fragment_in_inline():
+    query = """
+
+    fragment FleurFragment on Fleur {
+        e
+        petaleColor
+    }
+
+    fragment OwnerFields on RepositoryOwner {
+        login
+        bob {
+            ... on Ninja {
+                d {
+                    ...FleurFragment
+                }
+            }
+        }
+    }
+
+    query {
+        viewer {
+            repositories(first: 10) {
+                edges {
+                    node {
+                        name
+                        owner {
+                            ...OwnerFields
+                        }
+                    }
+                }
+            }
+        }
+    }
+"""
+
+    results = await _TTFTT_ENGINE.execute(query)
+    assert results == {
+        "data": {
+            "viewer": {
+                "repositories": {
+                    "edges": [
+                        {
+                            "node": {
+                                "name": "N1",
+                                "owner": {
+                                    "bob": {
+                                        "d": {"petaleColor": "Blue", "e": 3.6}
+                                    },
+                                    "login": "LOL",
+                                },
+                            }
+                        },
+                        {
+                            "node": {
+                                "owner": {
+                                    "bob": {
+                                        "d": {
+                                            "petaleColor": "Purple",
+                                            "e": 0.66,
+                                        }
+                                    },
+                                    "login": "AA",
+                                },
+                                "name": "N2",
+                            }
+                        },
+                    ]
+                }
+            }
+        }
+    }
