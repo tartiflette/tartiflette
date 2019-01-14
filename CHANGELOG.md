@@ -25,7 +25,7 @@ async def resolver_hello(parent, args, ctx, info):
 ```
 - Enable you to override the `default_error_coercer` at Engine initialization time:
 ```python
-async def my_error_coercer(exception) -> dict:
+def my_error_coercer(exception) -> dict:
     do_ing_some_thin_gs = 42
     return a_value
 
