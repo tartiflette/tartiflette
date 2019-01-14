@@ -40,15 +40,25 @@ async def test_engine_execute_parse_error(clean_registry):
 
     e = Engine("type Query { a: String }")
 
-    assert await e.execute("query { unknownNode }") == {
+    assert await e.execute("query { unknownNode1 unknownNode2 }") == {
         "data": None,
         "errors": [
             {
-                "message": "field `Query.unknownNode` was not found in GraphQL schema.",
-                "path": ["unknownNode"],
+                "message": "field `Query.unknownNode1` was not found in GraphQL schema.",
+                "path": ["unknownNode1"],
                 "locations": [
                     {
                         "column": 9,
+                        "line": 1,
+                    },
+                ],
+            },
+            {
+                "message": "field `Query.unknownNode2` was not found in GraphQL schema.",
+                "path": ["unknownNode1", "unknownNode2"],
+                "locations": [
+                    {
+                        "column": 22,
                         "line": 1,
                     },
                 ],

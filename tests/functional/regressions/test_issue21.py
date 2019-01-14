@@ -118,6 +118,11 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                         "locations": [],
                         "path": None,
                     },
+                    {
+                        "message": "< xid > is not known",
+                        "locations": [],
+                        "path": None,
+                    },
                 ],
             },
             {},

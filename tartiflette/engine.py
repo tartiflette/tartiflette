@@ -36,13 +36,20 @@ class Engine:
         :param variables: The variables used in the GraphQL request
         :return: a GraphQL Response (as dict)
         """
+        errors = None
         try:
-            root_nodes = self._parser.parse_and_tartify(
+            root_nodes, exceptions = self._parser.parse_and_tartify(
                 self._schema, query, variables=variables
             )
+            if exceptions:
+                errors = [err.coerce_value() for err in exceptions]
         except GraphQLError as e:
-            return {"data": None, "errors": [e.coerce_value()]}
+            errors = [e.coerce_value()]
         except Exception:  # pylint: disable=broad-except
             gql_error = GraphQLError("Server encountered an error.")
-            return {"data": None, "errors": [gql_error.coerce_value()]}
+            errors = [gql_error.coerce_value()]
+
+        if errors:
+            return {"data": None, "errors": errors}
+
         return await basic_execute(root_nodes, request_ctx=context)
