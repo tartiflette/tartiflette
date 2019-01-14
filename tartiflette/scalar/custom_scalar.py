@@ -1,5 +1,8 @@
 from tartiflette.schema.registry import SchemaRegistry
-from tartiflette.types.exceptions.tartiflette import UnknownScalarDefinition
+from tartiflette.types.exceptions.tartiflette import (
+    UnknownScalarDefinition,
+    MissingImplementation,
+)
 
 
 class Scalar:
@@ -10,7 +13,9 @@ class Scalar:
 
     def bake(self, schema):
         if not self._implementation:
-            raise Exception("No implementation given")
+            raise MissingImplementation(
+                "No implementation given for scalar < %s >" % self._name
+            )
 
         scalar = schema.find_scalar(self._name)
         if scalar:

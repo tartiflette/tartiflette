@@ -6,7 +6,10 @@ from lark.visitors import Transformer_InPlace
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumValue
-from tartiflette.types.exceptions.tartiflette import UnexpectedASTNode
+from tartiflette.types.exceptions.tartiflette import (
+    UnexpectedASTNode,
+    InvalidSDL,
+)
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.types.interface import GraphQLInterfaceType
@@ -62,7 +65,7 @@ class SchemaTransformer(Transformer_InPlace):
             elif child.type == operation_name.upper():
                 pass
             else:
-                raise ValueError(
+                raise InvalidSDL(
                     "Invalid GraphQL named type for `{}` "
                     "operation definition, got `{}`".format(
                         operation_name, child.__class__.__name__
@@ -431,7 +434,7 @@ class SchemaTransformer(Transformer_InPlace):
             if child.value in GraphQLDirective.POSSIBLE_LOCATIONS:
                 locations.append(child.value)
             else:
-                raise ValueError(
+                raise InvalidSDL(
                     "Invalid directive location `{}`".format(child.value)
                 )
         return SchemaNode("directive_locations", locations)

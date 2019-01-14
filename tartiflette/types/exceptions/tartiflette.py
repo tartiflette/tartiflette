@@ -4,10 +4,6 @@ from tartiflette.executors.types import Info
 from tartiflette.types.location import Location
 
 
-class TartifletteException(Exception):
-    pass
-
-
 class GraphQLError(Exception):
     def __init__(
         self,
@@ -48,6 +44,10 @@ class GraphQLError(Exception):
         }
 
 
+class ImproperlyConfigured(GraphQLError):
+    pass
+
+
 class InvalidValue(GraphQLError):
     def __init__(self, value: Any, info: Info):
         self.value = value
@@ -71,6 +71,10 @@ class InvalidValue(GraphQLError):
         )
 
 
+class InvalidType(GraphQLError):
+    pass
+
+
 class NullError(InvalidValue):
     pass
 
@@ -79,11 +83,15 @@ class GraphQLSchemaError(GraphQLError):
     pass
 
 
-class NonAwaitableResolver(GraphQLError):
+class GraphQLSyntaxError(GraphQLError):
     pass
 
 
-class NonAwaitableDirective(GraphQLError):
+class NonAwaitableResolver(ImproperlyConfigured):
+    pass
+
+
+class NonAwaitableDirective(ImproperlyConfigured):
     pass
 
 
@@ -103,7 +111,7 @@ class UnknownFieldDefinition(GraphQLError):
     pass
 
 
-class MissingImplementation(GraphQLError):
+class MissingImplementation(ImproperlyConfigured):
     pass
 
 
@@ -112,6 +120,14 @@ class UnexpectedASTNode(GraphQLError):
 
 
 class InvalidSDL(GraphQLError):
+    pass
+
+
+class RedefinedImplementation(InvalidSDL):
+    pass
+
+
+class AlreadyDefined(GraphQLError):
     pass
 
 

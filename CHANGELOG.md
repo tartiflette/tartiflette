@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Release]
+
+### [0.3.0] - 2019-01-14
 
 ### Added
 
@@ -35,6 +37,10 @@ e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 - Returns all encountered errors during query parsing instead of only the last one.
 - _typename tartiflette attribute is now automatically set by coercion except inside union type where it is deduce at execution time.
 
+### Changed
+
+- Makes raised exceptions inherits from `GraphQLError`.
+
 ### Fixed
 
 - Parse raw GraphQL query in order to have the correct locations on raised errors.
@@ -42,8 +48,6 @@ e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 - Raise `GraphQLError` instead of builtin exceptions.
 - ISSUE-70: Now Typecondition is correctly unset for nested fields inside a fragment.
 - ISSUE-71: Now libgraphqlparser parsing errors only lives for the duration of the request.
-
-## [Release]
 
 ### [0.2.2] - 2019-01-04
 

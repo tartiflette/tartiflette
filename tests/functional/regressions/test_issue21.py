@@ -136,7 +136,9 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 "errors": [
                     {
                         "message": "Given value for < xid > is not type < <class 'int'> >",
-                        "locations": [],
+                        "locations": [
+                            {"column": 23, "line": 2},
+                        ],
                         "path": None,
                     },
                 ],
@@ -154,7 +156,9 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 "errors": [
                     {
                         "message": "Expecting List for < xid > values",
-                        "locations": [],
+                        "locations": [
+                            {"column": 23, "line": 2},
+                        ],
                         "path": None,
                     },
                 ],
@@ -172,7 +176,9 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 "errors": [
                     {
                         "message": "Given value for < xid > is not type < <class 'int'> >",
-                        "locations": [],
+                        "locations": [
+                            {"column": 23, "line": 2},
+                        ],
                         "path": None,
                     },
                 ],
