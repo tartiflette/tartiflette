@@ -77,7 +77,7 @@ async def test_engine_execute_empty_req_except(clean_registry):
         "data": None,
         "errors": [
             {
-                "message": "Server encountered an error.",
+                "message": "1.1: syntax error, unexpected EOF",
                 "path": None,
                 "locations": [],
             },
@@ -95,7 +95,7 @@ async def test_engine_execute_syntax_error(clean_registry):
         "data": None,
         "errors": [
             {
-                "message": "Server encountered an error.",
+                "message": "1.12: unrecognized character \\xc2",
                 "path": None,
                 "locations": [],
             },
@@ -117,7 +117,7 @@ async def test_engine_execute_unhandled_exception(clean_registry):
         "data": None,
         "errors": [
             {
-                "message": "Server encountered an error.",
+                "message": "4.20: unrecognized character \\xc2",
                 "path": None,
                 "locations": [],
             },

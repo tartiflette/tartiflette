@@ -11,6 +11,7 @@ from tartiflette.types.exceptions.tartiflette import (
     TartifletteException,
     UnknownSchemaFieldResolver,
     UnknownVariableException,
+    GraphQLError,
 )
 from tartiflette.types.helpers import reduce_type
 
@@ -177,7 +178,7 @@ class TartifletteVisitor(Visitor):
             if not isinstance(a_value, a_type):
                 self.continue_child = 0
                 self.exceptions.append(
-                    TypeError(
+                    GraphQLError(
                         "Given value for < %s > is not type < %s >"
                         % (varname, a_type)
                     )
@@ -207,7 +208,7 @@ class TartifletteVisitor(Visitor):
             if not isinstance(a_value, list):
                 self.continue_child = 0
                 self.exceptions.append(
-                    TypeError("Expecting List for < %s > values" % name)
+                    GraphQLError("Expecting List for < %s > values" % name)
                 )
                 return None
 

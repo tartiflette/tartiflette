@@ -137,7 +137,7 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 "data": None,
                 "errors": [
                     {
-                        "message": "Server encountered an error.",
+                        "message": "Given value for < xid > is not type < <class 'int'> >",
                         "locations": [],
                         "path": None,
                     },
@@ -155,7 +155,7 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 "data": None,
                 "errors": [
                     {
-                        "message": "Server encountered an error.",
+                        "message": "Expecting List for < xid > values",
                         "locations": [],
                         "path": None,
                     },
@@ -173,7 +173,7 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 "data": None,
                 "errors": [
                     {
-                        "message": "Server encountered an error.",
+                        "message": "Given value for < xid > is not type < <class 'int'> >",
                         "locations": [],
                         "path": None,
                     },
