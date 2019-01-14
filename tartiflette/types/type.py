@@ -33,6 +33,10 @@ class GraphQLType:
         return self._is_enum_value
 
     @property
+    def is_union(self) -> bool:
+        return False
+
+    @property
     def is_shell(self) -> bool:
         return self.is_list or self.is_not_null
 

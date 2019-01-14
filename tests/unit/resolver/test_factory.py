@@ -282,7 +282,9 @@ def test_resolver_factory__get_coercer___Type():
     c = _get_coercer(field)
 
     assert c.func is _built_in_coercer
-    assert _object_coercer in c.args
+    a, = c.args
+    assert a.func is _object_coercer
+    assert a.args == (None,)
 
 
 def test_resolver_factory__get_coercer(field_mock):
@@ -434,12 +436,55 @@ def test_resolver_factory_resolver_executor_factory():
     field.gql_type = "aType"
     field.schema = None
 
-    res_ex = ResolverExecutorFactory.get_resolver_executor(
-        "A", field
-    )
+    res_ex = ResolverExecutorFactory.get_resolver_executor("A", field)
     assert res_ex._raw_func == "A"
     assert res_ex._schema_field == field
 
     res_ex = ResolverExecutorFactory.get_resolver_executor(None, field)
     assert res_ex._raw_func is default_resolver
     assert res_ex._schema_field == field
+
+
+_A_MOCKED_UNION = Mock()
+_A_MOCKED_UNION.is_union = True
+_A_MOCKED_FIELD = Mock()
+_A_MOCKED_FIELD.is_union = False
+
+
+@pytest.mark.parametrize(
+    "find_type_mock,expected",
+    [
+        (Mock(return_value=_A_MOCKED_UNION), True),
+        (Mock(side_effect=AttributeError), False),
+        (Mock(side_effect=KeyError), False),
+        (Mock(return_value=_A_MOCKED_FIELD), False),
+    ],
+)
+def test_resolver_factory__is_union(find_type_mock, expected):
+    from tartiflette.resolver.factory import _is_union
+
+    schema = Mock()
+    schema.find_type = find_type_mock
+
+    assert _is_union("A", schema) == expected
+
+
+_A_MOCKED_FIELD._typename = None
+
+@pytest.mark.parametrize(
+    "res,typename,expected",
+    [
+        (None, "a", "NoneType"),
+        ("a", None, "str"),
+        ({"a":1}, "A", "A"),
+        ({"a":1, "_typename":"B"}, "A", "B"),
+        ("A", "B", "str"),
+        (_A_MOCKED_FIELD, "U", "U")
+    ]
+)
+def test_resolver_factory__set_typename(res, typename, expected):
+    from tartiflette.resolver.factory import _set_typename
+    from tartiflette.types.helpers import get_typename
+
+    assert _set_typename(res, typename) is None
+    assert get_typename(res) == expected

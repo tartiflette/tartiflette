@@ -38,3 +38,7 @@ class GraphQLUnionType(GraphQLType):
     @property
     def kind(self):
         return "UNION"
+
+    @property
+    def is_union(self):
+        return True
