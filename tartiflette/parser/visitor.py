@@ -26,6 +26,16 @@ class InlineFragmentInfo:
         self.depth = depth
 
 
+def _compute_type_cond(
+    current_depth, type_cond_depth, inline_frag_info, current_type_condition
+):
+    if current_depth == type_cond_depth or (
+        inline_frag_info and current_depth - 1 == inline_frag_info.depth
+    ):
+        return current_type_condition
+    return None
+
+
 class TartifletteVisitor(Visitor):
     # pylint: disable=too-many-instance-attributes
 
@@ -150,20 +160,18 @@ class TartifletteVisitor(Visitor):
                 self.exceptions.append(e)
                 return
 
-        type_cond = None
-        if self._depth == type_cond_depth or (
-            self._inline_fragment_info
-            and self._depth-1 == self._inline_fragment_info.depth
-        ):
-            type_cond = self._current_type_condition
-
         node = NodeField(
             element.name,
             self.schema,
             field.resolver,
             element.get_location(),
             self.field_path[:],
-            type_cond,
+            _compute_type_cond(
+                self._depth,
+                type_cond_depth,
+                self._inline_fragment_info,
+                self._current_type_condition,
+            ),
             element.get_alias(),
         )
 
