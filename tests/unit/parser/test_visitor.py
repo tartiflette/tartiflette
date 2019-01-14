@@ -185,7 +185,8 @@ def test_parser_visitor__on_field_in_a_fragment(a_visitor, an_element):
     a_visitor._current_node.add_child = Mock()
     a_visitor._current_node.field_executor.schema_field = Mock()
     a_visitor._current_node.field_executor.schema_field.gql_type = "a_gql_type"
-    a_visitor._inline_fragment_type = "an_inline_fragment_type"
+    a_visitor._inline_fragment_info = Mock()
+    a_visitor._inline_fragment_info.type = "an_inline_fragment_type"
     current_node = a_visitor._current_node
 
     class _get_field_by_name(MagicMock):
@@ -226,7 +227,8 @@ def test_parser_visitor__on_field_unknow_schema_field(a_visitor, an_element):
     a_visitor._current_node.add_child = Mock()
     a_visitor._current_node.field_executor.schema_field = Mock()
     a_visitor._current_node.field_executor.schema_field.gql_type = "a_gql_type"
-    a_visitor._inline_fragment_type = "an_inline_fragment_type"
+    a_visitor._inline_fragment_info = Mock()
+    a_visitor._inline_fragment_info.type = "an_inline_fragment_type"
     current_node = a_visitor._current_node
 
     an_exception = UnknownSchemaFieldResolver("a_message")
@@ -499,22 +501,22 @@ def test_parser_visitor__on_operation_definition_out(a_visitor, an_element):
 def test_parser_visitor__on_inline_fragment_in(a_visitor, an_element):
     an_element.get_named_type = Mock(return_value="a_named_type")
 
-    assert a_visitor._inline_fragment_type is None
+    assert a_visitor._inline_fragment_info is None
     assert a_visitor._current_type_condition is None
 
     a_visitor._on_inline_fragment_in(an_element)
 
-    assert a_visitor._inline_fragment_type == "a_named_type"
+    assert a_visitor._inline_fragment_info.type == "a_named_type"
     assert a_visitor._current_type_condition == "a_named_type"
 
 
 def test_parser_visitor__on_inline_fragment_out(a_visitor, an_element):
-    a_visitor._inline_fragment_type = Mock()
+    a_visitor._inline_fragment_info = Mock()
     a_visitor._current_type_condition = Mock()
 
     a_visitor._on_inline_fragment_out(an_element)
 
-    assert a_visitor._inline_fragment_type is None
+    assert a_visitor._inline_fragment_info is None
     assert a_visitor._current_type_condition is None
 
 
