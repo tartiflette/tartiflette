@@ -1,5 +1,5 @@
 from functools import lru_cache, partial
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from tartiflette.parser.cffi import (
     Visitor,
@@ -11,6 +11,7 @@ from tartiflette.types.exceptions.tartiflette import (
     TartifletteException,
     UnknownSchemaFieldResolver,
     UnknownVariableException,
+    GraphQLError,
 )
 from tartiflette.types.helpers import reduce_type
 
@@ -78,7 +79,7 @@ class TartifletteVisitor(Visitor):
         self._current_fragment_definition = None
         self._fragments = {}
         self.schema: GraphQLSchema = schema
-        self.exception: Exception = None
+        self.exceptions: List[Exception] = []
         self._inline_fragment_type = None
 
     def _on_argument_in(self, element: _VisitorElement):
@@ -108,7 +109,7 @@ class TartifletteVisitor(Visitor):
             )
         except KeyError:
             self.continue_child = 0
-            self.exception = UnknownVariableException(var_name)
+            self.exceptions.append(UnknownVariableException(var_name))
 
     def _on_field_in(self, element: _VisitorElement):
         self.field_path.append(element.name)
@@ -138,7 +139,7 @@ class TartifletteVisitor(Visitor):
                 self.continue_child = 0
                 e.path = self.field_path[:]
                 e.locations = [element.get_location()]
-                self.exception = e
+                self.exceptions.append(e)
                 return
 
         node = NodeField(
@@ -176,9 +177,11 @@ class TartifletteVisitor(Visitor):
         try:
             if not isinstance(a_value, a_type):
                 self.continue_child = 0
-                self.exception = TypeError(
-                    "Given value for < %s > is not type < %s >"
-                    % (varname, a_type)
+                self.exceptions.append(
+                    GraphQLError(
+                        "Given value for < %s > is not type < %s >"
+                        % (varname, a_type)
+                    )
                 )
         except TypeError:
             # TODO remove this, and handle the case it's an InputValue
@@ -192,7 +195,7 @@ class TartifletteVisitor(Visitor):
             dfv = self._current_node.default_value
             if not dfv and not self._current_node.is_nullable:
                 self.continue_child = 0
-                self.exception = UnknownVariableException(name)
+                self.exceptions.append(UnknownVariableException(name))
                 return None
 
             self._vars[name] = dfv
@@ -204,8 +207,8 @@ class TartifletteVisitor(Visitor):
         if self._current_node.is_list:
             if not isinstance(a_value, list):
                 self.continue_child = 0
-                self.exception = TypeError(
-                    "Expecting List for < %s > values" % name
+                self.exceptions.append(
+                    GraphQLError("Expecting List for < %s > values" % name)
                 )
                 return None
 
@@ -239,8 +242,10 @@ class TartifletteVisitor(Visitor):
     def _on_fragment_definition_in(self, element: _VisitorElement):
         if element.name in self._fragments:
             self.continue_child = 0
-            self.exception = TartifletteException(
-                "Fragment < %s > already defined" % element.name
+            self.exceptions.append(
+                TartifletteException(
+                    "Fragment < %s > already defined" % element.name
+                )
             )
             return
 

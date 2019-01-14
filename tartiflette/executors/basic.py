@@ -20,13 +20,13 @@ def _get_datas(root_nodes):
     return data
 
 
-async def execute(root_nodes, request_ctx):
+async def execute(root_nodes, request_ctx, error_coercer):
     results = {"data": {}, "errors": []}
     exec_ctx = ExecutionContext()
 
     await _execute(root_nodes, exec_ctx, request_ctx)
 
-    results["errors"] += [err.coerce_value() for err in exec_ctx.errors if err]
+    results["errors"] += [error_coercer(err) for err in exec_ctx.errors if err]
     results["data"] = _get_datas(root_nodes)
 
     if not results["errors"]:

@@ -24,11 +24,17 @@ class GraphQLError(Exception):
         self.path = path if path else None
         self.locations = locations if locations else []
 
-    def coerce_value(self, *_args, **_kwargs):
-        locations = []
+    def coerce_value(
+        self,
+        *_args,
+        path: Optional[List[Any]] = None,
+        locations: Optional[List[Location]] = None,
+        **_kwargs,
+    ):
+        computed_locations = []
         try:
-            for loc in self.locations:
-                locations.append(loc.collect_value())
+            for location in locations or self.locations:
+                computed_locations.append(location.collect_value())
         except AttributeError:
             pass
         except TypeError:
@@ -37,8 +43,8 @@ class GraphQLError(Exception):
             "message": self.user_message
             if self.user_message
             else self.message,
-            "path": self.path,
-            "locations": locations,
+            "path": path or self.path,
+            "locations": computed_locations,
         }
 
 

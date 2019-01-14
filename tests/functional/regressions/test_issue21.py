@@ -110,7 +110,21 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 a(xid: $xid)
             }
             """,
-            UnknownVariableException,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "< xid > is not known",
+                        "locations": [],
+                        "path": None,
+                    },
+                    {
+                        "message": "< xid > is not known",
+                        "locations": [],
+                        "path": None,
+                    },
+                ],
+            },
             {},
         ),
         (
@@ -119,7 +133,16 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 a(xid: $xid)
             }
             """,
-            TypeError,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Given value for < xid > is not type < <class 'int'> >",
+                        "locations": [],
+                        "path": None,
+                    },
+                ],
+            },
             {"xid": "RE"},
         ),
         (
@@ -128,7 +151,16 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 a(xid: $xid)
             }
             """,
-            TypeError,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expecting List for < xid > values",
+                        "locations": [],
+                        "path": None,
+                    },
+                ],
+            },
             {"xid": "RE"},
         ),
         (
@@ -137,7 +169,16 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 a(xid: $xid)
             }
             """,
-            TypeError,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Given value for < xid > is not type < <class 'int'> >",
+                        "locations": [],
+                        "path": None,
+                    },
+                ],
+            },
             {"xid": ["RE"]},
         ),
     ],
@@ -166,5 +207,4 @@ async def test_issue21_exceptquery(query, expected, varis, clean_registry):
     """
     )
 
-    with pytest.raises(expected):
-        await ttftt.execute(query, context={}, variables=varis)
+    assert await ttftt.execute(query, context={}, variables=varis) == expected

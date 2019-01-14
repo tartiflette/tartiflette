@@ -1,4 +1,6 @@
 import asyncio
+
+from functools import partial
 from typing import Any, Callable, Dict, List
 
 from tartiflette.executors.types import ExecutionContext, Info
@@ -119,7 +121,18 @@ class NodeField(Node):
             self.marshalled = coerced
 
         if isinstance(raw, Exception):
-            gql_error = GraphQLError(str(raw), self.path, [self.location])
+            try:
+                if callable(raw.coerce_value):
+                    gql_error = raw
+            except (TypeError, AttributeError):
+                gql_error = GraphQLError(str(raw), self.path, [self.location])
+
+            gql_error.coerce_value = partial(
+                gql_error.coerce_value,
+                path=self.path,
+                locations=[self.location],
+            )
+
             if (
                 (self.cant_be_null or self.contains_not_null)
                 and self.parent

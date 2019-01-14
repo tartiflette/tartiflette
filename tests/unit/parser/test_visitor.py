@@ -1,4 +1,5 @@
 import pytest
+from tartiflette.types.exceptions.tartiflette import GraphQLError
 from unittest.mock import Mock
 
 
@@ -97,15 +98,11 @@ def test_parser_visitor__on_variable_in_no_var_name_ukn_var(
     a_visitor._on_variable_in(an_element)
 
     assert a_visitor.continue_child == 0
-    assert a_visitor.exception is not None
-    assert isinstance(a_visitor.exception, UnknownVariableException)
+    assert a_visitor.exceptions is not None
+    assert isinstance(a_visitor.exceptions[0], UnknownVariableException)
 
 
 def test_parser_visitor__on_variable_in_no_var_name(a_visitor, an_element):
-    from tartiflette.types.exceptions.tartiflette import (
-        UnknownVariableException,
-    )
-
     del a_visitor._current_node.var_name
 
     a_visitor._current_node.arguments = {}
@@ -251,7 +248,7 @@ def test_parser_visitor__on_field_unknow_schema_field(a_visitor, an_element):
     ]
     assert a_visitor._current_node not in a_visitor.root_nodes
     assert a_visitor.continue_child == 0
-    assert a_visitor.exception == an_exception
+    assert a_visitor.exceptions[0] == an_exception
 
 
 def test_parser_visitor__on_field_out(a_visitor, an_element):
@@ -278,12 +275,12 @@ def test_parser_visitor__on_variable_definition_in(a_visitor, an_element):
 def test_parser_visitor__validate_type(a_visitor, an_element):
     a_visitor._validate_type("ninja", "a", str)
 
-    assert a_visitor.exception is None
+    assert a_visitor.exceptions == []
     assert a_visitor.continue_child == 1
 
     a_visitor._validate_type("ntm", "a", int)
-    assert a_visitor.exception is not None
-    assert isinstance(a_visitor.exception, TypeError)
+    assert a_visitor.exceptions is not None
+    assert isinstance(a_visitor.exceptions[0], GraphQLError)
     assert a_visitor.continue_child == 0
 
 
@@ -292,7 +289,7 @@ def test_parser_visitor__validate_type_invalid_type_dont_care(
 ):
     a_visitor._validate_type("ninja", "a", None)
 
-    assert a_visitor.exception is None
+    assert a_visitor.exceptions == []
     assert a_visitor.continue_child == 1
 
 
@@ -347,8 +344,8 @@ def test_parser_visitor__validate_vars_existing_okay_var_is_list_nok(
     a_visitor._validates_vars()
 
     assert a_visitor.continue_child == 0
-    assert a_visitor.exception is not None
-    assert isinstance(a_visitor.exception, TypeError)
+    assert a_visitor.exceptions is not None
+    assert isinstance(a_visitor.exceptions[0], GraphQLError)
 
 
 def test_parser_visitor__validate_vars_existing_okay_var_has_a_dfv(
@@ -395,8 +392,8 @@ def test_parser_visitor__validate_vars_existing_okay_var_no_dfv_non_nullable(
     a_visitor._validates_vars()
 
     assert a_visitor.continue_child == 0
-    assert a_visitor.exception is not None
-    assert isinstance(a_visitor.exception, UnknownVariableException)
+    assert a_visitor.exceptions is not None
+    assert isinstance(a_visitor.exceptions[0], UnknownVariableException)
 
 
 def test_parser_visitor__on_variable_definition_out(a_visitor, an_element):
@@ -462,8 +459,8 @@ def test_parser_visitor__on_fragment_definition_in_already_know_fragment(
     a_visitor._on_fragment_definition_in(an_element)
 
     assert a_visitor.continue_child == 0
-    assert a_visitor.exception is not None
-    assert isinstance(a_visitor.exception, TartifletteException)
+    assert a_visitor.exceptions is not None
+    assert isinstance(a_visitor.exceptions[0], TartifletteException)
 
 
 def test_parser_visitor__on_fragment_definition_out(a_visitor, an_element):

@@ -255,6 +255,10 @@ async def default_resolver(
     return None
 
 
+def default_error_coercer(exception: Exception) -> dict:
+    return exception.coerce_value()
+
+
 class ResolverExecutorFactory:
     @staticmethod
     def get_resolver_executor(func, field):

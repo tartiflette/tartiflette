@@ -2,6 +2,7 @@ import os
 from functools import partial
 
 from cffi import FFI
+from tartiflette.types.exceptions.tartiflette import GraphQLError
 
 from tartiflette.types.location import Location
 
@@ -580,7 +581,7 @@ class LibGraphqlParser:
 
         if self._errors[0] != self._ffi.NULL:
             # TODO specialize Exception here
-            e = Exception(
+            e = GraphQLError(
                 self._ffi.string(self._errors[0]).decode("UTF-8", "replace")
             )
             self._lib.graphql_error_free(self._errors[0])
