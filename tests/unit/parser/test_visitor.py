@@ -607,3 +607,34 @@ def test_parser_visitor_update_in_fragment(a_visitor, an_element):
     assert a_visitor.continue_child == 1
     assert a_visitor.event == a_visitor.IN
     assert len(a_visitor._current_fragment_definition.callbacks) == 1
+
+
+@pytest.mark.parametrize(
+    "current_depth,type_cond_depth,inline_frag_info,current_type_condition,expected",
+    [
+        (1, 1, None, "A", "A"),
+        (1, 0, None, "A", None),
+        (1, 2, ("B", 1), None, None),
+        (1, 2, ("B", 0), "B", "B"),
+    ],
+)
+def test_parser_visitor__compute_type_cond(
+    current_depth,
+    type_cond_depth,
+    inline_frag_info,
+    current_type_condition,
+    expected,
+):
+    from tartiflette.parser.visitor import _compute_type_cond
+
+    ifi = inline_frag_info
+    if isinstance(ifi, tuple):
+        ifi = Mock()
+        ifi.type, ifi.depth = inline_frag_info
+
+    assert (
+        _compute_type_cond(
+            current_depth, type_cond_depth, ifi, current_type_condition
+        )
+        == expected
+    )
