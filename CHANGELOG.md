@@ -9,10 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Allows to handle custom exeception errors.
-
-- Coerce exception raised during query parsing instead of throwing them.
-
+- Allows to handle custom exception errors.
+- Coerce exception raised during query parsing instead of throwing them:
 ```python
 class BadRequestError(Exception):
     def coerce_value(self, *_args, path=None, locations=None, **_kwargs):
@@ -25,13 +23,22 @@ async def resolver_hello(parent, args, ctx, info):
         raise BadRequestError("`name` argument shouldn't by empty.")
     return "hello " + args["name"]
 ```
+- Enable you to override the `default_error_resolver` at Engine initialization time:
+```python
+async def my_error_resolver(exception) -> dict:
+    do_ing_some_thin_gs = 42
+    return a_value
 
+e = Engine("my_sdl.sdl", error_resolver=my_error_resolver)
+```
 - Adds manually path & locations attributes to the `UnknownSchemaFieldResolver` raised exception.
+- Returns all encountered errors during query parsing instead of only the last one.
 
 ### Fixed
 
 - Parse raw GraphQL query in order to have the correct locations on raised errors.
 - Avoid `TypeError` by re-raising `UnknownSchemaFieldResolver` or casting `_inline_fragment_type` to string.
+- Raise `GraphQLError` instead of builtin exceptions.
 
 ## [Release]
 

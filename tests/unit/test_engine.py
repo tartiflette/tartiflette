@@ -1,4 +1,5 @@
 import pytest
+from tartiflette.resolver.factory import default_error_resolver
 from unittest.mock import Mock
 
 
@@ -55,6 +56,44 @@ async def test_engine_execute_parse_error(clean_registry):
             },
             {
                 "message": "field `Query.unknownNode2` was not found in GraphQL schema.",
+                "path": ["unknownNode1", "unknownNode2"],
+                "locations": [
+                    {
+                        "column": 22,
+                        "line": 1,
+                    },
+                ],
+            },
+        ],
+    }
+
+
+@pytest.mark.asyncio
+async def test_engine_execute_custom_error_resolver(clean_registry):
+    from tartiflette.engine import Engine
+
+    def custom_error_resolver(exception):
+        error = default_error_resolver(exception)
+        error["message"] = error["message"] + "Custom"
+        return error
+
+    e = Engine("type Query { a: String }", error_resolver=custom_error_resolver)
+
+    assert await e.execute("query { unknownNode1 unknownNode2 }") == {
+        "data": None,
+        "errors": [
+            {
+                "message": "field `Query.unknownNode1` was not found in GraphQL schema.Custom",
+                "path": ["unknownNode1"],
+                "locations": [
+                    {
+                        "column": 9,
+                        "line": 1,
+                    },
+                ],
+            },
+            {
+                "message": "field `Query.unknownNode2` was not found in GraphQL schema.Custom",
                 "path": ["unknownNode1", "unknownNode2"],
                 "locations": [
                     {
