@@ -41,6 +41,7 @@ e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 - Avoid `TypeError` by re-raising `UnknownSchemaFieldResolver` or casting `_inline_fragment_type` to string.
 - Raise `GraphQLError` instead of builtin exceptions.
 - ISSUE-70: Now Typecondition is correctly unset for nested fields inside a fragment.
+- ISSUE-71: Now libgraphqlparser parsing errors only lives for the duration of the request.
 
 ## [Release]
 
