@@ -509,7 +509,7 @@ class LibGraphqlParser:
         self._lib_callbacks = self._ffi.new(
             "struct GraphQLAstVisitorCallbacks *"
         )
-        self._errors = self._ffi.new("char **")
+
         self._callbacks = []
         self._interested_by = {}
         self._default_visitor_cls = Visitor
@@ -573,18 +573,20 @@ class LibGraphqlParser:
         if isinstance(query, str):
             query = query.encode("UTF-8")
 
+        errors = self._ffi.new("char **")
+
         c_query = self._ffi.new("char[]", query)
         parsed_data = _ParsedData(
-            self._lib.graphql_parse_string(c_query, self._errors),
+            self._lib.graphql_parse_string(c_query, errors),
             self._lib.graphql_node_free,
         )
 
-        if self._errors[0] != self._ffi.NULL:
+        if errors[0] != self._ffi.NULL:
             # TODO specialize Exception here
             e = GraphQLError(
-                self._ffi.string(self._errors[0]).decode("UTF-8", "replace")
+                self._ffi.string(errors[0]).decode("UTF-8", "replace")
             )
-            self._lib.graphql_error_free(self._errors[0])
+            self._lib.graphql_error_free(errors[0])
             raise e
 
         return parsed_data
