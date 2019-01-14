@@ -23,13 +23,13 @@ async def resolver_hello(parent, args, ctx, info):
         raise BadRequestError("`name` argument shouldn't by empty.")
     return "hello " + args["name"]
 ```
-- Enable you to override the `default_error_resolver` at Engine initialization time:
+- Enable you to override the `default_error_coercer` at Engine initialization time:
 ```python
-async def my_error_resolver(exception) -> dict:
+async def my_error_coercer(exception) -> dict:
     do_ing_some_thin_gs = 42
     return a_value
 
-e = Engine("my_sdl.sdl", error_resolver=my_error_resolver)
+e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 ```
 - Adds manually path & locations attributes to the `UnknownSchemaFieldResolver` raised exception.
 - Returns all encountered errors during query parsing instead of only the last one.

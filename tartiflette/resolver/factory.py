@@ -255,7 +255,7 @@ async def default_resolver(
     return None
 
 
-def default_error_resolver(exception: Exception) -> dict:
+def default_error_coercer(exception: Exception) -> dict:
     return exception.coerce_value()
 
 

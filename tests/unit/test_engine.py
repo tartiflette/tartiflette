@@ -1,5 +1,5 @@
 import pytest
-from tartiflette.resolver.factory import default_error_resolver
+from tartiflette.resolver.factory import default_error_coercer
 from unittest.mock import Mock
 
 
@@ -69,15 +69,15 @@ async def test_engine_execute_parse_error(clean_registry):
 
 
 @pytest.mark.asyncio
-async def test_engine_execute_custom_error_resolver(clean_registry):
+async def test_engine_execute_custom_error_coercer(clean_registry):
     from tartiflette.engine import Engine
 
-    def custom_error_resolver(exception):
-        error = default_error_resolver(exception)
+    def custom_error_coercer(exception):
+        error = default_error_coercer(exception)
         error["message"] = error["message"] + "Custom"
         return error
 
-    e = Engine("type Query { a: String }", error_resolver=custom_error_resolver)
+    e = Engine("type Query { a: String }", error_coercer=custom_error_coercer)
 
     assert await e.execute("query { unknownNode1 unknownNode2 }") == {
         "data": None,

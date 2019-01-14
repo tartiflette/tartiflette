@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from tartiflette.executors.basic import execute as basic_execute
 from tartiflette.parser import TartifletteRequestParser
-from tartiflette.resolver.factory import default_error_resolver
+from tartiflette.resolver.factory import default_error_coercer
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.types.exceptions.tartiflette import GraphQLError
@@ -13,12 +13,12 @@ class Engine:
         self,
         sdl,
         schema_name="default",
-        error_resolver=default_error_resolver,
+        error_coercer=default_error_coercer,
         custom_default_resolver=None,
         exclude_builtins_scalars=None,
     ):
         # TODO: Use the kwargs and add them to the schema
-        self._error_resolver = error_resolver
+        self._error_coercer = error_coercer
         # schema can be: file path, file list, folder path, schema object
         self._parser = TartifletteRequestParser()
         SchemaRegistry.register_sdl(schema_name, sdl, exclude_builtins_scalars)
@@ -54,11 +54,9 @@ class Engine:
         if errors:
             return {
                 "data": None,
-                "errors": [self._error_resolver(err) for err in errors],
+                "errors": [self._error_coercer(err) for err in errors],
             }
 
         return await basic_execute(
-            root_nodes,
-            request_ctx=context,
-            error_resolver=self._error_resolver,
+            root_nodes, request_ctx=context, error_coercer=self._error_coercer
         )

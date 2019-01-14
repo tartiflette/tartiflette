@@ -1,6 +1,6 @@
 import pytest
 import inspect
-from tartiflette.resolver.factory import default_error_resolver
+from tartiflette.resolver.factory import default_error_coercer
 from tartiflette.types.exceptions.tartiflette import GraphQLError
 from unittest.mock import Mock
 
@@ -87,7 +87,7 @@ async def test_executor_basic_execute(errors, expected, monkeypatch):
 
     from tartiflette.executors.basic import execute
 
-    a = await execute([], request_ctx={}, error_resolver=default_error_resolver)
+    a = await execute([], request_ctx={}, error_coercer=default_error_coercer)
 
     assert a == expected
 
@@ -101,15 +101,15 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
     async def my_execute(_, exec_ctx, __):
         exec_ctx.add_error(GraphQLError("My error"))
 
-    def custom_error_resolver(exception):
-        return {"message": "Error from custom_error_resolver"}
+    def custom_error_coercer(exception):
+        return {"message": "Error from custom_error_coercer"}
 
     monkeypatch.setattr(basic, "_execute", my_execute)
 
     from tartiflette.executors.basic import execute
 
-    a = await execute([], request_ctx={}, error_resolver=custom_error_resolver)
+    a = await execute([], request_ctx={}, error_coercer=custom_error_coercer)
 
-    assert a == {"data": {}, "errors": [{"message": "Error from custom_error_resolver"}]}
+    assert a == {"data": {}, "errors": [{"message": "Error from custom_error_coercer"}]}
 
     monkeypatch.undo()
