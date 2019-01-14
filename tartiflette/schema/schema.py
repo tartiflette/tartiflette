@@ -11,6 +11,8 @@ from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
     UnknownSchemaFieldResolver,
     MissingImplementation,
+    RedefinedImplementation,
+    ImproperlyConfigured,
 )
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
@@ -167,7 +169,7 @@ class GraphQLSchema:
 
     def add_directive(self, value: GraphQLDirective) -> None:
         if self._directives.get(value.name):
-            raise ValueError(
+            raise RedefinedImplementation(
                 "new GraphQL directive definition `{}` "
                 "overrides existing directive definition `{}`.".format(
                     value.name, repr(self._directives.get(value.name))
@@ -177,7 +179,7 @@ class GraphQLSchema:
 
     def add_definition(self, value: GraphQLType) -> None:
         if self._gql_types.get(value.name):
-            raise ValueError(
+            raise RedefinedImplementation(
                 "new GraphQL type definition `{}` "
                 "overrides existing type definition `{}`.".format(
                     value.name, repr(self._gql_types.get(value.name))
@@ -187,7 +189,7 @@ class GraphQLSchema:
 
     def add_enum_definition(self, value: GraphQLEnumType) -> None:
         if self._enums.get(value.name):
-            raise ValueError(
+            raise RedefinedImplementation(
                 "new GraphQL enum definition `{}` "
                 "overrides existing enum definition `{}`.".format(
                     value.name, repr(self._enums.get(value.name))
@@ -198,9 +200,9 @@ class GraphQLSchema:
 
     def add_custom_scalar_definition(self, value: GraphQLScalarType) -> None:
         if self._custom_scalars.get(value.name):
-            raise ValueError(
-                "new GraphQL enum definition `{}` "
-                "overrides existing enum definition `{}`.".format(
+            raise RedefinedImplementation(
+                "new GraphQL scalar definition `{}` "
+                "overrides existing scalar definition `{}`.".format(
                     value.name, repr(self._custom_scalars.get(value.name))
                 )
             )
@@ -225,11 +227,11 @@ class GraphQLSchema:
     def get_field_by_name(self, name: str) -> Optional[GraphQLField]:
         try:
             object_name, field_name = name.split(".")
-        except ValueError as err:
-            raise ValueError(
+        except ValueError:
+            raise ImproperlyConfigured(
                 "field name must be of the format "
                 "`TypeName.fieldName` got `{}`.".format(name)
-            ) from err
+            )
 
         try:
             return self._gql_types[object_name].find_field(field_name)

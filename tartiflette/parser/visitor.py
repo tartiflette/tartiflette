@@ -8,10 +8,10 @@ from tartiflette.parser.cffi import (
 )
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
-    TartifletteException,
     UnknownSchemaFieldResolver,
     UnknownVariableException,
-    GraphQLError,
+    AlreadyDefined,
+    InvalidType,
 )
 from tartiflette.types.helpers import reduce_type
 
@@ -203,9 +203,11 @@ class TartifletteVisitor(Visitor):
             if not isinstance(a_value, a_type):
                 self.continue_child = 0
                 self.exceptions.append(
-                    GraphQLError(
+                    InvalidType(
                         "Given value for < %s > is not type < %s >"
-                        % (varname, a_type)
+                        % (varname, a_type),
+                        path=self.field_path[:],
+                        locations=[self._current_node.location],
                     )
                 )
         except TypeError:
@@ -233,7 +235,11 @@ class TartifletteVisitor(Visitor):
             if not isinstance(a_value, list):
                 self.continue_child = 0
                 self.exceptions.append(
-                    GraphQLError("Expecting List for < %s > values" % name)
+                    InvalidType(
+                        "Expecting List for < %s > values" % name,
+                        path=self.field_path[:],
+                        locations=[self._current_node.location],
+                    )
                 )
                 return None
 
@@ -270,8 +276,10 @@ class TartifletteVisitor(Visitor):
         if element.name in self._fragments:
             self.continue_child = 0
             self.exceptions.append(
-                TartifletteException(
-                    "Fragment < %s > already defined" % element.name
+                AlreadyDefined(
+                    "Fragment < %s > already defined" % element.name,
+                    path=self.field_path[:],
+                    locations=[element.get_location()],
                 )
             )
             return

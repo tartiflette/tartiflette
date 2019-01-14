@@ -8,6 +8,7 @@ from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
     UnknownSchemaFieldResolver,
+    ImproperlyConfigured
 )
 
 
@@ -59,11 +60,11 @@ def test_schema_object_get_field_name(clean_registry):
     clean_registry.register_sdl("A", schema_sdl)
     generated_schema = SchemaBakery._preheat("A", None)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ImproperlyConfigured):
         generated_schema.get_field_by_name("Invalid.Field.name")
-    with pytest.raises(ValueError):
+    with pytest.raises(ImproperlyConfigured):
         generated_schema.get_field_by_name("")
-    with pytest.raises(ValueError):
+    with pytest.raises(ImproperlyConfigured):
         generated_schema.get_field_by_name("unknownField")
 
     # Happy path

@@ -3,6 +3,7 @@ from asyncio import iscoroutinefunction
 from tartiflette.types.exceptions.tartiflette import (
     UnknownDirectiveDefinition,
     NonAwaitableDirective,
+    MissingImplementation,
 )
 from tartiflette.schema.registry import SchemaRegistry
 
@@ -32,7 +33,7 @@ class Directive:
 
     def bake(self, schema):
         if not self._implementation:
-            raise Exception("No implementation given")
+            raise MissingImplementation("No implementation given")
 
         try:
             directive = schema.find_directive(self._name)

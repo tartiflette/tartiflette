@@ -1,5 +1,8 @@
 import pytest
-from tartiflette.types.exceptions.tartiflette import GraphQLError
+from tartiflette.types.exceptions.tartiflette import (
+    GraphQLError,
+    AlreadyDefined
+)
 from unittest.mock import Mock
 
 
@@ -453,8 +456,6 @@ def test_parser_visitor__on_fragment_definition_in(a_visitor, an_element):
 def test_parser_visitor__on_fragment_definition_in_already_know_fragment(
     a_visitor, an_element
 ):
-    from tartiflette.types.exceptions.tartiflette import TartifletteException
-
     an_element.get_type_condition = Mock(return_value="a_type_condition")
 
     a_visitor._fragments["a_name"] = Mock()
@@ -462,7 +463,7 @@ def test_parser_visitor__on_fragment_definition_in_already_know_fragment(
 
     assert a_visitor.continue_child == 0
     assert a_visitor.exceptions is not None
-    assert isinstance(a_visitor.exceptions[0], TartifletteException)
+    assert isinstance(a_visitor.exceptions[0], AlreadyDefined)
 
 
 def test_parser_visitor__on_fragment_definition_out(a_visitor, an_element):

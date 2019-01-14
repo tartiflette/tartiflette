@@ -35,6 +35,10 @@ e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 - Returns all encountered errors during query parsing instead of only the last one.
 - _typename tartiflette attribute is now automatically set by coercion except inside union type where it is deduce at execution time.
 
+### Changed
+
+- Makes raised exceptions inherits from `GraphQLError`.
+
 ### Fixed
 
 - Parse raw GraphQL query in order to have the correct locations on raised errors.

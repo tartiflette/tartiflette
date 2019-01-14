@@ -4,6 +4,7 @@ from typing import Callable
 from tartiflette.types.exceptions.tartiflette import (
     NonAwaitableResolver,
     UnknownFieldDefinition,
+    MissingImplementation,
 )
 from tartiflette.schema.registry import SchemaRegistry
 
@@ -33,7 +34,7 @@ class Resolver:
 
     def bake(self, schema):
         if not self._implementation:
-            raise Exception("No implementation given")
+            raise MissingImplementation("No implementation given")
 
         try:
             field = schema.get_field_by_name(self._name)
