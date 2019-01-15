@@ -190,6 +190,8 @@ def test_parser_visitor__on_field_in_a_fragment(a_visitor, an_element):
     a_visitor._current_node.field_executor.schema_field.gql_type = "a_gql_type"
     a_visitor._inline_fragment_info = Mock()
     a_visitor._inline_fragment_info.type = "an_inline_fragment_type"
+    a_visitor._inline_fragment_info.depth = 2
+    a_visitor._current_type_condition = a_visitor._inline_fragment_info.type
     current_node = a_visitor._current_node
 
     class _get_field_by_name(MagicMock):
@@ -203,7 +205,7 @@ def test_parser_visitor__on_field_in_a_fragment(a_visitor, an_element):
 
     a_visitor.schema.get_field_by_name = _get_field_by_name()
 
-    a_visitor._on_field_in(an_element)
+    a_visitor._on_field_in(an_element, type_cond_depth=1)
 
     assert a_visitor._depth == 2
     assert a_visitor.field_path == ["a_parent_path_element", "a_name"]
@@ -232,6 +234,8 @@ def test_parser_visitor__on_field_unknow_schema_field(a_visitor, an_element):
     a_visitor._current_node.field_executor.schema_field.gql_type = "a_gql_type"
     a_visitor._inline_fragment_info = Mock()
     a_visitor._inline_fragment_info.type = "an_inline_fragment_type"
+    a_visitor._current_type_condition = a_visitor._inline_fragment_info.type
+    a_visitor._inline_fragment_info.depth = 2
     current_node = a_visitor._current_node
 
     an_exception = UnknownSchemaFieldResolver("a_message")
@@ -616,7 +620,7 @@ def test_parser_visitor_update_in_fragment(a_visitor, an_element):
         (1, 1, None, "A", "A"),
         (1, 0, None, "A", None),
         (1, 2, ("B", 1), None, None),
-        (1, 2, ("B", 0), "B", "B"),
+        (2, 2, ("B", 2), "B", "B"),
     ],
 )
 def test_parser_visitor__compute_type_cond(

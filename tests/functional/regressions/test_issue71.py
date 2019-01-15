@@ -49,7 +49,7 @@ _TTFTT_ENGINE = Engine(
 
 
 @pytest.mark.asyncio
-async def test_issue70_fragment_in_inline():
+async def test_issue71():
     query = """
         query { {}
     """

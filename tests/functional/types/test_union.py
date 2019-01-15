@@ -72,6 +72,47 @@ from tartiflette.engine import Engine
         """,
             {"data": {"test": {"eField": 3.6, "fField": "fValue"}}},
         ),
+        (
+            """
+
+        fragment bob on One {
+            __typename
+            aField
+            bField
+        }
+
+        fragment ninja on Two {
+            __typename
+            cField
+            dField
+        }
+
+        fragment lol on Three {
+            __typename
+            eField
+            fField
+        }
+
+        query aquery {
+            test(choose:3){
+                ... bob
+                ... ninja
+                ... lol
+            }
+            __typename
+        }
+        """,
+            {
+                "data": {
+                    "test": {
+                        "__typename": "Three",
+                        "eField": 3.6,
+                        "fField": "fValue",
+                    },
+                    "__typename": "Query",
+                }
+            },
+        ),
     ],
 )
 async def test_tartiflette_execute_union_type_output(
