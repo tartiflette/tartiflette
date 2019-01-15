@@ -147,6 +147,10 @@ class NotUniqueOperationName(GraphQLError):
     pass
 
 
+class NotLoneAnonymousOperation(GraphQLError):
+    pass
+
+
 class UnknownVariableException(GraphQLError):
     def __init__(self, varname):
         # TODO: Unify error messages format

@@ -68,9 +68,7 @@ _TTFTT_ENGINE = Engine(
                 {
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [
-                        {"line": 2, "column": 13},
-                    ],
+                    "locations": [{"line": 2, "column": 13}],
                 }
             ],
         ),
@@ -94,9 +92,7 @@ _TTFTT_ENGINE = Engine(
                 {
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [
-                        {"line": 10, "column": 13},
-                    ],
+                    "locations": [{"line": 10, "column": 13}],
                 }
             ],
         ),
@@ -120,17 +116,13 @@ _TTFTT_ENGINE = Engine(
                 {
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [
-                        {"line": 2, "column": 13},
-                    ],
+                    "locations": [{"line": 2, "column": 13}],
                 },
                 {
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [
-                        {"line": 8, "column": 13},
-                    ],
-                }
+                    "locations": [{"line": 8, "column": 13}],
+                },
             ],
         ),
         (
@@ -153,17 +145,13 @@ _TTFTT_ENGINE = Engine(
                 {
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [
-                        {"line": 2, "column": 13},
-                    ],
+                    "locations": [{"line": 2, "column": 13}],
                 },
                 {
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [
-                        {"line": 10, "column": 13},
-                    ],
-                }
+                    "locations": [{"line": 10, "column": 13}],
+                },
             ],
         ),
     ],
