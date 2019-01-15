@@ -486,7 +486,7 @@ async def test_issue70_fragment_in_inline_in_fragment():
 async def test_issue70_dont_execute_fragment_on_wrong_type():
     query = """
 
-    fragment FleurFragment on LOL {
+    fragment FleurFragment on Rascal {
         e
         petaleColor
     }

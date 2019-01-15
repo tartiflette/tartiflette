@@ -12,6 +12,7 @@ from tartiflette.types.exceptions.tartiflette import (
     UnknownVariableException,
     AlreadyDefined,
     InvalidType,
+    UnknownTypeDefinition,
 )
 from tartiflette.types.helpers import reduce_type
 
@@ -285,11 +286,22 @@ class TartifletteVisitor(Visitor):
             )
             return
 
+        type_condition = element.get_type_condition()
+        if not self.schema.has_type(type_condition):
+            self.continue_child = 0
+            self.exceptions.append(
+                UnknownTypeDefinition(
+                    "Unknown type < %s >." % type_condition,
+                    locations=[element.get_location()],
+                )
+            )
+            return
+
         nfd = NodeFragmentDefinition(
             self.path,
             element.get_location(),
             element.name,
-            type_condition=element.get_type_condition(),
+            type_condition=type_condition,
         )
 
         self._current_fragment_definition = nfd

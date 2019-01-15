@@ -145,6 +145,9 @@ class GraphQLSchema:
     def find_type(self, name):
         return self._gql_types[name]
 
+    def has_type(self, name):
+        return name in self._gql_types
+
     @property
     def gql_types(self):
         return self._gql_types

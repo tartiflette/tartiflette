@@ -111,6 +111,10 @@ class UnknownFieldDefinition(GraphQLError):
     pass
 
 
+class UnknownTypeDefinition(GraphQLError):
+    pass
+
+
 class MissingImplementation(ImproperlyConfigured):
     pass
 
