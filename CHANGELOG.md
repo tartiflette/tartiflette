@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Raise errors when fragment target unknown type.
 - Raise errors when defined fragment isn't used.
+- Raise errors when undefined fragment is used.
 
 ## [Release]
 

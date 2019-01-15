@@ -3,7 +3,8 @@ from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLError,
     AlreadyDefined,
-    UnusedFragment
+    UnusedFragment,
+    UndefinedFragment
 )
 from unittest.mock import Mock
 
@@ -646,6 +647,7 @@ def test_parser_visitor__compute_type_cond(
         == expected
     )
 
+
 @pytest.mark.parametrize("defined_fragments,used_fragments,unused", [
     (
         {
@@ -682,3 +684,16 @@ def test_on_document_out_unused_fragment(
     assert len(a_visitor.exceptions) == len(unused)
     for exception, unused_fragment in zip(a_visitor.exceptions, unused):
         assert isinstance(exception, UnusedFragment)
+
+
+def test_parser_visitor__on_fragment_spread_out_undefined(
+    a_visitor, an_element
+):
+    an_element.name = "UnknownFragment"
+
+    a_visitor._fragments = {}
+    a_visitor._on_fragment_spread_out(an_element)
+
+    assert len(a_visitor.exceptions) == 1
+    assert isinstance(a_visitor.exceptions[0], UndefinedFragment)
+    assert str(a_visitor.exceptions[0]) == "Undefined fragment < UnknownFragment >."
