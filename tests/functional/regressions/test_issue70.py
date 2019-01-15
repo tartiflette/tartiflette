@@ -165,7 +165,7 @@ async def test_issue70_okayquery():
                 repositories(first: 10) {
                     edges {
                         node {
-                        ...RepositoryFields
+                        ... RepositoryFields
                         }
                     }
                 }
@@ -409,7 +409,7 @@ async def test_issue70_fragment_in_inline():
 
 
 @pytest.mark.asyncio
-async def test_issue70_fragment_in_inline():
+async def test_issue70_fragment_in_inline_in_fragment():
     query = """
 
     fragment FleurFragment on Fleur {
@@ -472,6 +472,67 @@ async def test_issue70_fragment_in_inline():
                                     },
                                     "login": "AA",
                                 },
+                                "name": "N2",
+                            }
+                        },
+                    ]
+                }
+            }
+        }
+    }
+
+
+@pytest.mark.asyncio
+async def test_issue70_dont_execute_fragment_on_wrong_type():
+    query = """
+
+    fragment FleurFragment on LOL {
+        e
+        petaleColor
+    }
+
+    fragment OwnerFields on RepositoryOwner {
+        login
+        bob {
+            ... on Ninja {
+                d {
+                    ...FleurFragment
+                }
+            }
+        }
+    }
+
+    query {
+        viewer {
+            repositories(first: 10) {
+                edges {
+                    node {
+                        name
+                        owner {
+                            ...OwnerFields
+                        }
+                    }
+                }
+            }
+        }
+    }
+"""
+
+    results = await _TTFTT_ENGINE.execute(query)
+    assert results == {
+        "data": {
+            "viewer": {
+                "repositories": {
+                    "edges": [
+                        {
+                            "node": {
+                                "name": "N1",
+                                "owner": {"bob": {"d": {}}, "login": "LOL"},
+                            }
+                        },
+                        {
+                            "node": {
+                                "owner": {"bob": {"d": {}}, "login": "AA"},
                                 "name": "N2",
                             }
                         },

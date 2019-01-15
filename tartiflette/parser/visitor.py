@@ -30,7 +30,7 @@ def _compute_type_cond(
     current_depth, type_cond_depth, inline_frag_info, current_type_condition
 ):
     if current_depth == type_cond_depth or (
-        inline_frag_info and current_depth - 1 == inline_frag_info.depth
+        inline_frag_info and current_depth == inline_frag_info.depth
     ):
         return current_type_condition
     return None
@@ -129,9 +129,15 @@ class TartifletteVisitor(Visitor):
 
     def _on_field_in(
         self, element: _VisitorElement, *_args, type_cond_depth=-1, **_kwargs
-    ):
+    ):  # pylint: disable=too-many-locals
         self.field_path.append(element.name)
         self._depth = self._depth + 1
+        type_cond = _compute_type_cond(
+            self._depth,
+            type_cond_depth,
+            self._inline_fragment_info,
+            self._current_type_condition,
+        )
 
         try:
             parent_type = reduce_type(
@@ -148,10 +154,10 @@ class TartifletteVisitor(Visitor):
             )
         except UnknownSchemaFieldResolver as e:
             try:
-                if not self._inline_fragment_info:
+                if type_cond is None:
                     raise
                 field = self.schema.get_field_by_name(
-                    str(self._inline_fragment_info.type) + "." + element.name
+                    str(type_cond) + "." + element.name
                 )
             except UnknownSchemaFieldResolver as e:
                 self.continue_child = 0
@@ -166,12 +172,7 @@ class TartifletteVisitor(Visitor):
             field.resolver,
             element.get_location(),
             self.field_path[:],
-            _compute_type_cond(
-                self._depth,
-                type_cond_depth,
-                self._inline_fragment_info,
-                self._current_type_condition,
-            ),
+            type_cond,
             element.get_alias(),
         )
 
@@ -301,11 +302,12 @@ class TartifletteVisitor(Visitor):
         self, element: _VisitorElement, *_args, **_kwargs
     ):
         cfd = self._fragments[element.name]
+        depth = self._depth + 1
         self._current_type_condition = cfd.type_condition
 
         for saved_callback in cfd.callbacks:
             saved_callback(
-                type_cond_depth=self._depth
+                type_cond_depth=depth
             )  # Simulate calling a the right place.
         self._current_type_condition = None
 
@@ -319,7 +321,9 @@ class TartifletteVisitor(Visitor):
 
     def _on_inline_fragment_in(self, element, *_args, **_kwargs):
         a_type = element.get_named_type()
-        self._inline_fragment_info = InlineFragmentInfo(a_type, self._depth)
+        self._inline_fragment_info = InlineFragmentInfo(
+            a_type, self._depth + 1
+        )
         self._current_type_condition = a_type
 
     def _on_inline_fragment_out(self, *_args, **_kwargs):
