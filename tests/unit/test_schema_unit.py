@@ -641,3 +641,30 @@ def test_schema_registry_get_builtins_sdl_files(
     exclude_builtins_scalars, expected
 ):
     assert _get_builtins_sdl_files(exclude_builtins_scalars) == expected
+
+
+@pytest.mark.parametrize("type_name,expected", [
+    (
+        "Unknown",
+        False,
+    ),
+    (
+        "User",
+        True,
+    ),
+])
+def test_schema_has_type(clean_registry, type_name, expected):
+    clean_registry.register_sdl(
+        "a",
+        """
+        type User {
+            name: String
+        }
+
+        type Query {
+            viewer: User
+        }
+        """
+    )
+    schema = SchemaBakery.bake("a")
+    assert schema.has_type(type_name) is expected
