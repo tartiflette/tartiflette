@@ -48,6 +48,13 @@ async def test_issue79():
                 "locations": [
                     {"line": 2, "column": 5}
                 ]
+            },
+            {
+                "message": "Undefined fragment < UnknownFields >.",
+                "path": None,
+                "locations": [
+                    {"line": 8, "column": 13}
+                ]
             }
         ]
     }

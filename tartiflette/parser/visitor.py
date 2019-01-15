@@ -14,6 +14,7 @@ from tartiflette.types.exceptions.tartiflette import (
     InvalidType,
     UnknownTypeDefinition,
     UnusedFragment,
+    UndefinedFragment,
 )
 from tartiflette.types.helpers import reduce_type
 
@@ -314,7 +315,17 @@ class TartifletteVisitor(Visitor):
         self, element: _VisitorElement, *_args, **_kwargs
     ):
         self._used_fragments.add(element.name)
-        cfd = self._fragments[element.name]
+        try:
+            cfd = self._fragments[element.name]
+        except KeyError:
+            self._add_exception(
+                UndefinedFragment(
+                    "Undefined fragment < %s >." % element.name,
+                    locations=[element.get_location()],
+                )
+            )
+            return
+
         depth = self._depth + 1
         self._current_type_condition = cfd.type_condition
 
