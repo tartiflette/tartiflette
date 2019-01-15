@@ -129,7 +129,7 @@ class TartifletteVisitor(Visitor):
 
     def _on_field_in(
         self, element: _VisitorElement, *_args, type_cond_depth=-1, **_kwargs
-    ):
+    ):  # pylint: disable=too-many-locals
         self.field_path.append(element.name)
         self._depth = self._depth + 1
         type_cond = _compute_type_cond(
