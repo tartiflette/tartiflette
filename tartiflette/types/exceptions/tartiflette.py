@@ -115,6 +115,10 @@ class UnknownTypeDefinition(GraphQLError):
     pass
 
 
+class UnusedFragment(GraphQLError):
+    pass
+
+
 class MissingImplementation(ImproperlyConfigured):
     pass
 

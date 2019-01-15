@@ -4,7 +4,7 @@ from tartiflette.engine import Engine
 from tartiflette.resolver import Resolver
 
 
-@Resolver("Query.viewer", schema_name="test_issue79")
+@Resolver("Query.viewer", schema_name="test_issue80")
 async def resolver_query_viewer(*_, **__):
     return {"name": "N1"}
 
@@ -19,20 +19,20 @@ _TTFTT_ENGINE = Engine(
         viewer: User
     }
     """,
-    schema_name="test_issue79",
+    schema_name="test_issue80",
 )
 
 
 @pytest.mark.asyncio
-async def test_issue79():
+async def test_issue80():
     query = """
-    fragment UnknownFields on UnknownType {
+    fragment UserFields on User {
         name
     }
     
     query {
         viewer {
-            ...UnknownFields
+            name
         }
     }
     """
@@ -43,7 +43,7 @@ async def test_issue79():
         "data": None,
         "errors": [
             {
-                "message": "Unknown type < UnknownType >.",
+                "message": "Fragment < UserFields > is never used.",
                 "path": None,
                 "locations": [
                     {"line": 2, "column": 5}
