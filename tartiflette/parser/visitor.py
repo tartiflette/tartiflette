@@ -15,9 +15,11 @@ from tartiflette.types.exceptions.tartiflette import (
     UnknownTypeDefinition,
     UnusedFragment,
     UndefinedFragment,
+    NotUniqueOperationName,
 )
 from tartiflette.types.helpers import reduce_type
 
+from .nodes.definition import NodeDefinition
 from .nodes.field import NodeField
 from .nodes.fragment_definition import NodeFragmentDefinition
 from .nodes.variable_definition import NodeVariableDefinition
@@ -90,6 +92,7 @@ class TartifletteVisitor(Visitor):
             },
         ]
         self._depth = 0
+        self._operations = {}
         self._operation_type = None
         self.root_nodes = []
         self._vars = variables if variables else {}
@@ -344,6 +347,27 @@ class TartifletteVisitor(Visitor):
     def _on_operation_definition_in(
         self, element: _VisitorElementOperationDefinition, *_args, **_kwargs
     ):
+        try:
+            operation_node = self._operations[element.name]
+        except KeyError:
+            self._operations[element.name] = NodeDefinition(
+                self.path,
+                element.libgraphql_type,
+                element.get_location(),
+                element.name,
+            )
+        else:
+            self._add_exception(
+                NotUniqueOperationName(
+                    "Operation name < %s > should be unique." % element.name,
+                    locations=[
+                        operation_node.location,
+                        element.get_location(),
+                    ],
+                )
+            )
+            return
+
         self._operation_type = element.get_operation()
 
     def _on_operation_definition_out(self, *_args, **_kwargs):
