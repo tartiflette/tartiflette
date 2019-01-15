@@ -32,7 +32,7 @@ async def test_issue79():
     
     query {
         viewer {
-            ...UnknownType
+            ...UnknownFields
         }
     }
     """

@@ -1,7 +1,9 @@
 import pytest
+from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLError,
-    AlreadyDefined
+    AlreadyDefined,
+    UnusedFragment
 )
 from unittest.mock import Mock
 
@@ -643,3 +645,40 @@ def test_parser_visitor__compute_type_cond(
         )
         == expected
     )
+
+@pytest.mark.parametrize("defined_fragments,used_fragments,unused", [
+    (
+        {
+            "FragmentA": NodeFragmentDefinition("path", None, "FragmentA", "A"),
+        },
+        {"FragmentA"},
+        [],
+    ),
+    (
+        {
+            "FragmentA": NodeFragmentDefinition("path", None, "FragmentA", "A"),
+            "FragmentB": NodeFragmentDefinition("path", None, "FragmentB", "B"),
+        },
+        {"FragmentA"},
+        ["FragmentB"],
+    ),
+    (
+        {
+            "FragmentA": NodeFragmentDefinition("path", None, "FragmentA", "A"),
+            "FragmentB": NodeFragmentDefinition("path", None, "FragmentB", "B"),
+        },
+        set(),
+        ["FragmentA", "FragmentB"],
+    ),
+])
+def test_on_document_out_unused_fragment(
+    a_visitor, defined_fragments, used_fragments, unused
+):
+    a_visitor._fragments = defined_fragments
+    a_visitor._used_fragments = used_fragments
+
+    a_visitor._on_document_out()
+
+    assert len(a_visitor.exceptions) == len(unused)
+    for exception, unused_fragment in zip(a_visitor.exceptions, unused):
+        assert isinstance(exception, UnusedFragment)

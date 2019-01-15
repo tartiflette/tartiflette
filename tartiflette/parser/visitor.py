@@ -13,6 +13,7 @@ from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
     InvalidType,
     UnknownTypeDefinition,
+    UnusedFragment,
 )
 from tartiflette.types.helpers import reduce_type
 
@@ -77,6 +78,7 @@ class TartifletteVisitor(Visitor):
             },
             {
                 "default": self._out,
+                "Document": self._on_document_out,
                 "Argument": self._on_argument_out,
                 "Field": self._on_field_out,
                 "VariableDefinition": self._on_variable_definition_out,
@@ -95,6 +97,7 @@ class TartifletteVisitor(Visitor):
         self._current_type_condition = None
         self._current_fragment_definition = None
         self._fragments = {}
+        self._used_fragments = set()
         self.schema: GraphQLSchema = schema
         self.exceptions: List[Exception] = []
         self._inline_fragment_info = None
@@ -310,6 +313,7 @@ class TartifletteVisitor(Visitor):
     def _on_fragment_spread_out(
         self, element: _VisitorElement, *_args, **_kwargs
     ):
+        self._used_fragments.add(element.name)
         cfd = self._fragments[element.name]
         depth = self._depth + 1
         self._current_type_condition = cfd.type_condition
@@ -338,6 +342,16 @@ class TartifletteVisitor(Visitor):
     def _on_inline_fragment_out(self, *_args, **_kwargs):
         self._inline_fragment_info = None
         self._current_type_condition = None
+
+    def _on_document_out(self, *_args, **_kwargs):
+        unused_fragments = set(self._fragments) - self._used_fragments
+        for unused_fragment in unused_fragments:
+            self._add_exception(
+                UnusedFragment(
+                    "Fragment < %s > is never used." % unused_fragment,
+                    locations=[self._fragments[unused_fragment].location],
+                )
+            )
 
     def _in(self, element: _VisitorElement, *args, **kwargs):
         self.path = self.path + "/%s" % TartifletteVisitor.create_node_name(
