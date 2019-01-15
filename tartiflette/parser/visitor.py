@@ -99,6 +99,10 @@ class TartifletteVisitor(Visitor):
         self.exceptions: List[Exception] = []
         self._inline_fragment_info = None
 
+    def _add_exception(self, exception):
+        self.continue_child = 0
+        self.exceptions.append(exception)
+
     def _on_argument_in(self, element: _VisitorElement, *_args, **_kwargs):
         self._current_argument_name = element.name
 
@@ -125,8 +129,7 @@ class TartifletteVisitor(Visitor):
                 {self._current_argument_name: self._vars[var_name]}
             )
         except KeyError:
-            self.continue_child = 0
-            self.exceptions.append(UnknownVariableException(var_name))
+            self._add_exception(UnknownVariableException(var_name))
 
     def _on_field_in(
         self, element: _VisitorElement, *_args, type_cond_depth=-1, **_kwargs
@@ -161,10 +164,9 @@ class TartifletteVisitor(Visitor):
                     str(type_cond) + "." + element.name
                 )
             except UnknownSchemaFieldResolver as e:
-                self.continue_child = 0
                 e.path = self.field_path[:]
                 e.locations = [element.get_location()]
-                self.exceptions.append(e)
+                self._add_exception(e)
                 return
 
         node = NodeField(
@@ -203,8 +205,7 @@ class TartifletteVisitor(Visitor):
     def _validate_type(self, varname, a_value, a_type):
         try:
             if not isinstance(a_value, a_type):
-                self.continue_child = 0
-                self.exceptions.append(
+                self._add_exception(
                     InvalidType(
                         "Given value for < %s > is not type < %s >"
                         % (varname, a_type),
@@ -223,8 +224,7 @@ class TartifletteVisitor(Visitor):
         if name not in self._vars:
             dfv = self._current_node.default_value
             if not dfv and not self._current_node.is_nullable:
-                self.continue_child = 0
-                self.exceptions.append(UnknownVariableException(name))
+                self._add_exception(UnknownVariableException(name))
                 return None
 
             self._vars[name] = dfv
@@ -235,8 +235,7 @@ class TartifletteVisitor(Visitor):
 
         if self._current_node.is_list:
             if not isinstance(a_value, list):
-                self.continue_child = 0
-                self.exceptions.append(
+                self._add_exception(
                     InvalidType(
                         "Expecting List for < %s > values" % name,
                         path=self.field_path[:],
@@ -276,8 +275,7 @@ class TartifletteVisitor(Visitor):
         self, element: _VisitorElement, *_args, **_kwargs
     ):
         if element.name in self._fragments:
-            self.continue_child = 0
-            self.exceptions.append(
+            self._add_exception(
                 AlreadyDefined(
                     "Fragment < %s > already defined" % element.name,
                     path=self.field_path[:],
@@ -288,8 +286,7 @@ class TartifletteVisitor(Visitor):
 
         type_condition = element.get_type_condition()
         if not self.schema.has_type(type_condition):
-            self.continue_child = 0
-            self.exceptions.append(
+            self._add_exception(
                 UnknownTypeDefinition(
                     "Unknown type < %s >." % type_condition,
                     locations=[element.get_location()],
