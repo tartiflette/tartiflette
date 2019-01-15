@@ -1,8 +1,8 @@
 import pytest
 
 from tartiflette import Resolver
-from tartiflette.executors.types import Info
 from tartiflette.engine import Engine
+from tartiflette.executors.types import Info
 
 
 @Resolver("Query.test", schema_name="test_typename")

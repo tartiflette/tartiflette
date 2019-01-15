@@ -6,8 +6,8 @@ from typing import Any, Callable, Dict, List
 from tartiflette.executors.types import ExecutionContext, Info
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import GraphQLError
-from tartiflette.types.location import Location
 from tartiflette.types.helpers import get_typename
+from tartiflette.types.location import Location
 
 from .node import Node
 

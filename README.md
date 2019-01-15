@@ -107,7 +107,7 @@ Here are the subjects we are working on:
 * [x] Typing resolver outputs
 * [x] Error management
 * [X] Abstract and Compound Types: Interfaces
-* [ ] Abstract and Compound Types: Unions
+* [x] Abstract and Compound Types: Unions
 * [X] NodeDefinition: Check that the Type exists.
 * [X] (Directive) Integrate the directive's execution in the Executor.
 * [X] (Directive) introspection based on directive
@@ -132,3 +132,7 @@ Here are the subjects we are working on:
 
 * [ ] Implement **[Apollo Cache Control](https://github.com/apollographql/apollo-cache-control)**
 * [ ] Think about `subscriptions`
+
+## Integration Example
+
+An integration example can be found on the [tartiflette-aiohttp](https://github.com/dailymotion/tartiflette-aiohttp) github repository

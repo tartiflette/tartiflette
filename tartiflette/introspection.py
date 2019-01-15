@@ -1,10 +1,9 @@
 from functools import partial
 
 from tartiflette.types.argument import GraphQLArgument
-
 from tartiflette.types.field import GraphQLField
-from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.helpers import get_typename
+from tartiflette.types.non_null import GraphQLNonNull
 
 
 async def __schema_resolver(_pr, _arg, _rctx, info):

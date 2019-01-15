@@ -2,6 +2,9 @@ from unittest.mock import Mock
 
 import pytest
 
+from tartiflette.types.list import GraphQLList
+from tartiflette.types.non_null import GraphQLNonNull
+
 
 def test_resolver_factory__built_in_coercer():
     from tartiflette.resolver.factory import _built_in_coercer
@@ -143,10 +146,6 @@ def test_resolver_factory__list_and_null_coercer():
     a1, = a1.args
     assert a1.func is _not_null_coercer
     assert lol in a1.args
-
-
-from tartiflette.types.list import GraphQLList
-from tartiflette.types.non_null import GraphQLNonNull
 
 
 @pytest.mark.parametrize(
@@ -471,16 +470,17 @@ def test_resolver_factory__is_union(find_type_mock, expected):
 
 _A_MOCKED_FIELD._typename = None
 
+
 @pytest.mark.parametrize(
     "res,typename,expected",
     [
         (None, "a", "NoneType"),
         ("a", None, "str"),
-        ({"a":1}, "A", "A"),
-        ({"a":1, "_typename":"B"}, "A", "B"),
+        ({"a": 1}, "A", "A"),
+        ({"a": 1, "_typename": "B"}, "A", "B"),
         ("A", "B", "str"),
-        (_A_MOCKED_FIELD, "U", "U")
-    ]
+        (_A_MOCKED_FIELD, "U", "U"),
+    ],
 )
 def test_resolver_factory__set_typename(res, typename, expected):
     from tartiflette.resolver.factory import _set_typename

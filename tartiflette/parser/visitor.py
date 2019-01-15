@@ -8,14 +8,18 @@ from tartiflette.parser.cffi import (
 )
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
-    UnknownSchemaFieldResolver,
-    UnknownVariableException,
     AlreadyDefined,
     InvalidType,
+    UndefinedFragment,
+    UnknownSchemaFieldResolver,
     UnknownTypeDefinition,
+    UnknownVariableException,
     UnusedFragment,
+<<<<<<< HEAD
     UndefinedFragment,
     NotUniqueOperationName,
+=======
+>>>>>>> chore(format): Add format on tests and import sorting everywhere
 )
 from tartiflette.types.helpers import reduce_type
 

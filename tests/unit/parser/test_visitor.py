@@ -1,9 +1,12 @@
+from unittest.mock import Mock
+
 import pytest
 from tartiflette.parser.nodes.definition import NodeDefinition
 from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
 from tartiflette.types.exceptions.tartiflette import (
-    GraphQLError,
     AlreadyDefined,
+    GraphQLError,
+    UndefinedFragment,
     UnusedFragment,
     UndefinedFragment,
     NotUniqueOperationName
@@ -651,31 +654,44 @@ def test_parser_visitor__compute_type_cond(
     )
 
 
-@pytest.mark.parametrize("defined_fragments,used_fragments,unused", [
-    (
-        {
-            "FragmentA": NodeFragmentDefinition("path", None, "FragmentA", "A"),
-        },
-        {"FragmentA"},
-        [],
-    ),
-    (
-        {
-            "FragmentA": NodeFragmentDefinition("path", None, "FragmentA", "A"),
-            "FragmentB": NodeFragmentDefinition("path", None, "FragmentB", "B"),
-        },
-        {"FragmentA"},
-        ["FragmentB"],
-    ),
-    (
-        {
-            "FragmentA": NodeFragmentDefinition("path", None, "FragmentA", "A"),
-            "FragmentB": NodeFragmentDefinition("path", None, "FragmentB", "B"),
-        },
-        set(),
-        ["FragmentA", "FragmentB"],
-    ),
-])
+@pytest.mark.parametrize(
+    "defined_fragments,used_fragments,unused",
+    [
+        (
+            {
+                "FragmentA": NodeFragmentDefinition(
+                    "path", None, "FragmentA", "A"
+                )
+            },
+            {"FragmentA"},
+            [],
+        ),
+        (
+            {
+                "FragmentA": NodeFragmentDefinition(
+                    "path", None, "FragmentA", "A"
+                ),
+                "FragmentB": NodeFragmentDefinition(
+                    "path", None, "FragmentB", "B"
+                ),
+            },
+            {"FragmentA"},
+            ["FragmentB"],
+        ),
+        (
+            {
+                "FragmentA": NodeFragmentDefinition(
+                    "path", None, "FragmentA", "A"
+                ),
+                "FragmentB": NodeFragmentDefinition(
+                    "path", None, "FragmentB", "B"
+                ),
+            },
+            set(),
+            ["FragmentA", "FragmentB"],
+        ),
+    ],
+)
 def test_on_document_out_unused_fragment(
     a_visitor, defined_fragments, used_fragments, unused
 ):

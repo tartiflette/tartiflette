@@ -1,11 +1,11 @@
 from asyncio import iscoroutinefunction
 
-from tartiflette.types.exceptions.tartiflette import (
-    UnknownDirectiveDefinition,
-    NonAwaitableDirective,
-    MissingImplementation,
-)
 from tartiflette.schema.registry import SchemaRegistry
+from tartiflette.types.exceptions.tartiflette import (
+    MissingImplementation,
+    NonAwaitableDirective,
+    UnknownDirectiveDefinition,
+)
 
 
 class Directive:

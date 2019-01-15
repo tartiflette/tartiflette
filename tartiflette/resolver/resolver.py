@@ -1,12 +1,12 @@
 from inspect import iscoroutinefunction
 from typing import Callable
 
+from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
+    MissingImplementation,
     NonAwaitableResolver,
     UnknownFieldDefinition,
-    MissingImplementation,
 )
-from tartiflette.schema.registry import SchemaRegistry
 
 
 class Resolver:

@@ -2,11 +2,11 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 from tartiflette.resolver import Resolver
 from tartiflette.schema import GraphQLSchema
-from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
 from tartiflette.schema.bakery import SchemaBakery
+from tartiflette.sdl.builder import build_graphql_schema_from_sdl
+from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
 
 
 @pytest.mark.asyncio

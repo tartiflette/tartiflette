@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 
 def test_tartiflette_request_parser_except(clean_registry, monkeypatch):

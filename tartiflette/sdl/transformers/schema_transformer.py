@@ -7,8 +7,8 @@ from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumValue
 from tartiflette.types.exceptions.tartiflette import (
-    UnexpectedASTNode,
     InvalidSDL,
+    UnexpectedASTNode,
 )
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_object import GraphQLInputObjectType

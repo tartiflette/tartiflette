@@ -1,12 +1,12 @@
 from collections import namedtuple
 from typing import Any
-
-import pytest
 from unittest.mock import Mock, call
 
+import pytest
+
 from tartiflette import Resolver
-from tartiflette.executors.types import Info
 from tartiflette.engine import Engine
+from tartiflette.executors.types import Info
 from tartiflette.types.location import Location
 
 
@@ -163,14 +163,6 @@ async def test_full_query_with_alias(clean_registry):
             ]
         }
     } == result
-
-
-from collections import namedtuple
-
-import pytest
-
-from tartiflette import Resolver
-from tartiflette.engine import Engine
 
 
 @pytest.mark.asyncio

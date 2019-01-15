@@ -1,14 +1,15 @@
-import pytest
 from unittest import mock
 from unittest.mock import patch
 
+import pytest
+
+from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry, _get_builtins_sdl_files
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
-from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
+    ImproperlyConfigured,
     UnknownSchemaFieldResolver,
-    ImproperlyConfigured
 )
 
 
@@ -565,7 +566,7 @@ def test_schema_bake_schema(clean_registry):
 
 @pytest.mark.parametrize("exclude_date_scalar", [True, False])
 def test_schema_bake_schema_exclude_builtins_scalars(
-        clean_registry, exclude_date_scalar
+    clean_registry, exclude_date_scalar
 ):
     exclude_builtins_scalars = ["Date"] if exclude_date_scalar else None
 
@@ -580,79 +581,81 @@ def test_schema_bake_schema_exclude_builtins_scalars(
     )
 
     schema = SchemaBakery.bake(
-        "exclude",
-        exclude_builtins_scalars=exclude_builtins_scalars,
+        "exclude", exclude_builtins_scalars=exclude_builtins_scalars
     )
 
     assert schema is not None
-    assert len([
-        scalar
-        for scalar in SchemaRegistry._schemas["exclude"]["scalars"]
-        if scalar._name == "Date"
-    ]) == 0 if exclude_date_scalar else 1
+    assert (
+        len(
+            [
+                scalar
+                for scalar in SchemaRegistry._schemas["exclude"]["scalars"]
+                if scalar._name == "Date"
+            ]
+        )
+        == 0
+        if exclude_date_scalar
+        else 1
+    )
 
 
 @patch("tartiflette.schema.registry._DIR_PATH", "/dir")
-@pytest.mark.parametrize("exclude_builtins_scalars,expected", [
-    (
-        None,
-        [
-            "/dir/builtins/scalars/boolean.sdl",
-            "/dir/builtins/scalars/date.sdl",
-            "/dir/builtins/scalars/datetime.sdl",
-            "/dir/builtins/scalars/float.sdl",
-            "/dir/builtins/scalars/id.sdl",
-            "/dir/builtins/scalars/int.sdl",
-            "/dir/builtins/scalars/string.sdl",
-            "/dir/builtins/scalars/time.sdl",
-            "/dir/builtins/directives.sdl",
-            "/dir/builtins/introspection.sdl",
-        ],
-    ),
-    (
-        ["Date", "Time"],
-        [
-            "/dir/builtins/scalars/boolean.sdl",
-            "/dir/builtins/scalars/datetime.sdl",
-            "/dir/builtins/scalars/float.sdl",
-            "/dir/builtins/scalars/id.sdl",
-            "/dir/builtins/scalars/int.sdl",
-            "/dir/builtins/scalars/string.sdl",
-            "/dir/builtins/directives.sdl",
-            "/dir/builtins/introspection.sdl",
-        ],
-    ),
-    (
-        ["date", "Time"],
-        [
-            "/dir/builtins/scalars/boolean.sdl",
-            "/dir/builtins/scalars/date.sdl",
-            "/dir/builtins/scalars/datetime.sdl",
-            "/dir/builtins/scalars/float.sdl",
-            "/dir/builtins/scalars/id.sdl",
-            "/dir/builtins/scalars/int.sdl",
-            "/dir/builtins/scalars/string.sdl",
-            "/dir/builtins/directives.sdl",
-            "/dir/builtins/introspection.sdl",
-        ],
-    ),
-])
+@pytest.mark.parametrize(
+    "exclude_builtins_scalars,expected",
+    [
+        (
+            None,
+            [
+                "/dir/builtins/scalars/boolean.sdl",
+                "/dir/builtins/scalars/date.sdl",
+                "/dir/builtins/scalars/datetime.sdl",
+                "/dir/builtins/scalars/float.sdl",
+                "/dir/builtins/scalars/id.sdl",
+                "/dir/builtins/scalars/int.sdl",
+                "/dir/builtins/scalars/string.sdl",
+                "/dir/builtins/scalars/time.sdl",
+                "/dir/builtins/directives.sdl",
+                "/dir/builtins/introspection.sdl",
+            ],
+        ),
+        (
+            ["Date", "Time"],
+            [
+                "/dir/builtins/scalars/boolean.sdl",
+                "/dir/builtins/scalars/datetime.sdl",
+                "/dir/builtins/scalars/float.sdl",
+                "/dir/builtins/scalars/id.sdl",
+                "/dir/builtins/scalars/int.sdl",
+                "/dir/builtins/scalars/string.sdl",
+                "/dir/builtins/directives.sdl",
+                "/dir/builtins/introspection.sdl",
+            ],
+        ),
+        (
+            ["date", "Time"],
+            [
+                "/dir/builtins/scalars/boolean.sdl",
+                "/dir/builtins/scalars/date.sdl",
+                "/dir/builtins/scalars/datetime.sdl",
+                "/dir/builtins/scalars/float.sdl",
+                "/dir/builtins/scalars/id.sdl",
+                "/dir/builtins/scalars/int.sdl",
+                "/dir/builtins/scalars/string.sdl",
+                "/dir/builtins/directives.sdl",
+                "/dir/builtins/introspection.sdl",
+            ],
+        ),
+    ],
+)
 def test_schema_registry_get_builtins_sdl_files(
     exclude_builtins_scalars, expected
 ):
     assert _get_builtins_sdl_files(exclude_builtins_scalars) == expected
 
 
-@pytest.mark.parametrize("type_name,expected", [
-    (
-        "Unknown",
-        False,
-    ),
-    (
-        "User",
-        True,
-    ),
-])
+@pytest.mark.parametrize(
+    "type_name,expected", [("Unknown", False), ("User", True)]
+)
 def test_schema_has_type(clean_registry, type_name, expected):
     clean_registry.register_sdl(
         "a",
@@ -664,7 +667,7 @@ def test_schema_has_type(clean_registry, type_name, expected):
         type Query {
             viewer: User
         }
-        """
+        """,
     )
     schema = SchemaBakery.bake("a")
     assert schema.has_type(type_name) is expected

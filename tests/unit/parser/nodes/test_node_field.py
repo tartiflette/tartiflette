@@ -1,7 +1,9 @@
+from unittest.mock import Mock
+
 import pytest
+
 from tartiflette.executors.types import ExecutionContext
 from tartiflette.types.exceptions.tartiflette import GraphQLError
-from unittest.mock import Mock
 
 
 def test_parser_node_nodefield():
@@ -400,10 +402,7 @@ async def test_parser_node_nodefield__call__custom_exception():
 
     class CustomException(Exception):
         def coerce_value(self, *_args, path=None, locations=None, **_kwargs):
-            return {
-                "msg": "error",
-                "type": "bad_request",
-            }
+            return {"msg": "error", "type": "bad_request"}
 
     raw = CustomException("ninja")
     coerced = None

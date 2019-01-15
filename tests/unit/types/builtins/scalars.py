@@ -1,5 +1,10 @@
-from tartiflette.types.builtins import GraphQLBoolean, GraphQLFloat, GraphQLID, \
-    GraphQLInt, GraphQLString
+from tartiflette.types.builtins import (
+    GraphQLBoolean,
+    GraphQLFloat,
+    GraphQLID,
+    GraphQLInt,
+    GraphQLString,
+)
 from tartiflette.types.scalar import GraphQLScalarType
 
 
@@ -36,4 +41,3 @@ def test_scalar_string():
 
     assert isinstance(var_string, GraphQLScalarType)
     assert var_string.name == "String"
-

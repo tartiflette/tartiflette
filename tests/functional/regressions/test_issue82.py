@@ -42,9 +42,7 @@ async def test_issue82():
             {
                 "message": "Undefined fragment < UndefinedFragment >.",
                 "path": None,
-                "locations": [
-                    {"line": 5, "column": 13}
-                ]
+                "locations": [{"line": 5, "column": 13}],
             }
-        ]
+        ],
     }

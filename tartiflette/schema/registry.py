@@ -1,4 +1,5 @@
 import os
+
 from tartiflette.schema import GraphQLSchema
 
 _DIR_PATH = os.path.dirname(__file__)
