@@ -7,12 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Release]
 
+### [0.3.1] - 2019-01-15
+
+#### Fixed
+
+- Really fixes Issue-70, previous 0.3.0 was 'too permissive' in fragment execution code.
+
 ### [0.3.0] - 2019-01-14
 
-### Added
+#### Added
 
 - Allows to handle custom exception errors.
 - Coerce exception raised during query parsing instead of throwing them:
+
 ```python
 class BadRequestError(Exception):
     def coerce_value(self, *_args, path=None, locations=None, **_kwargs):
@@ -25,7 +32,9 @@ async def resolver_hello(parent, args, ctx, info):
         raise BadRequestError("`name` argument shouldn't by empty.")
     return "hello " + args["name"]
 ```
+
 - Enable you to override the `default_error_coercer` at Engine initialization time:
+
 ```python
 def my_error_coercer(exception) -> dict:
     do_ing_some_thin_gs = 42
@@ -33,15 +42,16 @@ def my_error_coercer(exception) -> dict:
 
 e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 ```
+
 - Adds manually path & locations attributes to the `UnknownSchemaFieldResolver` raised exception.
 - Returns all encountered errors during query parsing instead of only the last one.
 - _typename tartiflette attribute is now automatically set by coercion except inside union type where it is deduce at execution time.
 
-### Changed
+#### Changed
 
 - Makes raised exceptions inherits from `GraphQLError`.
 
-### Fixed
+#### Fixed
 
 - Parse raw GraphQL query in order to have the correct locations on raised errors.
 - Avoid `TypeError` by re-raising `UnknownSchemaFieldResolver` or casting `_inline_fragment_type` to string.
@@ -51,7 +61,7 @@ e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 
 ### [0.2.2] - 2019-01-04
 
-### Added
+#### Added
 
 - Enable you to exclude builtins scalars at Engine initialization time with `exclude_builtins_scalars` parameter.
 - Publish package to Test PyPi on each working branch.
