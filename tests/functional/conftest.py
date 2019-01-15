@@ -1,4 +1,5 @@
 import pytest
+
 from tartiflette.schema.registry import SchemaRegistry
 
 

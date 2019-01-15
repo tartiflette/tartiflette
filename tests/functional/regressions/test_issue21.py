@@ -1,8 +1,10 @@
 from collections import namedtuple
+
 import pytest
 
 from tartiflette.executors.types import Info
 from tartiflette.resolver import Resolver
+from tartiflette.types.exceptions.tartiflette import UnknownVariableException
 
 GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 
@@ -95,9 +97,6 @@ async def test_issue21_okayquery(
     assert results == expected
 
 
-from tartiflette.types.exceptions.tartiflette import UnknownVariableException
-
-
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query, expected, varis",
@@ -136,11 +135,9 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 "errors": [
                     {
                         "message": "Given value for < xid > is not type < <class 'int'> >",
-                        "locations": [
-                            {"column": 23, "line": 2},
-                        ],
+                        "locations": [{"column": 23, "line": 2}],
                         "path": None,
-                    },
+                    }
                 ],
             },
             {"xid": "RE"},
@@ -156,11 +153,9 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 "errors": [
                     {
                         "message": "Expecting List for < xid > values",
-                        "locations": [
-                            {"column": 23, "line": 2},
-                        ],
+                        "locations": [{"column": 23, "line": 2}],
                         "path": None,
-                    },
+                    }
                 ],
             },
             {"xid": "RE"},
@@ -176,11 +171,9 @@ from tartiflette.types.exceptions.tartiflette import UnknownVariableException
                 "errors": [
                     {
                         "message": "Given value for < xid > is not type < <class 'int'> >",
-                        "locations": [
-                            {"column": 23, "line": 2},
-                        ],
+                        "locations": [{"column": 23, "line": 2}],
                         "path": None,
-                    },
+                    }
                 ],
             },
             {"xid": ["RE"]},

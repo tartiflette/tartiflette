@@ -12,16 +12,24 @@ init:
 	git submodule init
 	git submodule update
 
+.PHONY: format-import
+format-import:
+	isort -rc tartiflette/. tests/.
+
 .PHONY: format
-format:
-	black -l 79 --py36 tartiflette setup.py examples/aiohttp/starwars
+format: format-import
+	black -l 79 --py36 tartiflette tests setup.py
+
+.PHONY: check-import
+check-import:
+	isort --check-only -rc tartiflette/. tests/.
 
 .PHONY: check-format
 check-format:
-	black -l 79 --py36 --check tartiflette setup.py examples/aiohttp/starwars
+	black -l 79 --py36 --check tartiflette tests setup.py
 
 .PHONY: style
-style: check-format
+style: check-format check-import
 	pylint tartiflette --rcfile=pylintrc
 
 .PHONY: complexity

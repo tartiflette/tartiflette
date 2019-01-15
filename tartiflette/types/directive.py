@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List, Callable
+from typing import Callable, Dict, List, Optional
 
 
 class GraphQLDirective:

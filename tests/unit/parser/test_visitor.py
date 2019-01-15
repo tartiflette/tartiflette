@@ -1,15 +1,17 @@
+from unittest.mock import Mock
+
 import pytest
+
 from tartiflette.parser.nodes.definition import NodeDefinition
 from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
 from tartiflette.types.exceptions.tartiflette import (
-    GraphQLError,
     AlreadyDefined,
-    UnusedFragment,
+    GraphQLError,
+    NotUniqueOperationName,
     UndefinedFragment,
-    NotUniqueOperationName
+    UnusedFragment,
 )
 from tartiflette.types.location import Location
-from unittest.mock import Mock
 
 
 @pytest.fixture
@@ -651,31 +653,44 @@ def test_parser_visitor__compute_type_cond(
     )
 
 
-@pytest.mark.parametrize("defined_fragments,used_fragments,unused", [
-    (
-        {
-            "FragmentA": NodeFragmentDefinition("path", None, "FragmentA", "A"),
-        },
-        {"FragmentA"},
-        [],
-    ),
-    (
-        {
-            "FragmentA": NodeFragmentDefinition("path", None, "FragmentA", "A"),
-            "FragmentB": NodeFragmentDefinition("path", None, "FragmentB", "B"),
-        },
-        {"FragmentA"},
-        ["FragmentB"],
-    ),
-    (
-        {
-            "FragmentA": NodeFragmentDefinition("path", None, "FragmentA", "A"),
-            "FragmentB": NodeFragmentDefinition("path", None, "FragmentB", "B"),
-        },
-        set(),
-        ["FragmentA", "FragmentB"],
-    ),
-])
+@pytest.mark.parametrize(
+    "defined_fragments,used_fragments,unused",
+    [
+        (
+            {
+                "FragmentA": NodeFragmentDefinition(
+                    "path", None, "FragmentA", "A"
+                )
+            },
+            {"FragmentA"},
+            [],
+        ),
+        (
+            {
+                "FragmentA": NodeFragmentDefinition(
+                    "path", None, "FragmentA", "A"
+                ),
+                "FragmentB": NodeFragmentDefinition(
+                    "path", None, "FragmentB", "B"
+                ),
+            },
+            {"FragmentA"},
+            ["FragmentB"],
+        ),
+        (
+            {
+                "FragmentA": NodeFragmentDefinition(
+                    "path", None, "FragmentA", "A"
+                ),
+                "FragmentB": NodeFragmentDefinition(
+                    "path", None, "FragmentB", "B"
+                ),
+            },
+            set(),
+            ["FragmentA", "FragmentB"],
+        ),
+    ],
+)
 def test_on_document_out_unused_fragment(
     a_visitor, defined_fragments, used_fragments, unused
 ):
@@ -699,7 +714,10 @@ def test_parser_visitor__on_fragment_spread_out_undefined(
 
     assert len(a_visitor.exceptions) == 1
     assert isinstance(a_visitor.exceptions[0], UndefinedFragment)
-    assert str(a_visitor.exceptions[0]) == "Undefined fragment < UnknownFragment >."
+    assert (
+        str(a_visitor.exceptions[0])
+        == "Undefined fragment < UnknownFragment >."
+    )
 
 
 def test_parser_visitor__on_operation_definition_in_not_unique(
@@ -709,16 +727,17 @@ def test_parser_visitor__on_operation_definition_in_not_unique(
     an_element.get_location = Mock(return_value=Location(2, 1, 2, 2))
 
     a_visitor._operations = {
-        "getName": NodeDefinition(None, None, Location(1, 1, 1, 2), "getName"),
+        "getName": NodeDefinition(None, None, Location(1, 1, 1, 2), "getName")
     }
 
     a_visitor._on_operation_definition_in(an_element)
 
-
-
     assert len(a_visitor.exceptions) == 1
     assert isinstance(a_visitor.exceptions[0], NotUniqueOperationName)
-    assert str(a_visitor.exceptions[0]) == "Operation name < getName > should be unique."
+    assert (
+        str(a_visitor.exceptions[0])
+        == "Operation name < getName > should be unique."
+    )
     assert a_visitor.exceptions[0].locations == [
         Location(1, 1, 1, 2),
         Location(2, 1, 2, 2),

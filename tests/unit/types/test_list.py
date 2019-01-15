@@ -11,8 +11,10 @@ def test_graphql_list_init():
 def test_graphql_list_repr():
     lst = GraphQLList(gql_type="Name", description="description")
 
-    assert lst.__repr__() == "GraphQLList(gql_type='Name', " \
-                                "description='description')"
+    assert (
+        lst.__repr__() == "GraphQLList(gql_type='Name', "
+        "description='description')"
+    )
     assert lst == eval(repr(lst))
 
 
@@ -32,15 +34,20 @@ def test_graphql_list_eq():
 def test_graphql_list_nested_repr():
     lst = GraphQLList(gql_type="Name", description="description")
 
-    assert lst.__repr__() == "GraphQLList(gql_type='Name', " \
-                                "description='description')"
+    assert (
+        lst.__repr__() == "GraphQLList(gql_type='Name', "
+        "description='description')"
+    )
     assert lst == eval(repr(lst))
 
     # Test nested types
-    lst = GraphQLList(gql_type=GraphQLList(gql_type="Name"),
-                      description="description")
+    lst = GraphQLList(
+        gql_type=GraphQLList(gql_type="Name"), description="description"
+    )
 
-    assert lst.__repr__() == "GraphQLList(gql_type=" \
-                             "GraphQLList(gql_type='Name', description=None), " \
-                             "description='description')"
+    assert (
+        lst.__repr__() == "GraphQLList(gql_type="
+        "GraphQLList(gql_type='Name', description=None), "
+        "description='description')"
+    )
     assert lst == eval(repr(lst))

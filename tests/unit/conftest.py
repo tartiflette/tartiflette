@@ -1,4 +1,6 @@
 import pytest
+
+from tartiflette.schema.registry import SchemaRegistry
 from tests.unit.utils import MOCKED_GET_RESOLVER_EXECUTOR
 
 
@@ -20,9 +22,6 @@ def mocked_resolver_factory(monkeypatch, fixture_mocked_get_resolver_executor):
     yield fixture_mocked_get_resolver_executor
 
     monkeypatch.undo()
-
-
-from tartiflette.schema.registry import SchemaRegistry
 
 
 @pytest.yield_fixture

@@ -1,6 +1,5 @@
 import pytest
 
-
 from tartiflette import Resolver
 from tartiflette.engine import Engine
 

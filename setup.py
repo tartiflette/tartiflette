@@ -51,10 +51,10 @@ _TEST_REQUIRE = [
     "pytest-cov",
     "pytest-asyncio",
     "pytest-xdist",
-    "pytz",
     "pylint==2.1.1",
     "xenon",
     "black==18.9b0",
+    "isort",
 ]
 
 _BENCHMARK_REQUIRE = ["pytest-benchmark"]
@@ -86,7 +86,7 @@ setup(
     ],
     keywords="api graphql protocol api rest relay tartiflette dailymotion",
     packages=_PACKAGES,
-    install_requires=["cffi>=1.0.0,<2.0.0", "lark-parser==0.6.4"],
+    install_requires=["cffi>=1.0.0,<2.0.0", "lark-parser==0.6.4", "pytz"],
     tests_require=_TEST_REQUIRE,
     extras_require={"test": _TEST_REQUIRE, "benchmark": _BENCHMARK_REQUIRE},
     cmdclass={"build_ext": BuildExtCmd, "build_py": BuildPyCmd},

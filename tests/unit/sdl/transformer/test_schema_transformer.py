@@ -1,17 +1,18 @@
 from collections import OrderedDict
 
 import pytest
+
 from lark.lexer import Token
 from lark.tree import Tree
 
-from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
 from tartiflette.schema import GraphQLSchema
+from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
 from tartiflette.sdl.transformers.cleaning_transformer import (
-    CleaningTransformer
+    CleaningTransformer,
 )
 from tartiflette.sdl.transformers.schema_transformer import (
-    SchemaTransformer,
     SchemaNode,
+    SchemaTransformer,
 )
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.directive import GraphQLDirective
@@ -22,7 +23,6 @@ from tartiflette.types.interface import GraphQLInterfaceType
 from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.union import GraphQLUnionType
-
 from tests.unit.utils import call_with_mocked_resolver_factory
 
 
@@ -265,18 +265,24 @@ from tests.unit.utils import call_with_mocked_resolver_factory
                 Tree(
                     "type_definition",
                     [
-                        call_with_mocked_resolver_factory(GraphQLEnumType,
+                        call_with_mocked_resolver_factory(
+                            GraphQLEnumType,
                             name="Mode",
                             values=[
-                                call_with_mocked_resolver_factory(GraphQLEnumValue,
+                                call_with_mocked_resolver_factory(
+                                    GraphQLEnumValue,
                                     value="Prod",
                                     description="\n            Used "
                                     "for any production "
                                     "system\n           "
                                     " ",
                                 ),
-                                call_with_mocked_resolver_factory(GraphQLEnumValue,value="Test"),
-                                call_with_mocked_resolver_factory(GraphQLEnumValue,value="Dev"),
+                                call_with_mocked_resolver_factory(
+                                    GraphQLEnumValue, value="Test"
+                                ),
+                                call_with_mocked_resolver_factory(
+                                    GraphQLEnumValue, value="Dev"
+                                ),
                             ],
                             description="\n        The enum Mode is "
                             "used to switch environments.\n        ",
@@ -296,20 +302,24 @@ from tests.unit.utils import call_with_mocked_resolver_factory
                 Tree(
                     "directive_definition",
                     [
-                        call_with_mocked_resolver_factory(GraphQLDirective,
+                        call_with_mocked_resolver_factory(
+                            GraphQLDirective,
                             name="deprecated",
                             on=["SCHEMA", "FIELD_DEFINITION"],
                             arguments=OrderedDict(
                                 [
                                     (
                                         "firstArg",
-                                        call_with_mocked_resolver_factory(GraphQLArgument,
-                                            name="firstArg", gql_type="Int"
+                                        call_with_mocked_resolver_factory(
+                                            GraphQLArgument,
+                                            name="firstArg",
+                                            gql_type="Int",
                                         ),
                                     ),
                                     (
                                         "anotherArg",
-                                        call_with_mocked_resolver_factory(GraphQLArgument,
+                                        call_with_mocked_resolver_factory(
+                                            GraphQLArgument,
                                             name="anotherArg",
                                             gql_type="InputType",
                                         ),
@@ -324,7 +334,9 @@ from tests.unit.utils import call_with_mocked_resolver_factory
         ),
     ],
 )
-def test_SchemaTransformer_schema(full_sdl, expected_tree, mocked_resolver_factory):
+def test_SchemaTransformer_schema(
+    full_sdl, expected_tree, mocked_resolver_factory
+):
     raw_tree = parse_graphql_sdl_to_ast(full_sdl)
     cleaned_tree = CleaningTransformer(full_sdl).transform(raw_tree)
     assert (
@@ -352,7 +364,8 @@ def test_SchemaTransformer_schema(full_sdl, expected_tree, mocked_resolver_facto
                 Tree(
                     "type_definition",
                     [
-                        call_with_mocked_resolver_factory(GraphQLObjectType,
+                        call_with_mocked_resolver_factory(
+                            GraphQLObjectType,
                             name="TestObject",
                             fields=OrderedDict(
                                 [
@@ -366,7 +379,8 @@ def test_SchemaTransformer_schema(full_sdl, expected_tree, mocked_resolver_facto
                                                 [
                                                     (
                                                         "input",
-                                                        call_with_mocked_resolver_factory(GraphQLArgument,
+                                                        call_with_mocked_resolver_factory(
+                                                            GraphQLArgument,
                                                             name="input",
                                                             gql_type="Date",
                                                             default_value="2018",
@@ -402,7 +416,8 @@ def test_SchemaTransformer_schema(full_sdl, expected_tree, mocked_resolver_facto
                 Tree(
                     "type_definition",
                     [
-                        call_with_mocked_resolver_factory(GraphQLObjectType,
+                        call_with_mocked_resolver_factory(
+                            GraphQLObjectType,
                             name="Car",
                             fields=OrderedDict(
                                 [
@@ -415,7 +430,8 @@ def test_SchemaTransformer_schema(full_sdl, expected_tree, mocked_resolver_facto
                                                 [
                                                     (
                                                         "arg",
-                                                        call_with_mocked_resolver_factory(GraphQLArgument,
+                                                        call_with_mocked_resolver_factory(
+                                                            GraphQLArgument,
                                                             name="arg",
                                                             gql_type="Int",
                                                             default_value=42,
@@ -435,7 +451,8 @@ def test_SchemaTransformer_schema(full_sdl, expected_tree, mocked_resolver_facto
                                                 [
                                                     (
                                                         "cplx",
-                                                        call_with_mocked_resolver_factory(GraphQLArgument,
+                                                        call_with_mocked_resolver_factory(
+                                                            GraphQLArgument,
                                                             name="cplx",
                                                             gql_type="InputObject",
                                                             default_value={
@@ -464,7 +481,9 @@ def test_SchemaTransformer_schema(full_sdl, expected_tree, mocked_resolver_facto
         ),
     ],
 )
-def test_SchemaTransformer_values(full_sdl, expected_tree, mocked_resolver_factory):
+def test_SchemaTransformer_values(
+    full_sdl, expected_tree, mocked_resolver_factory
+):
     raw_tree = parse_graphql_sdl_to_ast(full_sdl)
     cleaned_tree = CleaningTransformer(full_sdl).transform(raw_tree)
     schema_tree = SchemaTransformer(

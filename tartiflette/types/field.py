@@ -1,4 +1,5 @@
 from typing import Dict, Optional
+
 from tartiflette.resolver import ResolverExecutorFactory
 from tartiflette.types.type import GraphQLType
 

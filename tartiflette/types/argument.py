@@ -1,4 +1,5 @@
 from typing import Any, Optional
+
 from tartiflette.types.type import GraphQLType
 
 

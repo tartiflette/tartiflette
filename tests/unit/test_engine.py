@@ -1,6 +1,8 @@
-import pytest
-from tartiflette.resolver.factory import default_error_coercer
 from unittest.mock import Mock
+
+import pytest
+
+from tartiflette.resolver.factory import default_error_coercer
 
 
 def test_engine(clean_registry):

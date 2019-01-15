@@ -2,8 +2,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette.resolver import Resolver
 from tartiflette.engine import Engine
+from tartiflette.resolver import Resolver
 
 
 @pytest.mark.asyncio

@@ -3,8 +3,8 @@ from typing import Any, Dict
 from tartiflette.executors.basic import execute as basic_execute
 from tartiflette.parser import TartifletteRequestParser
 from tartiflette.resolver.factory import default_error_coercer
-from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.schema.bakery import SchemaBakery
+from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import GraphQLError
 
 

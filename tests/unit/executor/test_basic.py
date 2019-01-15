@@ -1,8 +1,11 @@
-import pytest
 import inspect
+
+from unittest.mock import Mock
+
+import pytest
+
 from tartiflette.resolver.factory import default_error_coercer
 from tartiflette.types.exceptions.tartiflette import GraphQLError
-from unittest.mock import Mock
 
 
 @pytest.mark.asyncio
@@ -110,6 +113,9 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
 
     a = await execute([], request_ctx={}, error_coercer=custom_error_coercer)
 
-    assert a == {"data": {}, "errors": [{"message": "Error from custom_error_coercer"}]}
+    assert a == {
+        "data": {},
+        "errors": [{"message": "Error from custom_error_coercer"}],
+    }
 
     monkeypatch.undo()

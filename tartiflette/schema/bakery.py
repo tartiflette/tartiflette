@@ -1,10 +1,8 @@
-from tartiflette.sdl.builder import build_graphql_schema_from_sdl
-
 from tartiflette.directive import BUILT_IN_DIRECTIVES, Directive
 from tartiflette.scalar import CUSTOM_SCALARS, Scalar
-
-from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.schema import GraphQLSchema
+from tartiflette.schema.registry import SchemaRegistry
+from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 
 
 class SchemaBakery:

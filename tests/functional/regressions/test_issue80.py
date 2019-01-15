@@ -45,9 +45,7 @@ async def test_issue80():
             {
                 "message": "Fragment < UserFields > is never used.",
                 "path": None,
-                "locations": [
-                    {"line": 2, "column": 5}
-                ]
+                "locations": [{"line": 2, "column": 5}],
             }
-        ]
+        ],
     }

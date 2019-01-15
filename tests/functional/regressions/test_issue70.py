@@ -1,9 +1,7 @@
 import pytest
 
-
-from tartiflette.resolver import Resolver
 from tartiflette.engine import Engine
-
+from tartiflette.resolver import Resolver
 
 _A_BOBY = {
     "repositories": {

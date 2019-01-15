@@ -11,8 +11,10 @@ def test_graphql_non_null_init():
 def test_graphql_non_null_repr():
     non_null = GraphQLNonNull(gql_type="Name", description="description")
 
-    assert non_null.__repr__() == "GraphQLNonNull(gql_type='Name', " \
-                                "description='description')"
+    assert (
+        non_null.__repr__() == "GraphQLNonNull(gql_type='Name', "
+        "description='description')"
+    )
     assert non_null == eval(repr(non_null))
 
 
@@ -21,7 +23,9 @@ def test_graphql_non_null_eq():
 
     ## Same
     assert non_null == non_null
-    assert non_null == GraphQLNonNull(gql_type="Name", description="description")
+    assert non_null == GraphQLNonNull(
+        gql_type="Name", description="description"
+    )
     # Currently we ignore the description in comparing
     assert non_null == GraphQLNonNull(gql_type="Name")
 
@@ -32,15 +36,20 @@ def test_graphql_non_null_eq():
 def test_graphql_non_null_nested_repr():
     non_null = GraphQLNonNull(gql_type="Name", description="description")
 
-    assert non_null.__repr__() == "GraphQLNonNull(gql_type='Name', " \
-                                  "description='description')"
+    assert (
+        non_null.__repr__() == "GraphQLNonNull(gql_type='Name', "
+        "description='description')"
+    )
     assert non_null == eval(repr(non_null))
 
     # Test nested types
-    non_null = GraphQLNonNull(gql_type=GraphQLNonNull(gql_type="Name"),
-                              description="description")
+    non_null = GraphQLNonNull(
+        gql_type=GraphQLNonNull(gql_type="Name"), description="description"
+    )
 
-    assert non_null.__repr__() == "GraphQLNonNull(gql_type=" \
-                             "GraphQLNonNull(gql_type='Name', description=None), " \
-                             "description='description')"
+    assert (
+        non_null.__repr__() == "GraphQLNonNull(gql_type="
+        "GraphQLNonNull(gql_type='Name', description=None), "
+        "description='description')"
+    )
     assert non_null == eval(repr(non_null))

@@ -9,10 +9,10 @@ from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
-    UnknownSchemaFieldResolver,
+    ImproperlyConfigured,
     MissingImplementation,
     RedefinedImplementation,
-    ImproperlyConfigured,
+    UnknownSchemaFieldResolver,
 )
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type

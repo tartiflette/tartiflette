@@ -8,14 +8,14 @@ from tartiflette.parser.cffi import (
 )
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
-    UnknownSchemaFieldResolver,
-    UnknownVariableException,
     AlreadyDefined,
     InvalidType,
-    UnknownTypeDefinition,
-    UnusedFragment,
-    UndefinedFragment,
     NotUniqueOperationName,
+    UndefinedFragment,
+    UnknownSchemaFieldResolver,
+    UnknownTypeDefinition,
+    UnknownVariableException,
+    UnusedFragment,
 )
 from tartiflette.types.helpers import reduce_type
 
