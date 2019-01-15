@@ -6,14 +6,7 @@ from tartiflette.resolver import Resolver
 
 @Resolver("Query.dog", schema_name="test_issue85")
 async def resolver_query_viewer(*_, **__):
-    return {
-        "dog": {
-            "name": "Dog",
-            "owner": {
-                "name": "Human"
-            }
-        }
-    }
+    return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
 
 
 _TTFTT_ENGINE = Engine(
@@ -52,9 +45,11 @@ _TTFTT_ENGINE = Engine(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("query,errors", [
-    (
-        """
+@pytest.mark.parametrize(
+    "query,errors",
+    [
+        (
+            """
         query getName {
           dog {
             name
@@ -69,19 +64,19 @@ _TTFTT_ENGINE = Engine(
           }
         }
         """,
-        [
-            {
-                "message": "Operation name < getName > should be unique.",
-                "path": None,
-                "locations": [
-                    {"line": 2, "column": 9},
-                    {"line": 8, "column": 9},
-                ]
-            }
-        ]
-    ),
-    (
-        """
+            [
+                {
+                    "message": "Operation name < getName > should be unique.",
+                    "path": None,
+                    "locations": [
+                        {"line": 2, "column": 9},
+                        {"line": 8, "column": 9},
+                    ],
+                }
+            ],
+        ),
+        (
+            """
         query getName {
           dog {
             name
@@ -104,25 +99,29 @@ _TTFTT_ENGINE = Engine(
           }
         }
         """,
-        [
-            {
-                "message": "Operation name < getName > should be unique.",
-                "path": None,
-                "locations": [
-                    {"line": 2, "column": 9},
-                    {"line": 8, "column": 9},
-                ]
-            },
-            {
-                "message": "Operation name < getName > should be unique.",
-                "path": None,
-                "locations": [
-                    {"line": 2, "column": 9},
-                    {"line": 16, "column": 9},
-                ]
-            }
-        ]
-    )
-])
+            [
+                {
+                    "message": "Operation name < getName > should be unique.",
+                    "path": None,
+                    "locations": [
+                        {"line": 2, "column": 9},
+                        {"line": 8, "column": 9},
+                    ],
+                },
+                {
+                    "message": "Operation name < getName > should be unique.",
+                    "path": None,
+                    "locations": [
+                        {"line": 2, "column": 9},
+                        {"line": 16, "column": 9},
+                    ],
+                },
+            ],
+        ),
+    ],
+)
 async def test_issue85(query, errors):
-    assert await _TTFTT_ENGINE.execute(query) == {"data": None, "errors": errors}
+    assert await _TTFTT_ENGINE.execute(query) == {
+        "data": None,
+        "errors": errors,
+    }

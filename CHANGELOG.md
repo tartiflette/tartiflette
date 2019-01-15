@@ -7,20 +7,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### [Next] - Next
+
+#### Added
+
+- Add import sorting on style rule
+- Add formating on tests
+- Add link to tartiflette-aiohttp in readme
+
 ### Fixed
 
-- Raise errors on non-unique named operation definition.
+- [ISSUE-85](https://github.com/dailymotion/tartiflette/issues/85): Raise errors on non-unique named operation definition.
 
-## [0.3.2] - 2019-01-15
+#### Removed
 
-### Fixed
+- Remove aiohttp example files
 
-- Raise errors when fragment target unknown type.
-- Raise errors when defined fragment isn't used.
-- Raise errors when undefined fragment is used.
-- Path is correctly set on "Unknow field" errors.
+## [Released]
 
-## [Release]
+### [0.3.2] - 2019-01-15
+
+#### Fixed
+
+- [ISSUE-79](https://github.com/dailymotion/tartiflette/issues/79): Raise errors when fragment target unknown type.
+- [ISSUE-80](https://github.com/dailymotion/tartiflette/issues/80): Raise errors when defined fragment isn't used.
+- [ISSUE-82](https://github.com/dailymotion/tartiflette/issues/82): Raise errors when undefined fragment is used.
+- [ISSUE-76](https://github.com/dailymotion/tartiflette/issues/76): Path is correctly set on "Unknow field" errors.
 
 ### [0.3.1] - 2019-01-15
 
@@ -71,8 +83,8 @@ e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 - Parse raw GraphQL query in order to have the correct locations on raised errors.
 - Avoid `TypeError` by re-raising `UnknownSchemaFieldResolver` or casting `_inline_fragment_type` to string.
 - Raise `GraphQLError` instead of builtin exceptions.
-- ISSUE-70: Now Typecondition is correctly unset for nested fields inside a fragment.
-- ISSUE-71: Now libgraphqlparser parsing errors only lives for the duration of the request.
+- [ISSUE-70](https://github.com/dailymotion/tartiflette/issues/70): Now Typecondition is correctly unset for nested fields inside a fragment.
+- [ISSUE-71](https://github.com/dailymotion/tartiflette/issues/71): Now libgraphqlparser parsing errors only lives for the duration of the request.
 
 ### [0.2.2] - 2019-01-04
 
