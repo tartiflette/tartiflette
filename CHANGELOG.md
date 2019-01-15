@@ -5,13 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.2] - 2019-01-15
 
 ### Fixed
 
 - Raise errors when fragment target unknown type.
 - Raise errors when defined fragment isn't used.
 - Raise errors when undefined fragment is used.
+- Path is correctly set on "Unknow field" errors.
 
 ## [Release]
 
