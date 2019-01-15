@@ -103,8 +103,8 @@ class TartifletteVisitor(Visitor):
         self.exceptions: List[Exception] = []
         self._inline_fragment_info = None
 
-    def _add_exception(self, exception):
-        self.continue_child = 0
+    def _add_exception(self, exception, continue_child=0):
+        self.continue_child = continue_child
         self.exceptions.append(exception)
 
     def _on_argument_in(self, element: _VisitorElement, *_args, **_kwargs):
@@ -138,14 +138,13 @@ class TartifletteVisitor(Visitor):
     def _on_field_in(
         self, element: _VisitorElement, *_args, type_cond_depth=-1, **_kwargs
     ):  # pylint: disable=too-many-locals
-        self.field_path.append(element.name)
-        self._depth = self._depth + 1
         type_cond = _compute_type_cond(
-            self._depth,
+            self._depth + 1,
             type_cond_depth,
             self._inline_fragment_info,
             self._current_type_condition,
         )
+        field = None
 
         try:
             parent_type = reduce_type(
@@ -168,15 +167,21 @@ class TartifletteVisitor(Visitor):
                     str(type_cond) + "." + element.name
                 )
             except UnknownSchemaFieldResolver as e:
-                e.path = self.field_path[:]
-                e.locations = [element.get_location()]
-                self._add_exception(e)
-                return
+                if (
+                    self._current_node is None
+                    or self._current_node.field_executor is not None
+                ):
+                    e.path = self.field_path[:] + [element.name]
+                    e.locations = [element.get_location()]
+                    self._add_exception(e, 1)
+
+        self.field_path.append(element.name)
+        self._depth = self._depth + 1
 
         node = NodeField(
             element.name,
             self.schema,
-            field.resolver,
+            field.resolver if field else None,
             element.get_location(),
             self.field_path[:],
             type_cond,
@@ -333,6 +338,7 @@ class TartifletteVisitor(Visitor):
             saved_callback(
                 type_cond_depth=depth
             )  # Simulate calling a the right place.
+
         self._current_type_condition = None
 
     def _on_operation_definition_in(
