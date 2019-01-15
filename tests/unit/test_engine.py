@@ -47,22 +47,12 @@ async def test_engine_execute_parse_error(clean_registry):
             {
                 "message": "field `Query.unknownNode1` was not found in GraphQL schema.",
                 "path": ["unknownNode1"],
-                "locations": [
-                    {
-                        "column": 9,
-                        "line": 1,
-                    },
-                ],
+                "locations": [{"column": 9, "line": 1}],
             },
             {
                 "message": "field `Query.unknownNode2` was not found in GraphQL schema.",
-                "path": ["unknownNode1", "unknownNode2"],
-                "locations": [
-                    {
-                        "column": 22,
-                        "line": 1,
-                    },
-                ],
+                "path": ["unknownNode2"],
+                "locations": [{"column": 22, "line": 1}],
             },
         ],
     }
@@ -85,22 +75,12 @@ async def test_engine_execute_custom_error_coercer(clean_registry):
             {
                 "message": "field `Query.unknownNode1` was not found in GraphQL schema.Custom",
                 "path": ["unknownNode1"],
-                "locations": [
-                    {
-                        "column": 9,
-                        "line": 1,
-                    },
-                ],
+                "locations": [{"column": 9, "line": 1}],
             },
             {
                 "message": "field `Query.unknownNode2` was not found in GraphQL schema.Custom",
-                "path": ["unknownNode1", "unknownNode2"],
-                "locations": [
-                    {
-                        "column": 22,
-                        "line": 1,
-                    },
-                ],
+                "path": ["unknownNode2"],
+                "locations": [{"column": 22, "line": 1}],
             },
         ],
     }
@@ -119,7 +99,7 @@ async def test_engine_execute_empty_req_except(clean_registry):
                 "message": "1.1: syntax error, unexpected EOF",
                 "path": None,
                 "locations": [],
-            },
+            }
         ],
     }
 
@@ -137,7 +117,7 @@ async def test_engine_execute_syntax_error(clean_registry):
                 "message": "1.12: unrecognized character \\xc2",
                 "path": None,
                 "locations": [],
-            },
+            }
         ],
     }
 
@@ -148,20 +128,25 @@ async def test_engine_execute_unhandled_exception(clean_registry):
 
     e = Engine("type Query { a: Ninja } type Ninja { a: String }")
 
-    assert await e.execute("""
+    assert (
+        await e.execute(
+            """
         fragment AFragment on Ninja { a }
         fragment AFragment on Ninja { a }
         query { a { } }
-    """) == {
-        "data": None,
-        "errors": [
-            {
-                "message": "4.20: unrecognized character \\xc2",
-                "path": None,
-                "locations": [],
-            },
-        ],
-    }
+    """
+        )
+        == {
+            "data": None,
+            "errors": [
+                {
+                    "message": "4.20: unrecognized character \\xc2",
+                    "path": None,
+                    "locations": [],
+                }
+            ],
+        }
+    )
 
 
 @pytest.mark.asyncio
@@ -175,8 +160,14 @@ async def test_engine_execute_custom_resolver(clean_registry):
 
         return "customed!"
 
-    e = Engine("type Query { a:String }", custom_default_resolver=custom_default_resolver)
+    e = Engine(
+        "type Query { a:String }",
+        custom_default_resolver=custom_default_resolver,
+    )
 
-    assert e._schema.find_type("Query").find_field("a").resolver._raw_func is custom_default_resolver
+    assert (
+        e._schema.find_type("Query").find_field("a").resolver._raw_func
+        is custom_default_resolver
+    )
     assert await e.execute("query { a }") == {"data": {"a": "customed!"}}
     assert a.called

@@ -259,7 +259,7 @@ def test_parser_visitor__on_field_unknow_schema_field(a_visitor, an_element):
         (("an_inline_fragment_type.a_name",),),
     ]
     assert a_visitor._current_node not in a_visitor.root_nodes
-    assert a_visitor.continue_child == 0
+    assert a_visitor.continue_child == 1
     assert a_visitor.exceptions[0] == an_exception
 
 
