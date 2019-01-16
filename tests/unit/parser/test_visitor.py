@@ -7,6 +7,7 @@ from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
 from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
     GraphQLError,
+    NotLoneAnonymousOperation,
     NotUniqueOperationName,
     UndefinedFragment,
     UnusedFragment,
@@ -726,7 +727,7 @@ def test_parser_visitor__on_operation_definition_in_not_unique(
     an_element.name = "getName"
     an_element.get_location = Mock(return_value=Location(2, 1, 2, 2))
 
-    a_visitor._operations = {
+    a_visitor._named_operations = {
         "getName": NodeDefinition(None, None, Location(1, 1, 1, 2), "getName")
     }
 
@@ -742,3 +743,54 @@ def test_parser_visitor__on_operation_definition_in_not_unique(
         Location(1, 1, 1, 2),
         Location(2, 1, 2, 2),
     ]
+
+
+@pytest.mark.parametrize(
+    "named_operations,anonymous_operations,nb_errors",
+    [
+        (
+            {
+                "getName": NodeDefinition(
+                    None, None, Location(1, 1, 1, 2), "getName"
+                )
+            },
+            [],
+            0,
+        ),
+        (
+            {
+                "getName": NodeDefinition(
+                    None, None, Location(1, 1, 1, 2), "getName"
+                )
+            },
+            [NodeDefinition(None, None, Location(2, 1, 2, 2), None)],
+            1,
+        ),
+        (
+            {},
+            [
+                NodeDefinition(None, None, Location(2, 1, 2, 2), None),
+                NodeDefinition(None, None, Location(2, 1, 2, 2), None),
+            ],
+            2,
+        ),
+    ],
+)
+def test_on_document_out_unused_fragment(
+    a_visitor, named_operations, anonymous_operations, nb_errors
+):
+    a_visitor._named_operations = named_operations
+    a_visitor._anonymous_operations = anonymous_operations
+
+    a_visitor._on_document_out()
+
+    assert len(a_visitor.exceptions) == nb_errors
+    for exception, operation in zip(
+        a_visitor.exceptions, anonymous_operations
+    ):
+        assert isinstance(exception, NotLoneAnonymousOperation)
+        assert (
+            str(exception)
+            == "Anonymous operation must be the only defined operation."
+        )
+        assert exception.locations == [operation.location]

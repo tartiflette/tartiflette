@@ -10,6 +10,7 @@ from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
     InvalidType,
+    NotLoneAnonymousOperation,
     NotUniqueOperationName,
     UndefinedFragment,
     UnknownSchemaFieldResolver,
@@ -92,7 +93,8 @@ class TartifletteVisitor(Visitor):
             },
         ]
         self._depth = 0
-        self._operations = {}
+        self._named_operations = {}
+        self._anonymous_operations = []
         self._operation_type = None
         self.root_nodes = []
         self._vars = variables if variables else {}
@@ -348,14 +350,18 @@ class TartifletteVisitor(Visitor):
         self, element: _VisitorElementOperationDefinition, *_args, **_kwargs
     ):
         try:
-            operation_node = self._operations[element.name]
+            operation_node = self._named_operations[element.name]
         except KeyError:
-            self._operations[element.name] = NodeDefinition(
+            operation_node = NodeDefinition(
                 self.path,
                 element.libgraphql_type,
                 element.get_location(),
                 element.name,
             )
+            if element.name is not None:
+                self._named_operations[element.name] = operation_node
+            else:
+                self._anonymous_operations.append(operation_node)
         else:
             self._add_exception(
                 NotUniqueOperationName(
@@ -393,6 +399,17 @@ class TartifletteVisitor(Visitor):
                     locations=[self._fragments[unused_fragment].location],
                 )
             )
+
+        if self._anonymous_operations and (
+            len(self._anonymous_operations) > 1 or self._named_operations
+        ):
+            for operation in self._anonymous_operations:
+                self._add_exception(
+                    NotLoneAnonymousOperation(
+                        "Anonymous operation must be the only defined operation.",
+                        locations=[operation.location],
+                    )
+                )
 
     def _in(self, element: _VisitorElement, *args, **kwargs):
         self.path = self.path + "/%s" % TartifletteVisitor.create_node_name(
