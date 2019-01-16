@@ -153,7 +153,6 @@ _TTFTT_ENGINE = Engine(
     ],
 )
 async def test_issue87(query, errors):
-    print(await _TTFTT_ENGINE.execute(query))
     assert await _TTFTT_ENGINE.execute(query) == {
         "data": None,
         "errors": errors,
