@@ -5,17 +5,13 @@ import pytest
 from tartiflette import Engine
 from tartiflette.schema.registry import SchemaRegistry
 
-
 _CURR_PATH = os.path.dirname(os.path.abspath(__file__))
 
 _DEFAULT_ENGINE = Engine(
     os.path.join(_CURR_PATH, "data", "sdls", "animals.sdl")
 )
 
-_TTFTT_ENGINES = {
-    "default": _DEFAULT_ENGINE,
-    "animals": _DEFAULT_ENGINE,
-}
+_TTFTT_ENGINES = {"default": _DEFAULT_ENGINE, "animals": _DEFAULT_ENGINE}
 
 
 @pytest.yield_fixture

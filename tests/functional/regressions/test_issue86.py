@@ -1,50 +1,15 @@
 import pytest
 
-from tartiflette.engine import Engine
 from tartiflette.resolver import Resolver
 
 
-@Resolver("Query.dog", schema_name="test_issue86")
+@Resolver("Query.dog")
 async def resolver_query_viewer(*_, **__):
     return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
 
 
-_TTFTT_ENGINE = Engine(
-    """
-    interface Sentient {
-      name: String!
-    }
-    
-    interface Pet {
-      name: String!
-    }
-    
-    type Human implements Sentient {
-      name: String!
-    }
-    
-    type Dog implements Pet {
-      name: String!
-      owner: Human
-    }
-    
-    type MutateDogPayload {
-      id: String
-    }
-    
-    type Query {
-      dog: Dog
-    }
-    
-    type Mutation {
-      mutateDog: MutateDogPayload
-    }
-    """,
-    schema_name="test_issue86",
-)
-
-
 @pytest.mark.asyncio
+@pytest.mark.ttftt_engine
 @pytest.mark.parametrize(
     "query,errors",
     [
@@ -156,8 +121,5 @@ _TTFTT_ENGINE = Engine(
         ),
     ],
 )
-async def test_issue86(query, errors):
-    assert await _TTFTT_ENGINE.execute(query) == {
-        "data": None,
-        "errors": errors,
-    }
+async def test_issue86(engine, query, errors):
+    assert await engine.execute(query) == {"data": None, "errors": errors}
