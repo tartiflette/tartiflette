@@ -1,0 +1,58 @@
+interface Sentient {
+  name: String!
+}
+
+interface Pet {
+  name: String!
+}
+
+enum DogCommand { SIT, DOWN, HEEL }
+enum CatCommand { JUMP }
+
+type Dog implements Pet {
+  name: String!
+  nickname: String
+  barkVolume: Int
+  doesKnowCommand(dogCommand: DogCommand!): Boolean!
+  isHousetrained(atOtherHomes: Boolean): Boolean!
+  owner: Human
+}
+
+type Alien implements Sentient {
+  name: String!
+  homePlanet: String
+}
+
+type Human implements Sentient {
+  name: String!
+}
+
+type Cat implements Pet {
+  name: String!
+  nickname: String
+  doesKnowCommand(catCommand: CatCommand!): Boolean!
+  meowVolume: Int
+}
+
+type MutateDogPayload {
+  id: String
+  dog: Dog
+}
+
+union CatOrDog = Cat | Dog
+union DogOrHuman = Dog | Human
+union HumanOrAlien = Human | Alien
+
+type Query {
+  dog: Dog
+}
+
+type Mutation {
+  mutateDog: MutateDogPayload
+}
+
+type Subscription {
+  newDog: Dog
+  newHuman: Human
+  newAlien: Alien
+}
