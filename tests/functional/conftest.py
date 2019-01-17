@@ -7,11 +7,16 @@ from tartiflette.schema.registry import SchemaRegistry
 
 _CURR_PATH = os.path.dirname(os.path.abspath(__file__))
 
-_DEFAULT_ENGINE = Engine(
-    os.path.join(_CURR_PATH, "data", "sdls", "animals.sdl")
-)
 
-_TTFTT_ENGINES = {"default": _DEFAULT_ENGINE, "animals": _DEFAULT_ENGINE}
+_DEFAULT_SCHEMA = os.path.join(_CURR_PATH, "data", "sdls", "animals.sdl")
+
+
+_SCHEMAS = {"default": _DEFAULT_SCHEMA, "animals": _DEFAULT_SCHEMA}
+
+_TTFTT_ENGINES = {
+    schema_name: Engine(sdl, schema_name=schema_name)
+    for schema_name, sdl in _SCHEMAS.items()
+}
 
 
 @pytest.yield_fixture
