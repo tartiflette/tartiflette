@@ -1,0 +1,27 @@
+enum BookCategory {
+  Action
+  Adventure
+  Romance
+  Fiction
+  History
+}
+
+type Query {
+  libraries: [Library]
+}
+
+type Library {
+  books: [Book]
+  authors: [Author]
+}
+
+type Author {
+  name: String
+}
+
+type Book {
+  title: String
+  author: Author
+  price: Float
+  category: BookCategory
+}
