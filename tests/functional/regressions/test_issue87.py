@@ -1,15 +1,12 @@
 import pytest
 
-from tartiflette.resolver import Resolver
 
-
-@Resolver("Query.dog")
 async def resolver_query_viewer(*_, **__):
     return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine
+@pytest.mark.ttftt_engine(resolvers={"Query.dog": resolver_query_viewer})
 @pytest.mark.parametrize(
     "query,errors",
     [
