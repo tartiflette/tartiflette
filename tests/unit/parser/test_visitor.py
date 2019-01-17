@@ -7,6 +7,7 @@ from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
 from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
     GraphQLError,
+    MultipleRootNodeOnSubscriptionOperation,
     NotLoneAnonymousOperation,
     NotUniqueOperationName,
     UndefinedFragment,
@@ -574,15 +575,19 @@ def test_parser_visitor__out_no_callback(a_visitor, an_element):
     assert a_visitor.path == "/dontcare"
 
 
-def test_parser_visitor_update_dont_care(a_visitor, an_element):
+def test_parser_visitor_update_subscription_selection_set(
+    a_visitor, an_element
+):
     a_visitor.continue_child = 0
+    a_visitor._operation_type = "Subscription"
     an_element.libgraphql_type = "SelectionSet"
+
     a_callback = Mock()
     a_visitor._events[a_visitor.IN]["default"] = a_callback
 
     a_visitor.update(a_visitor.IN, an_element)
 
-    assert a_callback.called is False
+    assert a_callback.called is True
     assert a_visitor.continue_child == 1
     assert a_visitor.event == a_visitor.IN
 
@@ -794,3 +799,38 @@ def test_on_document_out_unused_fragment(
             == "Anonymous operation must be the only defined operation."
         )
         assert exception.locations == [operation.location]
+
+
+@pytest.mark.parametrize(
+    "operation_type,selections_size,depth,has_error",
+    [
+        ("Query", 4, 0, False),
+        ("Mutation", 4, 0, False),
+        ("Subscription", 1, 0, False),
+        ("Subscription", 2, 1, False),
+        ("Subscription", 2, 0, True),
+    ],
+)
+def test_on_selection_set_in(
+    a_visitor, an_element, operation_type, selections_size, depth, has_error
+):
+    location = Location(1, 1, 1, 2)
+    a_visitor._depth = depth
+    a_visitor._operation_type = operation_type
+    a_visitor._current_operation = Mock(location=location)
+    an_element.get_selections_size = Mock(return_value=selections_size)
+
+    a_visitor._on_selection_set_in(an_element)
+
+    if not has_error:
+        assert a_visitor.exceptions == []
+    else:
+        assert len(a_visitor.exceptions) == 1
+        assert isinstance(
+            a_visitor.exceptions[0], MultipleRootNodeOnSubscriptionOperation
+        )
+        assert (
+            str(a_visitor.exceptions[0])
+            == "Subscription operations must have exactly one root field."
+        )
+        assert a_visitor.exceptions[0].locations == [location]

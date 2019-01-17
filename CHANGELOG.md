@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - [ISSUE-85](https://github.com/dailymotion/tartiflette/issues/85): Raise errors on non-unique named operation definition.
 - [ISSUE-86](https://github.com/dailymotion/tartiflette/issues/86): Raise errors on not alone anonymous operation.
+- [ISSUE-87](https://github.com/dailymotion/tartiflette/issues/87): Raise errors on subscription operations with multiple root field.
 
 #### Removed
 

@@ -479,6 +479,16 @@ class _VisitorElementInlineFragment(_VisitorElement):
         )
 
 
+class _VisitorElementSelectionSet(_VisitorElement):
+    def __init__(self, lib, ffi, internal_element):
+        super().__init__(lib, ffi, "SelectionSet", internal_element)
+
+    def get_selections_size(self):
+        return self._lib.GraphQLAstSelectionSet_get_selections_size(
+            self._internal_element
+        )
+
+
 _LIBGRAPHQL_TYPE_TO_CLASS = {
     "IntValue": _VisitorElementIntValue,
     "StringValue": _VisitorElementStringValue,
@@ -488,6 +498,7 @@ _LIBGRAPHQL_TYPE_TO_CLASS = {
     "OperationDefinition": _VisitorElementOperationDefinition,
     "Field": _VisitorElementField,
     "InlineFragment": _VisitorElementInlineFragment,
+    "SelectionSet": _VisitorElementSelectionSet,
 }
 
 

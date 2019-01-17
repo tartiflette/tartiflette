@@ -5,11 +5,13 @@ from tartiflette.parser.cffi import (
     Visitor,
     _VisitorElement,
     _VisitorElementOperationDefinition,
+    _VisitorElementSelectionSet,
 )
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
     InvalidType,
+    MultipleRootNodeOnSubscriptionOperation,
     NotLoneAnonymousOperation,
     NotUniqueOperationName,
     UndefinedFragment,
@@ -79,6 +81,7 @@ class TartifletteVisitor(Visitor):
                 "FragmentDefinition": self._on_fragment_definition_in,
                 "OperationDefinition": self._on_operation_definition_in,
                 "InlineFragment": self._on_inline_fragment_in,
+                "SelectionSet": self._on_selection_set_in,
             },
             {
                 "default": self._out,
@@ -98,6 +101,7 @@ class TartifletteVisitor(Visitor):
         self._operation_type = None
         self.root_nodes = []
         self._vars = variables if variables else {}
+        self._current_operation = None
         self._current_node = None
         self._current_argument_name = None
         self._current_type_condition = None
@@ -375,9 +379,11 @@ class TartifletteVisitor(Visitor):
             return
 
         self._operation_type = element.get_operation()
+        self._current_operation = operation_node
 
     def _on_operation_definition_out(self, *_args, **_kwargs):
         self._operation_type = None
+        self._current_operation = None
 
     def _on_inline_fragment_in(self, element, *_args, **_kwargs):
         a_type = element.get_named_type()
@@ -411,6 +417,21 @@ class TartifletteVisitor(Visitor):
                     )
                 )
 
+    def _on_selection_set_in(
+        self, element: _VisitorElementSelectionSet, *_args, **_kwargs
+    ):
+        if (
+            self._operation_type == "Subscription"
+            and self._depth == 0
+            and element.get_selections_size() > 1
+        ):
+            self._add_exception(
+                MultipleRootNodeOnSubscriptionOperation(
+                    "Subscription operations must have exactly one root field.",
+                    locations=[self._current_operation.location],
+                )
+            )
+
     def _in(self, element: _VisitorElement, *args, **kwargs):
         self.path = self.path + "/%s" % TartifletteVisitor.create_node_name(
             element.libgraphql_type, element.name
@@ -436,9 +457,6 @@ class TartifletteVisitor(Visitor):
     def update(self, event, element: _VisitorElement):
         self.continue_child = 1
         self.event = event
-
-        if element.libgraphql_type in ["SelectionSet"]:
-            return  # because we don't care.
 
         if (
             not self._current_fragment_definition
