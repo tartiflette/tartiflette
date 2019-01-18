@@ -6,13 +6,8 @@ enum BookCategory {
   History
 }
 
-type Query {
-  libraries: [Library]
-}
-
-type Library {
-  books: [Book]
-  authors: [Author]
+enum Status {
+  SUCCESS
 }
 
 type Author {
@@ -24,4 +19,35 @@ type Book {
   author: Author
   price: Float
   category: BookCategory
+}
+
+type Library {
+  books: [Book]
+  authors: [Author]
+}
+
+input AddBookInput {
+  clientMutationId: String
+  title: String!
+  price: Float!
+}
+
+type AddBookPayload {
+  status: Status
+  clientMutationId: String
+  book: Book
+}
+
+type Query {
+  libraries: [Library]
+  books: [Book]
+}
+
+type CustomRootMutation {
+  addBook(input: AddBookInput!): AddBookPayload
+}
+
+schema {
+  query: Query
+  mutation: CustomRootMutation
 }
