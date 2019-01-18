@@ -47,9 +47,9 @@ class BuildPyCmd(build_py):
 
 
 _TEST_REQUIRE = [
-    "pytest",
-    "pytest-cov",
-    "pytest-asyncio",
+    "pytest==4.1.1",
+    "pytest-cov==2.6.1",
+    "pytest-asyncio==0.10.0",
     "pytest-xdist",
     "pylint==2.1.1",
     "xenon",
@@ -57,7 +57,7 @@ _TEST_REQUIRE = [
     "isort",
 ]
 
-_BENCHMARK_REQUIRE = ["pytest-benchmark"]
+_BENCHMARK_REQUIRE = ["pytest-benchmark==3.2.2"]
 
 _VERSION = "0.3.2"
 

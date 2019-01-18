@@ -11,9 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 #### Added
 
-- Add import sorting on style rule
-- Add formating on tests
-- Add link to tartiflette-aiohttp in readme
+- Add import sorting on style rule.
+- Add formating on tests.
+- Add link to tartiflette-aiohttp in readme.
+- Add a `ttftt_engine` pytest marker to improve the way we handle functional tests.
 
 ### Fixed
 

@@ -1,0 +1,53 @@
+enum BookCategory {
+  Action
+  Adventure
+  Romance
+  Fiction
+  History
+}
+
+enum Status {
+  SUCCESS
+}
+
+type Author {
+  name: String
+}
+
+type Book {
+  title: String
+  author: Author
+  price: Float
+  category: BookCategory
+}
+
+type Library {
+  books: [Book]
+  authors: [Author]
+}
+
+input AddBookInput {
+  clientMutationId: String
+  title: String!
+  price: Float!
+}
+
+type AddBookPayload {
+  status: Status
+  clientMutationId: String
+  book: Book
+}
+
+type Query {
+  libraries: [Library]
+  books: [Book]
+}
+
+type CustomRootMutation {
+  addBook(input: AddBookInput!): AddBookPayload
+}
+
+schema {
+  query: Query
+  mutation: CustomRootMutation
+}
