@@ -23,7 +23,7 @@ def test_graphql_object_init(mocked_resolver_factory):
     assert obj.find_field("another") == GraphQLField(
         name="arg", gql_type="String"
     )
-    assert obj.interfaces == ["First", "Second"]
+    assert obj.interfaces_names == ["First", "Second"]
     assert obj.description == "description"
 
 

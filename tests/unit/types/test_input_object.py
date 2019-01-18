@@ -17,7 +17,7 @@ def test_graphql_input_object_init():
     )
 
     assert input_object.name == "Name"
-    assert input_object.fields == OrderedDict(
+    assert input_object._fields == OrderedDict(
         [
             ("test", GraphQLArgument(name="arg", gql_type="Int")),
             ("another", GraphQLArgument(name="arg", gql_type="String")),

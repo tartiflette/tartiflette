@@ -101,9 +101,17 @@ class InternalVisitorContext:
     def path(self):
         return self._path
 
+    @path.setter
+    def path(self, val):
+        self._path = val
+
     @property
     def field_path(self):
         return self._field_path
+
+    @field_path.setter
+    def field_path(self, val):
+        self._field_path = val
 
     def move_in(self, element):
         self._path = self._path + "/%s" % _create_node_name(

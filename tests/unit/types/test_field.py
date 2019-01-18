@@ -34,7 +34,7 @@ def test_graphql_field_repr(fixture_mocked_get_resolver_executor):
         field.__repr__() == "GraphQLField(name='Name', gql_type='Test', "
         "arguments=OrderedDict([('test', 42), "
         "('another', 24)]), resolver=%s, "
-        "description='description', directives=[])"
+        "description='description', directives=None)"
         % fixture_mocked_get_resolver_executor()
     )
 
