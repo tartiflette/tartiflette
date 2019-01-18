@@ -38,7 +38,7 @@ def test_directive_bake_except_no_implem():
         a_directive.bake(Mock())
 
 
-def test_directive_bake_except_unknowdirective():
+def test_directive_bake_except_unknowdirective(clean_registry):
     from tartiflette.directive.directive import Directive
     from tartiflette.types.exceptions.tartiflette import (
         UnknownDirectiveDefinition,
@@ -62,7 +62,7 @@ def test_directive_bake_except_unknowdirective():
         a_directive.bake(schema)
 
 
-def test_directive_bake():
+def test_directive_bake(clean_registry):
     from tartiflette.directive.directive import Directive
 
     a_directive = Directive("deprecated", schema_name="Ninja")

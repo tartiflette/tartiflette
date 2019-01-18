@@ -1,11 +1,12 @@
-from unittest import mock
 from unittest.mock import patch
 
 import pytest
 
+from tartiflette import Resolver
+from tartiflette.directive import Directive
+from tartiflette.scalar import Scalar
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry, _get_builtins_sdl_files
-from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
     ImproperlyConfigured,
@@ -589,8 +590,10 @@ def test_schema_bake_schema_exclude_builtins_scalars(
         len(
             [
                 scalar
-                for scalar in SchemaRegistry._schemas["exclude"]["scalars"]
-                if scalar._name == "Date"
+                for scalar in SchemaRegistry._schemas["exclude"][
+                    "scalars"
+                ].values()
+                if scalar.name == "Date"
             ]
         )
         == 0
@@ -671,3 +674,31 @@ def test_schema_has_type(clean_registry, type_name, expected):
     )
     schema = SchemaBakery.bake("a")
     assert schema.has_type(type_name) is expected
+
+
+@pytest.mark.parametrize(
+    "schema_name,where,obj",
+    [
+        (
+            "directives_schema",
+            "directives",
+            Directive("my_directive", "directives_schema"),
+        ),
+        ("scalars_schema", "scalars", Scalar("my_scalar", "scalars_schema")),
+        (
+            "resolvers_schema",
+            "resolvers",
+            Resolver("my_resolver", "resolvers_schema"),
+        ),
+    ],
+)
+def test_schema_registry_register(clean_registry, schema_name, where, obj):
+    SchemaRegistry._register(schema_name, where, obj)
+
+    with pytest.raises(ImproperlyConfigured) as excinfo:
+        SchemaRegistry._register(schema_name, where, obj)
+
+    assert str(excinfo.value) == (
+        "Can't register < %s > to < %s > %s because it's already registered"
+        % (obj.name, schema_name, where)
+    )
