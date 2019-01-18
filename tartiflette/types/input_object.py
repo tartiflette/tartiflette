@@ -38,6 +38,7 @@ class GraphQLInputObjectType(GraphQLType):
     def kind(self):
         return "INPUT_OBJECT"
 
+    # Introspection Attribute
     @property
-    def inputFields(self):
+    def inputFields(self):  # pylint: disable=invalid-name
         return self._input_fields

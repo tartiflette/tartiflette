@@ -9,6 +9,7 @@ def _create_node_name(gql_type, name=None):
 
 
 class InternalVisitorContext:
+    #  pylint: disable=too-many-locals
     def __init__(
         self,
         operation=None,
@@ -20,7 +21,7 @@ class InternalVisitorContext:
         depth=0,
         path=None,
         field_path=None,
-    ):
+    ):  # pylint: disable=too-many-arguments
         self._operation = operation
         self._node = node
         self._argument_name = argument_name

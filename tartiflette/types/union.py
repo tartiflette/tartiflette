@@ -44,8 +44,9 @@ class GraphQLUnionType(GraphQLType):
     def is_union(self):
         return True
 
+    # Introspection Attribute
     @property
-    def possibleTypes(self):
+    def possibleTypes(self):  # pylint: disable=invalid-name
         return self._possible_types
 
     def bake(self, schema, custom_default_resolver):
