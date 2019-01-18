@@ -4,6 +4,8 @@ from tartiflette.schema import GraphQLSchema
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 
+_SCHEMA_OBJECT_IDS = ["directives", "resolvers", "scalars"]
+
 
 class SchemaBakery:
     @staticmethod
@@ -18,8 +20,8 @@ class SchemaBakery:
             schema_name, exclude_builtins_scalars
         )
 
-        for object_ids in ["directives", "resolvers", "scalars"]:
-            for obj in schema_info.get(object_ids, []):
+        for object_ids in _SCHEMA_OBJECT_IDS:
+            for obj in schema_info.get(object_ids, {}).values():
                 obj.bake(schema)
 
         schema_info["inst"] = schema

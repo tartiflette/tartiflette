@@ -11,6 +11,10 @@ class Scalar:
         self._implementation = None
         self._schema_name = schema_name
 
+    @property
+    def name(self):
+        return self._name
+
     def bake(self, schema):
         if not self._implementation:
             raise MissingImplementation(

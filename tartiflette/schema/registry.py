@@ -1,6 +1,7 @@
 import os
 
 from tartiflette.schema import GraphQLSchema
+from tartiflette.types.exceptions.tartiflette import ImproperlyConfigured
 
 _DIR_PATH = os.path.dirname(__file__)
 
@@ -39,9 +40,18 @@ class SchemaRegistry:
     def _register(schema_name, where, obj):
         if not obj:
             return
+
         SchemaRegistry._schemas.setdefault(schema_name, {}).setdefault(
-            where, []
-        ).append(obj)
+            where, {}
+        )
+
+        if obj.name in SchemaRegistry._schemas[schema_name][where]:
+            raise ImproperlyConfigured(
+                "Can't register < %s > to < %s > %s because already "
+                "registered" % (obj.name, schema_name, where)
+            )
+
+        SchemaRegistry._schemas[schema_name][where][obj.name] = obj
 
     @staticmethod
     def register_directive(schema_name="default", directive=None):
