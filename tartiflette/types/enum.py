@@ -1,5 +1,6 @@
 from typing import Any, List, Optional
 
+from tartiflette.types.helpers import get_directive_implem_list
 from tartiflette.types.type import GraphQLType
 
 
@@ -9,9 +10,20 @@ class GraphQLEnumValue:
     `GraphQLEnumValue`s is a way to represent them.
     """
 
-    def __init__(self, value: Any = None, description: Optional[str] = None):
+    def __init__(
+        self,
+        value: Any = None,
+        description: Optional[str] = None,
+        directives=None,
+    ):
         self.value = value
         self.description = description
+        self._directives = directives
+        self._schema = None
+        self._directives_implementations = None
+
+        # Introspection Attribute
+        self.isDeprecated = False  # pylint: disable=invalid-name
 
     def __repr__(self):
         return "{}(value={!r}, description={!r})".format(
@@ -24,6 +36,21 @@ class GraphQLEnumValue:
     def __eq__(self, other):
         return self is other or (
             type(self) is type(other) and self.value == other.value
+        )
+
+    # Introspection Attribute
+    @property
+    def name(self):
+        return self.value
+
+    @property
+    def directives(self):
+        return self._directives_implementations
+
+    def bake(self, schema):
+        self._schema = schema
+        self._directives_implementations = get_directive_implem_list(
+            self._directives, self._schema
         )
 
 
@@ -53,8 +80,6 @@ class GraphQLEnumType(GraphQLType):
             schema=schema,
         )
         self.values = values
-        # TODO: This will probably need a serialization / deserialization logic
-        # and more
 
     def __repr__(self):
         return "{}(name={!r}, values={!r}, description={!r})".format(
@@ -68,3 +93,13 @@ class GraphQLEnumType(GraphQLType):
     @property
     def kind(self):
         return "ENUM"
+
+    # Introspection Attribute
+    @property
+    def enumValues(self):  # pylint: disable=invalid-name
+        return self.values
+
+    def bake(self, schema, cdr):
+        super().bake(schema, cdr)
+        for value in self.values:
+            value.bake(schema)

@@ -22,17 +22,22 @@ class GraphQLInputObjectType(GraphQLType):
         schema=None,
     ):
         super().__init__(name=name, description=description, schema=schema)
-        self.fields: Dict[str, GraphQLArgument] = fields
+        self._fields: Dict[str, GraphQLArgument] = fields
+        self._input_fields = [x for _, x in self._fields.items()]
 
     def __repr__(self) -> str:
         return "{}(name={!r}, fields={!r}, description={!r})".format(
-            self.__class__.__name__, self.name, self.fields, self.description
+            self.__class__.__name__, self.name, self._fields, self.description
         )
 
     def __eq__(self, other):
-        return super().__eq__(other) and self.fields == other.fields
+        return super().__eq__(other) and self._fields == other._fields
 
     # Introspection Attribute
     @property
     def kind(self):
         return "INPUT_OBJECT"
+
+    @property
+    def inputFields(self):
+        return self._input_fields

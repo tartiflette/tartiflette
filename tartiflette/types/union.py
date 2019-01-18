@@ -22,6 +22,7 @@ class GraphQLUnionType(GraphQLType):
     ):
         super().__init__(name=name, description=description, schema=schema)
         self.gql_types = gql_types
+        self._possible_types = []
 
     def __repr__(self) -> str:
         return "{}(name={!r}, gql_types={!r}, description={!r})".format(
@@ -42,3 +43,13 @@ class GraphQLUnionType(GraphQLType):
     @property
     def is_union(self):
         return True
+
+    @property
+    def possibleTypes(self):
+        return self._possible_types
+
+    def bake(self, schema, custom_default_resolver):
+        super().bake(schema, custom_default_resolver)
+        self._possible_types = [
+            self._schema.find_type(x) for x in self.gql_types
+        ]

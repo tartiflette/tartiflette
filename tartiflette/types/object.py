@@ -24,7 +24,7 @@ class GraphQLObjectType(GraphQLType):
         super().__init__(name=name, description=description, schema=schema)
         self._fields: Dict[str, GraphQLField] = fields
         # TODO: specify what is in the List.
-        self.interfaces: Optional[List[str]] = interfaces
+        self._interfaces_names: Optional[List[str]] = interfaces or []
 
     def __repr__(self) -> str:
         return (
@@ -33,7 +33,7 @@ class GraphQLObjectType(GraphQLType):
                 self.__class__.__name__,
                 self.name,
                 self._fields,
-                self.interfaces,
+                self._interfaces_names,
                 self.description,
             )
         )
@@ -42,7 +42,7 @@ class GraphQLObjectType(GraphQLType):
         return (
             super().__eq__(other)
             and self._fields == other._fields
-            and self.interfaces == other.interfaces
+            and self._interfaces_names == other._interfaces_names
         )
 
     def add_field(self, value: GraphQLField):
@@ -66,9 +66,17 @@ class GraphQLObjectType(GraphQLType):
 
     def bake(self, schema, custom_default_resolver):
         super().bake(schema, custom_default_resolver)
+        self._interfaces = [
+            self._schema.find_type(x) for x in self._interfaces_names
+        ]
 
         for field in self.fields:
             try:
                 field.bake(schema, self, custom_default_resolver)
             except AttributeError:
                 pass
+
+    # Introspection Attribute
+    @property
+    def interfaces(self):
+        return self._interfaces

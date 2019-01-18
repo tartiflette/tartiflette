@@ -7,11 +7,12 @@ from tartiflette.parser.cffi import (
     _VisitorElementOperationDefinition,
     _VisitorElementSelectionSet,
 )
-
 from tartiflette.parser.nodes.field import NodeField
 from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
+from tartiflette.parser.nodes.operation_definition import (
+    NodeOperationDefinition,
+)
 from tartiflette.parser.nodes.variable_definition import NodeVariableDefinition
-from tartiflette.parser.nodes.operation_definition import NodeOperationDefinition
 from tartiflette.parser.visitor.visitor_context import InternalVisitorContext
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
@@ -129,7 +130,9 @@ class TartifletteVisitor(Visitor):
             )
         except (AttributeError, TypeError):
             parent_type = self.schema.find_type(
-                self.schema.get_operation_type(self._internal_ctx.operation.type)
+                self.schema.get_operation_type(
+                    self._internal_ctx.operation.type
+                )
             )
 
         try:
@@ -321,9 +324,7 @@ class TartifletteVisitor(Visitor):
         self, element: _VisitorElement, *_args, **_kwargs
     ):
         self._to_call_later.append(
-            partial(
-                self._fragment_spread, self._internal_ctx.clone(), element
-            )
+            partial(self._fragment_spread, self._internal_ctx.clone(), element)
         )
 
     def _on_operation_definition_in(
@@ -336,7 +337,7 @@ class TartifletteVisitor(Visitor):
                 self._internal_ctx.path,
                 element.get_location(),
                 element.name,
-                element.get_operation()
+                element.get_operation(),
             )
             if element.name is not None:
                 self._named_operations[element.name] = operation_node

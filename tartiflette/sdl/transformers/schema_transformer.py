@@ -201,6 +201,7 @@ class SchemaTransformer(Transformer_InPlace):
     def enum_value_definition(self, tree: Tree) -> GraphQLEnumValue:
         # TODO: Add directives
         description = None
+        directives = None
         value: GraphQLEnumValue = None
         for child in tree.children:
             if child.type == "description":
@@ -209,15 +210,15 @@ class SchemaTransformer(Transformer_InPlace):
                 value = child.value
             elif child.type == "discard":
                 pass
+            elif child.type == "directives":
+                directives = child.value
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
                         child, child.__class__.__name__
                     )
                 )
-        if description:
-            value.description = description
-        return value
+        return GraphQLEnumValue(value, description, directives=directives)
 
     def interface_type_definition(self, tree: Tree) -> GraphQLInterfaceType:
         # TODO: Add directives
@@ -447,9 +448,7 @@ class SchemaTransformer(Transformer_InPlace):
         return tree.children[0]
 
     def enum_value(self, tree: Tree) -> SchemaNode:
-        return SchemaNode(
-            "enum_value", GraphQLEnumValue(value=str(tree.children[0].value))
-        )
+        return SchemaNode("enum_value", tree.children[0].value)
 
     def int_value(self, tree: Tree) -> SchemaNode:
         return SchemaNode("int_value", tree.children[0].value)

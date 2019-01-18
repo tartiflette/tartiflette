@@ -306,21 +306,21 @@ class GraphQLSchema:
     def _validate_object_follow_interfaces(self):
         for gql_type in self.types:
             try:
-                for iface_name in gql_type.interfaces:
+                for iface in gql_type.interfaces:
                     try:
-                        iface_type = self._gql_types[iface_name]
+                        iface_type = self._gql_types[iface.name]
                     except KeyError:
                         raise GraphQLSchemaError(
                             "GraphQL type `{}` implements the `{}` interface "
                             "which does not exist!".format(
-                                gql_type.name, iface_name
+                                gql_type.name, iface.name
                             )
                         )
                     if not isinstance(iface_type, GraphQLInterfaceType):
                         raise GraphQLSchemaError(
                             "GraphQL type `{}` implements the `{}` interface "
                             "which is not an interface!".format(
-                                gql_type.name, iface_name
+                                gql_type.name, iface.name
                             )
                         )
                     for iface_field in iface_type.fields:
@@ -332,7 +332,7 @@ class GraphQLSchema:
                             raise GraphQLSchemaError(
                                 "field `{}` is missing in GraphQL type `{}` "
                                 "that implements the `{}` interface.".format(
-                                    iface_field.name, gql_type.name, iface_name
+                                    iface_field.name, gql_type.name, iface.name
                                 )
                             )
                         if gql_type_field.gql_type != iface_field.gql_type:
@@ -342,7 +342,7 @@ class GraphQLSchema:
                                 "the interface field type `{}`.".format(
                                     iface_field.name,
                                     gql_type.name,
-                                    iface_name,
+                                    iface.name,
                                     iface_field.gql_type,
                                 )
                             )
