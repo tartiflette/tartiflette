@@ -1336,12 +1336,5 @@ async def test_issue92_fragment_inordered():
                 "queryType": {"name": "Query"},
                 "mutationType": {"name": "Mutation"},
             }
-        },
-        "errors": [
-            {
-                "message": "'Subscription'",
-                "path": ["__schema", "subscriptionType"],
-                "locations": [{"line": 10, "column": 5}],
-            }
-        ],
+        }
     }

@@ -125,17 +125,32 @@ class GraphQLSchema:
     #  Introspection Attribute
     @property
     def queryType(self):  # pylint: disable=invalid-name
-        return self._gql_types[self.query_type]
+        try:
+            return self._gql_types[self.query_type]
+        except KeyError:
+            pass
+
+        return None
 
     #  Introspection Attribute
     @property
     def subscriptionType(self):  # pylint: disable=invalid-name
-        return self._gql_types[self.subscription_type]
+        try:
+            return self._gql_types[self.subscription_type]
+        except KeyError:
+            pass
+
+        return None
 
     #  Introspection Attribute
     @property
     def mutationType(self):  # pylint: disable=invalid-name
-        return self._gql_types[self.mutation_type]
+        try:
+            return self._gql_types[self.mutation_type]
+        except KeyError:
+            pass
+
+        return None
 
     #  Introspection Attribute
     @property
