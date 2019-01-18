@@ -75,7 +75,7 @@ def pytest_runtest_setup(item):
     SchemaRegistry._schemas.setdefault(schema_name, {})
 
     # Reset schema resolvers
-    SchemaRegistry._schemas[schema_name]["resolvers"] = []
+    SchemaRegistry._schemas[schema_name]["resolvers"] = {}
 
     # Apply "Resolver" decorators to resolvers functions
     for name, implementation in resolvers.items():
@@ -83,8 +83,8 @@ def pytest_runtest_setup(item):
 
     # Bake resolvers
     for resolver in (
-        SchemaRegistry._schemas[schema_name].get("resolvers") or []
-    ):
+        SchemaRegistry._schemas[schema_name].get("resolvers") or {}
+    ).values():
         resolver.bake(_TTFTT_ENGINES[schema_name]._schema)
 
     # Re-bake engine schema
