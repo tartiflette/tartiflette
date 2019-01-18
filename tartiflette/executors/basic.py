@@ -21,7 +21,7 @@ def _get_datas(root_nodes):
 
 
 async def execute(root_nodes, request_ctx, error_coercer):
-    results = {"data": {}, "errors": []}
+    results = {"data": None, "errors": []}
     exec_ctx = ExecutionContext()
 
     await _execute(root_nodes, exec_ctx, request_ctx)

@@ -121,14 +121,9 @@ async def test_issue76_fragment():
         "data": None,
         "errors": [
             {
-                "message": "field `UserStatsViews.unknownField4` was not found in GraphQL schema.",
-                "path": ["viewer", "stats", "views", "unknownField4"],
-                "locations": [{"line": 4, "column": 7}],
-            },
-            {
-                "message": "field `UserStats.unknownField3` was not found in GraphQL schema.",
-                "path": ["viewer", "stats", "unknownField3"],
-                "locations": [{"line": 11, "column": 7}],
+                "message": "field `Query.unknownField1` was not found in GraphQL schema.",
+                "path": ["unknownField1"],
+                "locations": [{"line": 26, "column": 7}],
             },
             {
                 "message": "field `User.unknownField2` was not found in GraphQL schema.",
@@ -136,9 +131,14 @@ async def test_issue76_fragment():
                 "locations": [{"line": 19, "column": 7}],
             },
             {
-                "message": "field `Query.unknownField1` was not found in GraphQL schema.",
-                "path": ["unknownField1"],
-                "locations": [{"line": 26, "column": 7}],
+                "message": "field `UserStats.unknownField3` was not found in GraphQL schema.",
+                "path": ["viewer", "stats", "unknownField3"],
+                "locations": [{"line": 11, "column": 7}],
+            },
+            {
+                "message": "field `UserStatsViews.unknownField4` was not found in GraphQL schema.",
+                "path": ["viewer", "stats", "views", "unknownField4"],
+                "locations": [{"line": 4, "column": 7}],
             },
         ],
     }

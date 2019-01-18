@@ -56,7 +56,7 @@ async def resolver_query_viewer(*_, **__):
                 name
               }
             }
-            
+
             subscription Sub {
               ...MultipleSubscriptionsFields
             }
@@ -102,7 +102,7 @@ async def resolver_query_viewer(*_, **__):
                 }
               }
             }
-            
+
             subscription Sub {
               ...MultipleSubscriptionsFields
             }
