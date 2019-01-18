@@ -699,6 +699,6 @@ def test_schema_registry_register(clean_registry, schema_name, where, obj):
         SchemaRegistry._register(schema_name, where, obj)
 
     assert str(excinfo.value) == (
-        "Can't register < %s > to < %s > %s because already registered"
+        "Can't register < %s > to < %s > %s because it's already registered"
         % (obj.name, schema_name, where)
     )

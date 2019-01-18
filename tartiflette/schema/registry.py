@@ -47,7 +47,7 @@ class SchemaRegistry:
 
         if obj.name in SchemaRegistry._schemas[schema_name][where]:
             raise ImproperlyConfigured(
-                "Can't register < %s > to < %s > %s because already "
+                "Can't register < %s > to < %s > %s because it's already "
                 "registered" % (obj.name, schema_name, where)
             )
 
