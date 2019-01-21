@@ -48,7 +48,8 @@ class NodeField(Node):
         if self.cant_be_null is False:
             # mean i can be null
             if self.parent:
-                self.parent.marshalled[self.alias] = None
+                if self.parent.marshalled is not None:
+                    self.parent.marshalled[self.alias] = None
             else:
                 self.marshalled = None
         else:
