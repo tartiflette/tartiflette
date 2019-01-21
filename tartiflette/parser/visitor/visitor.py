@@ -105,6 +105,9 @@ class TartifletteVisitor(Visitor):
             )
 
     def _on_argument_in(self, element: _VisitorElement, *_args, **_kwargs):
+        if self._internal_ctx.node.field_executor is None:
+            return
+
         if not self._internal_ctx.directive_name:
             parent_type = self._get_parent_type(self._internal_ctx.node.parent)
             field = self.schema.get_field_by_name(

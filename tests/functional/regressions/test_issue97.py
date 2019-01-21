@@ -385,6 +385,36 @@ import pytest
                 },
             ],
         ),
+        # Undefined arguments on undefined node or directive
+        (
+            """
+            query {
+              undefinedField(undefinedArg: 1)
+            }
+            """,
+            [
+                {
+                    "message": "field `Query.undefinedField` was not found in "
+                    "GraphQL schema.",
+                    "path": ["undefinedField"],
+                    "locations": [{"line": 3, "column": 15}],
+                }
+            ],
+        ),
+        (
+            """
+            query {
+              undefinedField @deprecated(undefinedArg: 1)
+            }
+            """,
+            [
+                {
+                    "message": "field `Query.undefinedField` was not found in GraphQL schema.",
+                    "path": ["undefinedField"],
+                    "locations": [{"line": 3, "column": 15}],
+                }
+            ],
+        ),
     ],
 )
 async def test_issue_undefined_args(engine, query, errors):
