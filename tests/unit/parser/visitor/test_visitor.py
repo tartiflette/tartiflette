@@ -423,6 +423,7 @@ def test_parser_visitor__validate_vars_existing_okay_var_no_dfv_non_nullable(
     from tartiflette.types.exceptions.tartiflette import (
         UnknownVariableException,
     )
+
     a_visitor._internal_ctx.node = Mock()
     a_visitor._internal_ctx.node.var_name = "LOL"
     a_visitor._internal_ctx.node.var_type = str
@@ -690,6 +691,7 @@ def test_on_document_out_unused_fragment(
     assert len(a_visitor.exceptions) == len(unused)
     for exception, unused_fragment in zip(a_visitor.exceptions, unused):
         assert isinstance(exception, UnusedFragment)
+
 
 def test_parser_visitor__on_operation_definition_in_not_unique(
     a_visitor, an_element

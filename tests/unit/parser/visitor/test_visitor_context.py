@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 
 @pytest.mark.parametrize("args,expected", [(["a", "b"], "a(b)"), (["a"], "a")])

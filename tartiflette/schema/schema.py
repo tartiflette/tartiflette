@@ -331,9 +331,7 @@ class GraphQLSchema:
                 except KeyError:
                     raise GraphQLSchemaError(
                         "GraphQL type `{}` implements the `{}` interface "
-                        "which does not exist!".format(
-                            gql_type.name, iface
-                        )
+                        "which does not exist!".format(gql_type.name, iface)
                     )
                 if not isinstance(iface_type, GraphQLInterfaceType):
                     raise GraphQLSchemaError(
@@ -344,9 +342,7 @@ class GraphQLSchema:
                     )
                 for iface_field in iface_type.fields:
                     try:
-                        gql_type_field = gql_type.find_field(
-                            iface_field.name
-                        )
+                        gql_type_field = gql_type.find_field(iface_field.name)
                     except KeyError:
                         raise GraphQLSchemaError(
                             "field `{}` is missing in GraphQL type `{}` "

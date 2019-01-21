@@ -508,15 +508,9 @@ _FFI.cdef(CDEFS_LIBGRAPHQL)
 # TODO use importlib.resource in Python3.7
 _LIB_DIR = os.path.dirname(__file__)
 try:
-    _LIB = _FFI.dlopen(
-                "%s/libgraphqlparser.so" % _LIB_DIR
-            )
+    _LIB = _FFI.dlopen("%s/libgraphqlparser.so" % _LIB_DIR)
 except OSError:
-    _LIB =  _FFI.dlopen(
-        "%s/libgraphqlparser.dylib" % _LIB_DIR
-    )
-
-
+    _LIB = _FFI.dlopen("%s/libgraphqlparser.dylib" % _LIB_DIR)
 
 
 class LibGraphqlParser:
