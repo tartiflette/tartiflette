@@ -21,6 +21,8 @@ from tartiflette.types.exceptions.tartiflette import (
     MultipleRootNodeOnSubscriptionOperation,
     NotLoneAnonymousOperation,
     NotUniqueOperationName,
+    UndefinedDirectiveArgument,
+    UndefinedFieldArgument,
     UndefinedFragment,
     UnknownSchemaFieldResolver,
     UnknownTypeDefinition,
@@ -47,6 +49,7 @@ class TartifletteVisitor(Visitor):
             {
                 "default": self._in,
                 "Argument": self._on_argument_in,
+                "Directive": self._on_directive_in,
                 "Field": self._on_field_in,
                 "Variable": self._on_variable_in,
                 "IntValue": self._on_value_in,
@@ -66,6 +69,7 @@ class TartifletteVisitor(Visitor):
                 "default": self._out,
                 "Document": self._on_document_out,
                 "Argument": self._on_argument_out,
+                "Directive": self._on_directive_out,
                 "Field": self._on_field_out,
                 "VariableDefinition": self._on_variable_definition_out,
                 "FragmentDefinition": self._on_fragment_definition_out,
@@ -90,11 +94,62 @@ class TartifletteVisitor(Visitor):
         self.continue_child = continue_child
         self.exceptions.append(exception)
 
+    def _get_parent_type(self, node: NodeField):
+        try:
+            return reduce_type(node.field_executor.schema_field.gql_type)
+        except (AttributeError, TypeError):
+            return self.schema.find_type(
+                self.schema.get_operation_type(
+                    self._internal_ctx.operation.type
+                )
+            )
+
     def _on_argument_in(self, element: _VisitorElement, *_args, **_kwargs):
+        if not self._internal_ctx.directive_name:
+            parent_type = self._get_parent_type(self._current_node.parent)
+            field = self.schema.get_field_by_name(
+                str(parent_type) + "." + self._current_node.name
+            )
+
+            if element.name not in field.arguments:
+                self._add_exception(
+                    UndefinedFieldArgument(
+                        "Undefined argument < %s > on field < %s > of type < "
+                        "%s >."
+                        % (element.name, self._current_node.name, parent_type),
+                        locations=[element.get_location()],
+                    )
+                )
+                return
+        else:
+            try:
+                directive = self.schema.find_directive(
+                    self._current_directive_name
+                )
+            except KeyError:
+                return
+
+            if element.name not in directive.arguments:
+                self._add_exception(
+                    UndefinedDirectiveArgument(
+                        "Undefined argument < %s > on directive < @%s >."
+                        % (element.name, directive.name),
+                        locations=[element.get_location()],
+                    )
+                )
+                return
+
         self._internal_ctx.argument_name = element.name
+>>>>>>> feat(errors): raise errors on undefined arguments on nodes or directives:tartiflette/parser/visitor.py
 
     def _on_argument_out(self, *_args, **_kwargs):
         self._internal_ctx.argument_name = None
+
+    def _on_directive_in(self, element: _VisitorElement, *_args, **_kwargs):
+        self._current_directive_name = element.name
+
+    def _on_directive_out(self, *_args, **_kwargs):
+        self._current_directive_name = None
 
     def _on_value_in(self, element: _VisitorElement, *_args, **_kwargs):
         if hasattr(self._internal_ctx.node, "default_value"):
@@ -124,17 +179,7 @@ class TartifletteVisitor(Visitor):
         type_cond = self._internal_ctx.compute_type_cond(type_cond_depth)
         field = None
 
-        try:
-            parent_type = reduce_type(
-                self._internal_ctx.node.field_executor.schema_field.gql_type
-            )
-        except (AttributeError, TypeError):
-            parent_type = self.schema.find_type(
-                self.schema.get_operation_type(
-                    self._internal_ctx.operation.type
-                )
-            )
-
+        parent_type = self._get_parent_type(self._internal_ctx.node)
         try:
             field = self.schema.get_field_by_name(
                 str(parent_type) + "." + element.name
