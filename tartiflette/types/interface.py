@@ -25,6 +25,7 @@ class GraphQLInterfaceType(GraphQLType):
     ):
         super().__init__(name=name, description=description, schema=schema)
         self._fields: Dict[str, GraphQLField] = fields
+        self._possible_types = []
 
     def __repr__(self) -> str:
         return "{}(name={!r}, fields={!r}, description={!r})".format(
@@ -54,3 +55,8 @@ class GraphQLInterfaceType(GraphQLType):
 
         for field in self.fields:
             field.bake(schema, self, custom_default_resolver)
+
+    # introspection attribute
+    @property
+    def possibleTypes(self):  # pylint: disable=invalid-name
+        return self._possible_types

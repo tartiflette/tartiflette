@@ -71,6 +71,9 @@ class GraphQLObjectType(GraphQLType):
             self._schema.find_type(x) for x in self.interfaces_names
         ]
 
+        for iface in self._interfaces:
+            iface.possibleTypes.append(self)
+
         for field in self.fields:
             try:
                 field.bake(schema, self, custom_default_resolver)
