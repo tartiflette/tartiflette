@@ -62,15 +62,15 @@ async def test_full_query_execute(engine):
 
         query TestQueriesFromEnd2End{
             libraries {
-                books {
+                books(title: "Book") {
                     title
-                    price(number: 3.6)
+                    price
                     category
                     author {
-                        name(useless: true)
+                        name
                     }
                 }
-                authors {
+                authors(name: "Author") {
                     ...boby
                 }
             }
