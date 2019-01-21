@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### [Next] - Next
+## [Released]
+
+### [0.3.3] - 2019-01-21
 
 #### Added
 
@@ -22,12 +24,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - [ISSUE-86](https://github.com/dailymotion/tartiflette/issues/86): Raise errors on not alone anonymous operation.
 - [ISSUE-87](https://github.com/dailymotion/tartiflette/issues/87): Raise errors on subscription operations with multiple root field.
 - [ISSUE-94](https://github.com/dailymotion/tartiflette/issues/94): Raise errors when redefining directives, scalars or resolvers multiple times.
+- [ISSUE-92](https://github.com/dailymotion/tartiflette/issues/92): Official Introspection Query support.
+  - Unordered Fragments support
+  - Don't fail on type that doesn't have fields
+  - Support `possibleTypes` on Union
+  - Support `interfaces` on Object
+  - Support `inputFields` on InputValue
 
 #### Removed
 
 - Remove aiohttp example files
-
-## [Released]
 
 ### [0.3.2] - 2019-01-15
 
