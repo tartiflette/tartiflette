@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Support `possibleTypes` on Union
   - Support `interfaces` on Object
   - Support `inputFields` on InputValue
+- [ISSUE-97](https://github.com/dailymotion/tartiflette/issues/97): Raise errors on undefined arguments on nodes or directives.
 
 #### Removed
 

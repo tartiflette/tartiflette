@@ -60,7 +60,7 @@ def test_parser_visitor__on_argument(a_visitor, an_element):
     field_mock = Mock(arguments={"a_name": Mock()})
 
     a_visitor._get_parent_type = Mock(return_value="Query")
-    a_visitor._current_node.name = "dog"
+    a_visitor._internal_ctx.node.name = "dog"
     a_visitor.schema.get_field_by_name = Mock(return_value=field_mock)
 
     assert a_visitor._internal_ctx.argument_name is None
@@ -77,21 +77,21 @@ def test_parser_visitor__on_argument_undefined_field_argument(
 ):
     field_mock = Mock(arguments={"an_argument": Mock()})
 
-    a_visitor._current_directive_name = None
+    a_visitor._internal_ctx.directive_name = None
     a_visitor._get_parent_type = Mock(return_value="Query")
-    a_visitor._current_node.name = "dog"
+    a_visitor._internal_ctx.node.name = "dog"
     a_visitor.schema.get_field_by_name = Mock(return_value=field_mock)
 
     an_element.name = "undefinedArgument"
 
-    assert a_visitor._current_argument_name is None
+    assert a_visitor._internal_ctx.argument_name is None
     assert a_visitor.exceptions == []
 
     assert a_visitor._on_argument_in(an_element) is None
-    assert a_visitor._current_argument_name is None
+    assert a_visitor._internal_ctx.argument_name is None
 
     assert a_visitor._on_argument_out(an_element) is None
-    assert a_visitor._current_argument_name is None
+    assert a_visitor._internal_ctx.argument_name is None
 
     assert len(a_visitor.exceptions) == 1
     assert isinstance(a_visitor.exceptions[0], UndefinedFieldArgument)
@@ -107,19 +107,19 @@ def test_parser_visitor__on_argument_undefined_directive_argument(
     directive_mock = Mock(arguments={"an_argument": Mock()})
     directive_mock.name = "myDirective"
 
-    a_visitor._current_directive_name = "myDirective"
+    a_visitor._internal_ctx.directive_name = "myDirective"
     a_visitor.schema.find_directive = Mock(return_value=directive_mock)
 
     an_element.name = "undefinedArgument"
 
-    assert a_visitor._current_argument_name is None
+    assert a_visitor._internal_ctx.argument_name is None
     assert a_visitor.exceptions == []
 
     assert a_visitor._on_argument_in(an_element) is None
-    assert a_visitor._current_argument_name is None
+    assert a_visitor._internal_ctx.argument_name is None
 
     assert a_visitor._on_argument_out(an_element) is None
-    assert a_visitor._current_argument_name is None
+    assert a_visitor._internal_ctx.argument_name is None
 
     assert len(a_visitor.exceptions) == 1
     assert isinstance(a_visitor.exceptions[0], UndefinedDirectiveArgument)
@@ -130,13 +130,13 @@ def test_parser_visitor__on_argument_undefined_directive_argument(
 
 
 def test_parser_visitor__on_directive(a_visitor, an_element):
-    assert a_visitor._current_directive_name is None
+    assert a_visitor._internal_ctx.directive_name is None
 
     assert a_visitor._on_directive_in(an_element) is None
-    assert a_visitor._current_directive_name == "a_name"
+    assert a_visitor._internal_ctx.directive_name == "a_name"
 
     assert a_visitor._on_directive_out(an_element) is None
-    assert a_visitor._current_directive_name is None
+    assert a_visitor._internal_ctx.directive_name is None
 
 
 def test_parser_visitor__on_value_in(a_visitor, an_element):

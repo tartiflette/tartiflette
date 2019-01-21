@@ -106,9 +106,9 @@ class TartifletteVisitor(Visitor):
 
     def _on_argument_in(self, element: _VisitorElement, *_args, **_kwargs):
         if not self._internal_ctx.directive_name:
-            parent_type = self._get_parent_type(self._current_node.parent)
+            parent_type = self._get_parent_type(self._internal_ctx.node.parent)
             field = self.schema.get_field_by_name(
-                str(parent_type) + "." + self._current_node.name
+                str(parent_type) + "." + self._internal_ctx.node.name
             )
 
             if element.name not in field.arguments:
@@ -116,7 +116,11 @@ class TartifletteVisitor(Visitor):
                     UndefinedFieldArgument(
                         "Undefined argument < %s > on field < %s > of type < "
                         "%s >."
-                        % (element.name, self._current_node.name, parent_type),
+                        % (
+                            element.name,
+                            self._internal_ctx.node.name,
+                            parent_type,
+                        ),
                         locations=[element.get_location()],
                     )
                 )
@@ -124,7 +128,7 @@ class TartifletteVisitor(Visitor):
         else:
             try:
                 directive = self.schema.find_directive(
-                    self._current_directive_name
+                    self._internal_ctx.directive_name
                 )
             except KeyError:
                 return
@@ -140,16 +144,15 @@ class TartifletteVisitor(Visitor):
                 return
 
         self._internal_ctx.argument_name = element.name
->>>>>>> feat(errors): raise errors on undefined arguments on nodes or directives:tartiflette/parser/visitor.py
 
     def _on_argument_out(self, *_args, **_kwargs):
         self._internal_ctx.argument_name = None
 
     def _on_directive_in(self, element: _VisitorElement, *_args, **_kwargs):
-        self._current_directive_name = element.name
+        self._internal_ctx.directive_name = element.name
 
     def _on_directive_out(self, *_args, **_kwargs):
-        self._current_directive_name = None
+        self._internal_ctx.directive_name = None
 
     def _on_value_in(self, element: _VisitorElement, *_args, **_kwargs):
         if hasattr(self._internal_ctx.node, "default_value"):
