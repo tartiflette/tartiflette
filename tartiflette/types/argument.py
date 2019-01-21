@@ -18,12 +18,15 @@ class GraphQLArgument:
         gql_type: str,
         default_value: Optional[Any] = None,
         description: Optional[str] = None,
+        schema=None,
     ):
         # TODO: Narrow the default_value type ?
         self.name = name
         self.gql_type = gql_type
         self.default_value = default_value
         self.description = description
+        self._type = {"name": self.gql_type, "description": self.description}
+        self._schema = schema
 
     def __repr__(self):
         return (
@@ -51,16 +54,16 @@ class GraphQLArgument:
     # Introspection Attribute
     @property
     def type(self):
-        if isinstance(self.gql_type, GraphQLType):
-            return self.gql_type
-
-        return {
-            "name": self.gql_type,
-            "kind": "SCALAR",
-            "description": self.description,
-        }
+        return self._type
 
     # Introspection Attribute
     @property
     def defaultValue(self):  # pylint: disable=invalid-name
         return self.default_value
+
+    def bake(self, schema):
+        self._schema = schema
+        if isinstance(self.gql_type, GraphQLType):
+            self._type["kind"] = self.gql_type.kind
+        else:
+            self._type["kind"] = self._schema.find_type(self.gql_type).kind

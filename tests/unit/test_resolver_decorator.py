@@ -60,7 +60,7 @@ async def test_resolver_decorator(clean_registry):
         \"\"\"
         This is a field description :D
         \"\"\"
-        field(input: InputObject): String!
+        field(input: UserInfo): String!
         anotherField: [Int]
         fieldWithDefaultValueArg(test: String = "default"): ID
         simpleField: Date

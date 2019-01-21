@@ -42,3 +42,9 @@ class GraphQLInputObjectType(GraphQLType):
     @property
     def inputFields(self):  # pylint: disable=invalid-name
         return self._input_fields
+
+    def bake(self, schema, cdf):
+        super().bake(schema, cdf)
+
+        for arg in self._fields.values():
+            arg.bake(self._schema)
