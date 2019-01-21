@@ -321,48 +321,51 @@ class GraphQLSchema:
     def _validate_object_follow_interfaces(self):
         for gql_type in self.types:
             try:
-                for iface in gql_type.interfaces:
+                ifaces = gql_type.interfaces_names
+            except AttributeError:
+                continue
+
+            for iface in ifaces:
+                try:
+                    iface_type = self._gql_types[iface]
+                except KeyError:
+                    raise GraphQLSchemaError(
+                        "GraphQL type `{}` implements the `{}` interface "
+                        "which does not exist!".format(
+                            gql_type.name, iface
+                        )
+                    )
+                if not isinstance(iface_type, GraphQLInterfaceType):
+                    raise GraphQLSchemaError(
+                        "GraphQL type `{}` implements the `{}` interface "
+                        "which is not an interface!".format(
+                            gql_type.name, iface
+                        )
+                    )
+                for iface_field in iface_type.fields:
                     try:
-                        iface_type = self._gql_types[iface.name]
+                        gql_type_field = gql_type.find_field(
+                            iface_field.name
+                        )
                     except KeyError:
                         raise GraphQLSchemaError(
-                            "GraphQL type `{}` implements the `{}` interface "
-                            "which does not exist!".format(
-                                gql_type.name, iface.name
+                            "field `{}` is missing in GraphQL type `{}` "
+                            "that implements the `{}` interface.".format(
+                                iface_field.name, gql_type.name, iface
                             )
                         )
-                    if not isinstance(iface_type, GraphQLInterfaceType):
+                    if gql_type_field.gql_type != iface_field.gql_type:
                         raise GraphQLSchemaError(
-                            "GraphQL type `{}` implements the `{}` interface "
-                            "which is not an interface!".format(
-                                gql_type.name, iface.name
+                            "field `{}` in GraphQL type `{}` that "
+                            "implements the `{}` interface does not follow "
+                            "the interface field type `{}`.".format(
+                                iface_field.name,
+                                gql_type.name,
+                                iface,
+                                iface_field.gql_type,
                             )
                         )
-                    for iface_field in iface_type.fields:
-                        try:
-                            gql_type_field = gql_type.find_field(
-                                iface_field.name
-                            )
-                        except KeyError:
-                            raise GraphQLSchemaError(
-                                "field `{}` is missing in GraphQL type `{}` "
-                                "that implements the `{}` interface.".format(
-                                    iface_field.name, gql_type.name, iface.name
-                                )
-                            )
-                        if gql_type_field.gql_type != iface_field.gql_type:
-                            raise GraphQLSchemaError(
-                                "field `{}` in GraphQL type `{}` that "
-                                "implements the `{}` interface does not follow "
-                                "the interface field type `{}`.".format(
-                                    iface_field.name,
-                                    gql_type.name,
-                                    iface.name,
-                                    iface_field.gql_type,
-                                )
-                            )
-            except (AttributeError, TypeError):
-                pass
+
         return True
 
     def _validate_schema_root_types_exist(self):

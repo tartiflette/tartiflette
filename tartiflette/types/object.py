@@ -80,4 +80,4 @@ class GraphQLObjectType(GraphQLType):
     # Introspection Attribute
     @property
     def interfaces(self):
-        return self._interfaces
+        return self._interfaces or []
