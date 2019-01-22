@@ -22,8 +22,8 @@ type Book {
 }
 
 type Library {
-  books: [Book]
-  authors: [Author]
+  books(title: String): [Book]
+  authors(name: String): [Author]
 }
 
 input AddBookInput {

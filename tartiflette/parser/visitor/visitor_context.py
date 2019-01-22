@@ -9,12 +9,13 @@ def _create_node_name(gql_type, name=None):
 
 
 class InternalVisitorContext:
-    #  pylint: disable=too-many-locals
+    #  pylint: disable=too-many-locals,too-many-instance-attributes
     def __init__(
         self,
         operation=None,
         node=None,
         argument_name=None,
+        directive_name=None,
         type_condition=None,
         fragment_definition=None,
         inline_fragment_info=None,
@@ -25,6 +26,7 @@ class InternalVisitorContext:
         self._operation = operation
         self._node = node
         self._argument_name = argument_name
+        self._directive_name = directive_name
         self._type_condition = type_condition
         self._fragment_definition = fragment_definition
         self._inline_fragment_info = inline_fragment_info
@@ -37,6 +39,7 @@ class InternalVisitorContext:
             self._operation,
             self._node,
             self._argument_name,
+            self._directive_name,
             self._type_condition,
             self._fragment_definition,
             self._inline_fragment_info,
@@ -68,6 +71,14 @@ class InternalVisitorContext:
     @argument_name.setter
     def argument_name(self, val):
         self._argument_name = val
+
+    @property
+    def directive_name(self):
+        return self._directive_name
+
+    @directive_name.setter
+    def directive_name(self, val):
+        self._directive_name = val
 
     @property
     def type_condition(self):

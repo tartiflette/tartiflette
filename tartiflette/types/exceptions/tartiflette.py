@@ -155,6 +155,14 @@ class MultipleRootNodeOnSubscriptionOperation(GraphQLError):
     pass
 
 
+class UndefinedFieldArgument(GraphQLError):
+    pass
+
+
+class UndefinedDirectiveArgument(GraphQLError):
+    pass
+
+
 class UnknownVariableException(GraphQLError):
     def __init__(self, varname):
         # TODO: Unify error messages format

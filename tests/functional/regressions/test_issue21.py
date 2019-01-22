@@ -4,7 +4,6 @@ import pytest
 
 from tartiflette.executors.types import Info
 from tartiflette.resolver import Resolver
-from tartiflette.types.exceptions.tartiflette import UnknownVariableException
 
 GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 
@@ -86,7 +85,7 @@ async def test_issue21_okayquery(
     }
 
     type Query {
-        a: Obj
+        a(xid: Int): Obj
     }
     """
         % typee
@@ -199,7 +198,7 @@ async def test_issue21_exceptquery(query, expected, varis, clean_registry):
     }
 
     type Query {
-        a: Obj
+        a(xid: Int): Obj
     }
     """
     )
