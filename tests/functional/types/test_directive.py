@@ -265,19 +265,19 @@ async def test_tartiflette_non_introspectable_execution_directive(
                         "deprecationReason": None,
                     },
                     {
-                        "deprecationReason": None,
                         "name": "__schema",
+                        "deprecationReason": None,
                         "isDeprecated": False,
                     },
                     {
-                        "deprecationReason": None,
                         "name": "__type",
+                        "deprecationReason": None,
                         "isDeprecated": False,
                     },
                     {
-                        "deprecationReason": None,
                         "name": "__typename",
                         "isDeprecated": False,
+                        "deprecationReason": None,
                     },
                 ]
             }
