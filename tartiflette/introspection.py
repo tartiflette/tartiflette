@@ -24,15 +24,22 @@ SCHEMA_ROOT_FIELD_DEFINITION = partial(
     resolver=__schema_resolver,
 )
 
-TYPE_ROOT_FIELD_DEFINITION = partial(
-    GraphQLField,
-    name="__type",
-    description="Request the type information of a single type.",
-    arguments={
-        "name": GraphQLArgument(name="name", gql_type=GraphQLNonNull("String"))
-    },
-    resolver=__type_resolver,
-)
+
+def prepare_type_root_field(schema):
+    return GraphQLField(
+        name="__type",
+        description="Request the type information of a single type.",
+        arguments={
+            "name": GraphQLArgument(
+                name="name",
+                gql_type=GraphQLNonNull("String", schema=schema),
+                schema=schema,
+            )
+        },
+        gql_type="__Type",
+        resolver=__type_resolver,
+        schema=schema,
+    )
 
 
 async def __typename_resolver(parent_result, _args, _req_ctx, info):

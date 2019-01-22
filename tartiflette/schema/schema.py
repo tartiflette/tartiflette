@@ -2,8 +2,8 @@ from typing import Dict, List, Optional, Union
 
 from tartiflette.introspection import (
     SCHEMA_ROOT_FIELD_DEFINITION,
-    TYPE_ROOT_FIELD_DEFINITION,
     TYPENAME_ROOT_FIELD_DEFINITION,
+    prepare_type_root_field,
 )
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType
@@ -469,7 +469,7 @@ class GraphQLSchema:
             )
         )
         self._gql_types[self.query_type].add_field(
-            TYPE_ROOT_FIELD_DEFINITION(schema=self, gql_type="__Type")
+            prepare_type_root_field(self)
         )
 
         for _, gql_type in self._gql_types.items():
