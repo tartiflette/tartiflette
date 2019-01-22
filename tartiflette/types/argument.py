@@ -25,7 +25,7 @@ class GraphQLArgument:
         self.gql_type = gql_type
         self.default_value = default_value
         self.description = description
-        self._type = {"name": self.gql_type, "description": self.description}
+        self._type = {}
         self._schema = schema
 
     def __repr__(self):
@@ -64,6 +64,7 @@ class GraphQLArgument:
     def bake(self, schema):
         self._schema = schema
         if isinstance(self.gql_type, GraphQLType):
-            self._type["kind"] = self.gql_type.kind
+            self._type = self.gql_type
         else:
+            self._type["name"] = self.gql_type
             self._type["kind"] = self._schema.find_type(self.gql_type).kind
