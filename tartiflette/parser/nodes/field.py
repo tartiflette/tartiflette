@@ -47,7 +47,7 @@ class NodeField(Node):
     def bubble_error(self):
         if self.cant_be_null is False:
             # mean i can be null
-            if self.parent:
+            if self.parent and self.parent.marshalled is not None:
                 self.parent.marshalled[self.alias] = None
             else:
                 self.marshalled = None
@@ -78,11 +78,17 @@ class NodeField(Node):
     async def _execute_children(self, exec_ctx, request_ctx, result, coerced):
         coroutz = []
         if self.shall_produce_list:
-            for index, raw in enumerate(result):
-                raw_typename = get_typename(raw)
-                coroutz = coroutz + self._get_coroutz_from_child(
-                    exec_ctx, request_ctx, raw, coerced[index], raw_typename
-                )
+            # TODO Better manage of None values here. (Should be transformed by coerce)
+            if isinstance(result, list) and isinstance(coerced, list):
+                for index, raw in enumerate(result):
+                    raw_typename = get_typename(raw)
+                    coroutz = coroutz + self._get_coroutz_from_child(
+                        exec_ctx,
+                        request_ctx,
+                        raw,
+                        coerced[index],
+                        raw_typename,
+                    )
         else:
             raw_typename = get_typename(result)
             coroutz = self._get_coroutz_from_child(

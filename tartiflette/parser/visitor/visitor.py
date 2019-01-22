@@ -1,4 +1,4 @@
-from functools import lru_cache, partial
+from functools import partial
 from typing import Any, Dict, List
 
 from tartiflette.parser.cffi import (
@@ -7,6 +7,13 @@ from tartiflette.parser.cffi import (
     _VisitorElementOperationDefinition,
     _VisitorElementSelectionSet,
 )
+from tartiflette.parser.nodes.field import NodeField
+from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
+from tartiflette.parser.nodes.operation_definition import (
+    NodeOperationDefinition,
+)
+from tartiflette.parser.nodes.variable_definition import NodeVariableDefinition
+from tartiflette.parser.visitor.visitor_context import InternalVisitorContext
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
@@ -22,11 +29,6 @@ from tartiflette.types.exceptions.tartiflette import (
 )
 from tartiflette.types.helpers import reduce_type
 
-from .nodes.definition import NodeDefinition
-from .nodes.field import NodeField
-from .nodes.fragment_definition import NodeFragmentDefinition
-from .nodes.variable_definition import NodeVariableDefinition
-
 
 class InlineFragmentInfo:
     def __init__(self, atype, depth):
@@ -34,36 +36,13 @@ class InlineFragmentInfo:
         self.depth = depth
 
 
-def _compute_type_cond(
-    current_depth, type_cond_depth, inline_frag_info, current_type_condition
-):
-    if current_depth == type_cond_depth or (
-        inline_frag_info and current_depth == inline_frag_info.depth
-    ):
-        return current_type_condition
-    return None
-
-
 class TartifletteVisitor(Visitor):
     # pylint: disable=too-many-instance-attributes
-
-    #  TODO is usefull only for debug, will
-    # be removed when everythings works
-    #  Same as path information
-    @staticmethod
-    @lru_cache(maxsize=10)
-    def create_node_name(gql_type, name=None):
-        node_name = gql_type
-        if name:
-            node_name = node_name + "(%s)" % name
-        return node_name
 
     def __init__(
         self, schema: GraphQLSchema, variables: Dict[str, Any] = None
     ):
         super().__init__()
-        self.path = ""
-        self.field_path = []
         self._events = [
             {
                 "default": self._in,
@@ -95,51 +74,46 @@ class TartifletteVisitor(Visitor):
                 "InlineFragment": self._on_inline_fragment_out,
             },
         ]
-        self._depth = 0
+
         self._named_operations = {}
         self._anonymous_operations = []
-        self._operation_type = None
         self.root_nodes = []
         self._vars = variables if variables else {}
-        self._current_operation = None
-        self._current_node = None
-        self._current_argument_name = None
-        self._current_type_condition = None
-        self._current_fragment_definition = None
         self._fragments = {}
         self._used_fragments = set()
         self.schema: GraphQLSchema = schema
         self.exceptions: List[Exception] = []
-        self._inline_fragment_info = None
+        self._to_call_later = []
+        self._internal_ctx = InternalVisitorContext()
 
     def _add_exception(self, exception, continue_child=0):
         self.continue_child = continue_child
         self.exceptions.append(exception)
 
     def _on_argument_in(self, element: _VisitorElement, *_args, **_kwargs):
-        self._current_argument_name = element.name
+        self._internal_ctx.argument_name = element.name
 
     def _on_argument_out(self, *_args, **_kwargs):
-        self._current_argument_name = None
+        self._internal_ctx.argument_name = None
 
     def _on_value_in(self, element: _VisitorElement, *_args, **_kwargs):
-        if hasattr(self._current_node, "default_value"):
-            self._current_node.default_value = element.get_value()
+        if hasattr(self._internal_ctx.node, "default_value"):
+            self._internal_ctx.node.default_value = element.get_value()
             return
 
-        self._current_node.arguments.update(
-            {self._current_argument_name: element.get_value()}
+        self._internal_ctx.node.arguments.update(
+            {self._internal_ctx.argument_name: element.get_value()}
         )
 
     def _on_variable_in(self, element: _VisitorElement, *_args, **_kwargs):
-        if hasattr(self._current_node, "var_name"):
-            self._current_node.var_name = element.name
+        if hasattr(self._internal_ctx.node, "var_name"):
+            self._internal_ctx.node.var_name = element.name
             return
 
         try:
             var_name = element.name
-            self._current_node.arguments.update(
-                {self._current_argument_name: self._vars[var_name]}
+            self._internal_ctx.node.arguments.update(
+                {self._internal_ctx.argument_name: self._vars[var_name]}
             )
         except KeyError:
             self._add_exception(UnknownVariableException(var_name))
@@ -147,21 +121,18 @@ class TartifletteVisitor(Visitor):
     def _on_field_in(
         self, element: _VisitorElement, *_args, type_cond_depth=-1, **_kwargs
     ):  # pylint: disable=too-many-locals
-        type_cond = _compute_type_cond(
-            self._depth + 1,
-            type_cond_depth,
-            self._inline_fragment_info,
-            self._current_type_condition,
-        )
+        type_cond = self._internal_ctx.compute_type_cond(type_cond_depth)
         field = None
 
         try:
             parent_type = reduce_type(
-                self._current_node.field_executor.schema_field.gql_type
+                self._internal_ctx.node.field_executor.schema_field.gql_type
             )
         except (AttributeError, TypeError):
             parent_type = self.schema.find_type(
-                self.schema.get_operation_type(self._operation_type)
+                self.schema.get_operation_type(
+                    self._internal_ctx.operation.type
+                )
             )
 
         try:
@@ -177,48 +148,45 @@ class TartifletteVisitor(Visitor):
                 )
             except UnknownSchemaFieldResolver as e:
                 if (
-                    self._current_node is None
-                    or self._current_node.field_executor is not None
+                    self._internal_ctx.node is None
+                    or self._internal_ctx.node.field_executor is not None
                 ):
-                    e.path = self.field_path[:] + [element.name]
+                    e.path = self._internal_ctx.field_path[:] + [element.name]
                     e.locations = [element.get_location()]
                     self._add_exception(e, 1)
 
-        self.field_path.append(element.name)
-        self._depth = self._depth + 1
+        self._internal_ctx.move_in_field(element)
 
         node = NodeField(
             element.name,
             self.schema,
             field.resolver if field else None,
             element.get_location(),
-            self.field_path[:],
+            self._internal_ctx.field_path[:],
             type_cond,
             element.get_alias(),
         )
 
-        node.set_parent(self._current_node)
-        if self._current_node:
-            self._current_node.add_child(node)
+        node.set_parent(self._internal_ctx.node)
+        if self._internal_ctx.node:
+            self._internal_ctx.node.add_child(node)
 
-        self._current_node = node
+        self._internal_ctx.node = node
 
-        if self._depth == 1:
+        if self._internal_ctx.depth == 1:
             self.root_nodes.append(node)
 
     def _on_field_out(self, *_args, **_kwargs):
-        self._depth = self._depth - 1
-        self.field_path.pop()
-        self._current_node = self._current_node.parent
+        self._internal_ctx.move_out_field()
 
     def _on_variable_definition_in(
         self, element: _VisitorElement, *_args, **_kwargs
     ):
         node = NodeVariableDefinition(
-            self.path, element.get_location(), element.name
+            self._internal_ctx.path, element.get_location(), element.name
         )
-        node.set_parent(self._current_node)
-        self._current_node = node
+        node.set_parent(self._internal_ctx.node)
+        self._internal_ctx.node = node
 
     def _validate_type(self, varname, a_value, a_type):
         try:
@@ -227,8 +195,8 @@ class TartifletteVisitor(Visitor):
                     InvalidType(
                         "Given value for < %s > is not type < %s >"
                         % (varname, a_type),
-                        path=self.field_path[:],
-                        locations=[self._current_node.location],
+                        path=self._internal_ctx.field_path[:],
+                        locations=[self._internal_ctx.node.location],
                     )
                 )
         except TypeError:
@@ -238,26 +206,26 @@ class TartifletteVisitor(Visitor):
 
     def _validates_vars(self):
         # validate given var are okay
-        name = self._current_node.var_name
+        name = self._internal_ctx.node.var_name
         if name not in self._vars:
-            dfv = self._current_node.default_value
-            if not dfv and not self._current_node.is_nullable:
+            dfv = self._internal_ctx.node.default_value
+            if not dfv and not self._internal_ctx.node.is_nullable:
                 self._add_exception(UnknownVariableException(name))
                 return None
 
             self._vars[name] = dfv
             return None
 
-        a_type = self._current_node.var_type
+        a_type = self._internal_ctx.node.var_type
         a_value = self._vars[name]
 
-        if self._current_node.is_list:
+        if self._internal_ctx.node.is_list:
             if not isinstance(a_value, list):
                 self._add_exception(
                     InvalidType(
                         "Expecting List for < %s > values" % name,
-                        path=self.field_path[:],
-                        locations=[self._current_node.location],
+                        path=self._internal_ctx.field_path[:],
+                        locations=[self._internal_ctx.node.location],
                     )
                 )
                 return None
@@ -272,22 +240,22 @@ class TartifletteVisitor(Visitor):
     def _on_variable_definition_out(self, *_args, **_kwargs):
         self._validates_vars()
         # now the VariableDefinition Node is useless so kill it
-        self._current_node = self._current_node.parent
+        self._internal_ctx.node = self._internal_ctx.node.parent
 
     def _on_named_type_in(self, element: _VisitorElement, *_args, **_kwargs):
         try:
-            self._current_node.var_type = element.name
+            self._internal_ctx.node.var_type = element.name
         except AttributeError:
             pass
 
     def _on_list_type_in(self, *_args, **_kwargs):
         try:
-            self._current_node.is_list = True
+            self._internal_ctx.node.is_list = True
         except AttributeError:
             pass
 
     def _on_non_null_type_in(self, *_args, **_kwargs):
-        self._current_node.is_nullable = False
+        self._internal_ctx.node.is_nullable = False
 
     def _on_fragment_definition_in(
         self, element: _VisitorElement, *_args, **_kwargs
@@ -296,7 +264,7 @@ class TartifletteVisitor(Visitor):
             self._add_exception(
                 AlreadyDefined(
                     "Fragment < %s > already defined" % element.name,
-                    path=self.field_path[:],
+                    path=self._internal_ctx.field_path[:],
                     locations=[element.get_location()],
                 )
             )
@@ -313,21 +281,22 @@ class TartifletteVisitor(Visitor):
             return
 
         nfd = NodeFragmentDefinition(
-            self.path,
+            self._internal_ctx.path,
             element.get_location(),
             element.name,
             type_condition=type_condition,
         )
 
-        self._current_fragment_definition = nfd
+        self._internal_ctx.fragment_definition = nfd
         self._fragments[element.name] = nfd
 
     def _on_fragment_definition_out(self, *_args, **_kwargs):
-        self._current_fragment_definition = None
+        self._internal_ctx.fragment_definition = None
 
-    def _on_fragment_spread_out(
-        self, element: _VisitorElement, *_args, **_kwargs
-    ):
+    def _fragment_spread(self, ctx, element):
+        _ctx = self._internal_ctx
+        self._internal_ctx = ctx
+
         self._used_fragments.add(element.name)
         try:
             cfd = self._fragments[element.name]
@@ -340,15 +309,23 @@ class TartifletteVisitor(Visitor):
             )
             return
 
-        depth = self._depth + 1
-        self._current_type_condition = cfd.type_condition
+        depth = self._internal_ctx.depth
+        self._internal_ctx.type_condition = cfd.type_condition
 
         for saved_callback in cfd.callbacks:
             saved_callback(
                 type_cond_depth=depth
             )  # Simulate calling a the right place.
 
-        self._current_type_condition = None
+        self._internal_ctx.type_condition = None
+        self._internal_ctx = _ctx
+
+    def _on_fragment_spread_out(
+        self, element: _VisitorElement, *_args, **_kwargs
+    ):
+        self._to_call_later.append(
+            partial(self._fragment_spread, self._internal_ctx.clone(), element)
+        )
 
     def _on_operation_definition_in(
         self, element: _VisitorElementOperationDefinition, *_args, **_kwargs
@@ -356,11 +333,11 @@ class TartifletteVisitor(Visitor):
         try:
             operation_node = self._named_operations[element.name]
         except KeyError:
-            operation_node = NodeDefinition(
-                self.path,
-                element.libgraphql_type,
+            operation_node = NodeOperationDefinition(
+                self._internal_ctx.path,
                 element.get_location(),
                 element.name,
+                element.get_operation(),
             )
             if element.name is not None:
                 self._named_operations[element.name] = operation_node
@@ -378,25 +355,26 @@ class TartifletteVisitor(Visitor):
             )
             return
 
-        self._operation_type = element.get_operation()
-        self._current_operation = operation_node
+        self._internal_ctx.operation = operation_node
 
     def _on_operation_definition_out(self, *_args, **_kwargs):
-        self._operation_type = None
-        self._current_operation = None
+        self._internal_ctx.operation = None
 
     def _on_inline_fragment_in(self, element, *_args, **_kwargs):
         a_type = element.get_named_type()
-        self._inline_fragment_info = InlineFragmentInfo(
-            a_type, self._depth + 1
+        self._internal_ctx.inline_fragment_info = InlineFragmentInfo(
+            a_type, self._internal_ctx.depth
         )
-        self._current_type_condition = a_type
+        self._internal_ctx.type_condition = a_type
 
     def _on_inline_fragment_out(self, *_args, **_kwargs):
-        self._inline_fragment_info = None
-        self._current_type_condition = None
+        self._internal_ctx.inline_fragment_info = None
+        self._internal_ctx.type_condition = None
 
     def _on_document_out(self, *_args, **_kwargs):
+        for saved_callback in self._to_call_later:
+            saved_callback()
+
         unused_fragments = set(self._fragments) - self._used_fragments
         for unused_fragment in unused_fragments:
             self._add_exception(
@@ -421,21 +399,19 @@ class TartifletteVisitor(Visitor):
         self, element: _VisitorElementSelectionSet, *_args, **_kwargs
     ):
         if (
-            self._operation_type == "Subscription"
-            and self._depth == 0
+            self._internal_ctx.operation.type == "Subscription"
+            and self._internal_ctx.depth == 0
             and element.get_selections_size() > 1
         ):
             self._add_exception(
                 MultipleRootNodeOnSubscriptionOperation(
                     "Subscription operations must have exactly one root field.",
-                    locations=[self._current_operation.location],
+                    locations=[self._internal_ctx.operation.location],
                 )
             )
 
     def _in(self, element: _VisitorElement, *args, **kwargs):
-        self.path = self.path + "/%s" % TartifletteVisitor.create_node_name(
-            element.libgraphql_type, element.name
-        )
+        self._internal_ctx.move_in(element)
 
         try:
             self._events[self.IN][element.libgraphql_type](
@@ -445,7 +421,7 @@ class TartifletteVisitor(Visitor):
             pass
 
     def _out(self, element: _VisitorElement, *args, **kwargs):
-        self.path = "/".join(self.path.split("/")[:-1])
+        self._internal_ctx.move_out()
 
         try:
             self._events[self.OUT][element.libgraphql_type](
@@ -459,13 +435,13 @@ class TartifletteVisitor(Visitor):
         self.event = event
 
         if (
-            not self._current_fragment_definition
+            not self._internal_ctx.fragment_definition
             or element.libgraphql_type == "FragmentDefinition"
         ):
             # Always execute FragmentDefinitions Handlers,
             # never exec if in fragment.
             self._events[self.event]["default"](element)
         else:
-            self._current_fragment_definition.callbacks.append(
+            self._internal_ctx.fragment_definition.callbacks.append(
                 partial(self._events[self.event]["default"], element)
             )

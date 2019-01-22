@@ -1,6 +1,7 @@
 from typing import Dict, Optional
 
 from tartiflette.resolver import ResolverExecutorFactory
+from tartiflette.types.helpers import get_directive_implem_list
 from tartiflette.types.type import GraphQLType
 
 
@@ -28,12 +29,15 @@ class GraphQLField:
         self._directives = directives
         self._schema = schema
         self.description = description if description else ""
-        self._is_deprecated = False
 
         self.resolver = ResolverExecutorFactory.get_resolver_executor(
             resolver, self
         )
         self.parent_type = None
+
+        # Introspection Attribute
+        self.isDeprecated = False  # pylint: disable=invalid-name
+        self._directives_implementations = None
 
     def __repr__(self):
         return (
@@ -51,35 +55,7 @@ class GraphQLField:
 
     @property
     def directives(self):
-        # TODO to simplify this we need to rework the
-        # GraphQLField->Directive->ArgumentsDef->ArgumentInstance interface
-        # Can be do "once" at schema bake time
-        try:
-            directives = {
-                name: {
-                    "callables": self._schema.find_directive(
-                        name
-                    ).implementation,
-                    "args": {
-                        arg_name: self._schema.find_directive(name)
-                        .arguments[arg_name]
-                        .default_value
-                        for arg_name in self._schema.find_directive(
-                            name
-                        ).arguments
-                    },
-                }
-                for name in self._directives
-            }
-
-            for name, directive in directives.items():
-                if self._directives[name] is not None:
-                    directive["args"].update(self._directives[name])
-
-            return [v for _, v in directives.items()]
-
-        except (AttributeError, KeyError, TypeError):
-            return []
+        return self._directives_implementations
 
     def __str__(self):
         return self.name
@@ -112,15 +88,6 @@ class GraphQLField:
 
     # Introspection Attribute
     @property
-    def isDeprecated(self):  # pylint: disable=invalid-name
-        return self._is_deprecated
-
-    @isDeprecated.setter
-    def isDeprecated(self, value):  # pylint: disable=invalid-name
-        self._is_deprecated = value
-
-    # Introspection Attribute
-    @property
     def args(self):
         return [x for _, x in self.arguments.items()]
 
@@ -130,8 +97,14 @@ class GraphQLField:
 
     def bake(self, schema, parent_type, custom_default_resolver):
         self._schema = schema
+        self._directives_implementations = get_directive_implem_list(
+            self._directives, self._schema
+        )
         self.resolver.bake(custom_default_resolver)
         self.parent_type = parent_type
+
+        for arg in self.arguments.values():
+            arg.bake(self._schema)
 
     def get_arguments_default_values(self):
         # return a new instance each call cause we don't want caller to modify ours.

@@ -2,8 +2,8 @@ from typing import Dict, List, Optional, Union
 
 from tartiflette.introspection import (
     SCHEMA_ROOT_FIELD_DEFINITION,
-    TYPE_ROOT_FIELD_DEFINITION,
     TYPENAME_ROOT_FIELD_DEFINITION,
+    prepare_type_root_field,
 )
 from tartiflette.types.directive import GraphQLDirective
 from tartiflette.types.enum import GraphQLEnumType
@@ -125,17 +125,32 @@ class GraphQLSchema:
     #  Introspection Attribute
     @property
     def queryType(self):  # pylint: disable=invalid-name
-        return self._gql_types[self.query_type]
+        try:
+            return self._gql_types[self.query_type]
+        except KeyError:
+            pass
+
+        return None
 
     #  Introspection Attribute
     @property
     def subscriptionType(self):  # pylint: disable=invalid-name
-        return self._gql_types[self.subscription_type]
+        try:
+            return self._gql_types[self.subscription_type]
+        except KeyError:
+            pass
+
+        return None
 
     #  Introspection Attribute
     @property
     def mutationType(self):  # pylint: disable=invalid-name
-        return self._gql_types[self.mutation_type]
+        try:
+            return self._gql_types[self.mutation_type]
+        except KeyError:
+            pass
+
+        return None
 
     #  Introspection Attribute
     @property
@@ -306,48 +321,47 @@ class GraphQLSchema:
     def _validate_object_follow_interfaces(self):
         for gql_type in self.types:
             try:
-                for iface_name in gql_type.interfaces:
+                ifaces = gql_type.interfaces_names
+            except AttributeError:
+                continue
+
+            for iface in ifaces:
+                try:
+                    iface_type = self._gql_types[iface]
+                except KeyError:
+                    raise GraphQLSchemaError(
+                        "GraphQL type `{}` implements the `{}` interface "
+                        "which does not exist!".format(gql_type.name, iface)
+                    )
+                if not isinstance(iface_type, GraphQLInterfaceType):
+                    raise GraphQLSchemaError(
+                        "GraphQL type `{}` implements the `{}` interface "
+                        "which is not an interface!".format(
+                            gql_type.name, iface
+                        )
+                    )
+                for iface_field in iface_type.fields:
                     try:
-                        iface_type = self._gql_types[iface_name]
+                        gql_type_field = gql_type.find_field(iface_field.name)
                     except KeyError:
                         raise GraphQLSchemaError(
-                            "GraphQL type `{}` implements the `{}` interface "
-                            "which does not exist!".format(
-                                gql_type.name, iface_name
+                            "field `{}` is missing in GraphQL type `{}` "
+                            "that implements the `{}` interface.".format(
+                                iface_field.name, gql_type.name, iface
                             )
                         )
-                    if not isinstance(iface_type, GraphQLInterfaceType):
+                    if gql_type_field.gql_type != iface_field.gql_type:
                         raise GraphQLSchemaError(
-                            "GraphQL type `{}` implements the `{}` interface "
-                            "which is not an interface!".format(
-                                gql_type.name, iface_name
+                            "field `{}` in GraphQL type `{}` that "
+                            "implements the `{}` interface does not follow "
+                            "the interface field type `{}`.".format(
+                                iface_field.name,
+                                gql_type.name,
+                                iface,
+                                iface_field.gql_type,
                             )
                         )
-                    for iface_field in iface_type.fields:
-                        try:
-                            gql_type_field = gql_type.find_field(
-                                iface_field.name
-                            )
-                        except KeyError:
-                            raise GraphQLSchemaError(
-                                "field `{}` is missing in GraphQL type `{}` "
-                                "that implements the `{}` interface.".format(
-                                    iface_field.name, gql_type.name, iface_name
-                                )
-                            )
-                        if gql_type_field.gql_type != iface_field.gql_type:
-                            raise GraphQLSchemaError(
-                                "field `{}` in GraphQL type `{}` that "
-                                "implements the `{}` interface does not follow "
-                                "the interface field type `{}`.".format(
-                                    iface_field.name,
-                                    gql_type.name,
-                                    iface_name,
-                                    iface_field.gql_type,
-                                )
-                            )
-            except (AttributeError, TypeError):
-                pass
+
         return True
 
     def _validate_schema_root_types_exist(self):
@@ -455,7 +469,7 @@ class GraphQLSchema:
             )
         )
         self._gql_types[self.query_type].add_field(
-            TYPE_ROOT_FIELD_DEFINITION(schema=self, gql_type="__Type")
+            prepare_type_root_field(self)
         )
 
         for _, gql_type in self._gql_types.items():
@@ -471,6 +485,9 @@ class GraphQLSchema:
     def bake_types(self, custom_default_resolver=None):
         for typee in self.types:
             typee.bake(self, custom_default_resolver)
+
+        for directive in self._directives.values():
+            directive.bake(self)
 
     def call_onbuild_directives(self):
         for name, directive in self._directives.items():

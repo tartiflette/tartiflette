@@ -42,12 +42,14 @@ class GraphQLDirective:
         arguments: Optional[Dict] = None,
         description: Optional[str] = None,
         implementation: Optional[Callable] = None,
+        schema=None,
     ):
         self.name = name
         self.where = on
         self.arguments = arguments if arguments else {}
         self.description = description
         self.implementation = implementation or None
+        self.schema = schema
 
     def __repr__(self):
         return "{}(name={!r}, on={!r}, arguments={!r}, description={!r})".format(
@@ -78,3 +80,7 @@ class GraphQLDirective:
     @property
     def locations(self):
         return self.where
+
+    def bake(self, schema):
+        for arg in self.arguments.values():
+            arg.bake(schema)

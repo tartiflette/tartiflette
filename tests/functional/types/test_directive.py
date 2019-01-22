@@ -106,18 +106,20 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
     """
     )
 
+    print(result)
+
     assert {
         "data": {
             "__type": {
                 "fields": [
                     {
-                        "name": "fieldNormal",
-                        "isDeprecated": False,
                         "deprecationReason": None,
+                        "isDeprecated": False,
+                        "name": "fieldNormal",
                     },
                     {
+                        "deprecationReason": "Deprecated",
                         "isDeprecated": True,
-                        "deprecationReason": "No longer supported",
                         "name": "fieldDeprecatedDefault",
                     },
                     {
@@ -126,18 +128,18 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
                         "deprecationReason": "Unused anymore",
                     },
                     {
-                        "deprecationReason": None,
-                        "name": "__schema",
                         "isDeprecated": False,
+                        "name": "__schema",
+                        "deprecationReason": None,
                     },
                     {
-                        "deprecationReason": None,
                         "name": "__type",
                         "isDeprecated": False,
+                        "deprecationReason": None,
                     },
                     {
-                        "deprecationReason": None,
                         "name": "__typename",
+                        "deprecationReason": None,
                         "isDeprecated": False,
                     },
                 ]
@@ -265,19 +267,19 @@ async def test_tartiflette_non_introspectable_execution_directive(
                         "deprecationReason": None,
                     },
                     {
-                        "deprecationReason": None,
                         "name": "__schema",
+                        "deprecationReason": None,
                         "isDeprecated": False,
                     },
                     {
-                        "deprecationReason": None,
                         "name": "__type",
+                        "deprecationReason": None,
                         "isDeprecated": False,
                     },
                     {
-                        "deprecationReason": None,
                         "name": "__typename",
                         "isDeprecated": False,
+                        "deprecationReason": None,
                     },
                 ]
             }

@@ -502,25 +502,25 @@ _LIBGRAPHQL_TYPE_TO_CLASS = {
 }
 
 
+_FFI = FFI()
+_FFI.cdef(CDEFS_LIBGRAPHQL)
+
+# TODO use importlib.resource in Python3.7
+_LIB_DIR = os.path.dirname(__file__)
+try:
+    _LIB = _FFI.dlopen("%s/libgraphqlparser.so" % _LIB_DIR)
+except OSError:
+    _LIB = _FFI.dlopen("%s/libgraphqlparser.dylib" % _LIB_DIR)
+
+
 class LibGraphqlParser:
     def __init__(self):
-        self._ffi = FFI()
-        self._ffi.cdef(CDEFS_LIBGRAPHQL)
-
-        # TODO use importlib.resource in Python3.7
-        self._lib_dir = os.path.dirname(__file__)
-        try:
-            self._lib = self._ffi.dlopen(
-                "%s/libgraphqlparser.so" % self._lib_dir
-            )
-        except OSError:
-            self._lib = self._ffi.dlopen(
-                "%s/libgraphqlparser.dylib" % self._lib_dir
-            )
+        self._ffi = _FFI
+        self._lib = _LIB
+        self._lib_dir = _LIB_DIR
         self._lib_callbacks = self._ffi.new(
             "struct GraphQLAstVisitorCallbacks *"
         )
-
         self._callbacks = []
         self._interested_by = {}
         self._default_visitor_cls = Visitor

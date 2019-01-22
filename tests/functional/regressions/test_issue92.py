@@ -1,410 +1,58 @@
 import pytest
 
-from tartiflette import Resolver
 from tartiflette.engine import Engine
 
-
-@pytest.mark.asyncio
-async def test_tartiflette_execute_basic_type_introspection_output(
-    clean_registry
-):
-    schema_sdl = """
-    \"\"\"This is the description\"\"\"
-    type Test {
-        field1: String
-        field2(arg1: Int = 42): Int
-        field3: [EnumStatus!]
+_TTFTT_ENGINE = Engine(
+    """
+    interface Sentient {
+      name: String!
     }
 
-    enum EnumStatus {
-        Active
-        Inactive
+    interface Pet {
+      name: String!
+    }
+
+    type Human implements Sentient {
+      name: String!
+    }
+
+    type Dog implements Pet {
+      name: String!
+      owner: Human
+    }
+
+    type MutateDogPayload {
+      id: String
     }
 
     type Query {
-        objectTest: Test
-    }
-    """
-
-    ttftt = Engine(schema_sdl)
-
-    result = await ttftt.execute(
-        """
-    query Test{
-        __type(name: "Test") {
-            name
-            kind
-            description
-            fields {
-                name
-                args {
-                    name
-                    description
-                    type {
-                        kind
-                        name
-                        ofType {
-                            kind
-                            name
-                            ofType {
-                                kind
-                                name
-                                ofType {
-                                    kind
-                                    name
-                                    ofType {
-                                        kind
-                                        name
-                                        ofType {
-                                            kind
-                                            name
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    defaultValue
-                }
-                type {
-                    kind
-                    name
-                    ofType {
-                        kind
-                        name
-                        ofType {
-                            kind
-                            name
-                            ofType {
-                                kind
-                                name
-                                ofType {
-                                    kind
-                                    name
-                                    ofType {
-                                        kind
-                                        name
-                                        ofType {
-                                            kind
-                                            name
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    """
-    )
-
-    assert {
-        "data": {
-            "__type": {
-                "name": "Test",
-                "kind": "OBJECT",
-                "description": "This is the description",
-                "fields": [
-                    {
-                        "name": "field1",
-                        "args": [],
-                        "type": {
-                            "kind": "SCALAR",
-                            "name": "String",
-                            "ofType": None,
-                        },
-                    },
-                    {
-                        "name": "field2",
-                        "args": [
-                            {
-                                "name": "arg1",
-                                "description": None,
-                                "type": {
-                                    "kind": "SCALAR",
-                                    "name": "Int",
-                                    "ofType": None,
-                                },
-                                "defaultValue": "42",
-                            }
-                        ],
-                        "type": {
-                            "kind": "SCALAR",
-                            "name": "Int",
-                            "ofType": None,
-                        },
-                    },
-                    {
-                        "name": "field3",
-                        "args": [],
-                        "type": {
-                            "kind": "LIST",
-                            "name": None,
-                            "ofType": {
-                                "kind": "NON_NULL",
-                                "name": None,
-                                "ofType": {
-                                    "kind": "ENUM",
-                                    "name": "EnumStatus",
-                                    "ofType": None,
-                                },
-                            },
-                        },
-                    },
-                    {
-                        "name": "__typename",
-                        "args": [],
-                        "type": {
-                            "kind": "NON_NULL",
-                            "name": None,
-                            "ofType": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": None,
-                            },
-                        },
-                    },
-                ],
-            }
-        }
-    } == result
-
-
-@pytest.mark.asyncio
-async def test_tartiflette_execute_schema_introspection_output(clean_registry):
-    schema_sdl = """
-    schema {
-        query: CustomRootQuery
-        mutation: CustomRootMutation
-        subscription: CustomRootSubscription
+      dog: Dog
+      sentient: Mixed
     }
 
-    type CustomRootQuery {
-        test: String
+    type Mutation {
+      mutateDog: MutateDogPayload
     }
 
-    type CustomRootMutation {
-        test: Int
+    enum Test {
+        Value1
+        Value2 @deprecated(reason: "Unused anymore")
+        Value3
     }
 
-    type CustomRootSubscription {
-        test: String
-    }
-    """
+    union Mixed = Dog | Human
 
-    ttftt = Engine(schema_sdl)
-
-    result = await ttftt.execute(
-        """
-    query Test{
-        __schema {
-            queryType { name }
-            mutationType { name }
-            subscriptionType { name }
-            types {
-                kind
-                name
-            }
-            directives {
-                name
-                description
-                locations
-                args {
-                    name
-                    description
-                    type {
-                        kind
-                        name
-                    }
-                    defaultValue
-                }
-            }
-        }
-    }
-    """
-    )
-
-    assert {
-        "data": {
-            "__schema": {
-                "subscriptionType": {"name": "CustomRootSubscription"},
-                "types": [
-                    {"kind": "OBJECT", "name": "CustomRootQuery"},
-                    {"name": "CustomRootMutation", "kind": "OBJECT"},
-                    {"kind": "OBJECT", "name": "CustomRootSubscription"},
-                    {"kind": "SCALAR", "name": "Boolean"},
-                    {"kind": "SCALAR", "name": "Date"},
-                    {"name": "DateTime", "kind": "SCALAR"},
-                    {"kind": "SCALAR", "name": "Float"},
-                    {"name": "ID", "kind": "SCALAR"},
-                    {"kind": "SCALAR", "name": "Int"},
-                    {"kind": "SCALAR", "name": "String"},
-                    {"kind": "SCALAR", "name": "Time"},
-                    {"kind": "OBJECT", "name": "__Schema"},
-                    {"kind": "OBJECT", "name": "__Type"},
-                    {"kind": "OBJECT", "name": "__Field"},
-                    {"name": "__InputValue", "kind": "OBJECT"},
-                    {"name": "__EnumValue", "kind": "OBJECT"},
-                    {"name": "__TypeKind", "kind": "ENUM"},
-                    {"name": "__Directive", "kind": "OBJECT"},
-                    {"kind": "ENUM", "name": "__DirectiveLocation"},
-                ],
-                "queryType": {"name": "CustomRootQuery"},
-                "mutationType": {"name": "CustomRootMutation"},
-                "directives": [
-                    {
-                        "args": [
-                            {
-                                "defaultValue": "Deprecated",
-                                "name": "reason",
-                                "type": {"name": "String", "kind": "SCALAR"},
-                                "description": None,
-                            }
-                        ],
-                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
-                        "description": None,
-                        "name": "deprecated",
-                    },
-                    {
-                        "locations": ["FIELD_DEFINITION"],
-                        "args": [],
-                        "description": None,
-                        "name": "non_introspectable",
-                    },
-                ],
-            }
-        }
-    } == result
-
-
-@pytest.mark.asyncio
-async def test_tartiflette_execute_schema_introspection_output_exclude_scalars(
-    clean_registry
-):
-    schema_sdl = """
-    schema {
-        query: CustomRootQuery
-        mutation: CustomRootMutation
-        subscription: CustomRootSubscription
+    input EatSomething {
+        quantity: String
     }
 
-    type CustomRootQuery {
-        test: String
-    }
-
-    type CustomRootMutation {
-        test: Int
-    }
-
-    type CustomRootSubscription {
-        test: String
-    }
-    """
-
-    ttftt = Engine(schema_sdl, exclude_builtins_scalars=["Date", "DateTime"])
-    result = await ttftt.execute(
-        """
-    query Test{
-        __schema {
-            queryType { name }
-            mutationType { name }
-            subscriptionType { name }
-            types {
-                kind
-                name
-            }
-            directives {
-                name
-                description
-                locations
-                args {
-                    name
-                    description
-                    type {
-                        kind
-                        name
-                    }
-                    defaultValue
-                }
-            }
-        }
-    }
-    """
-    )
-
-    assert {
-        "data": {
-            "__schema": {
-                "subscriptionType": {"name": "CustomRootSubscription"},
-                "mutationType": {"name": "CustomRootMutation"},
-                "types": [
-                    {"name": "CustomRootQuery", "kind": "OBJECT"},
-                    {"name": "CustomRootMutation", "kind": "OBJECT"},
-                    {"name": "CustomRootSubscription", "kind": "OBJECT"},
-                    {"name": "Boolean", "kind": "SCALAR"},
-                    {"name": "Float", "kind": "SCALAR"},
-                    {"name": "ID", "kind": "SCALAR"},
-                    {"name": "Int", "kind": "SCALAR"},
-                    {"name": "String", "kind": "SCALAR"},
-                    {"name": "Time", "kind": "SCALAR"},
-                    {"name": "__Schema", "kind": "OBJECT"},
-                    {"name": "__Type", "kind": "OBJECT"},
-                    {"name": "__Field", "kind": "OBJECT"},
-                    {"kind": "OBJECT", "name": "__InputValue"},
-                    {"kind": "OBJECT", "name": "__EnumValue"},
-                    {"kind": "ENUM", "name": "__TypeKind"},
-                    {"name": "__Directive", "kind": "OBJECT"},
-                    {"name": "__DirectiveLocation", "kind": "ENUM"},
-                ],
-                "directives": [
-                    {
-                        "name": "deprecated",
-                        "args": [
-                            {
-                                "description": None,
-                                "name": "reason",
-                                "defaultValue": "Deprecated",
-                                "type": {"kind": "SCALAR", "name": "String"},
-                            }
-                        ],
-                        "description": None,
-                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
-                    },
-                    {
-                        "locations": ["FIELD_DEFINITION"],
-                        "description": None,
-                        "args": [],
-                        "name": "non_introspectable",
-                    },
-                ],
-                "queryType": {"name": "CustomRootQuery"},
-            }
-        }
-    } == result
+    """,
+    schema_name="test_issue92",
+)
 
 
-@pytest.mark.asyncio
-async def test_tartiflette_execute_schema_introspection_output_introspecting_args(
-    clean_registry
-):
-    schema_sdl = """
-    type lol {
-        GGG: String
-        GG(a: String!): String
-        G(a: [String!]!): String!
-    }
-
-    type Query {
-        a: lol
-    }
-    """
-
-    ttftt = Engine(schema_sdl, exclude_builtins_scalars=["Date", "DateTime"])
-    result = await ttftt.execute(
-        """
-    query IntrospectionQuery {
+_INTROSPECTION_QUERY = """
+query IntrospectionQuery {
   __schema {
     queryType {
       name
@@ -498,13 +146,17 @@ fragment TypeRef on __Type {
     }
   }
 }
-    """
-    )
+"""
 
-    assert {
+
+@pytest.mark.asyncio
+async def test_issue92_fragment_inordered():
+    results = await _TTFTT_ENGINE.execute(_INTROSPECTION_QUERY)
+    assert results == {
         "data": {
             "__schema": {
-                "queryType": {"name": "Query"},
+                "subscriptionType": None,
+                "mutationType": {"name": "Mutation"},
                 "directives": [
                     {
                         "args": [
@@ -512,251 +164,478 @@ fragment TypeRef on __Type {
                                 "defaultValue": "Deprecated",
                                 "type": {
                                     "name": "String",
-                                    "ofType": None,
                                     "kind": "SCALAR",
+                                    "ofType": None,
                                 },
                                 "name": "reason",
                             }
                         ],
-                        "name": "deprecated",
                         "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
+                        "name": "deprecated",
                     },
                     {
-                        "name": "non_introspectable",
                         "locations": ["FIELD_DEFINITION"],
+                        "name": "non_introspectable",
                         "args": [],
                     },
                 ],
+                "queryType": {"name": "Query"},
                 "types": [
                     {
-                        "kind": "OBJECT",
-                        "name": "lol",
+                        "possibleTypes": [
+                            {"name": "Human", "kind": "OBJECT", "ofType": None}
+                        ],
                         "enumValues": None,
-                        "possibleTypes": None,
-                        "interfaces": [],
+                        "inputFields": None,
+                        "interfaces": None,
+                        "name": "Sentient",
+                        "fields": [
+                            {
+                                "type": {
+                                    "name": None,
+                                    "kind": "NON_NULL",
+                                    "ofType": {
+                                        "name": "String",
+                                        "kind": "SCALAR",
+                                        "ofType": None,
+                                    },
+                                },
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                                "name": "name",
+                                "args": [],
+                            }
+                        ],
+                        "kind": "INTERFACE",
+                    },
+                    {
+                        "possibleTypes": [
+                            {"name": "Dog", "kind": "OBJECT", "ofType": None}
+                        ],
+                        "enumValues": None,
+                        "fields": [
+                            {
+                                "type": {
+                                    "kind": "NON_NULL",
+                                    "ofType": {
+                                        "kind": "SCALAR",
+                                        "ofType": None,
+                                        "name": "String",
+                                    },
+                                    "name": None,
+                                },
+                                "name": "name",
+                                "args": [],
+                                "deprecationReason": None,
+                                "isDeprecated": False,
+                            }
+                        ],
+                        "name": "Pet",
+                        "kind": "INTERFACE",
+                        "interfaces": None,
+                        "inputFields": None,
+                    },
+                    {
+                        "interfaces": [
+                            {
+                                "ofType": None,
+                                "kind": "INTERFACE",
+                                "name": "Sentient",
+                            }
+                        ],
+                        "name": "Human",
                         "fields": [
                             {
                                 "isDeprecated": False,
                                 "deprecationReason": None,
-                                "name": "GGG",
+                                "name": "name",
                                 "args": [],
                                 "type": {
-                                    "name": "String",
-                                    "kind": "SCALAR",
-                                    "ofType": None,
-                                },
-                            },
-                            {
-                                "deprecationReason": None,
-                                "name": "GG",
-                                "args": [
-                                    {
-                                        "name": "a",
-                                        "defaultValue": None,
-                                        "type": {
-                                            "kind": "NON_NULL",
-                                            "ofType": {
-                                                "kind": "SCALAR",
-                                                "ofType": None,
-                                                "name": "String",
-                                            },
-                                            "name": None,
-                                        },
-                                    }
-                                ],
-                                "type": {
-                                    "ofType": None,
-                                    "name": "String",
-                                    "kind": "SCALAR",
-                                },
-                                "isDeprecated": False,
-                            },
-                            {
-                                "name": "G",
-                                "args": [
-                                    {
-                                        "defaultValue": None,
-                                        "type": {
-                                            "name": None,
-                                            "kind": "NON_NULL",
-                                            "ofType": {
-                                                "name": None,
-                                                "ofType": {
-                                                    "kind": "NON_NULL",
-                                                    "ofType": {
-                                                        "kind": "SCALAR",
-                                                        "name": "String",
-                                                        "ofType": None,
-                                                    },
-                                                    "name": None,
-                                                },
-                                                "kind": "LIST",
-                                            },
-                                        },
-                                        "name": "a",
-                                    }
-                                ],
-                                "type": {
-                                    "name": None,
-                                    "kind": "NON_NULL",
                                     "ofType": {
                                         "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
                                     },
+                                    "name": None,
+                                    "kind": "NON_NULL",
                                 },
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                             {
+                                "deprecationReason": None,
                                 "name": "__typename",
                                 "args": [],
                                 "type": {
                                     "name": None,
                                     "kind": "NON_NULL",
                                     "ofType": {
+                                        "name": "String",
+                                        "kind": "SCALAR",
+                                        "ofType": None,
+                                    },
+                                },
+                                "isDeprecated": False,
+                            },
+                        ],
+                        "kind": "OBJECT",
+                        "possibleTypes": None,
+                        "inputFields": None,
+                        "enumValues": None,
+                    },
+                    {
+                        "fields": [
+                            {
+                                "args": [],
+                                "name": "name",
+                                "isDeprecated": False,
+                                "type": {
+                                    "ofType": {
+                                        "ofType": None,
+                                        "kind": "SCALAR",
+                                        "name": "String",
+                                    },
+                                    "name": None,
+                                    "kind": "NON_NULL",
+                                },
+                                "deprecationReason": None,
+                            },
+                            {
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                                "args": [],
+                                "type": {
+                                    "name": "Human",
+                                    "ofType": None,
+                                    "kind": "OBJECT",
+                                },
+                                "name": "owner",
+                            },
+                            {
+                                "type": {
+                                    "kind": "NON_NULL",
+                                    "ofType": {
                                         "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
                                     },
+                                    "name": None,
+                                },
+                                "name": "__typename",
+                                "isDeprecated": False,
+                                "args": [],
+                                "deprecationReason": None,
+                            },
+                        ],
+                        "kind": "OBJECT",
+                        "interfaces": [
+                            {
+                                "kind": "INTERFACE",
+                                "ofType": None,
+                                "name": "Pet",
+                            }
+                        ],
+                        "possibleTypes": None,
+                        "inputFields": None,
+                        "name": "Dog",
+                        "enumValues": None,
+                    },
+                    {
+                        "fields": [
+                            {
+                                "args": [],
+                                "deprecationReason": None,
+                                "name": "id",
+                                "type": {
+                                    "kind": "SCALAR",
+                                    "ofType": None,
+                                    "name": "String",
+                                },
+                                "isDeprecated": False,
+                            },
+                            {
+                                "deprecationReason": None,
+                                "isDeprecated": False,
+                                "args": [],
+                                "type": {
+                                    "ofType": {
+                                        "ofType": None,
+                                        "name": "String",
+                                        "kind": "SCALAR",
+                                    },
+                                    "name": None,
+                                    "kind": "NON_NULL",
+                                },
+                                "name": "__typename",
+                            },
+                        ],
+                        "inputFields": None,
+                        "enumValues": None,
+                        "interfaces": [],
+                        "kind": "OBJECT",
+                        "name": "MutateDogPayload",
+                        "possibleTypes": None,
+                    },
+                    {
+                        "name": "Query",
+                        "kind": "OBJECT",
+                        "fields": [
+                            {
+                                "name": "dog",
+                                "args": [],
+                                "type": {
+                                    "name": "Dog",
+                                    "kind": "OBJECT",
+                                    "ofType": None,
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
-                        ],
-                        "inputFields": None,
-                    },
-                    {
-                        "kind": "OBJECT",
-                        "fields": [
                             {
+                                "name": "sentient",
                                 "type": {
-                                    "kind": "OBJECT",
+                                    "kind": "UNION",
                                     "ofType": None,
-                                    "name": "lol",
+                                    "name": "Mixed",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                                 "args": [],
-                                "name": "a",
                             },
                             {
+                                "args": [],
                                 "type": {
-                                    "name": None,
                                     "kind": "NON_NULL",
                                     "ofType": {
                                         "ofType": None,
                                         "name": "__Schema",
                                         "kind": "OBJECT",
                                     },
+                                    "name": None,
                                 },
                                 "isDeprecated": False,
-                                "deprecationReason": None,
                                 "name": "__schema",
-                                "args": [],
+                                "deprecationReason": None,
                             },
                             {
+                                "name": "__type",
                                 "isDeprecated": False,
                                 "deprecationReason": None,
-                                "name": "__type",
                                 "args": [
                                     {
                                         "defaultValue": None,
                                         "type": {
-                                            "name": None,
-                                            "kind": "NON_NULL",
                                             "ofType": {
-                                                "ofType": None,
                                                 "name": "String",
+                                                "ofType": None,
                                                 "kind": "SCALAR",
                                             },
+                                            "name": None,
+                                            "kind": "NON_NULL",
                                         },
                                         "name": "name",
                                     }
                                 ],
                                 "type": {
-                                    "name": "__Type",
                                     "kind": "OBJECT",
                                     "ofType": None,
+                                    "name": "__Type",
                                 },
                             },
                             {
-                                "deprecationReason": None,
-                                "isDeprecated": False,
-                                "name": "__typename",
                                 "type": {
                                     "name": None,
+                                    "kind": "NON_NULL",
+                                    "ofType": {
+                                        "name": "String",
+                                        "kind": "SCALAR",
+                                        "ofType": None,
+                                    },
+                                },
+                                "name": "__typename",
+                                "deprecationReason": None,
+                                "isDeprecated": False,
+                                "args": [],
+                            },
+                        ],
+                        "enumValues": None,
+                        "possibleTypes": None,
+                        "interfaces": [],
+                        "inputFields": None,
+                    },
+                    {
+                        "kind": "OBJECT",
+                        "fields": [
+                            {
+                                "type": {
+                                    "ofType": None,
+                                    "name": "MutateDogPayload",
+                                    "kind": "OBJECT",
+                                },
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                                "name": "mutateDog",
+                                "args": [],
+                            },
+                            {
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                                "name": "__typename",
+                                "args": [],
+                                "type": {
                                     "kind": "NON_NULL",
                                     "ofType": {
                                         "kind": "SCALAR",
                                         "ofType": None,
                                         "name": "String",
                                     },
+                                    "name": None,
                                 },
-                                "args": [],
                             },
                         ],
-                        "name": "Query",
-                        "possibleTypes": None,
                         "enumValues": None,
+                        "possibleTypes": None,
+                        "name": "Mutation",
+                        "inputFields": None,
                         "interfaces": [],
+                    },
+                    {
+                        "interfaces": None,
+                        "fields": None,
+                        "possibleTypes": None,
+                        "kind": "ENUM",
+                        "name": "Test",
+                        "enumValues": [
+                            {
+                                "deprecationReason": None,
+                                "name": "Value1",
+                                "isDeprecated": False,
+                            },
+                            {
+                                "name": "Value2",
+                                "isDeprecated": True,
+                                "deprecationReason": "Unused anymore",
+                            },
+                            {
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                                "name": "Value3",
+                            },
+                        ],
                         "inputFields": None,
                     },
                     {
-                        "kind": "SCALAR",
+                        "possibleTypes": [
+                            {"kind": "OBJECT", "name": "Dog", "ofType": None},
+                            {
+                                "ofType": None,
+                                "kind": "OBJECT",
+                                "name": "Human",
+                            },
+                        ],
+                        "enumValues": None,
                         "interfaces": None,
-                        "fields": None,
                         "inputFields": None,
+                        "fields": None,
+                        "kind": "UNION",
+                        "name": "Mixed",
+                    },
+                    {
+                        "name": "EatSomething",
+                        "kind": "INPUT_OBJECT",
                         "possibleTypes": None,
                         "enumValues": None,
+                        "fields": None,
+                        "interfaces": None,
+                        "inputFields": [
+                            {
+                                "type": {
+                                    "ofType": None,
+                                    "name": "String",
+                                    "kind": "SCALAR",
+                                },
+                                "name": "quantity",
+                                "defaultValue": None,
+                            }
+                        ],
+                    },
+                    {
+                        "fields": None,
+                        "possibleTypes": None,
                         "name": "Boolean",
+                        "enumValues": None,
+                        "interfaces": None,
+                        "kind": "SCALAR",
+                        "inputFields": None,
                     },
                     {
+                        "possibleTypes": None,
+                        "name": "Date",
+                        "enumValues": None,
+                        "interfaces": None,
+                        "inputFields": None,
+                        "fields": None,
+                        "kind": "SCALAR",
+                    },
+                    {
+                        "enumValues": None,
+                        "interfaces": None,
+                        "possibleTypes": None,
+                        "kind": "SCALAR",
+                        "fields": None,
+                        "inputFields": None,
+                        "name": "DateTime",
+                    },
+                    {
+                        "enumValues": None,
+                        "possibleTypes": None,
+                        "interfaces": None,
                         "name": "Float",
-                        "possibleTypes": None,
-                        "inputFields": None,
                         "kind": "SCALAR",
-                        "enumValues": None,
-                        "interfaces": None,
+                        "inputFields": None,
                         "fields": None,
                     },
                     {
-                        "enumValues": None,
+                        "inputFields": None,
+                        "fields": None,
+                        "interfaces": None,
                         "name": "ID",
-                        "inputFields": None,
-                        "interfaces": None,
                         "possibleTypes": None,
-                        "fields": None,
-                        "kind": "SCALAR",
-                    },
-                    {
-                        "inputFields": None,
-                        "kind": "SCALAR",
-                        "possibleTypes": None,
-                        "name": "Int",
-                        "interfaces": None,
                         "enumValues": None,
-                        "fields": None,
+                        "kind": "SCALAR",
                     },
                     {
+                        "inputFields": None,
+                        "interfaces": None,
+                        "fields": None,
+                        "kind": "SCALAR",
+                        "possibleTypes": None,
+                        "enumValues": None,
+                        "name": "Int",
+                    },
+                    {
+                        "kind": "SCALAR",
+                        "fields": None,
+                        "inputFields": None,
+                        "enumValues": None,
                         "name": "String",
                         "possibleTypes": None,
-                        "fields": None,
                         "interfaces": None,
-                        "kind": "SCALAR",
-                        "enumValues": None,
-                        "inputFields": None,
                     },
                     {
-                        "inputFields": None,
-                        "name": "Time",
                         "kind": "SCALAR",
                         "enumValues": None,
                         "interfaces": None,
-                        "fields": None,
                         "possibleTypes": None,
+                        "name": "Time",
+                        "fields": None,
+                        "inputFields": None,
                     },
                     {
+                        "possibleTypes": None,
+                        "kind": "OBJECT",
+                        "name": "__Schema",
+                        "inputFields": None,
+                        "enumValues": None,
+                        "interfaces": [],
                         "fields": [
                             {
                                 "name": "types",
@@ -785,13 +664,13 @@ fragment TypeRef on __Type {
                                 "name": "queryType",
                                 "args": [],
                                 "type": {
-                                    "kind": "NON_NULL",
                                     "ofType": {
                                         "name": "__Type",
                                         "kind": "OBJECT",
                                         "ofType": None,
                                     },
                                     "name": None,
+                                    "kind": "NON_NULL",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
@@ -800,9 +679,9 @@ fragment TypeRef on __Type {
                                 "name": "mutationType",
                                 "args": [],
                                 "type": {
+                                    "kind": "OBJECT",
                                     "ofType": None,
                                     "name": "__Type",
-                                    "kind": "OBJECT",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
@@ -811,89 +690,85 @@ fragment TypeRef on __Type {
                                 "name": "subscriptionType",
                                 "args": [],
                                 "type": {
+                                    "name": "__Type",
                                     "kind": "OBJECT",
                                     "ofType": None,
-                                    "name": "__Type",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
                             {
+                                "type": {
+                                    "ofType": {
+                                        "ofType": {
+                                            "ofType": {
+                                                "name": "__Directive",
+                                                "kind": "OBJECT",
+                                                "ofType": None,
+                                            },
+                                            "name": None,
+                                            "kind": "NON_NULL",
+                                        },
+                                        "name": None,
+                                        "kind": "LIST",
+                                    },
+                                    "name": None,
+                                    "kind": "NON_NULL",
+                                },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                                 "name": "directives",
                                 "args": [],
-                                "type": {
-                                    "name": None,
-                                    "kind": "NON_NULL",
-                                    "ofType": {
-                                        "kind": "LIST",
-                                        "ofType": {
-                                            "name": None,
-                                            "kind": "NON_NULL",
-                                            "ofType": {
-                                                "name": "__Directive",
-                                                "ofType": None,
-                                                "kind": "OBJECT",
-                                            },
-                                        },
-                                        "name": None,
-                                    },
-                                },
                             },
                             {
                                 "name": "__typename",
                                 "args": [],
                                 "type": {
+                                    "name": None,
                                     "ofType": {
                                         "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
                                     },
-                                    "name": None,
                                     "kind": "NON_NULL",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
                         ],
-                        "interfaces": [],
-                        "inputFields": None,
-                        "possibleTypes": None,
-                        "name": "__Schema",
-                        "kind": "OBJECT",
-                        "enumValues": None,
                     },
                     {
+                        "inputFields": None,
+                        "name": "__Type",
                         "fields": [
                             {
+                                "isDeprecated": False,
+                                "deprecationReason": None,
                                 "name": "kind",
                                 "args": [],
                                 "type": {
-                                    "ofType": None,
                                     "name": "__TypeKind",
                                     "kind": "ENUM",
+                                    "ofType": None,
                                 },
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                             {
+                                "name": "name",
+                                "args": [],
                                 "type": {
+                                    "kind": "SCALAR",
                                     "ofType": None,
                                     "name": "String",
-                                    "kind": "SCALAR",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
-                                "name": "name",
-                                "args": [],
                             },
                             {
                                 "name": "description",
                                 "args": [],
                                 "type": {
-                                    "kind": "SCALAR",
                                     "ofType": None,
+                                    "kind": "SCALAR",
                                     "name": "String",
                                 },
                                 "isDeprecated": False,
@@ -903,27 +778,27 @@ fragment TypeRef on __Type {
                                 "name": "fields",
                                 "args": [
                                     {
-                                        "name": "includeDeprecated",
                                         "defaultValue": "False",
                                         "type": {
                                             "ofType": None,
                                             "name": "Boolean",
                                             "kind": "SCALAR",
                                         },
+                                        "name": "includeDeprecated",
                                     }
                                 ],
                                 "type": {
-                                    "name": None,
                                     "kind": "LIST",
                                     "ofType": {
                                         "kind": "NON_NULL",
                                         "ofType": {
+                                            "kind": "OBJECT",
                                             "ofType": None,
                                             "name": "__Field",
-                                            "kind": "OBJECT",
                                         },
                                         "name": None,
                                     },
+                                    "name": None,
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
@@ -932,65 +807,65 @@ fragment TypeRef on __Type {
                                 "name": "interfaces",
                                 "args": [],
                                 "type": {
-                                    "name": None,
                                     "kind": "LIST",
                                     "ofType": {
                                         "kind": "NON_NULL",
                                         "ofType": {
-                                            "ofType": None,
                                             "kind": "OBJECT",
+                                            "ofType": None,
                                             "name": "__Type",
                                         },
                                         "name": None,
                                     },
+                                    "name": None,
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
                             {
-                                "name": "possibleTypes",
                                 "args": [],
                                 "type": {
+                                    "name": None,
                                     "kind": "LIST",
                                     "ofType": {
-                                        "name": None,
                                         "kind": "NON_NULL",
                                         "ofType": {
                                             "kind": "OBJECT",
                                             "ofType": None,
                                             "name": "__Type",
                                         },
+                                        "name": None,
                                     },
-                                    "name": None,
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
+                                "name": "possibleTypes",
                             },
                             {
                                 "name": "enumValues",
                                 "args": [
                                     {
+                                        "defaultValue": "False",
                                         "type": {
                                             "name": "Boolean",
                                             "kind": "SCALAR",
                                             "ofType": None,
                                         },
                                         "name": "includeDeprecated",
-                                        "defaultValue": "False",
                                     }
                                 ],
                                 "type": {
+                                    "kind": "LIST",
                                     "ofType": {
                                         "kind": "NON_NULL",
                                         "ofType": {
+                                            "kind": "OBJECT",
                                             "ofType": None,
                                             "name": "__EnumValue",
-                                            "kind": "OBJECT",
                                         },
                                         "name": None,
                                     },
                                     "name": None,
-                                    "kind": "LIST",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
@@ -999,17 +874,17 @@ fragment TypeRef on __Type {
                                 "name": "inputFields",
                                 "args": [],
                                 "type": {
+                                    "name": None,
+                                    "kind": "LIST",
                                     "ofType": {
                                         "kind": "NON_NULL",
                                         "ofType": {
+                                            "kind": "OBJECT",
                                             "ofType": None,
                                             "name": "__InputValue",
-                                            "kind": "OBJECT",
                                         },
                                         "name": None,
                                     },
-                                    "name": None,
-                                    "kind": "LIST",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
@@ -1018,193 +893,195 @@ fragment TypeRef on __Type {
                                 "name": "ofType",
                                 "args": [],
                                 "type": {
-                                    "kind": "OBJECT",
                                     "ofType": None,
                                     "name": "__Type",
+                                    "kind": "OBJECT",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
                             {
-                                "name": "__typename",
-                                "args": [],
+                                "deprecationReason": None,
                                 "type": {
-                                    "kind": "NON_NULL",
                                     "ofType": {
+                                        "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
-                                        "ofType": None,
                                     },
                                     "name": None,
+                                    "kind": "NON_NULL",
                                 },
                                 "isDeprecated": False,
-                                "deprecationReason": None,
+                                "name": "__typename",
+                                "args": [],
                             },
                         ],
-                        "inputFields": None,
+                        "kind": "OBJECT",
                         "possibleTypes": None,
                         "interfaces": [],
-                        "kind": "OBJECT",
                         "enumValues": None,
-                        "name": "__Type",
                     },
                     {
+                        "possibleTypes": None,
+                        "enumValues": None,
                         "fields": [
                             {
+                                "isDeprecated": False,
+                                "deprecationReason": None,
                                 "name": "name",
                                 "args": [],
                                 "type": {
+                                    "kind": "NON_NULL",
                                     "ofType": {
+                                        "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
-                                        "ofType": None,
                                     },
                                     "name": None,
-                                    "kind": "NON_NULL",
                                 },
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                             {
-                                "name": "description",
-                                "args": [],
                                 "type": {
+                                    "kind": "SCALAR",
                                     "ofType": None,
                                     "name": "String",
-                                    "kind": "SCALAR",
                                 },
+                                "name": "description",
                                 "isDeprecated": False,
                                 "deprecationReason": None,
+                                "args": [],
                             },
                             {
-                                "name": "args",
                                 "args": [],
+                                "isDeprecated": False,
+                                "name": "args",
+                                "deprecationReason": None,
                                 "type": {
                                     "name": None,
                                     "kind": "NON_NULL",
                                     "ofType": {
+                                        "kind": "LIST",
                                         "ofType": {
-                                            "name": None,
                                             "kind": "NON_NULL",
                                             "ofType": {
                                                 "name": "__InputValue",
                                                 "ofType": None,
                                                 "kind": "OBJECT",
                                             },
+                                            "name": None,
                                         },
                                         "name": None,
-                                        "kind": "LIST",
                                     },
                                 },
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                             {
                                 "name": "type",
-                                "args": [],
                                 "type": {
+                                    "name": None,
+                                    "kind": "NON_NULL",
                                     "ofType": {
                                         "kind": "OBJECT",
                                         "ofType": None,
                                         "name": "__Type",
                                     },
-                                    "name": None,
-                                    "kind": "NON_NULL",
                                 },
+                                "args": [],
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
                             {
+                                "deprecationReason": None,
                                 "name": "isDeprecated",
-                                "args": [],
                                 "type": {
                                     "name": None,
                                     "kind": "NON_NULL",
                                     "ofType": {
-                                        "ofType": None,
                                         "name": "Boolean",
                                         "kind": "SCALAR",
+                                        "ofType": None,
                                     },
                                 },
                                 "isDeprecated": False,
-                                "deprecationReason": None,
+                                "args": [],
                             },
                             {
-                                "name": "deprecationReason",
+                                "deprecationReason": None,
                                 "args": [],
+                                "name": "deprecationReason",
                                 "type": {
-                                    "kind": "SCALAR",
                                     "ofType": None,
                                     "name": "String",
+                                    "kind": "SCALAR",
                                 },
                                 "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                             {
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                                 "name": "__typename",
                                 "args": [],
                                 "type": {
-                                    "kind": "NON_NULL",
                                     "ofType": {
                                         "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
                                     },
                                     "name": None,
+                                    "kind": "NON_NULL",
                                 },
+                                "isDeprecated": False,
+                                "deprecationReason": None,
                             },
                         ],
                         "kind": "OBJECT",
-                        "possibleTypes": None,
-                        "interfaces": [],
                         "name": "__Field",
-                        "enumValues": None,
+                        "interfaces": [],
                         "inputFields": None,
                     },
                     {
+                        "inputFields": None,
+                        "name": "__InputValue",
+                        "interfaces": [],
+                        "kind": "OBJECT",
                         "fields": [
                             {
                                 "name": "name",
                                 "args": [],
                                 "type": {
-                                    "name": None,
                                     "ofType": {
+                                        "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
-                                        "ofType": None,
                                     },
+                                    "name": None,
                                     "kind": "NON_NULL",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
                             {
+                                "isDeprecated": False,
+                                "deprecationReason": None,
                                 "name": "description",
                                 "args": [],
                                 "type": {
+                                    "kind": "SCALAR",
                                     "ofType": None,
                                     "name": "String",
-                                    "kind": "SCALAR",
                                 },
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                             {
-                                "deprecationReason": None,
                                 "name": "type",
                                 "args": [],
                                 "type": {
+                                    "name": None,
                                     "kind": "NON_NULL",
                                     "ofType": {
+                                        "name": "__Type",
                                         "kind": "OBJECT",
                                         "ofType": None,
-                                        "name": "__Type",
                                     },
-                                    "name": None,
                                 },
                                 "isDeprecated": False,
+                                "deprecationReason": None,
                             },
                             {
                                 "name": "defaultValue",
@@ -1221,64 +1098,63 @@ fragment TypeRef on __Type {
                                 "name": "__typename",
                                 "args": [],
                                 "type": {
-                                    "name": None,
                                     "kind": "NON_NULL",
                                     "ofType": {
+                                        "kind": "SCALAR",
                                         "ofType": None,
                                         "name": "String",
-                                        "kind": "SCALAR",
                                     },
+                                    "name": None,
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
                         ],
-                        "possibleTypes": None,
-                        "name": "__InputValue",
-                        "kind": "OBJECT",
-                        "interfaces": [],
-                        "inputFields": None,
                         "enumValues": None,
+                        "possibleTypes": None,
                     },
                     {
+                        "possibleTypes": None,
+                        "interfaces": [],
+                        "kind": "OBJECT",
                         "fields": [
                             {
-                                "deprecationReason": None,
                                 "name": "name",
                                 "args": [],
                                 "type": {
+                                    "kind": "NON_NULL",
                                     "ofType": {
-                                        "kind": "SCALAR",
                                         "ofType": None,
                                         "name": "String",
+                                        "kind": "SCALAR",
                                     },
-                                    "kind": "NON_NULL",
                                     "name": None,
                                 },
                                 "isDeprecated": False,
+                                "deprecationReason": None,
                             },
                             {
+                                "isDeprecated": False,
+                                "deprecationReason": None,
                                 "name": "description",
                                 "args": [],
                                 "type": {
-                                    "ofType": None,
                                     "name": "String",
                                     "kind": "SCALAR",
+                                    "ofType": None,
                                 },
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                             {
                                 "name": "isDeprecated",
                                 "args": [],
                                 "type": {
-                                    "kind": "NON_NULL",
                                     "ofType": {
                                         "ofType": None,
                                         "name": "Boolean",
                                         "kind": "SCALAR",
                                     },
                                     "name": None,
+                                    "kind": "NON_NULL",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
@@ -1287,9 +1163,9 @@ fragment TypeRef on __Type {
                                 "name": "deprecationReason",
                                 "args": [],
                                 "type": {
+                                    "kind": "SCALAR",
                                     "ofType": None,
                                     "name": "String",
-                                    "kind": "SCALAR",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
@@ -1298,31 +1174,28 @@ fragment TypeRef on __Type {
                                 "name": "__typename",
                                 "args": [],
                                 "type": {
+                                    "name": None,
                                     "kind": "NON_NULL",
                                     "ofType": {
-                                        "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
+                                        "ofType": None,
                                     },
-                                    "name": None,
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
                         ],
                         "inputFields": None,
-                        "interfaces": [],
                         "enumValues": None,
-                        "possibleTypes": None,
-                        "kind": "OBJECT",
                         "name": "__EnumValue",
                     },
                     {
-                        "kind": "ENUM",
-                        "name": "__TypeKind",
-                        "fields": None,
                         "inputFields": None,
-                        "interfaces": None,
+                        "name": "__TypeKind",
+                        "possibleTypes": None,
+                        "kind": "ENUM",
+                        "fields": None,
                         "enumValues": [
                             {
                                 "name": "SCALAR",
@@ -1350,14 +1223,14 @@ fragment TypeRef on __Type {
                                 "deprecationReason": None,
                             },
                             {
-                                "name": "INPUT_OBJECT",
                                 "isDeprecated": False,
                                 "deprecationReason": None,
+                                "name": "INPUT_OBJECT",
                             },
                             {
+                                "name": "LIST",
                                 "isDeprecated": False,
                                 "deprecationReason": None,
-                                "name": "LIST",
                             },
                             {
                                 "name": "NON_NULL",
@@ -1365,26 +1238,27 @@ fragment TypeRef on __Type {
                                 "deprecationReason": None,
                             },
                         ],
-                        "possibleTypes": None,
+                        "interfaces": None,
                     },
                     {
-                        "kind": "OBJECT",
+                        "inputFields": None,
                         "name": "__Directive",
+                        "interfaces": [],
                         "fields": [
                             {
+                                "deprecationReason": None,
                                 "name": "name",
                                 "args": [],
                                 "type": {
+                                    "kind": "NON_NULL",
                                     "ofType": {
+                                        "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
-                                        "ofType": None,
                                     },
                                     "name": None,
-                                    "kind": "NON_NULL",
                                 },
                                 "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                             {
                                 "name": "description",
@@ -1402,17 +1276,17 @@ fragment TypeRef on __Type {
                                 "args": [],
                                 "type": {
                                     "ofType": {
-                                        "name": None,
-                                        "kind": "LIST",
                                         "ofType": {
-                                            "kind": "NON_NULL",
+                                            "name": None,
                                             "ofType": {
                                                 "kind": "ENUM",
                                                 "name": "__DirectiveLocation",
                                                 "ofType": None,
                                             },
-                                            "name": None,
+                                            "kind": "NON_NULL",
                                         },
+                                        "name": None,
+                                        "kind": "LIST",
                                     },
                                     "name": None,
                                     "kind": "NON_NULL",
@@ -1421,27 +1295,27 @@ fragment TypeRef on __Type {
                                 "deprecationReason": None,
                             },
                             {
+                                "name": "args",
                                 "args": [],
                                 "type": {
+                                    "kind": "NON_NULL",
                                     "ofType": {
                                         "kind": "LIST",
                                         "ofType": {
                                             "kind": "NON_NULL",
                                             "ofType": {
+                                                "name": "__InputValue",
                                                 "kind": "OBJECT",
                                                 "ofType": None,
-                                                "name": "__InputValue",
                                             },
                                             "name": None,
                                         },
                                         "name": None,
                                     },
                                     "name": None,
-                                    "kind": "NON_NULL",
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
-                                "name": "args",
                             },
                             {
                                 "name": "__typename",
@@ -1450,26 +1324,24 @@ fragment TypeRef on __Type {
                                     "name": None,
                                     "kind": "NON_NULL",
                                     "ofType": {
-                                        "ofType": None,
                                         "name": "String",
                                         "kind": "SCALAR",
+                                        "ofType": None,
                                     },
                                 },
                                 "isDeprecated": False,
                                 "deprecationReason": None,
                             },
                         ],
-                        "inputFields": None,
-                        "interfaces": [],
-                        "enumValues": None,
                         "possibleTypes": None,
+                        "kind": "OBJECT",
+                        "enumValues": None,
                     },
                     {
-                        "kind": "ENUM",
-                        "name": "__DirectiveLocation",
-                        "fields": None,
                         "inputFields": None,
-                        "interfaces": None,
+                        "fields": None,
+                        "possibleTypes": None,
+                        "kind": "ENUM",
                         "enumValues": [
                             {
                                 "name": "QUERY",
@@ -1507,9 +1379,9 @@ fragment TypeRef on __Type {
                                 "deprecationReason": None,
                             },
                             {
+                                "deprecationReason": None,
                                 "name": "SCHEMA",
                                 "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                             {
                                 "name": "SCALAR",
@@ -1527,9 +1399,9 @@ fragment TypeRef on __Type {
                                 "deprecationReason": None,
                             },
                             {
-                                "deprecationReason": None,
                                 "name": "ARGUMENT_DEFINITION",
                                 "isDeprecated": False,
+                                "deprecationReason": None,
                             },
                             {
                                 "name": "INTERFACE",
@@ -1547,9 +1419,9 @@ fragment TypeRef on __Type {
                                 "deprecationReason": None,
                             },
                             {
-                                "name": "ENUM_VALUE",
                                 "isDeprecated": False,
                                 "deprecationReason": None,
+                                "name": "ENUM_VALUE",
                             },
                             {
                                 "name": "INPUT_OBJECT",
@@ -1562,11 +1434,10 @@ fragment TypeRef on __Type {
                                 "deprecationReason": None,
                             },
                         ],
-                        "possibleTypes": None,
+                        "name": "__DirectiveLocation",
+                        "interfaces": None,
                     },
                 ],
-                "mutationType": None,
-                "subscriptionType": None,
             }
         }
-    } == result
+    }
