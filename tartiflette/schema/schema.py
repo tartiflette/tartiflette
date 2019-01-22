@@ -486,6 +486,9 @@ class GraphQLSchema:
         for typee in self.types:
             typee.bake(self, custom_default_resolver)
 
+        for directive in self._directives.values():
+            directive.bake(self)
+
     def call_onbuild_directives(self):
         for name, directive in self._directives.items():
             try:
