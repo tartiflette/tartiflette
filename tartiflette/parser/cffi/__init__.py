@@ -427,6 +427,16 @@ class _VisitorElementBooleanValue(_VisitorElement):
         return self._values[val]
 
 
+class _VisitorElementEnumValue(_VisitorElement):
+    def __init__(self, lib, ffi, internal_element):
+        super().__init__(lib, ffi, "EnumValue", internal_element)
+
+    def get_value(self):
+        return self._from_char_to_string(
+            self._lib.GraphQLAstEnumValue_get_value(self._internal_element)
+        )
+
+
 class _VisitorElementFragmentDefinition(_VisitorElement):
     def __init__(self, lib, ffi, internal_element):
         super().__init__(lib, ffi, "FragmentDefinition", internal_element)
@@ -494,6 +504,7 @@ _LIBGRAPHQL_TYPE_TO_CLASS = {
     "StringValue": _VisitorElementStringValue,
     "FloatValue": _VisitorElementFloatValue,
     "BooleanValue": _VisitorElementBooleanValue,
+    "EnumValue": _VisitorElementEnumValue,
     "FragmentDefinition": _VisitorElementFragmentDefinition,
     "OperationDefinition": _VisitorElementOperationDefinition,
     "Field": _VisitorElementField,
