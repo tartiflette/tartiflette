@@ -56,6 +56,7 @@ class TartifletteVisitor(Visitor):
                 "StringValue": self._on_value_in,
                 "BooleanValue": self._on_value_in,
                 "FloatValue": self._on_value_in,
+                "EnumValue": self._on_value_in,
                 "NamedType": self._on_named_type_in,
                 "ListType": self._on_list_type_in,
                 "NonNullType": self._on_non_null_type_in,
