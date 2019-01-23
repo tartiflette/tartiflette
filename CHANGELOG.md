@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - [ISSUE-97](https://github.com/dailymotion/tartiflette/issues/97): Raise errors on undefined arguments on nodes or directives.
+- [ISSUE-103](https://github.com/dailymotion/tartiflette/issues/103): Process enum values.
 
 ## [Released]
 
