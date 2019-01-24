@@ -45,6 +45,7 @@ union HumanOrAlien = Human | Alien
 
 type Query {
   dog: Dog
+  human(id: Int!) : Human
 }
 
 type Mutation {

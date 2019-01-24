@@ -12,7 +12,6 @@ from tartiflette.types.exceptions.tartiflette import (
     NotUniqueOperationName,
     UndefinedDirectiveArgument,
     UndefinedFieldArgument,
-    UndefinedFragment,
     UnusedFragment,
 )
 from tartiflette.types.location import Location
@@ -350,13 +349,10 @@ def test_parser_visitor__on_field_unknow_schema_field(a_visitor, an_element):
 
     a_visitor._on_field_in(an_element)
 
-    assert a_visitor._internal_ctx.depth == 2
-    assert a_visitor._internal_ctx.field_path == [
-        "a_parent_path_element",
-        "a_name",
-    ]
+    assert a_visitor._internal_ctx.depth == 1
+    assert a_visitor._internal_ctx.field_path == ["a_parent_path_element"]
     assert a_visitor._internal_ctx.node not in a_visitor.root_nodes
-    assert a_visitor.continue_child == 1
+    assert a_visitor.continue_child == 0
     assert a_visitor.exceptions[0] == an_exception
 
 
@@ -622,44 +618,368 @@ def test_parser_visitor__on_inline_fragment_out(a_visitor, an_element):
     assert a_visitor._internal_ctx.type_condition is None
 
 
-def test_parser_visitor__in(a_visitor, an_element):
-    a_visitor._internal_ctx.path = "/dontcare"
-    an_element.libgraphql_type = "LOL"
-    a_callback = Mock()
-    a_visitor._events[a_visitor.IN]["LOL"] = a_callback
+@pytest.mark.parametrize(
+    (
+        "curr_path",
+        "continue_child",
+        "error_path",
+        "in_fragment_spread_context",
+        "event_callback_called",
+        "reset_error_called",
+        "expected_path",
+        "expected_continue_child",
+        "expected_error_path",
+    ),
+    [
+        # Cases without any errors
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            1,
+            None,
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/FakeType(a_name)",
+            1,
+            None,
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            1,
+            None,
+            True,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/FakeType(a_name)",
+            1,
+            None,
+        ),
+        # Cases with error on current node
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/FakeType(a_name)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            True,
+            False,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/FakeType(a_name)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        # Cases with error on parent node
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/SelectionSet/Field(doesKnowCommand)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/SelectionSet/Field(doesKnowCommand)/FakeType(a_name)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/SelectionSet/Field(doesKnowCommand)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            True,
+            False,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/SelectionSet/Field(doesKnowCommand)/FakeType(a_name)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        # Cases with error on siblings
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(human)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(human)/FakeType(a_name)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(human)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            True,
+            True,
+            True,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(human)/FakeType(a_name)",
+            1,
+            None,
+        ),
+        # Cases with error on child
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/FakeType(a_name)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            True,
+            True,
+            True,
+            "/Doc/OpeDef(Yolo)/SelectionSet/FakeType(a_name)",
+            1,
+            None,
+        ),
+    ],
+)
+def test_parser_visitor_in_v2(
+    a_visitor,
+    an_element,
+    curr_path,
+    continue_child,
+    error_path,
+    in_fragment_spread_context,
+    event_callback_called,
+    reset_error_called,
+    expected_path,
+    expected_continue_child,
+    expected_error_path,
+):
+    node_gql_type = "FakeType"
+    node_event_callback = Mock()
 
-    a_visitor._in(an_element)
+    # Init visitor instance
+    a_visitor._internal_ctx.path = curr_path
+    a_visitor.continue_child = continue_child
+    a_visitor._error_path = error_path
+    a_visitor._in_fragment_spread_context = in_fragment_spread_context
 
-    assert a_visitor._internal_ctx.path == "/dontcare/LOL(a_name)"
-    assert a_callback.called
+    # Mock visitor callable
+    a_visitor._reset_error_path_and_continue_child = Mock(
+        wraps=a_visitor._reset_error_path_and_continue_child
+    )
+    a_visitor._internal_ctx.move_in = Mock(
+        wraps=a_visitor._internal_ctx.move_in
+    )
+    a_visitor._events[a_visitor.IN][node_gql_type] = node_event_callback
 
-
-def test_parser_visitor__in_no_callback(a_visitor, an_element):
-    a_visitor._internal_ctx.path = "/dontcare"
-    an_element.libgraphql_type = "LOL"
+    # Init element instance
+    an_element.libgraphql_type = node_gql_type
 
     assert a_visitor._in(an_element) is None
-    assert a_visitor._internal_ctx.path == "/dontcare/LOL(a_name)"
+
+    a_visitor._internal_ctx.move_in.assert_called_once_with(an_element)
+    assert a_visitor._internal_ctx.path == expected_path
+    assert a_visitor.continue_child == expected_continue_child
+    assert a_visitor._error_path == expected_error_path
+
+    if event_callback_called:
+        node_event_callback.assert_called_once()
+    else:
+        node_event_callback.assert_not_called()
+
+    if reset_error_called:
+        a_visitor._reset_error_path_and_continue_child.assert_called_once()
+    else:
+        a_visitor._reset_error_path_and_continue_child.assert_not_called()
 
 
-def test_parser_visitor__out(a_visitor, an_element):
-    a_visitor._internal_ctx.path = "/dontcare/LOL(a_name)"
-    an_element.libgraphql_type = "LOL"
-    a_callback = Mock()
-    a_visitor._events[a_visitor.OUT]["LOL"] = a_callback
+@pytest.mark.parametrize(
+    (
+        "curr_path",
+        "continue_child",
+        "error_path",
+        "in_fragment_spread_context",
+        "event_callback_called",
+        "reset_error_called",
+        "expected_path",
+        "expected_continue_child",
+        "expected_error_path",
+    ),
+    [
+        # Cases without any errors
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            1,
+            None,
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            1,
+            None,
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            1,
+            None,
+            True,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            1,
+            None,
+        ),
+        # Cases with error on current node
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            True,
+            False,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        # Cases with error on parent node
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/SelectionSet/Field(doesKnowCommand)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/SelectionSet",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/SelectionSet/Field(doesKnowCommand)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            True,
+            False,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)/SelectionSet",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        # Cases with error on siblings
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(human)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(human)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            True,
+            True,
+            True,
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            1,
+            None,
+        ),
+        # Cases with error on child
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            False,
+            True,
+            False,
+            "/Doc/OpeDef(Yolo)",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+        ),
+        (
+            "/Doc/OpeDef(Yolo)/SelectionSet",
+            0,
+            "/Doc/OpeDef(Yolo)/SelectionSet/Field(dog)",
+            True,
+            True,
+            True,
+            "/Doc/OpeDef(Yolo)",
+            1,
+            None,
+        ),
+    ],
+)
+def test_parser_visitor_out(
+    a_visitor,
+    an_element,
+    curr_path,
+    continue_child,
+    error_path,
+    in_fragment_spread_context,
+    event_callback_called,
+    reset_error_called,
+    expected_path,
+    expected_continue_child,
+    expected_error_path,
+):
+    node_gql_type = "FakeType"
+    node_event_callback = Mock()
 
-    a_visitor._out(an_element)
+    # Init visitor instance
+    a_visitor._internal_ctx.path = curr_path
+    a_visitor.continue_child = continue_child
+    a_visitor._error_path = error_path
+    a_visitor._in_fragment_spread_context = in_fragment_spread_context
 
-    assert a_visitor._internal_ctx.path == "/dontcare"
-    assert a_callback.called
+    # Mock visitor callable
+    a_visitor._reset_error_path_and_continue_child = Mock(
+        wraps=a_visitor._reset_error_path_and_continue_child
+    )
+    a_visitor._internal_ctx.move_out = Mock(
+        wraps=a_visitor._internal_ctx.move_out
+    )
+    a_visitor._events[a_visitor.OUT][node_gql_type] = node_event_callback
 
-
-def test_parser_visitor__out_no_callback(a_visitor, an_element):
-    a_visitor._internal_ctx.path = "/dontcare/LOL(a_name)"
-    an_element.libgraphql_type = "LOL"
+    # Init element instance
+    an_element.libgraphql_type = node_gql_type
 
     assert a_visitor._out(an_element) is None
-    assert a_visitor._internal_ctx.path == "/dontcare"
+
+    a_visitor._internal_ctx.move_out.assert_called_once()
+    assert a_visitor._internal_ctx.path == expected_path
+    assert a_visitor.continue_child == expected_continue_child
+    assert a_visitor._error_path == expected_error_path
+
+    if event_callback_called:
+        node_event_callback.assert_called_once()
+    else:
+        node_event_callback.assert_not_called()
+
+    if reset_error_called:
+        a_visitor._reset_error_path_and_continue_child.assert_called_once()
+    else:
+        a_visitor._reset_error_path_and_continue_child.assert_not_called()
 
 
 def test_parser_visitor_update_subscription_selection_set(
