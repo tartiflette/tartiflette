@@ -106,8 +106,6 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
     """
     )
 
-    print(result)
-
     assert {
         "data": {
             "__type": {
