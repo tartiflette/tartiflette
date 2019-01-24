@@ -502,13 +502,14 @@ class TartifletteVisitor(Visitor):
                 return
             self._reset_error_path_and_continue_child()
 
-        self._internal_ctx.move_out()
         try:
             self._events[self.OUT][element.libgraphql_type](
                 element, *args, **kwargs
             )
         except KeyError:
             pass
+        finally:
+            self._internal_ctx.move_out()
 
     def update(self, event, element: _VisitorElement):
         self.continue_child = 1
