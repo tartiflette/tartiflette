@@ -113,9 +113,6 @@ class TartifletteVisitor(Visitor):
             )
 
     def _on_argument_in(self, element: _VisitorElement, *_args, **_kwargs):
-        if self._internal_ctx.node.field_executor is None:
-            return
-
         if not self._internal_ctx.directive_name:
             parent_type = self._get_parent_type(self._internal_ctx.node.parent)
             field = self.schema.get_field_by_name(
@@ -191,7 +188,6 @@ class TartifletteVisitor(Visitor):
         self, element: _VisitorElement, *_args, type_cond_depth=-1, **_kwargs
     ):  # pylint: disable=too-many-locals
         type_cond = self._internal_ctx.compute_type_cond(type_cond_depth)
-        field = None
 
         parent_type = self._get_parent_type(self._internal_ctx.node)
         try:
@@ -216,7 +212,7 @@ class TartifletteVisitor(Visitor):
         node = NodeField(
             element.name,
             self.schema,
-            field.resolver if field else None,
+            field.resolver,
             element.get_location(),
             self._internal_ctx.field_path[:],
             type_cond,
