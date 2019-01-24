@@ -90,10 +90,17 @@ class TartifletteVisitor(Visitor):
         self.exceptions: List[Exception] = []
         self._to_call_later = []
         self._internal_ctx = InternalVisitorContext()
+        self._in_fragment_spread_context = False
+        self._error_path = None
 
-    def _add_exception(self, exception, continue_child=0):
-        self.continue_child = continue_child
+    def _add_exception(self, exception):
+        self.continue_child = 0
+        self._error_path = self._internal_ctx.path
         self.exceptions.append(exception)
+
+    def _reset_error_path_and_continue_child(self):
+        self.continue_child = 1
+        self._error_path = None
 
     def _get_parent_type(self, node: NodeField):
         try:
@@ -199,13 +206,10 @@ class TartifletteVisitor(Visitor):
                     str(type_cond) + "." + element.name
                 )
             except UnknownSchemaFieldResolver as e:
-                if (
-                    self._internal_ctx.node is None
-                    or self._internal_ctx.node.field_executor is not None
-                ):
-                    e.path = self._internal_ctx.field_path[:] + [element.name]
-                    e.locations = [element.get_location()]
-                    self._add_exception(e, 1)
+                e.path = self._internal_ctx.field_path[:] + [element.name]
+                e.locations = [element.get_location()]
+                self._add_exception(e)
+                return
 
         self._internal_ctx.move_in_field(element)
 
@@ -364,10 +368,12 @@ class TartifletteVisitor(Visitor):
         depth = self._internal_ctx.depth
         self._internal_ctx.type_condition = cfd.type_condition
 
+        self._in_fragment_spread_context = True
         for saved_callback in cfd.callbacks:
-            saved_callback(
+            saved_callback(  # Simulate calling a the right place.
                 type_cond_depth=depth
-            )  # Simulate calling a the right place.
+            )
+        self._in_fragment_spread_context = False
 
         self._internal_ctx.type_condition = None
         self._internal_ctx = _ctx
@@ -463,8 +469,21 @@ class TartifletteVisitor(Visitor):
             )
 
     def _in(self, element: _VisitorElement, *args, **kwargs):
-        self._internal_ctx.move_in(element)
+        # While spreading out a fragment we execute all callbacks whether they
+        # results on a continue_child=0 or not. The goal here is to not process
+        # children of a node which result to a continue_child=0 while still
+        # processing its siblings.
+        if (
+            self._in_fragment_spread_context
+            and not self.continue_child
+            and self._error_path
+        ):
+            if self._internal_ctx.path.startswith(self._error_path):
+                self._internal_ctx.move_in(element)
+                return
+            self._reset_error_path_and_continue_child()
 
+        self._internal_ctx.move_in(element)
         try:
             self._events[self.IN][element.libgraphql_type](
                 element, *args, **kwargs
@@ -473,8 +492,21 @@ class TartifletteVisitor(Visitor):
             pass
 
     def _out(self, element: _VisitorElement, *args, **kwargs):
-        self._internal_ctx.move_out()
+        # While spreading out a fragment we execute all callbacks whether they
+        # results on a continue_child=0 or not. The goal here is to not process
+        # children of a node which result to a continue_child=0 while still
+        # processing its siblings.
+        if (
+            self._in_fragment_spread_context
+            and not self.continue_child
+            and self._error_path
+        ):
+            if self._internal_ctx.path.startswith(self._error_path):
+                self._internal_ctx.move_out()
+                return
+            self._reset_error_path_and_continue_child()
 
+        self._internal_ctx.move_out()
         try:
             self._events[self.OUT][element.libgraphql_type](
                 element, *args, **kwargs

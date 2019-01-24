@@ -1,14 +1,10 @@
 import pytest
 
-from tartiflette import Resolver
 
-
-@Resolver("Query.dog")
 async def _query_dog_resolver(*_args, **__kwargs):
     return {"name": "Doggy"}
 
 
-@Resolver("Dog.doesKnowCommand")
 async def _dog_does_know_command_resolver(
     _parent_result, args, *__args, **___kwargs
 ):
