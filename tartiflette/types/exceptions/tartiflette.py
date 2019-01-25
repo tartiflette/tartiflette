@@ -163,6 +163,10 @@ class UndefinedDirectiveArgument(GraphQLError):
     pass
 
 
+class MissingRequiredArgument(GraphQLError):
+    pass
+
+
 class UnknownVariableException(GraphQLError):
     def __init__(self, varname):
         # TODO: Unify error messages format

@@ -119,7 +119,12 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
                         "path": None,
                         "locations": [{"line": 4, "column": 33}],
-                    }
+                    },
+                    {
+                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 17}],
+                    },
                 ],
             },
         ),
@@ -143,7 +148,12 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
                         "path": None,
                         "locations": [{"line": 4, "column": 33}],
-                    }
+                    },
+                    {
+                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 17}],
+                    },
                 ],
             },
         ),
@@ -177,6 +187,11 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "message": "field `Boolean.unknownField2` was not found in GraphQL schema.",
                         "path": ["dog", "doesKnowCommand", "unknownField2"],
                         "locations": [{"line": 6, "column": 19}],
+                    },
+                    {
+                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 17}],
                     },
                     {
                         "message": "field `Dog.unknownField3` was not found in GraphQL schema.",
@@ -252,6 +267,11 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "path": ["dog", "doesKnowCommand", "unknownField2"],
                         "locations": [{"line": 9, "column": 19}],
                     },
+                    {
+                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 17}],
+                    },
                 ],
             },
         ),
@@ -317,6 +337,11 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "message": "field `Boolean.unknownField2` was not found in GraphQL schema.",
                         "path": ["dog", "doesKnowCommand", "unknownField2"],
                         "locations": [{"line": 9, "column": 19}],
+                    },
+                    {
+                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 17}],
                     },
                 ],
             },
@@ -398,6 +423,11 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "message": "field `Boolean.unknownField2` was not found in GraphQL schema.",
                         "path": ["dog", "doesKnowCommand", "unknownField2"],
                         "locations": [{"line": 10, "column": 19}],
+                    },
+                    {
+                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 17}],
                     },
                     {
                         "message": "Undefined argument < undefinedArgument > on directive < @deprecated >.",

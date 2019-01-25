@@ -18,6 +18,7 @@ from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
     InvalidType,
+    MissingRequiredArgument,
     MultipleRootNodeOnSubscriptionOperation,
     NotLoneAnonymousOperation,
     NotUniqueOperationName,
@@ -115,11 +116,8 @@ class TartifletteVisitor(Visitor):
     def _on_argument_in(self, element: _VisitorElement, *_args, **_kwargs):
         if not self._internal_ctx.directive_name:
             parent_type = self._get_parent_type(self._internal_ctx.node.parent)
-            field = self.schema.get_field_by_name(
-                str(parent_type) + "." + self._internal_ctx.node.name
-            )
 
-            if element.name not in field.arguments:
+            if element.name not in self._internal_ctx.current_field.arguments:
                 self._add_exception(
                     UndefinedFieldArgument(
                         "Undefined argument < %s > on field < %s > of type < "
@@ -159,7 +157,29 @@ class TartifletteVisitor(Visitor):
     def _on_directive_in(self, element: _VisitorElement, *_args, **_kwargs):
         self._internal_ctx.directive_name = element.name
 
-    def _on_directive_out(self, *_args, **_kwargs):
+    def _on_directive_out(self, element: _VisitorElement, *_args, **_kwargs):
+        try:
+            directive = self.schema.find_directive(
+                self._internal_ctx.directive_name
+            )
+        except KeyError:
+            self._internal_ctx.directive_name = None
+            return
+
+        for argument in directive.arguments.values():
+            if not argument.is_required:
+                continue
+
+            value = self._internal_ctx.node.arguments.get(argument.name)
+            if value is None:
+                self._add_exception(
+                    MissingRequiredArgument(
+                        "Missing required < %s > argument on < @%s > directive."
+                        % (argument.name, directive.name),
+                        locations=[element.get_location()],
+                    )
+                )
+
         self._internal_ctx.directive_name = None
 
     def _on_value_in(self, element: _VisitorElement, *_args, **_kwargs):
@@ -188,8 +208,8 @@ class TartifletteVisitor(Visitor):
         self, element: _VisitorElement, *_args, type_cond_depth=-1, **_kwargs
     ):  # pylint: disable=too-many-locals
         type_cond = self._internal_ctx.compute_type_cond(type_cond_depth)
-
         parent_type = self._get_parent_type(self._internal_ctx.node)
+
         try:
             field = self.schema.get_field_by_name(
                 str(parent_type) + "." + element.name
@@ -207,7 +227,7 @@ class TartifletteVisitor(Visitor):
                 self._add_exception(e)
                 return
 
-        self._internal_ctx.move_in_field(element)
+        self._internal_ctx.move_in_field(element, field)
 
         node = NodeField(
             element.name,
@@ -229,6 +249,19 @@ class TartifletteVisitor(Visitor):
             self.root_nodes.append(node)
 
     def _on_field_out(self, *_args, **_kwargs):
+        for argument in self._internal_ctx.current_field.arguments.values():
+            if not argument.is_required:
+                continue
+
+            value = self._internal_ctx.node.arguments.get(argument.name)
+            if value is None:
+                self._add_exception(
+                    MissingRequiredArgument(
+                        "Missing required < %s > argument on < %s > field."
+                        % (argument.name, self._internal_ctx.node.name),
+                        locations=[self._internal_ctx.node.location],
+                    )
+                )
         self._internal_ctx.move_out_field()
 
     def _on_variable_definition_in(

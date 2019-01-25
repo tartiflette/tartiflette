@@ -7,6 +7,7 @@ from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
 from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
     GraphQLError,
+    MissingRequiredArgument,
     MultipleRootNodeOnSubscriptionOperation,
     NotLoneAnonymousOperation,
     NotUniqueOperationName,
@@ -60,7 +61,8 @@ def test_parser_visitor__on_argument(a_visitor, an_element):
 
     a_visitor._get_parent_type = Mock(return_value="Query")
     a_visitor._internal_ctx.node.name = "dog"
-    a_visitor.schema.get_field_by_name = Mock(return_value=field_mock)
+    a_visitor._internal_ctx.field_path = ["field", "path"]
+    a_visitor._internal_ctx._fields = {"field/path": field_mock}
 
     assert a_visitor._internal_ctx.argument_name is None
 
@@ -79,7 +81,8 @@ def test_parser_visitor__on_argument_undefined_field_argument(
     a_visitor._internal_ctx.directive_name = None
     a_visitor._get_parent_type = Mock(return_value="Query")
     a_visitor._internal_ctx.node.name = "dog"
-    a_visitor.schema.get_field_by_name = Mock(return_value=field_mock)
+    a_visitor._internal_ctx.field_path = ["field", "path"]
+    a_visitor._internal_ctx._fields = {"field/path": field_mock}
 
     an_element.name = "undefinedArgument"
 
@@ -129,6 +132,11 @@ def test_parser_visitor__on_argument_undefined_directive_argument(
 
 
 def test_parser_visitor__on_directive(a_visitor, an_element):
+    directive_mock = Mock()
+    directive_mock.arguments = {}
+
+    a_visitor.schema.find_directive = Mock(return_value=directive_mock)
+
     assert a_visitor._internal_ctx.directive_name is None
 
     assert a_visitor._on_directive_in(an_element) is None
@@ -136,6 +144,39 @@ def test_parser_visitor__on_directive(a_visitor, an_element):
 
     assert a_visitor._on_directive_out(an_element) is None
     assert a_visitor._internal_ctx.directive_name is None
+
+
+def test_parser_visitor__on_directive_out_missing_required_argument(
+    a_visitor, an_element
+):
+    not_required_arg_mock = Mock(is_required=False)
+    not_required_arg_mock.name = "not_required"
+
+    required_arg_mock = Mock(is_required=True)
+    required_arg_mock.name = "required"
+
+    directive_mock = Mock()
+    directive_mock.name = "myDirective"
+    directive_mock.arguments = {
+        "not_required": not_required_arg_mock,
+        "required": required_arg_mock,
+    }
+
+    a_visitor.schema.find_directive = Mock(return_value=directive_mock)
+    a_visitor._internal_ctx.directive_name = "myDirective"
+    a_visitor._internal_ctx.node.arguments = {}
+
+    assert a_visitor._internal_ctx.directive_name == "myDirective"
+    assert a_visitor.exceptions == []
+
+    assert a_visitor._on_directive_out(an_element) is None
+
+    assert len(a_visitor.exceptions) == 1
+    assert isinstance(a_visitor.exceptions[0], MissingRequiredArgument)
+    assert (
+        str(a_visitor.exceptions[0])
+        == "Missing required < required > argument on < @myDirective > directive."
+    )
 
 
 def test_parser_visitor__on_value_in(a_visitor, an_element):
@@ -336,7 +377,6 @@ def test_parser_visitor__on_field_unknow_schema_field(a_visitor, an_element):
         a_visitor._internal_ctx.inline_fragment_info.type
     )
     a_visitor._internal_ctx.inline_fragment_info.depth = 2
-    current_node = a_visitor._internal_ctx.node
 
     an_exception = UnknownSchemaFieldResolver("a_message")
 
@@ -357,15 +397,95 @@ def test_parser_visitor__on_field_unknow_schema_field(a_visitor, an_element):
 
 
 def test_parser_visitor__on_field_out(a_visitor, an_element):
-    a_visitor._internal_ctx.field_path = ["a", "b"]
+    field_mock = Mock()
+    field_mock.arguments = {}
+
+    a_visitor._internal_ctx.field_path = ["field", "path"]
+    a_visitor._internal_ctx._fields = {"field/path": field_mock}
+    a_visitor._internal_ctx.operation = Mock()
+    a_visitor._internal_ctx.operation.type = "Query"
     a_visitor._internal_ctx.node = Mock()
+    a_visitor._internal_ctx.node.name = "field"
     a_visitor._internal_ctx.node.parent = "LOL"
+    a_visitor._internal_ctx.move_out_field = Mock(
+        wraps=a_visitor._internal_ctx.move_out_field
+    )
 
     a_visitor._on_field_out(an_element)
 
     assert a_visitor._internal_ctx.depth == 1
-    assert a_visitor._internal_ctx.field_path == ["a"]
+    assert a_visitor._internal_ctx.field_path == ["field"]
     assert a_visitor._internal_ctx.node == "LOL"
+    a_visitor._internal_ctx.move_out_field.assert_called_once()
+
+
+def test_parser_visitor__on_field_out_missing_required_argument(
+    a_visitor, an_element
+):
+    # def test_parser_visitor__on_directive_out_missing_required_argument(
+    #     a_visitor, an_element):
+    #     not_required_arg_mock = Mock(is_required=False)
+    #     not_required_arg_mock.name = "not_required"
+    #
+    #     required_arg_mock = Mock(is_required=True)
+    #     required_arg_mock.name = "required"
+    #
+    #     directive_mock = Mock()
+    #     directive_mock.name = "myDirective"
+    #     directive_mock.arguments = {
+    #         "not_required": not_required_arg_mock,
+    #         "required": required_arg_mock,
+    #     }
+    #
+    #     a_visitor.schema.find_directive = Mock(return_value=directive_mock)
+    #     a_visitor._internal_ctx.directive_name = "myDirective"
+    #     a_visitor._internal_ctx.node.arguments = {}
+    #
+    #     assert a_visitor._internal_ctx.directive_name == "myDirective"
+    #     assert a_visitor.exceptions == []
+    #
+    #     assert a_visitor._on_directive_out(an_element) is None
+    #
+    #     assert len(a_visitor.exceptions) == 1
+    #     assert isinstance(a_visitor.exceptions[0], MissingRequiredArgument)
+    #     assert (
+    #         str(a_visitor.exceptions[
+    #                 0]) == "Missing required < required > argument on < "
+    #                        "@myDirective > directive."
+    #     )
+    not_required_arg_mock = Mock(is_required=False)
+    not_required_arg_mock.name = "not_required"
+
+    required_arg_mock = Mock(is_required=True)
+    required_arg_mock.name = "required"
+
+    field_mock = Mock()
+    field_mock.name = "fieldName"
+    field_mock.arguments = {
+        "not_required": not_required_arg_mock,
+        "required": required_arg_mock,
+    }
+
+    a_visitor._internal_ctx.field_path = ["fieldName"]
+    a_visitor._internal_ctx._fields = {"fieldName": field_mock}
+    a_visitor._internal_ctx.operation = Mock()
+    a_visitor._internal_ctx.operation.type = "Query"
+
+    a_visitor._internal_ctx.node = Mock()
+    a_visitor._internal_ctx.node.name = "fieldName"
+    a_visitor._internal_ctx.node.parent = "Query"
+    a_visitor._internal_ctx.node.arguments = {}
+
+    assert a_visitor.exceptions == []
+
+    a_visitor._on_field_out(an_element)
+
+    assert len(a_visitor.exceptions) == 1
+    assert isinstance(a_visitor.exceptions[0], MissingRequiredArgument)
+    assert (
+        str(a_visitor.exceptions[0])
+        == "Missing required < required > argument on < fieldName > field."
+    )
 
 
 def test_parser_visitor__on_variable_definition_in(a_visitor, an_element):
