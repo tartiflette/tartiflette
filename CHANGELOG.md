@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - [ISSUE-97](https://github.com/dailymotion/tartiflette/issues/97): Raise errors on undefined arguments on nodes or directives.
 - [ISSUE-103](https://github.com/dailymotion/tartiflette/issues/103): Process enum values.
 - [ISSUE-105](https://github.com/dailymotion/tartiflette/issues/105): Process fragment spreading properly.
+- [ISSUE-101](https://github.com/dailymotion/tartiflette/issues/101): Raise errors on missing required argument on field / directive.
 
 ## [Released]
 
