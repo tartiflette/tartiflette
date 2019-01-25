@@ -56,6 +56,12 @@ class GraphQLArgument:
     def type(self):
         return self._type
 
+    @property
+    def is_required(self):
+        if not isinstance(self.gql_type, GraphQLType):
+            return False
+        return self.gql_type.is_not_null and self.default_value is None
+
     # Introspection Attribute
     @property
     def defaultValue(self):  # pylint: disable=invalid-name

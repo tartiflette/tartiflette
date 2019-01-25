@@ -97,7 +97,12 @@ import pytest
                     "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
                     "path": None,
                     "locations": [{"line": 4, "column": 33}],
-                }
+                },
+                {
+                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                    "path": None,
+                    "locations": [{"line": 4, "column": 17}],
+                },
             ],
         ),
         (
@@ -115,7 +120,12 @@ import pytest
                     "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
                     "path": None,
                     "locations": [{"line": 5, "column": 35}],
-                }
+                },
+                {
+                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                    "path": None,
+                    "locations": [{"line": 5, "column": 19}],
+                },
             ],
         ),
         (
@@ -135,7 +145,12 @@ import pytest
                     "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
                     "path": None,
                     "locations": [{"line": 4, "column": 33}],
-                }
+                },
+                {
+                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                    "path": None,
+                    "locations": [{"line": 4, "column": 17}],
+                },
             ],
         ),
         (
@@ -157,7 +172,12 @@ import pytest
                     "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
                     "path": None,
                     "locations": [{"line": 5, "column": 35}],
-                }
+                },
+                {
+                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                    "path": None,
+                    "locations": [{"line": 5, "column": 19}],
+                },
             ],
         ),
         (
@@ -185,7 +205,12 @@ import pytest
                     "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
                     "path": None,
                     "locations": [{"line": 4, "column": 33}],
-                }
+                },
+                {
+                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
+                    "path": None,
+                    "locations": [{"line": 4, "column": 17}],
+                },
             ],
         ),
         # Undefined argument on directive on root node
@@ -417,5 +442,5 @@ import pytest
         ),
     ],
 )
-async def test_issue_undefined_args(engine, query, errors):
+async def test_issue97(engine, query, errors):
     assert await engine.execute(query) == {"data": None, "errors": errors}

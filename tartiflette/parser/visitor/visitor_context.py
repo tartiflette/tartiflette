@@ -22,6 +22,7 @@ class InternalVisitorContext:
         depth=0,
         path=None,
         field_path=None,
+        fields=None,
     ):  # pylint: disable=too-many-arguments
         self._operation = operation
         self._node = node
@@ -33,6 +34,7 @@ class InternalVisitorContext:
         self._depth = depth
         self._path = path or ""
         self._field_path = field_path or []
+        self._fields = fields or {}
 
     def clone(self):
         return InternalVisitorContext(
@@ -46,6 +48,7 @@ class InternalVisitorContext:
             self._depth,
             self._path,
             deepcopy(self._field_path),
+            dict(self._fields),
         )
 
     @property
@@ -124,6 +127,18 @@ class InternalVisitorContext:
     def field_path(self, val):
         self._field_path = val
 
+    @property
+    def _hashed_field_path(self):
+        return "/".join(self._field_path)
+
+    @property
+    def current_field(self):
+        try:
+            return self._fields[self._hashed_field_path]
+        except KeyError:
+            pass
+        return None
+
     def move_in(self, element):
         self._path = self._path + "/%s" % _create_node_name(
             element.libgraphql_type, element.name
@@ -132,10 +147,12 @@ class InternalVisitorContext:
     def move_out(self):
         self._path = "/".join(self._path.split("/")[:-1])
 
-    def move_in_field(self, element):
+    def move_in_field(self, element, field):
         self._field_path.append(element.name)
+        self._fields[self._hashed_field_path] = field
 
     def move_out_field(self):
+        self._fields.pop(self._hashed_field_path, None)
         if self.depth > 0:
             self._field_path.pop()
             self.node = self.node.parent
