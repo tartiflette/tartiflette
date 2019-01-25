@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Released]
+
+### [0.3.4] - 2019-01-25
 
 ### Fixed
 
@@ -13,8 +15,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - [ISSUE-103](https://github.com/dailymotion/tartiflette/issues/103): Process enum values.
 - [ISSUE-105](https://github.com/dailymotion/tartiflette/issues/105): Process fragment spreading properly.
 - [ISSUE-101](https://github.com/dailymotion/tartiflette/issues/101): Raise errors on missing required argument on field / directive.
-
-## [Released]
 
 ### [0.3.3] - 2019-01-21
 
