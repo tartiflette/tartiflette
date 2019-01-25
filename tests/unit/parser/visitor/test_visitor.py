@@ -422,37 +422,6 @@ def test_parser_visitor__on_field_out(a_visitor, an_element):
 def test_parser_visitor__on_field_out_missing_required_argument(
     a_visitor, an_element
 ):
-    # def test_parser_visitor__on_directive_out_missing_required_argument(
-    #     a_visitor, an_element):
-    #     not_required_arg_mock = Mock(is_required=False)
-    #     not_required_arg_mock.name = "not_required"
-    #
-    #     required_arg_mock = Mock(is_required=True)
-    #     required_arg_mock.name = "required"
-    #
-    #     directive_mock = Mock()
-    #     directive_mock.name = "myDirective"
-    #     directive_mock.arguments = {
-    #         "not_required": not_required_arg_mock,
-    #         "required": required_arg_mock,
-    #     }
-    #
-    #     a_visitor.schema.find_directive = Mock(return_value=directive_mock)
-    #     a_visitor._internal_ctx.directive_name = "myDirective"
-    #     a_visitor._internal_ctx.node.arguments = {}
-    #
-    #     assert a_visitor._internal_ctx.directive_name == "myDirective"
-    #     assert a_visitor.exceptions == []
-    #
-    #     assert a_visitor._on_directive_out(an_element) is None
-    #
-    #     assert len(a_visitor.exceptions) == 1
-    #     assert isinstance(a_visitor.exceptions[0], MissingRequiredArgument)
-    #     assert (
-    #         str(a_visitor.exceptions[
-    #                 0]) == "Missing required < required > argument on < "
-    #                        "@myDirective > directive."
-    #     )
     not_required_arg_mock = Mock(is_required=False)
     not_required_arg_mock.name = "not_required"
 
