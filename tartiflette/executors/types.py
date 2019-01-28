@@ -1,21 +1,17 @@
-from typing import List
+from typing import Any, List
 
 
 class ExecutionContext:
     # See if we should keep it here or move it to the visitor ?
-    def __init__(self):
+    def __init__(self) -> None:
         self._errors: List[Exception] = []
-        self.is_introspection = False
+        self.is_introspection: bool = False
 
     @property
-    def errors(self):
+    def errors(self) -> List[Exception]:
         return self._errors
 
-    def add_error_and_raise(self, error: Exception):
-        self.add_error(error)
-        raise error
-
-    def add_error(self, error: Exception):
+    def add_error(self, error: Exception) -> None:
         self._errors.append(error)
 
 
@@ -25,21 +21,21 @@ class Info:
 
     def __init__(
         self,
-        query_field,
-        schema_field,
-        schema,
-        path,
-        location,
+        query_field: "NodeField",
+        schema_field: "GraphQLField",
+        schema: "GraphQLSchema",
+        path: List[str],
+        location: "Location",
         execution_ctx: ExecutionContext,
-    ):
-        self.query_field: "NodeField" = query_field
-        self.schema_field: "GraphQLField" = schema_field
-        self.schema: "GraphQLSchema" = schema
-        self.path: List[str] = path
-        self.location: "Location" = location
-        self.execution_ctx: ExecutionContext = execution_ctx
+    ) -> None:
+        self.query_field = query_field
+        self.schema_field = schema_field
+        self.schema = schema
+        self.path = path
+        self.location = location
+        self.execution_ctx = execution_ctx
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             "{}(query_field={!r}, schema_field={!r}, schema={!r}, "
             "path={!r}, location={!r}, execution_ctx={!r})".format(
@@ -53,10 +49,10 @@ class Info:
             )
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return repr(self)
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         return self is other or (
             type(self) is type(other)
             and (

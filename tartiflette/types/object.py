@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
@@ -19,12 +19,12 @@ class GraphQLObjectType(GraphQLType):
         fields: Dict[str, GraphQLField],
         interfaces: Optional[List[str]] = None,
         description: Optional[str] = None,
-        schema=None,
-    ):
+        schema: Optional["GraphQLSchema"] = None,
+    ) -> None:
         super().__init__(name=name, description=description, schema=schema)
-        self._fields: Dict[str, GraphQLField] = fields
+        self._fields = fields
         # TODO: specify what is in the List.
-        self.interfaces_names: Optional[List[str]] = interfaces or []
+        self.interfaces_names = interfaces or []
         self._interfaces = None
 
     def __repr__(self) -> str:
@@ -39,14 +39,14 @@ class GraphQLObjectType(GraphQLType):
             )
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         return (
             super().__eq__(other)
             and self._fields == other._fields
             and self.interfaces_names == other.interfaces_names
         )
 
-    def add_field(self, value: GraphQLField):
+    def add_field(self, value: GraphQLField) -> None:
         self._fields[value.name] = value
 
     def find_field(self, name: str) -> GraphQLField:
@@ -54,25 +54,30 @@ class GraphQLObjectType(GraphQLType):
 
     # Introspection Attribute
     @property
-    def kind(self):
+    def kind(self) -> str:
         return "OBJECT"
 
     # Introspection Attribute
     @property
-    def fields(self):
+    def fields(self) -> List[GraphQLField]:
         try:
-            return [x for _, x in self._fields.items()]
+            return list(self._fields.values())
         except AttributeError:
-            return []
+            pass
+        return []
 
-    def bake(self, schema, custom_default_resolver):
+    def bake(
+        self,
+        schema: "GraphQLSchema",
+        custom_default_resolver: Optional[Callable],
+    ) -> None:
         super().bake(schema, custom_default_resolver)
-        self._interfaces = [
-            self._schema.find_type(x) for x in self.interfaces_names
-        ]
 
-        for iface in self._interfaces:
-            iface.possibleTypes.append(self)
+        self._interfaces = []
+        for interface_name in self.interfaces_names:
+            interface = self._schema.find_type(interface_name)
+            self._interfaces.append(interface)
+            interface.possibleTypes.append(self)
 
         for field in self.fields:
             try:
@@ -82,5 +87,5 @@ class GraphQLObjectType(GraphQLType):
 
     # Introspection Attribute
     @property
-    def interfaces(self):
+    def interfaces(self) -> List[GraphQLType]:
         return self._interfaces or []

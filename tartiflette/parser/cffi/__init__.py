@@ -1,9 +1,11 @@
 import os
+
 from functools import partial
+from typing import Optional, Any, Union, Callable
 
 from cffi import FFI
-from tartiflette.types.exceptions.tartiflette import GraphQLSyntaxError
 
+from tartiflette.types.exceptions.tartiflette import GraphQLSyntaxError
 from tartiflette.types.location import Location
 
 ## TODO automatize read from headers files
@@ -313,14 +315,14 @@ CDEFS_LIBGRAPHQL = CDEFS_LIBGRAPHQL + _CDEF_LIBGRAPHQL_CALLBACK_STRUCTS
 
 
 class _ParsedData:
-    def __init__(self, c_parsed, destroy_cb):
+    def __init__(self, c_parsed: "CData", destroy_cb: "CData") -> None:
         self._c_parsed = c_parsed
         self._destroy_cb = destroy_cb
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         return self._c_parsed
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
         self._destroy_cb(self._c_parsed)
 
 
@@ -329,13 +331,19 @@ class Visitor:
     OUT = 1
     UKN = 2
 
-    def __init__(self):
-        self.event = self.UKN
-        self.continue_child = 1
+    def __init__(self) -> None:
+        self.event: int = self.UKN
+        self.continue_child: int = 1
 
 
 class _VisitorElement:
-    def __init__(self, lib, ffi, libgraphql_type, internal_element):
+    def __init__(
+        self,
+        lib: "FFILibrary",
+        ffi: "FFI",
+        libgraphql_type: str,
+        internal_element: "CData",
+    ) -> None:
         self._lib = lib
         self._ffi = ffi
         self._internal_element = internal_element
@@ -346,31 +354,30 @@ class _VisitorElement:
         except AttributeError:
             pass
 
-    def _get_name_object(self):
+    def _get_name_object(self) -> "CData":
         if self._internal_element != self._ffi.NULL:
             return self._lib.__getattr__(
                 "GraphQLAst%s_get_name" % self.libgraphql_type
             )(self._internal_element)
         return self._ffi.NULL
 
-    def _get_name_string(self, name_object):
+    def _from_char_to_string(self, val: "CData") -> str:
+        return self._ffi.string(val).decode("UTF-8", "replace")
+
+    def _get_name_string(self, name_object: "CData") -> Optional[str]:
         if self._ffi.NULL != name_object:
             return self._from_char_to_string(
                 self._lib.GraphQLAstName_get_value(name_object)
             )
         return None
 
-    def _from_char_to_string(self, val):
-        return self._ffi.string(val).decode("UTF-8", "replace")
-
-    def _get_name(self):
+    def _get_name(self) -> Optional[str]:
         element = self._internal_element
         if self.libgraphql_type != "Name":
             element = self._get_name_object()
-
         return self._get_name_string(element)
 
-    def get_location(self):
+    def get_location(self) -> Location:
         location = self._ffi.new("struct GraphQLAstLocation *")
         self._lib.graphql_node_get_location(
             self._ffi.cast("struct GraphQLAstNode *", self._internal_element),
@@ -385,63 +392,79 @@ class _VisitorElement:
 
 
 class _VisitorElementIntValue(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "IntValue", internal_element)
 
-    def get_value(self):
-        val = self._from_char_to_string(
-            self._lib.GraphQLAstIntValue_get_value(self._internal_element)
+    def get_value(self) -> int:
+        return int(
+            self._from_char_to_string(
+                self._lib.GraphQLAstIntValue_get_value(self._internal_element)
+            )
         )
-        return int(val)
 
 
 class _VisitorElementStringValue(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "StringValue", internal_element)
 
-    def get_value(self):
-        val = self._lib.GraphQLAstStringValue_get_value(self._internal_element)
-        return self._from_char_to_string(val)
+    def get_value(self) -> str:
+        return self._from_char_to_string(
+            self._lib.GraphQLAstStringValue_get_value(self._internal_element)
+        )
 
 
 class _VisitorElementFloatValue(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "FloatValue", internal_element)
 
-    def get_value(self):
-        val = self._from_char_to_string(
-            self._lib.GraphQLAstFloatValue_get_value(self._internal_element)
+    def get_value(self) -> float:
+        return float(
+            self._from_char_to_string(
+                self._lib.GraphQLAstFloatValue_get_value(
+                    self._internal_element
+                )
+            )
         )
-        return float(val)
 
 
 class _VisitorElementBooleanValue(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "BooleanValue", internal_element)
         self._values = [False, True]
 
-    def get_value(self):
-        val = self._lib.GraphQLAstBooleanValue_get_value(
-            self._internal_element
-        )
-        return self._values[val]
+    def get_value(self) -> bool:
+        return self._values[
+            self._lib.GraphQLAstBooleanValue_get_value(self._internal_element)
+        ]
 
 
 class _VisitorElementEnumValue(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "EnumValue", internal_element)
 
-    def get_value(self):
+    def get_value(self) -> str:
         return self._from_char_to_string(
             self._lib.GraphQLAstEnumValue_get_value(self._internal_element)
         )
 
 
 class _VisitorElementFragmentDefinition(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "FragmentDefinition", internal_element)
 
-    def get_type_condition(self):
+    def get_type_condition(self) -> Optional[str]:
         name_type = self._lib.GraphQLAstFragmentDefinition_get_type_condition(
             self._internal_element
         )
@@ -449,15 +472,16 @@ class _VisitorElementFragmentDefinition(_VisitorElement):
             return self._get_name_string(
                 self._lib.GraphQLAstNamedType_get_name(name_type)
             )
-
         return None
 
 
 class _VisitorElementOperationDefinition(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "OperationDefinition", internal_element)
 
-    def get_operation(self):
+    def get_operation(self) -> str:
         return self._from_char_to_string(
             self._lib.GraphQLAstOperationDefinition_get_operation(
                 self._internal_element
@@ -466,20 +490,24 @@ class _VisitorElementOperationDefinition(_VisitorElement):
 
 
 class _VisitorElementField(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "Field", internal_element)
 
-    def get_alias(self):
+    def get_alias(self) -> Optional[str]:
         return self._get_name_string(
             self._lib.GraphQLAstField_get_alias(self._internal_element)
         )
 
 
 class _VisitorElementInlineFragment(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "InlineFragment", internal_element)
 
-    def get_named_type(self):
+    def get_named_type(self) -> Optional[str]:
         return self._get_name_string(
             self._lib.GraphQLAstNamedType_get_name(
                 self._lib.GraphQLAstInlineFragment_get_type_condition(
@@ -490,10 +518,12 @@ class _VisitorElementInlineFragment(_VisitorElement):
 
 
 class _VisitorElementSelectionSet(_VisitorElement):
-    def __init__(self, lib, ffi, internal_element):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
         super().__init__(lib, ffi, "SelectionSet", internal_element)
 
-    def get_selections_size(self):
+    def get_selections_size(self) -> int:
         return self._lib.GraphQLAstSelectionSet_get_selections_size(
             self._internal_element
         )
@@ -537,24 +567,29 @@ class LibGraphqlParser:
         self._default_visitor_cls = Visitor
         self._creates_callbacks()
 
-    def _create_visitor_element(self, libgraphql_type, element):
+    def _create_visitor_element(
+        self, libgraphql_type: str, element: "CData"
+    ) -> _VisitorElement:
         try:
             return _LIBGRAPHQL_TYPE_TO_CLASS[libgraphql_type](
                 self._lib, self._ffi, element
             )
         except KeyError:
             pass
-
         return _VisitorElement(self._lib, self._ffi, libgraphql_type, element)
 
-    def _callback_enter(self, libgraphql_type, element, udata):
+    def _callback_enter(
+        self, libgraphql_type: str, element: "CData", udata: "CData"
+    ) -> int:
         context = self._ffi.from_handle(udata)
         context.update(
             Visitor.IN, self._create_visitor_element(libgraphql_type, element)
         )
         return context.continue_child
 
-    def _callback_exit(self, libgraphql_type, element, udata):
+    def _callback_exit(
+        self, libgraphql_type: str, element: "CData", udata: "CData"
+    ) -> None:
         context = self._ffi.from_handle(udata)
         if context.continue_child:
             context.update(
@@ -564,7 +599,7 @@ class LibGraphqlParser:
         else:
             context.continue_child = 1
 
-    def _set_callback(self, proto, func, attr):
+    def _set_callback(self, proto: str, func: Callable, attr: str) -> None:
         c_func = self._ffi.callback(proto)(func)
         # Keep the callbacks alive in this list
         # to keep the underlying cdata alive.
@@ -573,27 +608,27 @@ class LibGraphqlParser:
         self._callbacks.append(c_func)
         setattr(self._lib_callbacks, attr, c_func)
 
-    def _set_exit_callback(self, typee):
+    def _set_exit_callback(self, typee: list) -> None:
         self._set_callback(
             "void(struct GraphQLAst%s *, void *)" % typee[0],
             partial(self._callback_exit, typee[0]),
             "end_visit_%s" % typee[1],
         )
 
-    def _set_enter_callback(self, typee):
+    def _set_enter_callback(self, typee: list) -> None:
         self._set_callback(
             "int(struct GraphQLAst%s *, void *)" % typee[0],
             partial(self._callback_enter, typee[0]),
             "visit_%s" % typee[1],
         )
 
-    def _creates_callbacks(self):
+    def _creates_callbacks(self) -> None:
         for typee in TYPES_LIBGRAPHQL:
             if typee[0] not in ["Name"]:
                 self._set_enter_callback(typee)
                 self._set_exit_callback(typee)
 
-    def _parse(self, query):
+    def _parse(self, query: Union[str, bytes]) -> _ParsedData:
         if isinstance(query, str):
             query = query.encode("UTF-8")
 
@@ -615,15 +650,19 @@ class LibGraphqlParser:
 
         return parsed_data
 
-    def parse_and_visit(self, query, ctx=None):
-        if not ctx:
-            ctx = self._default_visitor_cls()
+    def parse_and_visit(
+        self,
+        query: Union[str, bytes],
+        visitor: Optional["TartifletteVisitor"] = None,
+    ) -> None:
+        if not visitor:
+            visitor = self._default_visitor_cls()
 
         with self._parse(query) as parsed:
             self._lib.graphql_node_visit(
-                parsed, self._lib_callbacks, self._ffi.new_handle(ctx)
+                parsed, self._lib_callbacks, self._ffi.new_handle(visitor)
             )
 
-    def parse_and_jsonify(self, query):
+    def parse_and_jsonify(self, query: Union[str, bytes]) -> bytes:
         with self._parse(query) as parsed:
             return self._ffi.string(self._lib.graphql_ast_to_json(parsed))

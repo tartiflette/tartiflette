@@ -1,4 +1,7 @@
-def has_typename(raw):
+from typing import Any
+
+
+def has_typename(raw: Any) -> bool:
     try:
         return bool(raw["_typename"])
     except (KeyError, TypeError):

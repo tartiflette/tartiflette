@@ -150,3 +150,126 @@ async def test_tartiflette_execute_object_type_unknown_field(clean_registry):
 
     assert result == {"data": {"posts": [{"content": {"title": "Test"}}]}}
     assert mock_call.called is True
+
+
+@pytest.mark.asyncio
+async def test_ttftt_object_with_interfaces(clean_registry):
+    sdl = """
+    interface Identifiable {
+      id: String!
+    }
+    
+    interface Nameable {
+      name: String!
+    }
+    
+    interface Titleable {
+      title: String!
+    }
+    
+    interface Subscribeable {
+      subscribers: [User!]!
+    }
+    
+    interface Starrable {
+      nbOfStars: Int!
+    }
+    
+    interface UniformResourceLocatable {
+      url: String!
+    }
+    
+    type User implements Identifiable & Nameable & Subscribeable {
+      id: String!
+      name: String!
+      subscribers: [User!]!
+      repositories: [Repository!]!
+    }
+    
+    type Repository implements Identifiable & Titleable & Subscribeable & Starrable {
+      id: String!
+      title: String!
+      subscribers: [User!]!
+      nbOfStars: Int!
+    }
+    
+    type Query {
+      user(id: Int!): User!
+      repository(id: Int!): Repository!
+      users: [User!]!
+      repositories: [Repository!]!
+    }
+    """
+
+    @Resolver("Query.user", schema_name="test_ttftt_object_with_interfaces")
+    async def _query_user_resolver(*_args, **_kwargs):
+        return {
+            "id": 1,
+            "name": "Hooman",
+            "subscribers": [],
+            "repositories": [
+                {"id": 1, "title": "Repoo", "subscribers": [], "nbOfStars": 2}
+            ],
+        }
+
+    ttftt_engine = Engine(sdl, schema_name="test_ttftt_object_with_interfaces")
+
+    user_type = ttftt_engine._schema.find_type("User")
+    repository_type = ttftt_engine._schema.find_type("Repository")
+
+    user_interfaces = ["Identifiable", "Nameable", "Subscribeable"]
+    for user_interface in user_interfaces:
+        interface = ttftt_engine._schema.find_type(user_interface)
+        assert user_interface in user_type.interfaces_names
+        assert interface in user_type.interfaces
+        assert user_type in interface.possibleTypes
+    assert len(user_interfaces) == len(user_type.interfaces_names)
+
+    repository_interfaces = [
+        "Identifiable",
+        "Titleable",
+        "Subscribeable",
+        "Starrable",
+    ]
+    for repository_interface in repository_interfaces:
+        interface = ttftt_engine._schema.find_type(repository_interface)
+        assert repository_interface in repository_type.interfaces_names
+        assert interface in repository_type.interfaces
+        assert repository_type in interface.possibleTypes
+    assert len(repository_interfaces) == len(repository_type.interfaces_names)
+
+    url_interface = ttftt_engine._schema.find_type("UniformResourceLocatable")
+    assert url_interface.possibleTypes == []
+
+    result = await ttftt_engine.execute(
+        """
+    query {
+      user(id: 1) {
+        id
+        name
+        subscribers {
+          id
+          name
+        }
+        repositories {
+          id
+          title
+          nbOfStars
+        }
+      }
+    }
+    """
+    )
+
+    assert result == {
+        "data": {
+            "user": {
+                "id": "1",
+                "name": "Hooman",
+                "subscribers": [],
+                "repositories": [
+                    {"id": "1", "title": "Repoo", "nbOfStars": 2}
+                ],
+            }
+        }
+    }

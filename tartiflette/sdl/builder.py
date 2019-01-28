@@ -10,6 +10,10 @@ from tartiflette.sdl.transformers.cleaning_transformer import (
 )
 from tartiflette.sdl.transformers.schema_transformer import SchemaTransformer
 
+_GRAMMAR_FILE_PATH = os.path.join(
+    os.path.dirname(__file__), "grammar", "graphql_sdl_grammar.lark"
+)
+
 
 def build_graphql_schema_from_sdl(
     sdl: str, schema: Optional[GraphQLSchema] = None
@@ -22,9 +26,9 @@ def build_graphql_schema_from_sdl(
     :param schema: Specify a GraphQLSchema if needed
     :return: a GraphQLSchema object.
     """
-
-    raw_tree = parse_graphql_sdl_to_ast(sdl)
-    return transform_ast_to_schema(sdl, raw_tree, schema=schema)
+    return transform_ast_to_schema(
+        sdl, parse_graphql_sdl_to_ast(sdl), schema=schema
+    )
 
 
 def parse_graphql_sdl_to_ast(sdl: str) -> Tree:
@@ -38,23 +42,19 @@ def parse_graphql_sdl_to_ast(sdl: str) -> Tree:
     :param sdl: Any GraphQL SDL schema string
     :return: a Lark parser `Tree`
     """
-    __path__ = os.path.dirname(__file__)
-    grammar_filename = os.path.join(
-        __path__, "grammar", "graphql_sdl_grammar.lark"
-    )
-
     gqlsdl_parser = Lark.open(
-        grammar_filename,
+        _GRAMMAR_FILE_PATH,
         start="document",
         parser="lalr",
         lexer="contextual",
         propagate_positions=True,
     )
     gqlsdl = gqlsdl_parser.parse
-
-    # try:
     return gqlsdl(sdl)
+
     # TODO: Improve this as below
+    # try:
+    #     return gqlsdl(sdl)
     # except (UnexpectedToken, ParseError, UnexpectedInput) as e:
     #     raise InvalidSDL(e.message)
 

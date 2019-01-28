@@ -1,6 +1,3 @@
-import pytest
-
-
 def test_executor_types_ec_instance():
     from tartiflette.executors.types import ExecutionContext
 
@@ -8,19 +5,6 @@ def test_executor_types_ec_instance():
 
     assert not ec.errors
     assert not ec.is_introspection
-
-
-def test_executor_types_ec_add_error_and_raise():
-    from tartiflette.executors.types import ExecutionContext
-
-    ec = ExecutionContext()
-
-    e = Exception
-
-    with pytest.raises(Exception):
-        ec.add_error_and_raise(e)
-
-    assert e in ec.errors
 
 
 def test_executor_types_ec_add_error():

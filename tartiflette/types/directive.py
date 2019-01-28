@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 
 class GraphQLDirective:
@@ -39,19 +39,19 @@ class GraphQLDirective:
         self,
         name: str,
         on: List[str],
-        arguments: Optional[Dict] = None,
+        arguments: Optional[Dict[str, "GraphQLArgument"]] = None,
         description: Optional[str] = None,
         implementation: Optional[Callable] = None,
         schema=None,
-    ):
+    ) -> None:
         self.name = name
         self.where = on
-        self.arguments = arguments if arguments else {}
+        self.arguments = arguments or {}
         self.description = description
         self.implementation = implementation or None
         self.schema = schema
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{}(name={!r}, on={!r}, arguments={!r}, description={!r})".format(
             self.__class__.__name__,
             self.name,
@@ -60,10 +60,10 @@ class GraphQLDirective:
             self.description,
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         return self is other or (
             type(self) is type(other)
             and self.name == other.name
@@ -73,14 +73,14 @@ class GraphQLDirective:
 
     # Introspection property
     @property
-    def args(self):
-        return [x for _, x in self.arguments.items()]
+    def args(self) -> List["GraphQLArgument"]:
+        return list(self.arguments.values())
 
     # Introspection Attribute
     @property
-    def locations(self):
+    def locations(self) -> List[str]:
         return self.where
 
-    def bake(self, schema):
+    def bake(self, schema: "GraphQLSchema") -> None:
         for arg in self.arguments.values():
             arg.bake(schema)
