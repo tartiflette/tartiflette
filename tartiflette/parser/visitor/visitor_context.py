@@ -1,7 +1,8 @@
 from copy import deepcopy
+from typing import Dict, List, Optional
 
 
-def _create_node_name(gql_type, name=None):
+def _create_node_name(gql_type: str, name: Optional[str] = None):
     node_name = gql_type
     if name:
         node_name = node_name + "(%s)" % name
@@ -12,18 +13,19 @@ class InternalVisitorContext:
     #  pylint: disable=too-many-locals,too-many-instance-attributes
     def __init__(
         self,
-        operation=None,
-        node=None,
-        argument_name=None,
-        directive_name=None,
-        type_condition=None,
-        fragment_definition=None,
-        inline_fragment_info=None,
-        depth=0,
-        path=None,
-        field_path=None,
-        fields=None,
-    ):  # pylint: disable=too-many-arguments
+        operation: Optional["NodeOperationDefinition"] = None,
+        node: Optional["NodeField"] = None,
+        argument_name: Optional[str] = None,
+        directive_name: Optional[str] = None,
+        type_condition: Optional[str] = None,
+        fragment_definition: Optional["NodeFragmentDefinition"] = None,
+        inline_fragment_info: Optional["InlineFragmentInfo"] = None,
+        depth: int = 0,
+        path: Optional[str] = None,
+        field_path: Optional[List[str]] = None,
+        fields: Optional[Dict[str, "GraphQLField"]] = None,
+    ) -> None:
+        # pylint: disable=too-many-arguments
         self._operation = operation
         self._node = node
         self._argument_name = argument_name
@@ -36,7 +38,7 @@ class InternalVisitorContext:
         self._field_path = field_path or []
         self._fields = fields or {}
 
-    def clone(self):
+    def clone(self) -> "InternalVisitorContext":
         return InternalVisitorContext(
             self._operation,
             self._node,
@@ -52,112 +54,114 @@ class InternalVisitorContext:
         )
 
     @property
-    def operation(self):
+    def operation(self) -> Optional["NodeOperationDefinition"]:
         return self._operation
 
     @operation.setter
-    def operation(self, val):
+    def operation(self, val: "NodeOperationDefinition") -> None:
         self._operation = val
 
     @property
-    def node(self):
+    def node(self) -> Optional["NodeField"]:
         return self._node
 
     @node.setter
-    def node(self, val):
+    def node(self, val: "NodeField") -> None:
         self._node = val
 
     @property
-    def argument_name(self):
+    def argument_name(self) -> Optional[str]:
         return self._argument_name
 
     @argument_name.setter
-    def argument_name(self, val):
+    def argument_name(self, val: str) -> None:
         self._argument_name = val
 
     @property
-    def directive_name(self):
+    def directive_name(self) -> Optional[str]:
         return self._directive_name
 
     @directive_name.setter
-    def directive_name(self, val):
+    def directive_name(self, val: str) -> None:
         self._directive_name = val
 
     @property
-    def type_condition(self):
+    def type_condition(self) -> Optional[str]:
         return self._type_condition
 
     @type_condition.setter
-    def type_condition(self, val):
+    def type_condition(self, val: str) -> None:
         self._type_condition = val
 
     @property
-    def fragment_definition(self):
+    def fragment_definition(self) -> Optional["NodeFragmentDefinition"]:
         return self._fragment_definition
 
     @fragment_definition.setter
-    def fragment_definition(self, val):
+    def fragment_definition(self, val: "NodeFragmentDefinition") -> None:
         self._fragment_definition = val
 
     @property
-    def inline_fragment_info(self):
+    def inline_fragment_info(self) -> Optional["InlineFragmentInfo"]:
         return self._inline_fragment_info
 
     @inline_fragment_info.setter
-    def inline_fragment_info(self, val):
+    def inline_fragment_info(self, val: "InlineFragmentInfo") -> None:
         self._inline_fragment_info = val
 
     @property
-    def depth(self):
+    def depth(self) -> int:
         return len(self.field_path)
 
     @property
-    def path(self):
+    def path(self) -> str:
         return self._path
 
     @path.setter
-    def path(self, val):
+    def path(self, val: str) -> None:
         self._path = val
 
     @property
-    def field_path(self):
+    def field_path(self) -> List[str]:
         return self._field_path
 
     @field_path.setter
-    def field_path(self, val):
+    def field_path(self, val: List[str]) -> None:
         self._field_path = val
 
     @property
-    def _hashed_field_path(self):
+    def _hashed_field_path(self) -> str:
         return "/".join(self._field_path)
 
     @property
-    def current_field(self):
+    def current_field(self) -> Optional["GraphQLField"]:
         try:
             return self._fields[self._hashed_field_path]
         except KeyError:
             pass
         return None
 
-    def move_in(self, element):
+    def move_in(self, element: "_VisitorElement") -> None:
         self._path = self._path + "/%s" % _create_node_name(
             element.libgraphql_type, element.name
         )
 
-    def move_out(self):
+    def move_out(self) -> None:
         self._path = "/".join(self._path.split("/")[:-1])
 
-    def move_in_field(self, element, field):
+    def move_in_field(
+        self, element: "_VisitorElement", field: "GraphQLField"
+    ) -> None:
         self._field_path.append(element.name)
         self._fields[self._hashed_field_path] = field
 
-    def move_out_field(self):
+    def move_out_field(self) -> None:
         self._fields.pop(self._hashed_field_path, None)
         if self.depth > 0:
             self._field_path.pop()
             self.node = self.node.parent
 
-    def compute_type_cond(self, type_cond_depth):
+    def compute_type_cond(self, type_cond_depth: int) -> Optional[str]:
         if self.depth == type_cond_depth or (
             self.inline_fragment_info
             and self.depth == self.inline_fragment_info.depth

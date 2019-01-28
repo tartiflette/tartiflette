@@ -1,4 +1,5 @@
 from collections import namedtuple
+from typing import List
 
 from lark import Tree, v_args
 from lark.visitors import Transformer_InPlace
@@ -22,6 +23,7 @@ from tartiflette.types.union import GraphQLUnionType
 # pylint: disable=no-self-use
 # pylint: disable=too-many-public-methods
 
+
 SchemaNode = namedtuple("SchemaNode", ["type", "value"])
 """
 SchemaNode is used as a container that mimics the lark.Token type.
@@ -43,22 +45,24 @@ class SchemaTransformer(Transformer_InPlace):
     # TODO: Add type extensions
     # TODO: Cleanup errors & custom type (format, line number etc.).
 
-    def __init__(self, sdl: str, schema):
+    def __init__(self, sdl: str, schema: "GraphQLSchema") -> None:
         self.sdl = sdl
         self._schema = schema
 
-    def document(self, tree: Tree):
+    def document(self, tree: Tree) -> List[Tree]:
         return tree.children
 
-    def schema_definition(self, tree: Tree):
+    def schema_definition(self, tree: Tree) -> Tree:
         # TODO: Save schema directives if there are some.
         return tree
 
-    def type_system_definition(self, tree: Tree):
+    def type_system_definition(self, tree: Tree) -> Tree:
         # Nothing to do here
         return tree.children[0]
 
-    def _operation_type_definition(self, tree: Tree, operation_name: str):
+    def _operation_type_definition(
+        self, tree: Tree, operation_name: str
+    ) -> Tree:
         for child in tree.children:
             if child.type == "named_type":
                 setattr(self._schema, operation_name + "_type", child.value)
@@ -73,13 +77,13 @@ class SchemaTransformer(Transformer_InPlace):
                 )
         return tree
 
-    def query_operation_type_definition(self, tree: Tree):
+    def query_operation_type_definition(self, tree: Tree) -> Tree:
         return self._operation_type_definition(tree, "query")
 
-    def mutation_operation_type_definition(self, tree: Tree):
+    def mutation_operation_type_definition(self, tree: Tree) -> Tree:
         return self._operation_type_definition(tree, "mutation")
 
-    def subscription_operation_type_definition(self, tree: Tree):
+    def subscription_operation_type_definition(self, tree: Tree) -> Tree:
         return self._operation_type_definition(tree, "subscription")
 
     def named_type(self, tree: Tree) -> SchemaNode:
@@ -102,7 +106,7 @@ class SchemaTransformer(Transformer_InPlace):
     def type(self, tree: Tree) -> SchemaNode:
         return SchemaNode("type", tree.children[0].value)
 
-    def type_definition(self, tree: Tree):
+    def type_definition(self, tree: Tree) -> Tree:
         self._schema.add_definition(tree.children[0])
         return tree
 
@@ -157,12 +161,11 @@ class SchemaTransformer(Transformer_InPlace):
         )
 
     def union_member_types(self, tree: Tree) -> SchemaNode:
-        members = []
-        for child in tree.children:
-            members.append(child.value)
-        return SchemaNode("union_members", members)
+        return SchemaNode(
+            "union_members", [child.value for child in tree.children]
+        )
 
-    def enum_type_definition(self, tree: Tree):
+    def enum_type_definition(self, tree: Tree) -> GraphQLEnumType:
         # TODO: Add directives
         description = None
         name = None
@@ -193,16 +196,13 @@ class SchemaTransformer(Transformer_InPlace):
         return enum_type
 
     def enum_values_definition(self, tree: Tree) -> SchemaNode:
-        values = []
-        for child in tree.children:
-            values.append(child)
-        return SchemaNode("enum_values", values)
+        return SchemaNode("enum_values", [child for child in tree.children])
 
     def enum_value_definition(self, tree: Tree) -> GraphQLEnumValue:
         # TODO: Add directives
         description = None
         directives = None
-        value: GraphQLEnumValue = None
+        value = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
@@ -279,11 +279,14 @@ class SchemaTransformer(Transformer_InPlace):
         )
 
     def implements_interfaces(self, tree: Tree) -> SchemaNode:
-        interfaces = []
-        for child in tree.children:
-            if child.type != "IMPLEMENTS":
-                interfaces.append(child.value)
-        return SchemaNode("interfaces", interfaces)
+        return SchemaNode(
+            "interfaces",
+            [
+                child.value
+                for child in tree.children
+                if child.type != "IMPLEMENTS"
+            ],
+        )
 
     def input_object_type_definition(
         self, tree: Tree
@@ -315,16 +318,14 @@ class SchemaTransformer(Transformer_InPlace):
         )
 
     def input_fields_definition(self, tree: Tree) -> SchemaNode:
-        fields = {}
-        for child in tree.children:
-            fields[child.name] = child
-        return SchemaNode("input_fields", fields)
+        return SchemaNode(
+            "input_fields", {child.name: child for child in tree.children}
+        )
 
     def fields_definition(self, tree: Tree) -> SchemaNode:
-        fields = {}
-        for child in tree.children:
-            fields[child.name] = child
-        return SchemaNode("fields", fields)
+        return SchemaNode(
+            "fields", {child.name: child for child in tree.children}
+        )
 
     def field_definition(self, tree: Tree) -> GraphQLField:
         description = None
@@ -361,12 +362,11 @@ class SchemaTransformer(Transformer_InPlace):
         )
 
     def arguments_definition(self, tree: Tree) -> SchemaNode:
-        arguments = {}
-        for child in tree.children:
-            arguments[child.name] = child
-        return SchemaNode("arguments", arguments)
+        return SchemaNode(
+            "arguments", {child.name: child for child in tree.children}
+        )
 
-    def input_value_definition(self, tree: Tree):
+    def input_value_definition(self, tree: Tree) -> GraphQLArgument:
         # TODO: Add directives
         description = None
         name = None
@@ -396,7 +396,7 @@ class SchemaTransformer(Transformer_InPlace):
             description=description,
         )
 
-    def directive_definition(self, tree: Tree):
+    def directive_definition(self, tree: Tree) -> Tree:
         description = None
         name = None
         applies_on = None
@@ -429,7 +429,7 @@ class SchemaTransformer(Transformer_InPlace):
         self._schema.add_directive(directive)
         return Tree("directive_definition", [directive])
 
-    def directive_locations(self, tree: Tree):
+    def directive_locations(self, tree: Tree) -> SchemaNode:
         locations = []
         for child in tree.children:
             if child.value in GraphQLDirective.POSSIBLE_LOCATIONS:
@@ -443,7 +443,7 @@ class SchemaTransformer(Transformer_InPlace):
     def description(self, tree: Tree) -> SchemaNode:
         return SchemaNode("description", tree.children[0].value)
 
-    def default_value(self, tree: Tree) -> SchemaNode:
+    def default_value(self, tree: Tree) -> Tree:
         # Ignore this node and return the value contained
         return tree.children[0]
 
@@ -481,8 +481,9 @@ class SchemaTransformer(Transformer_InPlace):
         obj = {}
         for child in tree.children:
             if child.type == "object_field":
-                name, value = child.value
-                obj[name] = value
+                obj[child.value[0]] = child.value[
+                    1
+                ]  # name, value = child.value
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
@@ -508,10 +509,13 @@ class SchemaTransformer(Transformer_InPlace):
         return SchemaNode("object_field", (name, value))
 
     def arguments(self, tree: Tree) -> SchemaNode:
-        arguments = {}
-        for child in tree.children:
-            arguments[child.value[0]] = child.value[1]
-        return SchemaNode("arguments", arguments)
+        return SchemaNode(
+            "arguments",
+            {
+                child.value[0]: child.value[1]  # name, value = child.value
+                for child in tree.children
+            },
+        )
 
     def argument(self, tree: Tree) -> SchemaNode:
         name = None
@@ -530,11 +534,14 @@ class SchemaTransformer(Transformer_InPlace):
         return SchemaNode("argument", (name, value))
 
     def directives(self, tree: Tree) -> SchemaNode:
-        directives = {}
-        for child in tree.children:
-            if child.type == "directive":
-                directives[child.value[0]] = child.value[1]
-        return SchemaNode("directives", directives)
+        return SchemaNode(
+            "directives",
+            {
+                child.value[0]: child.value[1]  # name, value = child.value
+                for child in tree.children
+                if child.type == "directive"
+            },
+        )
 
     def directive(self, tree: Tree) -> SchemaNode:
         name = None
@@ -551,13 +558,3 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         return SchemaNode("directive", (name, arguments))
-
-    def __getattr__(self, attr):
-        ignored = []
-
-        def fn(tree: Tree):
-            if tree.data not in ignored:
-                print("{} => {}\n".format(attr, tree))
-            return tree
-
-        return fn

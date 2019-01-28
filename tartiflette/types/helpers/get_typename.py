@@ -1,4 +1,7 @@
-def get_typename(raw):
+from typing import Any
+
+
+def get_typename(raw: Any) -> str:
     try:
         return raw["_typename"]
     except (KeyError, TypeError):

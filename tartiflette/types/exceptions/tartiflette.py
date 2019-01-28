@@ -8,22 +8,22 @@ class GraphQLError(Exception):
     def __init__(
         self,
         message: str,
-        path: Optional[List[Any]] = None,
+        path: Optional[list] = None,
         locations: Optional[List[Location]] = None,
         user_message: str = None,
         more_info: str = "",
-    ):
+    ) -> None:
         super().__init__(message)
         self.message = message  # Developer message by default
-        self.user_message = user_message if user_message else message
+        self.user_message = user_message or message
         self.more_info = more_info
-        self.path = path if path else None
-        self.locations = locations if locations else []
+        self.path = path or None
+        self.locations = locations or []
 
     def coerce_value(
         self,
         *_args,
-        path: Optional[List[Any]] = None,
+        path: Optional[list] = None,
         locations: Optional[List[Location]] = None,
         **_kwargs,
     ):
@@ -49,7 +49,7 @@ class ImproperlyConfigured(GraphQLError):
 
 
 class InvalidValue(GraphQLError):
-    def __init__(self, value: Any, info: Info):
+    def __init__(self, value: Any, info: Info) -> None:
         self.value = value
         self.info = info
         message = "Invalid value (value: {!r})".format(value)
@@ -168,7 +168,7 @@ class MissingRequiredArgument(GraphQLError):
 
 
 class UnknownVariableException(GraphQLError):
-    def __init__(self, varname):
+    def __init__(self, varname: str) -> None:
         # TODO: Unify error messages format
         super().__init__(message="< %s > is not known" % varname)
 

@@ -1,5 +1,7 @@
 import os
 
+from typing import List, Optional, Union
+
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import ImproperlyConfigured
 
@@ -18,7 +20,9 @@ _BUILTINS_SCALARS = [
 ]
 
 
-def _get_builtins_sdl_files(exclude_builtins_scalars):
+def _get_builtins_sdl_files(
+    exclude_builtins_scalars: Optional[List[str]]
+) -> List[str]:
     return [
         *[
             "%s/builtins/scalars/%s.sdl" % (_DIR_PATH, builtin_scalar.lower())
@@ -37,7 +41,11 @@ class SchemaRegistry:
     _schemas = {}
 
     @staticmethod
-    def _register(schema_name, where, obj):
+    def _register(
+        schema_name: str,
+        where: str,
+        obj: Optional[Union["Directive", "Resolver", "Scalar"]],
+    ) -> None:
         if not obj:
             return
 
@@ -54,19 +62,29 @@ class SchemaRegistry:
         SchemaRegistry._schemas[schema_name][where][obj.name] = obj
 
     @staticmethod
-    def register_directive(schema_name="default", directive=None):
+    def register_directive(
+        schema_name: str = "default", directive: Optional["Directive"] = None
+    ) -> None:
         SchemaRegistry._register(schema_name, "directives", directive)
 
     @staticmethod
-    def register_resolver(schema_name="default", resolver=None):
+    def register_resolver(
+        schema_name: str = "default", resolver: Optional["Resolver"] = None
+    ) -> None:
         SchemaRegistry._register(schema_name, "resolvers", resolver)
 
     @staticmethod
-    def register_scalar(schema_name="default", scalar=None):
+    def register_scalar(
+        schema_name: str = "default", scalar: Optional["Scalar"] = None
+    ) -> None:
         SchemaRegistry._register(schema_name, "scalars", scalar)
 
     @staticmethod
-    def register_sdl(schema_name, sdl, exclude_builtins_scalars=None):
+    def register_sdl(
+        schema_name: str,
+        sdl: Union[str, List[str], GraphQLSchema],
+        exclude_builtins_scalars: Optional[List[str]] = None,
+    ) -> None:
         SchemaRegistry._schemas.setdefault(schema_name, {})
 
         # Maybe read them one and use them a lot :p
@@ -75,15 +93,15 @@ class SchemaRegistry:
         full_sdl = ""
         if not isinstance(sdl, GraphQLSchema):
             if isinstance(sdl, list):
-                sdl_files_list = sdl_files_list + sdl
+                sdl_files_list += sdl
             elif os.path.isfile(sdl):
-                sdl_files_list = sdl_files_list + [sdl]
+                sdl_files_list.append(sdl)
             elif os.path.isdir(sdl):
-                sdl_files_list = sdl_files_list + [
+                sdl_files_list += [
                     os.path.join(sdl, f)
                     for f in os.listdir(sdl)
-                    if os.path.isfile(os.path.join(sdl, f))
-                    and f.endswith(".sdl")
+                    if f.endswith(".sdl")
+                    and os.path.isfile(os.path.join(sdl, f))
                 ]
             else:
                 full_sdl = sdl
@@ -93,15 +111,14 @@ class SchemaRegistry:
         # Convert SDL files into big schema and parse it
         for filepath in sdl_files_list:
             with open(filepath, "r") as sdl_file:
-                data = sdl_file.read().replace("\n", " ")
-                full_sdl += " " + data
+                full_sdl += " " + sdl_file.read().replace("\n", " ")
 
         SchemaRegistry._schemas[schema_name]["sdl"] = full_sdl
 
     @staticmethod
-    def find_schema_info(schema_name="default"):
+    def find_schema_info(schema_name: str = "default") -> dict:
         return SchemaRegistry._schemas[schema_name]
 
     @staticmethod
-    def find_schema(schema_name="default"):
+    def find_schema(schema_name: str = "default") -> GraphQLSchema:
         return SchemaRegistry.find_schema_info(schema_name)["inst"]

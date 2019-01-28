@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from tartiflette.types.type import GraphQLType
 
@@ -15,11 +15,11 @@ class GraphQLArgument:
     def __init__(
         self,
         name: str,
-        gql_type: str,
+        gql_type: Union[str, GraphQLType],
         default_value: Optional[Any] = None,
         description: Optional[str] = None,
         schema=None,
-    ):
+    ) -> None:
         # TODO: Narrow the default_value type ?
         self.name = name
         self.gql_type = gql_type
@@ -28,7 +28,7 @@ class GraphQLArgument:
         self._type = {}
         self._schema = schema
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             "{}(name={!r}, gql_type={!r}, "
             "default_value={!r}, description={!r})".format(
@@ -40,10 +40,10 @@ class GraphQLArgument:
             )
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         return self is other or (
             type(self) is type(other)
             and self.name == other.name
@@ -53,21 +53,21 @@ class GraphQLArgument:
 
     # Introspection Attribute
     @property
-    def type(self):
+    def type(self) -> dict:
         return self._type
 
     @property
-    def is_required(self):
+    def is_required(self) -> bool:
         if not isinstance(self.gql_type, GraphQLType):
             return False
         return self.gql_type.is_not_null and self.default_value is None
 
     # Introspection Attribute
     @property
-    def defaultValue(self):  # pylint: disable=invalid-name
+    def defaultValue(self) -> Any:  # pylint: disable=invalid-name
         return self.default_value
 
-    def bake(self, schema):
+    def bake(self, schema: "GraphQLSchema") -> None:
         self._schema = schema
         if isinstance(self.gql_type, GraphQLType):
             self._type = self.gql_type

@@ -23,19 +23,18 @@ class Directive:
         @Directive("deprecated")
         class MyDirective:
             ... callbacks here ...
-
     """
 
-    def __init__(self, name: str, schema_name="default"):
+    def __init__(self, name: str, schema_name: str = "default") -> None:
         self._name = name
         self._implementation = None
         self._schema_name = schema_name
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
-    def bake(self, schema):
+    def bake(self, schema: "GraphQLSchema") -> None:
         if not self._implementation:
             raise MissingImplementation(
                 "No implementation given for directive < %s >" % self._name

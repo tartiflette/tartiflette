@@ -27,16 +27,16 @@ class Resolver:
             return 42
     """
 
-    def __init__(self, name: str, schema_name: str = "default"):
+    def __init__(self, name: str, schema_name: str = "default") -> None:
         self._name = name
         self._implementation = None
         self._schema_name = schema_name
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
-    def bake(self, schema):
+    def bake(self, schema: "GraphQLSchema") -> None:
         if not self._implementation:
             raise MissingImplementation(
                 "No implementation given for resolver < %s >" % self._name
@@ -50,7 +50,7 @@ class Resolver:
                 "Unknown Field Definition %s" % self._name
             )
 
-    def __call__(self, resolver: Callable):
+    def __call__(self, resolver: Callable) -> Callable:
         if not iscoroutinefunction(resolver):
             raise NonAwaitableResolver(
                 "The resolver `{}` given is not awaitable.".format(

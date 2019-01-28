@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Callable, Optional
 
 
 class GraphQLType:
@@ -9,8 +9,8 @@ class GraphQLType:
         is_not_null: Optional[bool] = False,
         is_list: Optional[bool] = False,
         is_enum_value: Optional[bool] = False,
-        schema=None,
-    ):
+        schema: Optional["GraphQLSchema"] = None,
+    ) -> None:
         self.name = name
         self.description = description
         # self.sdl_info  # TODO: Is it useful to store the SDL source AST Node ?
@@ -46,12 +46,12 @@ class GraphQLType:
 
     # Introspection Attribute
     @property
-    def ofType(self):  # pylint: disable=invalid-name
+    def ofType(self) -> None:  # pylint: disable=invalid-name
         return None
 
     # Introspection Attribute
     @property
-    def kind(self):
+    def kind(self) -> str:
         return "TYPE"
 
     def __repr__(self) -> str:
@@ -62,14 +62,18 @@ class GraphQLType:
     def __str__(self) -> str:
         return "{!s}".format(self.name)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         return self is other or (
             type(self) is type(other) and self.name == other.name
         )
 
     @property
-    def schema(self,):
+    def schema(self) -> Optional["GraphQLSchema"]:
         return self._schema
 
-    def bake(self, schema, _):
+    def bake(
+        self,
+        schema: "GraphQLSchema",
+        _custom_default_resolver: Optional[Callable],
+    ) -> None:
         self._schema = schema

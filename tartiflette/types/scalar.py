@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 from tartiflette.types.type import GraphQLType
 
@@ -20,8 +20,8 @@ class GraphQLScalarType(GraphQLType):
         coerce_output: Optional[callable] = None,
         coerce_input: Optional[callable] = None,
         description: Optional[str] = None,
-        schema=None,
-    ):
+        schema: Optional["GraphQLSchema"] = None,
+    ) -> None:
         super().__init__(name=name, description=description, schema=schema)
         self.coerce_output = coerce_output
         self.coerce_input = coerce_input
@@ -31,7 +31,7 @@ class GraphQLScalarType(GraphQLType):
             self.__class__.__name__, self.name, self.description
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         # TODO: Comparing function pointers is not ideal here...
         return (
             super().__eq__(other)
@@ -41,5 +41,5 @@ class GraphQLScalarType(GraphQLType):
 
     # Introspection Attribute
     @property
-    def kind(self):
+    def kind(self) -> str:
         return "SCALAR"
