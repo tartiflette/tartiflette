@@ -1,4 +1,17 @@
-# API
+- [Engine initialization](#engine-initialization)
+  - [Advanced constructor](#advanced-constructor)
+    - [Engine parameter: error_coercer](#engine-parameter-errorcoercer)
+    - [Engine parameter: custom_default_resolver](#engine-parameter-customdefaultresolver)
+    - [Engine parameter: exclude_builtins_scalars](#engine-parameter-excludebuiltinsscalars)
+- [Resolver](#resolver)
+  - [@Resolver decorator](#resolver-decorator)
+  - [Schema Registry](#schema-registry)
+    - [What is aim of the Schema Registry?](#what-is-aim-of-the-schema-registry)
+    - [How to use multiple Schema and Engine from the same codebase?](#how-to-use-multiple-schema-and-engine-from-the-same-codebase)
+  - [Function signature](#function-signature)
+    - [Resolver `info` argument](#resolver-info-argument)
+- [Types](#types)
+  - [Scalars](#scalars)
 
 Before going deeply into the Tartiflette API, don't forget to take a look of the [getting started](./getting-started.md) section.
 
@@ -10,7 +23,7 @@ The engine accepts at least one parameter, called "sdl", the other [are document
 
 ```python
 from tartiflette import Engine
-Engine(sdl [, resolver_middlewares, resolvers, directive_resolvers])
+Engine(sdl [, schema_name, error_coercer, custom_default_resolver, exclude_builtins_scalars])
 ```
 
 **When the `sdl` parameter contains the raw schema.**
@@ -90,32 +103,52 @@ import tartiflette
 
 engine = tartiflette.Engine(
     sdl,
-    resolver_middlewares=[],
-    resolvers={},
-    directive_resolvers={},
+    schema_name="default",
 )
 ```
 
 1. **sdl:** Schema Definition Language, detailed above.
-2. **resolver_middlewares:** Middlewares list which are applied **only** to resolvers.
-3. **resolvers:** By default, [the resolvers should be decorated with `@Resolver`](#with-decorators). It is possible to specify a list of resolvers
-```python
-async def my_hello_resolver(parent, args, ctx, info):
-    return "Hey"
+2. **schema_name:** Schema used from the [Schema Registry](schema-registry). _(default: "default")_
+3. **[error_coercer](#engine-parameter-errorcoercer):** Coercer used when an error is raised.
+4. **[custom_default_resolver](#engine-parameter-customdefaultresolver):** Used another default resolver. (useful to override the behavior for resolving a property, snakecase -> camelcase and vice versa).
+5. **[exclude_builtins_scalars](#engine-parameter-excludebuiltinsscalars):** List of scalars you want to exclude from the default list.
 
-resolvers = {
-    "Query.hello": my_hello_resolver
-}
+#### Engine parameter: error_coercer
+
+Override the default coercer when an exception is raised.
+
+```python
+def my_error_coercer(exception) -> dict:
+    do_ing_some_thin_gs = 42
+    return a_value
+
+e = Engine("my_sdl.sdl", error_coercer=my_error_coercer)
 ```
-4. **directive_resolvers:** Resolver list which is used as the directive resolvers.
+
+#### Engine parameter: custom_default_resolver
+
+Used another default resolver. Could be useful to override the behavior for resolving a property, snakecase -> camelcase and vice versa.
+
+```python
+
+async def my_default_resolver(parent_result, arguments, context, info):
+    do_ing_some_thin_gs = 42
+    return a_value
+
+e = Engine("my_sdl.sdl", custom_default_resolver=my_default_resolver)
+```
+
+#### Engine parameter: exclude_builtins_scalars
+
+List of scalars you want to exclude [from the default list](#scalars). Useful if you define by yourself the default scalar in the SDL.
+
+```python
+e = Engine("my_sdl.sdl", exclude_builtins_scalars=["Date", "DateTime"])
+```
 
 ## Resolver
 
-### Declare resolvers
-
-Tartiflette provides 2 different ways to declare a resolver for a Field.
-
-#### With decorators
+### @Resolver decorator
 
 The most common way to assign specific resolver to a Field, is to decorate your resolver function with the `@Resolver` decorator. Your function [MUST BE compliant with the function signature](#function-signature).
 
@@ -127,22 +160,75 @@ async def my_hello_resolver(parent, args, context, info):
     return "Chuck"
 ```
 
-#### During Engine initialization
+### Schema Registry
 
-The second way is to use the [advanced Engine initialization](#advanced-constructor) to specify a map of resolvers associated to Fields.
+By default, all the resolvers created thanks to the `@Resolver` decorator, are registered to the "default" schema in the `Schema Registry`.
+
+#### What is aim of the Schema Registry?
+
+The `Schema Registry` is an advanced use-case of Tartiflette, used by the developers who want to expose more than one Engine from the same codebase.
+
+The Schema Registry will help you to assign a `Resolver` to a specific Schema, then, during the initialization process of the Engine, you will be able to choose a specific Schema to use.
+
+By default, every `Resolver` are assigned to the `default` schema. Moreover, every Engine are attached to the `default` schema.
+
+#### How to use multiple Schema and Engine from the same codebase?
+
+This following code sample will create 2 schemas in the `Schema Registry`.
+
+- "default"
+- "proof_of_concept"
 
 ```python
-import tartiflette
+import asyncio
 
-async def my_hello_resolver(parent, args, ctx, info):
-    return "Chuck"
+from tartiflette import Engine, Resolver
 
-engine = tartiflette.Engine(
-    sdl,
-    resolvers={
-        "Query.hello": my_hello_resolver
+@Resolver("Query.hello") # Will be assigned to the 'default' Schema
+async def resolver_hello(parent, args, ctx, info):
+    return "hello " + args["name"]
+
+
+@Resolver("Query.hello", "proof_of_concept") # Will be assigned to the 'proof_of_concept' Schema
+async def resolver_hello(parent, args, ctx, info):
+    return "Hey " + args["name"]
+
+
+async def run():
+    tftt_engine = Engine("""
+    type Query {
+        hello(name: String): String
     }
-)
+    """) # This Engine will attached the SDL to the 'default' Schema.
+
+    result = await tftt_engine.execute(
+        query='query { hello(name: "Chuck") }'
+    )
+
+    # result will be equals to
+    # {
+    #     "data": {
+    #         "hello": "Hello Chuck"
+    #     }
+    # }
+
+    tftt_proof_of_concept = Engine("""
+    type Query {
+        hello(name: String): String
+    }
+    """,
+    schema_name="proof_of_concept") # This Engine will attached the SDL to the 'proof_of_concept' Schema.
+
+    result_poc = await tftt_proof_of_concept.execute(
+        query='query { hello(name: "Chuck") }'
+    )
+
+    # result_poc will be equals to
+    # {
+    #     "data": {
+    #         "hello": "Hey Chuck"
+    #     }
+    # }
 ```
 
 ### Function signature
@@ -167,9 +253,24 @@ async def my_hello_resolver(parent, args, context, info):
 
 Here are the properties:
 
-* `query_field` tartiflette.parser.NodeField - Contains the information of the field from the query's perspective.
-* `schema_field` tartiflette.types.field.GraphQLField - Contains the information of the field from the schema's perspective (type, default values, and more.)
-* `schema` tartiflette.schema.GraphQLSchema - Contains the GraphQL's server schema.
-* `path` List[string]  - Describes the path in the current query
-* `location` tartiflette.types.location.Location - Describes the location in the query
-* `execution_ctx` tartiflette.executor.types.ExecutionContext - Contains execution values (like `errors`).
+- `query_field` tartiflette.parser.NodeField - Contains the information of the field from the query's perspective.
+- `schema_field` tartiflette.types.field.GraphQLField - Contains the information of the field from the schema's perspective (type, default values, and more.)
+- `schema` tartiflette.schema.GraphQLSchema - Contains the GraphQL's server schema.
+- `path` List[string] - Describes the path in the current query
+- `location` tartiflette.types.location.Location - Describes the location in the query
+- `execution_ctx` tartiflette.executor.types.ExecutionContext - Contains execution values (like `errors`).
+
+## Types
+
+### Scalars
+
+The built-ins Scalars list used by tartiflette is available in the directory [`./tartiflette/builtins`](https://github.com/dailymotion/tartiflette/tree/master/tartiflette/schema/builtins/scalars)
+
+- Boolean
+- Date
+- DateTime
+- Float
+- ID
+- Int
+- String
+- Time
