@@ -14,13 +14,17 @@
 
 **Summary**
 
-* [Usage](#usage)
-* [Installation](#installation)
-  * [installation dependencies](#installation-dependencies)
-* [Getting Started](./docs/getting-started.md)
-* [API](./docs/API.md)
-* [Roadmap - Road to v1](#roadmap---road-to-v1)
-* [Roadmap - Milestone 2](#roadmap---milestone-2)
+- [Usage](#usage)
+- [Installation](#installation)
+  - [Installation dependencies](#installation-dependencies)
+- [Roadmap - Road to v1](#roadmap---road-to-v1)
+  - [Communication and documentation](#communication-and-documentation)
+  - [Query Parser](#query-parser)
+  - [Executor](#executor)
+  - [SDL - Schema Definition Language](#sdl---schema-definition-language)
+  - [Continuous integration](#continuous-integration)
+- [Roadmap - Milestone 2](#roadmap---milestone-2)
+- [Integration Example](#integration-example)
 
 ## Usage
 
@@ -51,6 +55,8 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())
 ```
+
+[More details on the API Documentation.](./docs/API.md)
 
 ## Installation
 

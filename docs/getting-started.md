@@ -1,4 +1,6 @@
-# Getting Started With Tartiflette
+
+- [Prerequisites](#prerequisites)
+- [Your first Tartiflette!](#your-first-tartiflette)
 
 ## Prerequisites
 
