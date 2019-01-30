@@ -1,5 +1,6 @@
 import os
 
+from glob import glob
 from typing import List, Optional, Union
 
 from tartiflette.schema import GraphQLSchema
@@ -97,12 +98,9 @@ class SchemaRegistry:
             elif os.path.isfile(sdl):
                 sdl_files_list.append(sdl)
             elif os.path.isdir(sdl):
-                sdl_files_list += [
-                    os.path.join(sdl, f)
-                    for f in os.listdir(sdl)
-                    if f.endswith(".sdl")
-                    and os.path.isfile(os.path.join(sdl, f))
-                ]
+                sdl_files_list += glob(
+                    os.path.join(sdl, "**/*.sdl"), recursive=True
+                ) + glob(os.path.join(sdl, "**/*.graphql"), recursive=True)
             else:
                 full_sdl = sdl
         else:

@@ -1,0 +1,5 @@
+type Author {
+  id: ID!
+  name: String!
+  posts: [Post!]! @relation(name: "Author")
+}

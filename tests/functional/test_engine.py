@@ -30,11 +30,20 @@ async def test_tartiflette_engine_initialization_with_sdl_file_list(
     )
 
 
+@pytest.mark.parametrize(
+    "path",
+    [
+        _curr_path + "/data/splitted_sdl",
+        _curr_path + "/data/splitted_graphql",
+        _curr_path + "/data/splitted_mixed",
+        _curr_path + "/data/splitted_mixed_sub_dir",
+    ],
+)
 @pytest.mark.asyncio
 async def test_tartiflette_engine_initialization_with_sdl_folder(
-    clean_registry
+    path, clean_registry
 ):
-    engine = Engine(_curr_path + "/data/splitted_sdl")
+    engine = Engine(path)
 
     assert clean_registry.find_schema().find_type("Author") is not None
     assert clean_registry.find_schema().find_type("Blog") is not None
