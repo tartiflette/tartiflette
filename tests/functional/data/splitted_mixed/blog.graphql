@@ -1,0 +1,7 @@
+type Blog {
+  id: ID!
+  name: String!
+  description: String!
+  authors: [Author!]!
+  posts: [Post!]! @relation(name: "Posts")
+}
