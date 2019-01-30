@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.resolver import ResolverExecutorFactory
-from tartiflette.types.helpers import get_directive_implem_list
+from tartiflette.types.helpers import get_directive_implem_list, reduce_type
 from tartiflette.types.type import GraphQLType
 
 
@@ -38,6 +38,7 @@ class GraphQLField:
         # Introspection Attribute
         self.isDeprecated = False  # pylint: disable=invalid-name
         self._directives_implementations = None
+        self._is_leaf = False
 
     @property
     def directives(self) -> List[Dict[str, Any]]:
@@ -95,6 +96,26 @@ class GraphQLField:
     def schema(self) -> "GraphQLSchema":
         return self._schema
 
+    @property
+    def is_leaf(self) -> bool:
+        return self._is_leaf
+
+    def _compute_is_leaf(self) -> bool:
+        rtype = reduce_type(self.gql_type)
+        try:
+            if self._schema.find_scalar(rtype):
+                return True
+        except KeyError:
+            pass
+
+        try:
+            if self._schema.find_enum(rtype):
+                return True
+        except KeyError:
+            pass
+
+        return False
+
     def bake(
         self,
         schema: "GraphQLSchema",
@@ -107,6 +128,8 @@ class GraphQLField:
         )
         self.resolver.bake(custom_default_resolver)
         self.parent_type = parent_type
+
+        self._is_leaf = self._compute_is_leaf()
 
         for arg in self.arguments.values():
             arg.bake(self._schema)

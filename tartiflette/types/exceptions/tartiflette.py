@@ -143,6 +143,14 @@ class UndefinedFragment(GraphQLError):
     pass
 
 
+class NotALeafType(GraphQLError):
+    pass
+
+
+class NotAnObjectType(GraphQLError):
+    pass
+
+
 class NotUniqueOperationName(GraphQLError):
     pass
 

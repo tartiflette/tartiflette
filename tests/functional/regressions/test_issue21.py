@@ -103,7 +103,7 @@ async def test_issue21_okayquery(
         (
             """
             query LOL($xid: Int!) {
-                a(xid: $xid)
+                a(xid: $xid) { iam }
             }
             """,
             {
@@ -126,7 +126,7 @@ async def test_issue21_okayquery(
         (
             """
             query LOL($xid: Int) {
-                a(xid: $xid)
+                a(xid: $xid) { iam }
             }
             """,
             {
@@ -144,7 +144,7 @@ async def test_issue21_okayquery(
         (
             """
             query LOL($xid: [Int]) {
-                a(xid: $xid)
+                a(xid: $xid) { iam }
             }
             """,
             {
@@ -162,7 +162,7 @@ async def test_issue21_okayquery(
         (
             """
             query LOL($xid: [Int]) {
-                a(xid: $xid)
+                a(xid: $xid) { iam }
             }
             """,
             {

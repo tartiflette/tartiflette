@@ -28,6 +28,8 @@ from tartiflette.types.exceptions.tartiflette import (
     InvalidType,
     MissingRequiredArgument,
     MultipleRootNodeOnSubscriptionOperation,
+    NotALeafType,
+    NotAnObjectType,
     NotLoneAnonymousOperation,
     NotUniqueOperationName,
     UndefinedDirectiveArgument,
@@ -257,6 +259,26 @@ class TartifletteVisitor(Visitor):
                 e.locations = [element.get_location()]
                 self._add_exception(e)
                 return
+
+        if field.is_leaf and element.get_selection_set_size() > 0:
+            self._add_exception(
+                NotAnObjectType(
+                    message=f"field < {field.name} > is a leaf and thus can't have a selection set",
+                    path=self._internal_ctx.field_path[:] + [element.name],
+                    locations=[element.get_location()],
+                )
+            )
+            return
+
+        if not field.is_leaf and element.get_selection_set_size() < 1:
+            self._add_exception(
+                NotALeafType(
+                    message=f"field < {field.name} > is not a leaf and thus must have a selection set",
+                    path=self._internal_ctx.field_path[:] + [element.name],
+                    locations=[element.get_location()],
+                )
+            )
+            return
 
         self._internal_ctx.move_in_field(element, field)
 

@@ -179,18 +179,8 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "locations": [{"line": 3, "column": 15}],
                     },
                     {
-                        "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                        "path": None,
-                        "locations": [{"line": 5, "column": 33}],
-                    },
-                    {
-                        "message": "field `Boolean.unknownField2` was not found in GraphQL schema.",
-                        "path": ["dog", "doesKnowCommand", "unknownField2"],
-                        "locations": [{"line": 6, "column": 19}],
-                    },
-                    {
-                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                        "path": None,
+                        "message": "field < doesKnowCommand > is a leaf and thus can't have a selection set",
+                        "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 5, "column": 17}],
                     },
                     {
@@ -211,7 +201,7 @@ async def _query_human_resolver(*_args, **__kwargs):
             fragment QueryFields on Query {
               unknownField1
             }
-            
+
             fragment NestedDogFields on Dog {
               ... on Dog {
                 doesKnowCommand(command: SIT) {
@@ -219,7 +209,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                 }
               }
             }
-            
+
             fragment DogFields on Dog {
               ...NestedDogFields
               unknownField3
@@ -258,18 +248,8 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "locations": [{"line": 16, "column": 15}],
                     },
                     {
-                        "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                        "path": None,
-                        "locations": [{"line": 8, "column": 33}],
-                    },
-                    {
-                        "message": "field `Boolean.unknownField2` was not found in GraphQL schema.",
-                        "path": ["dog", "doesKnowCommand", "unknownField2"],
-                        "locations": [{"line": 9, "column": 19}],
-                    },
-                    {
-                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                        "path": None,
+                        "message": "field < doesKnowCommand > is a leaf and thus can't have a selection set",
+                        "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 8, "column": 17}],
                     },
                 ],
@@ -280,7 +260,7 @@ async def _query_human_resolver(*_args, **__kwargs):
             fragment QueryFields on Query {
               unknownField1
             }
-            
+
             fragment NestedDogFields on Dog {
               ... on Dog {
                 doesKnowCommand(command: SIT) {
@@ -290,7 +270,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                 }
               }
             }
-            
+
             fragment DogFields on Dog {
               unknownField3
               ...NestedDogFields
@@ -329,18 +309,8 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "locations": [{"line": 17, "column": 15}],
                     },
                     {
-                        "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                        "path": None,
-                        "locations": [{"line": 8, "column": 33}],
-                    },
-                    {
-                        "message": "field `Boolean.unknownField2` was not found in GraphQL schema.",
-                        "path": ["dog", "doesKnowCommand", "unknownField2"],
-                        "locations": [{"line": 9, "column": 19}],
-                    },
-                    {
-                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                        "path": None,
+                        "message": "field < doesKnowCommand > is a leaf and thus can't have a selection set",
+                        "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 8, "column": 17}],
                     },
                 ],
@@ -351,7 +321,7 @@ async def _query_human_resolver(*_args, **__kwargs):
             fragment QueryFields on Query {
               unknownField1
             }
-            
+
             fragment NestedDogFields on Dog {
               ... on Dog {
                 doesKnowCommandDown: doesKnowCommand(dogCommand: DOWN)
@@ -364,7 +334,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                 doesKnowCommandSit: doesKnowCommand(dogCommand: SIT)
               }
             }
-            
+
             fragment DogFields on Dog {
               unknownField3
               ...NestedDogFields
@@ -415,18 +385,8 @@ async def _query_human_resolver(*_args, **__kwargs):
                         "locations": [{"line": 20, "column": 15}],
                     },
                     {
-                        "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                        "path": None,
-                        "locations": [{"line": 9, "column": 58}],
-                    },
-                    {
-                        "message": "field `Boolean.unknownField2` was not found in GraphQL schema.",
-                        "path": ["dog", "doesKnowCommand", "unknownField2"],
-                        "locations": [{"line": 10, "column": 19}],
-                    },
-                    {
-                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                        "path": None,
+                        "message": "field < doesKnowCommand > is a leaf and thus can't have a selection set",
+                        "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 9, "column": 17}],
                     },
                     {
