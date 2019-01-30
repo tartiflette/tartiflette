@@ -500,6 +500,16 @@ class _VisitorElementField(_VisitorElement):
             self._lib.GraphQLAstField_get_alias(self._internal_element)
         )
 
+    def get_selection_set_size(self) -> int:
+        slct_set = self._lib.GraphQLAstField_get_selection_set(
+            self._internal_element
+        )
+        if slct_set != self._ffi.NULL:
+            return self._lib.GraphQLAstSelectionSet_get_selections_size(
+                slct_set
+            )
+        return 0
+
 
 class _VisitorElementInlineFragment(_VisitorElement):
     def __init__(

@@ -243,6 +243,7 @@ def test_parser_visitor__on_variable_in_no_var_name(a_visitor, an_element):
 def test_parser_visitor__on_field_in_first_field(a_visitor, an_element):
     a_field = Mock()
     a_field.resolver = Mock()
+    a_field.is_leaf = False
 
     a_visitor._internal_ctx.node = None
     a_visitor._internal_ctx.operation = Mock()
@@ -252,6 +253,7 @@ def test_parser_visitor__on_field_in_first_field(a_visitor, an_element):
     )
     a_visitor.schema.find_type = Mock(return_value="an_operation_type")
     a_visitor.schema.get_field_by_name = Mock(return_value=a_field)
+    an_element.get_selection_set_size = Mock(return_value=1)
 
     a_visitor._on_field_in(an_element)
 
@@ -275,6 +277,10 @@ def test_parser_visitor__on_field_in_first_field(a_visitor, an_element):
 def test_parser_visitor__on_field_in_another_field(a_visitor, an_element):
     a_field = Mock()
     a_field.resolver = Mock()
+    a_field.is_leaf = False
+
+    an_element.get_selection_set_size = Mock(return_value=1)
+
     a_visitor._internal_ctx.field_path = ["a_parent_path_element"]
     a_visitor._internal_ctx.node.field_executor = Mock()
     a_visitor._internal_ctx.node.add_child = Mock()
@@ -310,6 +316,9 @@ def test_parser_visitor__on_field_in_a_fragment(a_visitor, an_element):
 
     a_field = Mock()
     a_field.resolver = Mock()
+    a_field.is_leaf = False
+
+    an_element.get_selection_set_size = Mock(return_value=1)
     a_visitor._internal_ctx.field_path = ["a_parent_path_element"]
     a_visitor._internal_ctx.node.field_executor = Mock()
     a_visitor._internal_ctx.node.add_child = Mock()
