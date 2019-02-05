@@ -72,7 +72,8 @@ async def test_full_query_with_alias(engine):
                 }
             }
         }
-        """
+        """,
+        operation_name="TestQueriesFromEnd2End",
     )
 
     assert {
@@ -171,6 +172,7 @@ async def test_full_mutation_execute_alias(engine):
         variables={
             "input": {"clientMutationId": 1, "title": "My Book", "price": 9.99}
         },
+        operation_name="AddBook",
     )
 
     assert len(data_store) == 2

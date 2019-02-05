@@ -32,7 +32,7 @@ async def test_engine_execute(clean_registry):
 
     e = Engine("type Query { a:String }")
 
-    result = await e.execute("query aquery { a }")
+    result = await e.execute("query aquery { a }", operation_name="aquery")
 
     assert result == {"data": {"a": None}}
 

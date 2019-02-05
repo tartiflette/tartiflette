@@ -90,7 +90,12 @@ async def test_executor_basic_execute(errors, expected, monkeypatch):
 
     from tartiflette.executors.basic import execute
 
-    a = await execute([], request_ctx={}, error_coercer=default_error_coercer)
+    a = await execute(
+        {None: []},
+        request_ctx={},
+        error_coercer=default_error_coercer,
+        operation_name=None,
+    )
 
     assert a == expected
 
@@ -111,7 +116,12 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
 
     from tartiflette.executors.basic import execute
 
-    a = await execute([], request_ctx={}, error_coercer=custom_error_coercer)
+    a = await execute(
+        {None: []},
+        request_ctx={},
+        error_coercer=custom_error_coercer,
+        operation_name=None,
+    )
 
     assert a == {
         "data": {},

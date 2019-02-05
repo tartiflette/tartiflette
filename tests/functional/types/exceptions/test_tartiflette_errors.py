@@ -43,7 +43,8 @@ async def test_tartiflette_execute_nested_error(clean_registry):
             }
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {

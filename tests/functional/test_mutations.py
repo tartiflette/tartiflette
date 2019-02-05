@@ -80,6 +80,7 @@ async def test_full_mutation_execute(clean_registry):
         variables={
             "input": {"clientMutationId": 1, "title": "My Book", "price": 9.99}
         },
+        operation_name="AddBook",
     )
 
     assert len(data_store) == 2

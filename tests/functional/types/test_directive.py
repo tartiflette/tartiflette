@@ -46,7 +46,8 @@ async def test_tartiflette_deprecated_execution_directive(clean_registry):
         fieldDeprecatedDefault
         fieldDeprecatedCustom
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {
@@ -103,7 +104,8 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
             }
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {
@@ -201,7 +203,8 @@ async def test_tartiflette_directive_declaration(clean_registry):
         fieldLoled2
         fieldLoled3
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {
@@ -252,7 +255,8 @@ async def test_tartiflette_non_introspectable_execution_directive(
             }
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {

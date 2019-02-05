@@ -204,7 +204,8 @@ async def test_tartiflette_execute_simple_empty_value(
             field
         }
     }
-    """
+    """,
+        operation_name="TestExecutionEmptyValues",
     )
 
     assert expected == result
@@ -249,7 +250,8 @@ async def test_tartiflette_execute_bubble_up_empty_value(clean_registry):
                 }
             }
         }
-        """
+        """,
+        operation_name="TestExecutionEmptyValues",
     )
 
     assert result == {

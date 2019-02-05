@@ -29,7 +29,8 @@ async def test_tartiflette_execute_enum_type_output(clean_registry):
     query Test{
         enumTest
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {"data": {"enumTest": "Value1"}} == result
@@ -103,7 +104,8 @@ async def test_tartiflette_execute_enum_type_advanced(
     query Test{
         testField
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert expected == result

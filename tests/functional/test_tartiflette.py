@@ -47,7 +47,8 @@ async def test_tartiflette_execute_basic(clean_registry):
             field
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert result == {"data": {"testField": {"field": None}}}
@@ -94,7 +95,8 @@ async def test_tartiflette_nested_resolvers(clean_registry):
             }
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert result == {
@@ -121,7 +123,8 @@ async def test_tartiflette_execute_hello_world(clean_registry):
     query Test{
         hello
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {"data": {"hello": "world"}} == result
@@ -132,7 +135,8 @@ async def test_tartiflette_execute_hello_world(clean_registry):
         query Test{
             hello
         }
-        """
+        """,
+        operation_name="Test",
     )
 
     assert {"data": {"hello": "world"}} == result

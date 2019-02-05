@@ -167,6 +167,6 @@ _TTFTT = Engine(
     ],
 )
 async def test_tartiflette_typename(query, expected):
-    result = await _TTFTT.execute(query)
+    result = await _TTFTT.execute(query, operation_name="aquery")
 
     assert expected == result

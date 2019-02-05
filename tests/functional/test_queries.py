@@ -75,7 +75,8 @@ async def test_full_query_execute(engine):
                 }
             }
         }
-        """
+        """,
+        operation_name="TestQueriesFromEnd2End",
     )
 
     assert {
