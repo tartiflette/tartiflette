@@ -29,6 +29,7 @@ class Engine:
     async def execute(
         self,
         query: str,
+        operation_name: Optional[str] = None,
         context: Optional[Dict[str, Any]] = None,
         variables: Optional[Dict[str, Any]] = None,
     ) -> dict:
@@ -55,5 +56,8 @@ class Engine:
             }
 
         return await basic_execute(
-            root_nodes, request_ctx=context, error_coercer=self._error_coercer
+            root_nodes,
+            operation_name,
+            request_ctx=context,
+            error_coercer=self._error_coercer,
         )

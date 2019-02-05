@@ -96,7 +96,7 @@ class TartifletteVisitor(Visitor):
 
         self._named_operations = {}
         self._anonymous_operations = []
-        self.root_nodes = []
+        self.root_nodes = {}
         self._vars = variables or {}
         self._fragments = {}
         self._used_fragments = set()
@@ -350,7 +350,9 @@ class TartifletteVisitor(Visitor):
         self._internal_ctx.node = node
 
         if self._internal_ctx.depth == 1:
-            self.root_nodes.append(node)
+            self.root_nodes.setdefault(
+                self._internal_ctx.operation.name, []
+            ).append(node)
 
     def _on_field_out(self, *_args, **_kwargs) -> None:
         for argument in self._internal_ctx.current_field.arguments.values():
