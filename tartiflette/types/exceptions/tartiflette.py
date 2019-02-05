@@ -175,6 +175,10 @@ class MissingRequiredArgument(GraphQLError):
     pass
 
 
+class UniqueArgumentNames(GraphQLError):
+    pass
+
+
 class UnknownVariableException(GraphQLError):
     def __init__(self, varname: str) -> None:
         # TODO: Unify error messages format

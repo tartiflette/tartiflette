@@ -70,7 +70,11 @@ async def test_resolver_factory__resolver_executor___call__(
     _resolver_executor_mock
 ):
     p_r = Mock()
-    args = {"AB": "M2B"}
+
+    arg_mock = Mock()
+    arg_mock.name = "AB"
+    arg_mock.value = "M2B"
+    args = {"AB": arg_mock}
     req_ctx = {"M2B": "AB"}
     info = Mock()
     info.execution_ctx = Mock()
@@ -83,7 +87,7 @@ async def test_resolver_factory__resolver_executor___call__(
     assert r == "aResult"
     assert c == "LOL"
     assert _resolver_executor_mock._func.call_args_list == [
-        ((p_r, args, req_ctx, info),)
+        ((p_r, {"AB": "M2B"}, req_ctx, info),)
     ]
     assert _resolver_executor_mock._coercer.call_args_list == [
         (("aResult", info),)

@@ -15,8 +15,8 @@ class InternalVisitorContext:
         self,
         operation: Optional["NodeOperationDefinition"] = None,
         node: Optional["NodeField"] = None,
-        argument_name: Optional[str] = None,
-        directive_name: Optional[str] = None,
+        argument: Optional["NodeArgument"] = None,
+        directive: Optional["NodeDirective"] = None,
         type_condition: Optional[str] = None,
         fragment_definition: Optional["NodeFragmentDefinition"] = None,
         inline_fragment_info: Optional["InlineFragmentInfo"] = None,
@@ -28,8 +28,8 @@ class InternalVisitorContext:
         # pylint: disable=too-many-arguments
         self._operation = operation
         self._node = node
-        self._argument_name = argument_name
-        self._directive_name = directive_name
+        self._argument = argument
+        self._directive = directive
         self._type_condition = type_condition
         self._fragment_definition = fragment_definition
         self._inline_fragment_info = inline_fragment_info
@@ -42,8 +42,8 @@ class InternalVisitorContext:
         return InternalVisitorContext(
             self._operation,
             self._node,
-            self._argument_name,
-            self._directive_name,
+            self._argument,
+            self._directive,
             self._type_condition,
             self._fragment_definition,
             self._inline_fragment_info,
@@ -70,20 +70,20 @@ class InternalVisitorContext:
         self._node = val
 
     @property
-    def argument_name(self) -> Optional[str]:
-        return self._argument_name
+    def argument(self) -> Optional[str]:
+        return self._argument
 
-    @argument_name.setter
-    def argument_name(self, val: str) -> None:
-        self._argument_name = val
+    @argument.setter
+    def argument(self, argument: "NodeArgument") -> None:
+        self._argument = argument
 
     @property
-    def directive_name(self) -> Optional[str]:
-        return self._directive_name
+    def directive(self) -> Optional["NodeDirective"]:
+        return self._directive
 
-    @directive_name.setter
-    def directive_name(self, val: str) -> None:
-        self._directive_name = val
+    @directive.setter
+    def directive(self, directive: "NodeDirective") -> None:
+        self._directive = directive
 
     @property
     def type_condition(self) -> Optional[str]:

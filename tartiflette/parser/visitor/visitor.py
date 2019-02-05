@@ -15,6 +15,8 @@ from tartiflette.parser.cffi import (
     _VisitorElementSelectionSet,
     _VisitorElementStringValue,
 )
+from tartiflette.parser.nodes.argument import NodeArgument
+from tartiflette.parser.nodes.directive import NodeDirective
 from tartiflette.parser.nodes.field import NodeField
 from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
 from tartiflette.parser.nodes.operation_definition import (
@@ -35,6 +37,7 @@ from tartiflette.types.exceptions.tartiflette import (
     UndefinedDirectiveArgument,
     UndefinedFieldArgument,
     UndefinedFragment,
+    UniqueArgumentNames,
     UnknownSchemaFieldResolver,
     UnknownTypeDefinition,
     UnknownVariableException,
@@ -125,7 +128,7 @@ class TartifletteVisitor(Visitor):
     def _on_argument_in(
         self, element: _VisitorElement, *_args, **_kwargs
     ) -> None:
-        if not self._internal_ctx.directive_name:
+        if not self._internal_ctx.directive:
             parent_type = self._get_parent_type(self._internal_ctx.node.parent)
 
             if element.name not in self._internal_ctx.current_field.arguments:
@@ -142,10 +145,25 @@ class TartifletteVisitor(Visitor):
                     )
                 )
                 return
+
+            if element.name in self._internal_ctx.node.arguments:
+                self._add_exception(
+                    UniqueArgumentNames(
+                        "There can be only one argument named < %s >."
+                        % element.name,
+                        locations=[
+                            self._internal_ctx.node.arguments[
+                                element.name
+                            ].location,
+                            element.get_location(),
+                        ],
+                    )
+                )
+                return
         else:
             try:
                 directive = self.schema.find_directive(
-                    self._internal_ctx.directive_name
+                    self._internal_ctx.directive.name
                 )
             except KeyError:
                 return
@@ -160,32 +178,51 @@ class TartifletteVisitor(Visitor):
                 )
                 return
 
-        self._internal_ctx.argument_name = element.name
+            if element.name in self._internal_ctx.directive.arguments:
+                self._add_exception(
+                    UniqueArgumentNames(
+                        "There can be only one argument named < %s >."
+                        % element.name,
+                        locations=[
+                            self._internal_ctx.directive.arguments[
+                                element.name
+                            ].location,
+                            element.get_location(),
+                        ],
+                    )
+                )
+                return
+
+        self._internal_ctx.argument = NodeArgument(
+            self._internal_ctx.path, element.get_location(), element.name
+        )
 
     def _on_argument_out(self, *_args, **_kwargs) -> None:
-        self._internal_ctx.argument_name = None
+        self._internal_ctx.argument = None
 
     def _on_directive_in(
         self, element: _VisitorElement, *_args, **_kwargs
     ) -> None:
-        self._internal_ctx.directive_name = element.name
+        self._internal_ctx.directive = NodeDirective(
+            self._internal_ctx.path, element.get_location(), element.name
+        )
 
     def _on_directive_out(
         self, element: _VisitorElement, *_args, **_kwargs
     ) -> None:
         try:
             directive = self.schema.find_directive(
-                self._internal_ctx.directive_name
+                self._internal_ctx.directive.name
             )
         except KeyError:
-            self._internal_ctx.directive_name = None
+            self._internal_ctx.directive = None
             return
 
         for argument in directive.arguments.values():
             if not argument.is_required:
                 continue
 
-            value = self._internal_ctx.node.arguments.get(argument.name)
+            value = self._internal_ctx.directive.arguments.get(argument.name)
             if value is None:
                 self._add_exception(
                     MissingRequiredArgument(
@@ -195,7 +232,7 @@ class TartifletteVisitor(Visitor):
                     )
                 )
 
-        self._internal_ctx.directive_name = None
+        self._internal_ctx.directive = None
 
     def _on_value_in(
         self,
@@ -213,9 +250,16 @@ class TartifletteVisitor(Visitor):
             self._internal_ctx.node.default_value = element.get_value()
             return
 
-        self._internal_ctx.node.arguments.update(
-            {self._internal_ctx.argument_name: element.get_value()}
-        )
+        self._internal_ctx.argument.value = element.get_value()
+
+        if not self._internal_ctx.directive:
+            self._internal_ctx.node.arguments[
+                self._internal_ctx.argument.name
+            ] = self._internal_ctx.argument
+        else:
+            self._internal_ctx.directive.arguments[
+                self._internal_ctx.argument.name
+            ] = self._internal_ctx.argument
 
     def _on_variable_in(
         self, element: _VisitorElement, *_args, **_kwargs
@@ -226,9 +270,16 @@ class TartifletteVisitor(Visitor):
 
         var_name = element.name
         try:
-            self._internal_ctx.node.arguments.update(
-                {self._internal_ctx.argument_name: self._vars[var_name]}
-            )
+            self._internal_ctx.argument.value = self._vars[var_name]
+
+            if not self._internal_ctx.directive:
+                self._internal_ctx.node.arguments[
+                    self._internal_ctx.argument.name
+                ] = self._internal_ctx.argument
+            else:
+                self._internal_ctx.directive.arguments[
+                    self._internal_ctx.argument.name
+                ] = self._internal_ctx.argument
         except KeyError:
             self._add_exception(UnknownVariableException(var_name))
 
