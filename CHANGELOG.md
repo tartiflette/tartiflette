@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - [ISSUE-99](https://github.com/dailymotion/tartiflette/issues/99): Raise errors on non unique arguments on fields or directives.
+- [ISSUE-114](https://github.com/dailymotion/tartiflette/issues/114): Execute only the specified operation or throw on error if not exists.
 
 ## [Released]
 
