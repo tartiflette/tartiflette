@@ -228,7 +228,9 @@ class _ResolverExecutor:
     ) -> (Any, Any):
         try:
             default_args = self._schema_field.get_arguments_default_values()
-            default_args.update(args)
+            default_args.update(
+                {argument.name: argument.value for argument in args.values()}
+            )
 
             result = await self._func(parent_result, default_args, ctx, info)
             if info.execution_ctx.is_introspection:
