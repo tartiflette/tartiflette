@@ -13,6 +13,7 @@ from tartiflette.types.exceptions.tartiflette import (
     NotUniqueOperationName,
     UndefinedDirectiveArgument,
     UndefinedFieldArgument,
+    UniqueArgumentNames,
     UnusedFragment,
 )
 from tartiflette.types.location import Location
@@ -57,43 +58,47 @@ def test_parser_visitor(a_schema):
 
 
 def test_parser_visitor__on_argument(a_visitor, an_element):
-    field_mock = Mock(arguments={"a_name": Mock()})
+    field_def_mock = Mock(arguments={"a_name": Mock()})
+    field_node_mock = Mock(arguments={})
 
     a_visitor._get_parent_type = Mock(return_value="Query")
-    a_visitor._internal_ctx.node.name = "dog"
     a_visitor._internal_ctx.field_path = ["field", "path"]
-    a_visitor._internal_ctx._fields = {"field/path": field_mock}
+    a_visitor._internal_ctx._fields = {"field/path": field_def_mock}
+    a_visitor._internal_ctx.node = field_node_mock
+    a_visitor._internal_ctx.node.name = "dog"
 
-    assert a_visitor._internal_ctx.argument_name is None
+    assert a_visitor._internal_ctx.argument is None
 
     assert a_visitor._on_argument_in(an_element) is None
-    assert a_visitor._internal_ctx.argument_name == "a_name"
+    assert a_visitor._internal_ctx.argument.name == "a_name"
 
     assert a_visitor._on_argument_out(an_element) is None
-    assert a_visitor._internal_ctx.argument_name is None
+    assert a_visitor._internal_ctx.argument is None
 
 
 def test_parser_visitor__on_argument_undefined_field_argument(
     a_visitor, an_element
 ):
-    field_mock = Mock(arguments={"an_argument": Mock()})
+    field_def_mock = Mock(arguments={"an_argument": Mock()})
+    field_node_mock = Mock(arguments={})
 
-    a_visitor._internal_ctx.directive_name = None
+    a_visitor._internal_ctx.directive = None
     a_visitor._get_parent_type = Mock(return_value="Query")
-    a_visitor._internal_ctx.node.name = "dog"
     a_visitor._internal_ctx.field_path = ["field", "path"]
-    a_visitor._internal_ctx._fields = {"field/path": field_mock}
+    a_visitor._internal_ctx._fields = {"field/path": field_def_mock}
+    a_visitor._internal_ctx.node = field_node_mock
+    a_visitor._internal_ctx.node.name = "dog"
 
     an_element.name = "undefinedArgument"
 
-    assert a_visitor._internal_ctx.argument_name is None
+    assert a_visitor._internal_ctx.argument is None
     assert a_visitor.exceptions == []
 
     assert a_visitor._on_argument_in(an_element) is None
-    assert a_visitor._internal_ctx.argument_name is None
+    assert a_visitor._internal_ctx.argument is None
 
     assert a_visitor._on_argument_out(an_element) is None
-    assert a_visitor._internal_ctx.argument_name is None
+    assert a_visitor._internal_ctx.argument is None
 
     assert len(a_visitor.exceptions) == 1
     assert isinstance(a_visitor.exceptions[0], UndefinedFieldArgument)
@@ -109,19 +114,21 @@ def test_parser_visitor__on_argument_undefined_directive_argument(
     directive_mock = Mock(arguments={"an_argument": Mock()})
     directive_mock.name = "myDirective"
 
-    a_visitor._internal_ctx.directive_name = "myDirective"
+    a_visitor._internal_ctx.directive = Mock()
+    a_visitor._internal_ctx.directive.name = "myDirective"
+    a_visitor._internal_ctx.directive.arguments = {}
     a_visitor.schema.find_directive = Mock(return_value=directive_mock)
 
     an_element.name = "undefinedArgument"
 
-    assert a_visitor._internal_ctx.argument_name is None
+    assert a_visitor._internal_ctx.argument is None
     assert a_visitor.exceptions == []
 
     assert a_visitor._on_argument_in(an_element) is None
-    assert a_visitor._internal_ctx.argument_name is None
+    assert a_visitor._internal_ctx.argument is None
 
     assert a_visitor._on_argument_out(an_element) is None
-    assert a_visitor._internal_ctx.argument_name is None
+    assert a_visitor._internal_ctx.argument is None
 
     assert len(a_visitor.exceptions) == 1
     assert isinstance(a_visitor.exceptions[0], UndefinedDirectiveArgument)
@@ -131,19 +138,81 @@ def test_parser_visitor__on_argument_undefined_directive_argument(
     )
 
 
+def test_parser_visitor__on_argument_non_unique_field_argument(
+    a_visitor, an_element
+):
+    field_def_mock = Mock(arguments={"an_argument": Mock()})
+    field_node_mock = Mock(arguments={"an_argument": Mock()})
+
+    a_visitor._internal_ctx.directive = None
+    a_visitor._get_parent_type = Mock(return_value="Query")
+    a_visitor._internal_ctx.field_path = ["field", "path"]
+    a_visitor._internal_ctx._fields = {"field/path": field_def_mock}
+    a_visitor._internal_ctx.node = field_node_mock
+    a_visitor._internal_ctx.node.name = "dog"
+
+    an_element.name = "an_argument"
+
+    assert a_visitor._internal_ctx.argument is None
+    assert a_visitor.exceptions == []
+
+    assert a_visitor._on_argument_in(an_element) is None
+    assert a_visitor._internal_ctx.argument is None
+
+    assert a_visitor._on_argument_out(an_element) is None
+    assert a_visitor._internal_ctx.argument is None
+
+    assert len(a_visitor.exceptions) == 1
+    assert isinstance(a_visitor.exceptions[0], UniqueArgumentNames)
+    assert (
+        str(a_visitor.exceptions[0])
+        == "There can be only one argument named < an_argument >."
+    )
+
+
+def test_parser_visitor__on_argument_non_unique_directive_argument(
+    a_visitor, an_element
+):
+    directive_def_mock = Mock(arguments={"an_argument": Mock()})
+    directive_def_mock.name = "myDirective"
+    directive_node_mock = Mock(arguments={"an_argument": Mock()})
+    directive_node_mock.name = "myDirective"
+
+    a_visitor.schema.find_directive = Mock(return_value=directive_def_mock)
+    a_visitor._internal_ctx.directive = directive_node_mock
+
+    an_element.name = "an_argument"
+
+    assert a_visitor._internal_ctx.argument is None
+    assert a_visitor.exceptions == []
+
+    assert a_visitor._on_argument_in(an_element) is None
+    assert a_visitor._internal_ctx.argument is None
+
+    assert a_visitor._on_argument_out(an_element) is None
+    assert a_visitor._internal_ctx.argument is None
+
+    assert len(a_visitor.exceptions) == 1
+    assert isinstance(a_visitor.exceptions[0], UniqueArgumentNames)
+    assert (
+        str(a_visitor.exceptions[0])
+        == "There can be only one argument named < an_argument >."
+    )
+
+
 def test_parser_visitor__on_directive(a_visitor, an_element):
     directive_mock = Mock()
     directive_mock.arguments = {}
 
     a_visitor.schema.find_directive = Mock(return_value=directive_mock)
 
-    assert a_visitor._internal_ctx.directive_name is None
+    assert a_visitor._internal_ctx.directive is None
 
     assert a_visitor._on_directive_in(an_element) is None
-    assert a_visitor._internal_ctx.directive_name == "a_name"
+    assert a_visitor._internal_ctx.directive.name == "a_name"
 
     assert a_visitor._on_directive_out(an_element) is None
-    assert a_visitor._internal_ctx.directive_name is None
+    assert a_visitor._internal_ctx.directive is None
 
 
 def test_parser_visitor__on_directive_out_missing_required_argument(
@@ -155,18 +224,21 @@ def test_parser_visitor__on_directive_out_missing_required_argument(
     required_arg_mock = Mock(is_required=True)
     required_arg_mock.name = "required"
 
-    directive_mock = Mock()
-    directive_mock.name = "myDirective"
-    directive_mock.arguments = {
+    directive_def_mock = Mock()
+    directive_def_mock.name = "myDirective"
+    directive_def_mock.arguments = {
         "not_required": not_required_arg_mock,
         "required": required_arg_mock,
     }
 
-    a_visitor.schema.find_directive = Mock(return_value=directive_mock)
-    a_visitor._internal_ctx.directive_name = "myDirective"
-    a_visitor._internal_ctx.node.arguments = {}
+    directive_node_mock = Mock()
+    directive_node_mock.name = "myDirective"
+    directive_node_mock.arguments = {}
 
-    assert a_visitor._internal_ctx.directive_name == "myDirective"
+    a_visitor.schema.find_directive = Mock(return_value=directive_def_mock)
+    a_visitor._internal_ctx.directive = directive_node_mock
+
+    assert a_visitor._internal_ctx.directive.name == "myDirective"
     assert a_visitor.exceptions == []
 
     assert a_visitor._on_directive_out(an_element) is None
@@ -184,14 +256,15 @@ def test_parser_visitor__on_value_in(a_visitor, an_element):
     a_visitor._internal_ctx.node = Mock()
     del a_visitor._internal_ctx.node.default_value
     a_visitor._internal_ctx.node.arguments = {}
-    a_visitor._internal_ctx.argument_name = "an_argument_name"
+    a_visitor._internal_ctx.argument = Mock()
+    a_visitor._internal_ctx.argument.name = "an_argument_name"
     an_element.get_value = Mock(return_value="a_value")
 
     a_visitor._on_value_in(an_element)
 
     assert an_element.get_value.called
     assert a_visitor._internal_ctx.node.arguments == {
-        "an_argument_name": "a_value"
+        "an_argument_name": a_visitor._internal_ctx.argument
     }
 
     a_visitor._internal_ctx.node.default_value = "a_default_value"
@@ -216,7 +289,8 @@ def test_parser_visitor__on_variable_in_no_var_name_ukn_var(
     del a_visitor._internal_ctx.node.var_name
 
     a_visitor._internal_ctx.node.arguments = {}
-    a_visitor._internal_ctx.argument_name = "an_argument_name"
+    a_visitor._internal_ctx.argument = Mock()
+    a_visitor._internal_ctx.argument.name = "an_argument_name"
     a_visitor._vars = {}
 
     a_visitor._on_variable_in(an_element)
@@ -229,14 +303,16 @@ def test_parser_visitor__on_variable_in_no_var_name_ukn_var(
 def test_parser_visitor__on_variable_in_no_var_name(a_visitor, an_element):
     del a_visitor._internal_ctx.node.var_name
 
+    a_visitor._internal_ctx.directive = None
     a_visitor._internal_ctx.node.arguments = {}
-    a_visitor._internal_ctx.argument_name = "an_argument_name"
+    a_visitor._internal_ctx.argument = Mock()
+    a_visitor._internal_ctx.argument.name = "a_name"
     a_visitor._vars = {"a_name": "a_value"}
 
     a_visitor._on_variable_in(an_element)
 
     assert a_visitor._internal_ctx.node.arguments == {
-        "an_argument_name": "a_value"
+        "a_name": a_visitor._internal_ctx.argument
     }
 
 
