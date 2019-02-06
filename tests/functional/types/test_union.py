@@ -168,6 +168,6 @@ async def test_tartiflette_execute_union_type_output(
 
     ttftt = Engine(schema_sdl)
 
-    result = await ttftt.execute(query)
+    result = await ttftt.execute(query, operation_name="aquery")
 
     assert expected == result

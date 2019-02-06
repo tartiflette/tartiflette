@@ -32,7 +32,8 @@ async def test_tartiflette_execute_object_type_output(clean_registry):
             field1
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {"data": {"objectTest": {"field1": "Test"}}} == result
@@ -91,7 +92,8 @@ async def test_tartiflette_execute_object_type_advanced(
             field1
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert expected == result
@@ -145,7 +147,8 @@ async def test_tartiflette_execute_object_type_unknown_field(clean_registry):
             }
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert result == {"data": {"posts": [{"content": {"title": "Test"}}]}}

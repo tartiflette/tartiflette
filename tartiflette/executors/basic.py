@@ -3,6 +3,10 @@ import asyncio
 from typing import Any, Callable, Dict, List, Optional
 
 from tartiflette.executors.types import ExecutionContext
+from tartiflette.types.exceptions.tartiflette import (
+    UnknownAnonymousdOperation,
+    UnknownNamedOperation,
+)
 
 
 async def _execute(
@@ -27,16 +31,34 @@ def _get_datas(root_nodes: List["NodeField"]) -> Optional[dict]:
 
 
 async def execute(
-    root_nodes: List["NodeField"],
+    root_nodes: Dict[str, List["NodeField"]],
+    operation_name: Optional[str],
     request_ctx: Optional[Dict[str, Any]],
     error_coercer: Callable[[Exception], dict],
 ) -> dict:
     execution_ctx = ExecutionContext()
 
-    await _execute(root_nodes, execution_ctx, request_ctx)
+    try:
+        root_resolvers = root_nodes[operation_name]
+    except KeyError:
+        if operation_name or len(root_nodes) != 1:
+            error = (
+                UnknownNamedOperation(
+                    "Unknown operation named < %s >." % operation_name
+                )
+                if operation_name is not None
+                else UnknownAnonymousdOperation(
+                    "Must provide operation name if query contains multiple operations."
+                )
+            )
+            return {"data": None, "errors": [error_coercer(error)]}
+
+        root_resolvers = root_nodes[list(root_nodes.keys())[0]]
+
+    await _execute(root_resolvers, execution_ctx, request_ctx)
 
     results = {
-        "data": _get_datas(root_nodes),
+        "data": _get_datas(root_resolvers),
         "errors": [error_coercer(err) for err in execution_ctx.errors if err],
     }
 

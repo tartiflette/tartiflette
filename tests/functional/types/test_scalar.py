@@ -27,7 +27,8 @@ async def test_tartiflette_execute_scalar_type_output(clean_registry):
     query Test{
         lastUpdate
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {"data": {"lastUpdate": "2018-04-19T14:57:38"}} == result
@@ -164,7 +165,8 @@ async def test_tartiflette_execute_scalar_type_advanced(
     query Test{
         testField
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert expected == result

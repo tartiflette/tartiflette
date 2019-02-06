@@ -323,6 +323,7 @@ def test_parser_visitor__on_field_in_first_field(a_visitor, an_element):
 
     a_visitor._internal_ctx.node = None
     a_visitor._internal_ctx.operation = Mock()
+    a_visitor._internal_ctx.operation.name = "Yo"
     a_visitor._internal_ctx.operation.type = "an_operation_type"
     a_visitor.schema.get_operation_type = Mock(
         return_value="an_operation_type"
@@ -344,7 +345,7 @@ def test_parser_visitor__on_field_in_first_field(a_visitor, an_element):
     assert a_visitor.schema.get_field_by_name.call_args_list == [
         (("an_operation_type.a_name",),)
     ]
-    assert a_visitor._internal_ctx.node in a_visitor.root_nodes
+    assert a_visitor._internal_ctx.node in a_visitor.root_nodes["Yo"]
     assert a_visitor._internal_ctx.node.parent is None
     assert an_element.get_location.called == 1
     assert an_element.get_alias.called == 1

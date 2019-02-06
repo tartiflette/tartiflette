@@ -26,7 +26,7 @@ def test_tartiflette_request_parser(clean_registry, monkeypatch):
 
     trp = TartifletteRequestParser()
 
-    assert trp.parse_and_tartify(None, "query aq { __schema }") == ([], None)
+    assert trp.parse_and_tartify(None, "query aq { __schema }") == ({}, None)
 
     monkeypatch.undo()
 
@@ -43,6 +43,6 @@ def test_tartiflette_request_parser_vistor_except(clean_registry, monkeypatch):
 
     trp = TartifletteRequestParser()
 
-    assert trp.parse_and_tartify(None, "query aq { __schema }") == ([], None)
+    assert trp.parse_and_tartify(None, "query aq { __schema }") == ({}, None)
 
     monkeypatch.undo()

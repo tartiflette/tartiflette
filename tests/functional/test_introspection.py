@@ -97,7 +97,8 @@ async def test_tartiflette_execute_basic_type_introspection_output(
             }
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {
@@ -223,7 +224,8 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
             }
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {
@@ -331,7 +333,8 @@ async def test_tartiflette_execute_schema_introspection_output_exclude_scalars(
             }
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {
@@ -498,7 +501,8 @@ fragment TypeRef on __Type {
     }
   }
 }
-    """
+    """,
+        operation_name="IntrospectionQuery",
     )
 
     assert {

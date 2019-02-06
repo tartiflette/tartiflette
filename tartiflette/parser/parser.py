@@ -11,7 +11,9 @@ class TartifletteRequestParser(LibGraphqlParser):
         schema: GraphQLSchema,
         query: str,
         variables: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[Optional[List["NodeField"]], Optional[List[Exception]]]:
+    ) -> Tuple[
+        Optional[Dict[str, List["NodeField"]]], Optional[List[Exception]]
+    ]:
         visitor = TartifletteVisitor(schema, variables)
         self.parse_and_visit(query, visitor)
         if visitor.exceptions:

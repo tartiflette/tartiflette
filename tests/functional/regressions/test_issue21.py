@@ -91,7 +91,9 @@ async def test_issue21_okayquery(
         % typee
     )
 
-    results = await ttftt.execute(query, context={}, variables=varis)
+    results = await ttftt.execute(
+        query, context={}, variables=varis, operation_name="LOL"
+    )
 
     assert results == expected
 

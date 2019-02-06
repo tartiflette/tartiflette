@@ -39,7 +39,8 @@ async def test_tartiflette_execute_interface_type_output(clean_registry):
             field2
         }
     }
-    """
+    """,
+        operation_name="Test",
     )
 
     assert {"data": {"test": {"field2": 42}}} == result

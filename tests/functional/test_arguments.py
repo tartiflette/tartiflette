@@ -41,6 +41,8 @@ async def test_arguments_in_sdl(sdl, query, expected, varis, clean_registry):
 
     ttftt = Engine(sdl)
 
-    result = await ttftt.execute(query, variables=varis)
+    result = await ttftt.execute(
+        query, variables=varis, operation_name="aQuery"
+    )
 
     assert expected == result

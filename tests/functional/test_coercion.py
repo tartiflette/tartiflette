@@ -116,7 +116,8 @@ async def test_tartiflette_execute_simple_coercion(clean_registry):
             data
         }
     }
-    """
+    """,
+        operation_name="TestExecutionCoercion",
     )
 
     assert {
@@ -182,7 +183,8 @@ async def test_tartiflette_execute_nested_coercion(clean_registry):
             }
         }
     }
-    """
+    """,
+        operation_name="TestExecutionCoercion",
     )
 
     assert {
