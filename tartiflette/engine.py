@@ -41,7 +41,7 @@ class Engine:
         :return: a GraphQL response (as dict)
         """
         try:
-            root_nodes, errors = self._parser.parse_and_tartify(
+            operations, errors = self._parser.parse_and_tartify(
                 self._schema, query, variables=variables
             )
         except GraphQLError as e:
@@ -56,7 +56,7 @@ class Engine:
             }
 
         return await basic_execute(
-            root_nodes,
+            operations,
             operation_name,
             request_ctx=context,
             error_coercer=self._error_coercer,
