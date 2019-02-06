@@ -27,7 +27,11 @@ async def test_executor_basic__execute():
         b(exec_ctx, request_ctx)
 
     await _execute(
-        [fcta, fctb], exec_ctx, request_ctx, allow_parallelization=True
+        [fcta, fctb],
+        exec_ctx,
+        request_ctx,
+        initial_value=None,
+        allow_parallelization=True,
     )
 
     assert b.called_with(exec_ctx, request_ctx)
@@ -56,6 +60,7 @@ async def test_executor_basic_allow_parallelization(allow_parallelization):
             [fcta, fctb],
             exec_ctx,
             request_ctx,
+            initial_value=None,
             allow_parallelization=allow_parallelization,
         )
 
@@ -129,6 +134,7 @@ async def test_executor_basic_execute(errors, expected, monkeypatch):
     a = await execute(
         {None: operation_mock},
         request_ctx={},
+        initial_value=None,
         error_coercer=default_error_coercer,
         operation_name=None,
     )
@@ -160,6 +166,7 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
     a = await execute(
         {None: operation_mock},
         request_ctx={},
+        initial_value=None,
         error_coercer=custom_error_coercer,
         operation_name=None,
     )
@@ -170,3 +177,35 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
     }
 
     monkeypatch.undo()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("initial_value", [None])
+async def test_executor_basic_execute_initial_value(initial_value):
+    from tartiflette.executors.basic import _execute
+
+    a = Mock()
+    b = Mock()
+
+    exec_ctx = {}
+    request_ctx = {}
+
+    async def fcta(exec_ctx, request_ctx, parent_result, **___):
+        assert parent_result == initial_value
+        a(exec_ctx, request_ctx, parent_result)
+
+    async def fctb(exec_ctx, request_ctx, parent_result, **___):
+        assert parent_result == initial_value
+        b(exec_ctx, request_ctx, parent_result)
+
+    with patch("asyncio.gather", wraps=asyncio.gather) as asyncio_gather_mock:
+        await _execute(
+            [fcta, fctb],
+            exec_ctx,
+            request_ctx,
+            initial_value=initial_value,
+            allow_parallelization=True,
+        )
+
+    assert b.called_with(exec_ctx, request_ctx, initial_value)
+    assert a.called_with(exec_ctx, request_ctx, initial_value)
