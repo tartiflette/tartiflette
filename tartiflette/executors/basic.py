@@ -13,11 +13,19 @@ async def _execute(
     root_resolvers: List["NodeField"],
     execution_ctx: ExecutionContext,
     request_ctx: Optional[Dict[str, Any]],
+    allow_parallelization: bool,
 ) -> None:
-    await asyncio.gather(
-        *[resolver(execution_ctx, request_ctx) for resolver in root_resolvers],
-        return_exceptions=False,
-    )
+    if not allow_parallelization:
+        for resolver in root_resolvers:
+            await resolver(execution_ctx, request_ctx)
+    else:
+        await asyncio.gather(
+            *[
+                resolver(execution_ctx, request_ctx)
+                for resolver in root_resolvers
+            ],
+            return_exceptions=False,
+        )
 
 
 def _get_datas(root_nodes: List["NodeField"]) -> Optional[dict]:
@@ -31,7 +39,7 @@ def _get_datas(root_nodes: List["NodeField"]) -> Optional[dict]:
 
 
 async def execute(
-    root_nodes: Dict[str, List["NodeField"]],
+    operations: Dict[Optional[str], List["NodeOperationDefinition"]],
     operation_name: Optional[str],
     request_ctx: Optional[Dict[str, Any]],
     error_coercer: Callable[[Exception], dict],
@@ -39,9 +47,9 @@ async def execute(
     execution_ctx = ExecutionContext()
 
     try:
-        root_resolvers = root_nodes[operation_name]
+        operation = operations[operation_name]
     except KeyError:
-        if operation_name or len(root_nodes) != 1:
+        if operation_name or len(operations) != 1:
             error = (
                 UnknownNamedOperation(
                     "Unknown operation named < %s >." % operation_name
@@ -53,12 +61,19 @@ async def execute(
             )
             return {"data": None, "errors": [error_coercer(error)]}
 
-        root_resolvers = root_nodes[list(root_nodes.keys())[0]]
+        operation = operations[list(operations.keys())[0]]
 
-    await _execute(root_resolvers, execution_ctx, request_ctx)
+    root_nodes = operation.children
+
+    await _execute(
+        root_nodes,
+        execution_ctx,
+        request_ctx,
+        allow_parallelization=operation.allow_parallelization,
+    )
 
     results = {
-        "data": _get_datas(root_resolvers),
+        "data": _get_datas(root_nodes),
         "errors": [error_coercer(err) for err in execution_ctx.errors if err],
     }
 

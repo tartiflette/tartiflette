@@ -5,14 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Released]
+
+## [0.3.7] - 2019-02-06
 
 ### Fixed
 
 - [ISSUE-99](https://github.com/dailymotion/tartiflette/issues/99): Raise errors on non unique arguments on fields or directives.
 - [ISSUE-114](https://github.com/dailymotion/tartiflette/issues/114): Execute only the specified operation or throw on error if not exists.
-
-## [Released]
+- [ISSUE-117](https://github.com/dailymotion/tartiflette/issues/117): Execute top-level mutation selection set serially.
 
 ## [0.3.6] - 2019-01-30
 

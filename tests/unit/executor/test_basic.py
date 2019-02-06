@@ -1,6 +1,7 @@
+import asyncio
 import inspect
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -19,16 +20,46 @@ async def test_executor_basic__execute():
     exec_ctx = {}
     request_ctx = {}
 
-    async def fcta(exec_ctx, request_ctx):
+    async def fcta(exec_ctx, request_ctx, *__, **___):
         a(exec_ctx, request_ctx)
 
-    async def fctb(exec_ctx, request_ctx):
+    async def fctb(exec_ctx, request_ctx, *__, **___):
         b(exec_ctx, request_ctx)
 
-    await _execute([fcta, fctb], exec_ctx, request_ctx)
+    await _execute(
+        [fcta, fctb], exec_ctx, request_ctx, allow_parallelization=True
+    )
 
     assert b.called_with(exec_ctx, request_ctx)
     assert a.called_with(exec_ctx, request_ctx)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("allow_parallelization", [True, False])
+async def test_executor_basic_allow_parallelization(allow_parallelization):
+    from tartiflette.executors.basic import _execute
+
+    a = Mock()
+    b = Mock()
+
+    exec_ctx = {}
+    request_ctx = {}
+
+    async def fcta(exec_ctx, request_ctx, *__, **___):
+        a(exec_ctx, request_ctx)
+
+    async def fctb(exec_ctx, request_ctx, *__, **___):
+        b(exec_ctx, request_ctx)
+
+    with patch("asyncio.gather", wraps=asyncio.gather) as asyncio_gather_mock:
+        await _execute(
+            [fcta, fctb],
+            exec_ctx,
+            request_ctx,
+            allow_parallelization=allow_parallelization,
+        )
+
+    assert asyncio_gather_mock.called is allow_parallelization
 
 
 def _get_mocked_root_nodes(cbn, marsh, alias):
@@ -82,7 +113,7 @@ def _get_mocked_error():
 async def test_executor_basic_execute(errors, expected, monkeypatch):
     from tartiflette.executors import basic
 
-    async def my_execute(_, exec_ctx, __):
+    async def my_execute(_, exec_ctx, *__, **___):
         for err in errors:
             exec_ctx.add_error(err)
 
@@ -90,8 +121,13 @@ async def test_executor_basic_execute(errors, expected, monkeypatch):
 
     from tartiflette.executors.basic import execute
 
+    operation_mock = Mock()
+    operation_mock.name = None
+    operation_mock.children = []
+    operation_mock.allow_parallelization = True
+
     a = await execute(
-        {None: []},
+        {None: operation_mock},
         request_ctx={},
         error_coercer=default_error_coercer,
         operation_name=None,
@@ -106,7 +142,7 @@ async def test_executor_basic_execute(errors, expected, monkeypatch):
 async def test_executor_basic_execute_custom_resolver(monkeypatch):
     from tartiflette.executors import basic
 
-    async def my_execute(_, exec_ctx, __):
+    async def my_execute(_, exec_ctx, *__, **___):
         exec_ctx.add_error(GraphQLError("My error"))
 
     def custom_error_coercer(exception):
@@ -116,8 +152,13 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
 
     from tartiflette.executors.basic import execute
 
+    operation_mock = Mock()
+    operation_mock.name = None
+    operation_mock.children = []
+    operation_mock.allow_parallelization = True
+
     a = await execute(
-        {None: []},
+        {None: operation_mock},
         request_ctx={},
         error_coercer=custom_error_coercer,
         operation_name=None,

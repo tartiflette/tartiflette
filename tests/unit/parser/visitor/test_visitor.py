@@ -325,6 +325,8 @@ def test_parser_visitor__on_field_in_first_field(a_visitor, an_element):
     a_visitor._internal_ctx.operation = Mock()
     a_visitor._internal_ctx.operation.name = "Yo"
     a_visitor._internal_ctx.operation.type = "an_operation_type"
+    a_visitor._internal_ctx.operation.children = []
+    a_visitor.operations = {"Yo": a_visitor._internal_ctx.operation}
     a_visitor.schema.get_operation_type = Mock(
         return_value="an_operation_type"
     )
@@ -345,7 +347,7 @@ def test_parser_visitor__on_field_in_first_field(a_visitor, an_element):
     assert a_visitor.schema.get_field_by_name.call_args_list == [
         (("an_operation_type.a_name",),)
     ]
-    assert a_visitor._internal_ctx.node in a_visitor.root_nodes["Yo"]
+    assert a_visitor._internal_ctx.node in a_visitor.operations["Yo"].children
     assert a_visitor._internal_ctx.node.parent is None
     assert an_element.get_location.called == 1
     assert an_element.get_alias.called == 1
@@ -368,6 +370,12 @@ def test_parser_visitor__on_field_in_another_field(a_visitor, an_element):
     current_node = a_visitor._internal_ctx.node
     a_visitor.schema.get_field_by_name = Mock(return_value=a_field)
 
+    a_visitor._internal_ctx.operation = Mock()
+    a_visitor._internal_ctx.operation.name = "Yo"
+    a_visitor._internal_ctx.operation.type = "Query"
+    a_visitor._internal_ctx.operation.children = []
+    a_visitor.operations = {"Yo": a_visitor._internal_ctx.operation}
+
     a_visitor._on_field_in(an_element)
 
     assert a_visitor._internal_ctx.depth == 2
@@ -378,7 +386,9 @@ def test_parser_visitor__on_field_in_another_field(a_visitor, an_element):
     assert a_visitor.schema.get_field_by_name.call_args_list == [
         (("a_gql_type.a_name",),)
     ]
-    assert a_visitor._internal_ctx.node not in a_visitor.root_nodes
+    assert (
+        a_visitor._internal_ctx.node not in a_visitor.operations["Yo"].children
+    )
     assert a_visitor._internal_ctx.node.parent is current_node
     assert an_element.get_location.called == 1
     assert an_element.get_alias.called == 1
@@ -413,6 +423,12 @@ def test_parser_visitor__on_field_in_a_fragment(a_visitor, an_element):
     )
     current_node = a_visitor._internal_ctx.node
 
+    a_visitor._internal_ctx.operation = Mock()
+    a_visitor._internal_ctx.operation.name = "Yo"
+    a_visitor._internal_ctx.operation.type = "Query"
+    a_visitor._internal_ctx.operation.children = []
+    a_visitor.operations = {"Yo": a_visitor._internal_ctx.operation}
+
     class _get_field_by_name(MagicMock):
         def __call__(self, aname):
             super().__call__(aname)
@@ -435,7 +451,9 @@ def test_parser_visitor__on_field_in_a_fragment(a_visitor, an_element):
         (("a_gql_type.a_name",),),
         (("an_inline_fragment_type.a_name",),),
     ]
-    assert a_visitor._internal_ctx.node not in a_visitor.root_nodes
+    assert (
+        a_visitor._internal_ctx.node not in a_visitor.operations["Yo"].children
+    )
     assert a_visitor._internal_ctx.node.parent is current_node
     assert an_element.get_location.called == 1
     assert an_element.get_alias.called == 1
@@ -464,6 +482,12 @@ def test_parser_visitor__on_field_unknow_schema_field(a_visitor, an_element):
     )
     a_visitor._internal_ctx.inline_fragment_info.depth = 2
 
+    a_visitor._internal_ctx.operation = Mock()
+    a_visitor._internal_ctx.operation.name = "Yo"
+    a_visitor._internal_ctx.operation.type = "Query"
+    a_visitor._internal_ctx.operation.children = []
+    a_visitor.operations = {"Yo": a_visitor._internal_ctx.operation}
+
     an_exception = UnknownSchemaFieldResolver("a_message")
 
     class _get_field_by_name(MagicMock):
@@ -477,7 +501,9 @@ def test_parser_visitor__on_field_unknow_schema_field(a_visitor, an_element):
 
     assert a_visitor._internal_ctx.depth == 1
     assert a_visitor._internal_ctx.field_path == ["a_parent_path_element"]
-    assert a_visitor._internal_ctx.node not in a_visitor.root_nodes
+    assert (
+        a_visitor._internal_ctx.node not in a_visitor.operations["Yo"].children
+    )
     assert a_visitor.continue_child == 0
     assert a_visitor.exceptions[0] == an_exception
 

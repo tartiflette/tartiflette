@@ -7,3 +7,7 @@ class NodeOperationDefinition(NodeDefinition):
     ) -> None:
         super().__init__(path, "OperationDefinition", location, name)
         self.type = operation_type
+
+    @property
+    def allow_parallelization(self) -> bool:
+        return self.type != "Mutation"
