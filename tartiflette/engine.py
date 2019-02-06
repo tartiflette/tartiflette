@@ -32,12 +32,15 @@ class Engine:
         operation_name: Optional[str] = None,
         context: Optional[Dict[str, Any]] = None,
         variables: Optional[Dict[str, Any]] = None,
+        initial_value: Optional[Any] = None,
     ) -> dict:
         """
         Parse and execute a GraphQL request (as string).
         :param query: the GraphQL request / query as UTF8-encoded string
+        :param operation_name: the operation name to execute
         :param context: a dict containing anything you need
         :param variables: the variables used in the GraphQL request
+        :param initial_value: an initial value corresponding to the root type being executed
         :return: a GraphQL response (as dict)
         """
         try:
@@ -59,5 +62,6 @@ class Engine:
             operations,
             operation_name,
             request_ctx=context,
+            initial_value=initial_value,
             error_coercer=self._error_coercer,
         )
