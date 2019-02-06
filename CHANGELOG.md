@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - [ISSUE-99](https://github.com/dailymotion/tartiflette/issues/99): Raise errors on non unique arguments on fields or directives.
 - [ISSUE-114](https://github.com/dailymotion/tartiflette/issues/114): Execute only the specified operation or throw on error if not exists.
+- [ISSUE-117](https://github.com/dailymotion/tartiflette/issues/117): Execute top-level mutation selection set serially.
 
 ## [Released]
 
