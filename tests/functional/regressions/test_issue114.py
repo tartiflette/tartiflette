@@ -54,7 +54,7 @@ async def _query_human_resolver(*_args, **_kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Unknown < Dog > operation.",
+                        "message": "Unknown operation named < Dog >.",
                         "path": None,
                         "locations": [],
                     }
@@ -70,16 +70,7 @@ async def _query_human_resolver(*_args, **_kwargs):
             }
             """,
             None,
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "No anonymous operation found.",
-                        "path": None,
-                        "locations": [],
-                    }
-                ],
-            },
+            {"data": {"dog": {"name": "Doggo"}}},
         ),
         (
             """
@@ -100,7 +91,7 @@ async def _query_human_resolver(*_args, **_kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "No anonymous operation found.",
+                        "message": "Must provide operation name if query contains multiple operations.",
                         "path": None,
                         "locations": [],
                     }
@@ -160,7 +151,7 @@ async def _query_human_resolver(*_args, **_kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Unknown < Unknown > operation.",
+                        "message": "Unknown operation named < Unknown >.",
                         "path": None,
                         "locations": [],
                     }

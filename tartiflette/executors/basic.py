@@ -41,12 +41,19 @@ async def execute(
     try:
         root_resolvers = root_nodes[operation_name]
     except KeyError:
-        error = (
-            UnknownNamedOperation("Unknown < %s > operation." % operation_name)
-            if operation_name is not None
-            else UnknownAnonymousdOperation("No anonymous operation found.")
-        )
-        return {"data": None, "errors": [error_coercer(error)]}
+        if operation_name or len(root_nodes) != 1:
+            error = (
+                UnknownNamedOperation(
+                    "Unknown operation named < %s >." % operation_name
+                )
+                if operation_name is not None
+                else UnknownAnonymousdOperation(
+                    "Must provide operation name if query contains multiple operations."
+                )
+            )
+            return {"data": None, "errors": [error_coercer(error)]}
+
+        root_resolvers = root_nodes[list(root_nodes.keys())[0]]
 
     await _execute(root_resolvers, execution_ctx, request_ctx)
 
