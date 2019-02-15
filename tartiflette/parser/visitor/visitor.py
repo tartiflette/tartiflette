@@ -341,6 +341,7 @@ class TartifletteVisitor(Visitor):
             self._internal_ctx.field_path[:],
             type_cond,
             element.get_alias(),
+            subscribe=field.subscribe,
         )
 
         node.set_parent(self._internal_ctx.node)

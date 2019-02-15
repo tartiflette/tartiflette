@@ -22,7 +22,9 @@ class NodeField(Node):
         path: List[str],
         type_condition: str,
         alias: Optional[str] = None,
+        subscribe: Optional[Callable] = None,
     ) -> None:
+        # pylint: disable=too-many-arguments
         super().__init__(path, "Field", location, name)
         # Execution
         self.schema = schema
@@ -31,6 +33,7 @@ class NodeField(Node):
         self.type_condition = type_condition
         self.marshalled: Dict[str, Any] = {}
         self.alias = alias or self.name
+        self.subscribe = subscribe
 
     @property
     def cant_be_null(self) -> bool:

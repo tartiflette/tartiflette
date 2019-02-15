@@ -95,6 +95,10 @@ class NonAwaitableDirective(ImproperlyConfigured):
     pass
 
 
+class NonAsyncGeneratorSubscription(ImproperlyConfigured):
+    pass
+
+
 class UnknownSchemaFieldResolver(GraphQLError):
     pass
 
