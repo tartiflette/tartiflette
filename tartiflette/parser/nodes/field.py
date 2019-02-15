@@ -120,9 +120,15 @@ class NodeField(Node):
                 "provide a source event stream with < @Subscription >."
             )
 
+        # TODO: refactor this to have re-usable code with `_ResolverExecutor`
+        arguments = self.field_executor.schema_field.get_arguments_default_values()
+        arguments.update(
+            {argument.name: argument.value for argument in self.arguments.values()}
+        )
+
         return self.subscribe(
             parent_result,
-            self.arguments,
+            arguments,
             request_ctx,
             Info(
                 query_field=self,
