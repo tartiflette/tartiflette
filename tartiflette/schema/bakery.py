@@ -6,7 +6,7 @@ from tartiflette.schema import GraphQLSchema
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 
-_SCHEMA_OBJECT_IDS = ["directives", "resolvers", "scalars"]
+_SCHEMA_OBJECT_IDS = ["directives", "resolvers", "scalars", "subscriptions"]
 
 
 class SchemaBakery:
