@@ -3,8 +3,8 @@ import os
 import pytest
 
 from tartiflette import Engine, Resolver
-from tartiflette.resolver.subscription import Subscription
 from tartiflette.schema.registry import SchemaRegistry
+from tartiflette.subscription.subscription import Subscription
 
 _CURR_PATH = os.path.dirname(os.path.abspath(__file__))
 

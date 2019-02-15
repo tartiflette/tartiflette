@@ -4,7 +4,7 @@ import pytest
 
 
 def test_subscription_inst():
-    from tartiflette.resolver.subscription import Subscription
+    from tartiflette.subscription.subscription import Subscription
 
     r = Subscription("a")
     assert r._implementation is None
@@ -14,7 +14,7 @@ def test_subscription_inst():
 
 @pytest.fixture
 def a_subscription():
-    from tartiflette.resolver.subscription import Subscription
+    from tartiflette.subscription.subscription import Subscription
 
     a_subscription = Subscription("a_subscription")
     a_subscription._implementation = "A"
