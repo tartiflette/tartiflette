@@ -99,6 +99,10 @@ class NonAsyncGeneratorSubscription(ImproperlyConfigured):
     pass
 
 
+class NotSubscriptionField(ImproperlyConfigured):
+    pass
+
+
 class UnknownSchemaFieldResolver(GraphQLError):
     pass
 
