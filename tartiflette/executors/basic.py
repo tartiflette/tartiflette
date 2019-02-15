@@ -50,6 +50,7 @@ async def execute(
     initial_value: Optional[Any],
     error_coercer: Callable[[Exception], dict],
 ) -> dict:
+    # pylint: disable=too-many-locals
     execution_ctx = ExecutionContext()
 
     try:
@@ -71,16 +72,49 @@ async def execute(
 
     root_nodes = operation.children
 
+    if operation.type == "Subscription":
+        source_event_stream = await root_nodes[0].create_source_event_stream(
+            execution_ctx, request_ctx, parent_result=initial_value
+        )
+
+        async for message in source_event_stream:
+            return await execute_fields(
+                root_nodes,
+                execution_ctx,
+                request_ctx,
+                initial_value=message,
+                error_coercer=error_coercer,
+                allow_parallelization=operation.allow_parallelization,
+            )
+    else:
+        return await execute_fields(
+            root_nodes,
+            execution_ctx,
+            request_ctx,
+            initial_value=initial_value,
+            error_coercer=error_coercer,
+            allow_parallelization=operation.allow_parallelization,
+        )
+
+
+async def execute_fields(
+    fields,
+    execution_ctx,
+    request_ctx,
+    initial_value,
+    error_coercer,
+    allow_parallelization=True,
+):
     await _execute(
-        root_nodes,
+        fields,
         execution_ctx,
         request_ctx,
         initial_value=initial_value,
-        allow_parallelization=operation.allow_parallelization,
+        allow_parallelization=allow_parallelization,
     )
 
     results = {
-        "data": _get_datas(root_nodes),
+        "data": _get_datas(fields),
         "errors": [error_coercer(err) for err in execution_ctx.errors if err],
     }
 
