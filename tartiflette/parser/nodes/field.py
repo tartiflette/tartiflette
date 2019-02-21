@@ -121,9 +121,14 @@ class NodeField(Node):
             )
 
         # TODO: refactor this to have re-usable code with `_ResolverExecutor`
-        arguments = self.field_executor.schema_field.get_arguments_default_values()
+        arguments = (
+            self.field_executor.schema_field.get_arguments_default_values()
+        )
         arguments.update(
-            {argument.name: argument.value for argument in self.arguments.values()}
+            {
+                argument.name: argument.value
+                for argument in self.arguments.values()
+            }
         )
 
         return self.subscribe(

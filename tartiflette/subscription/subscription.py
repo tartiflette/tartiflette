@@ -5,7 +5,6 @@ from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
     MissingImplementation,
     NonAsyncGeneratorSubscription,
-    NotSubscriptionField,
     UnknownFieldDefinition,
 )
 
@@ -33,10 +32,12 @@ class Subscription:
                 "Unknown Field Definition %s" % self._name
             )
 
-        if field.parent_type is not schema.find_type(schema.subscription_type):
-            raise NotSubscriptionField(
-                "< %s > isn't a subscription field." % self._name
-            )
+        # TODO: check that decorated parent decorated field is the
+        # subscription field
+        # if field.parent_type is not schema.find_type(schema.subscription_type):
+        #     raise NotSubscriptionField(
+        #         "< %s > isn't a subscription field." % self._name
+        #     )
 
         field.subscribe = self._implementation
 

@@ -49,6 +49,7 @@ def test_subscription_bake_unknown_field_definition(a_subscription):
     ]
 
 
+@pytest.mark.skip
 def test_subscription_bake_not_subscription_field(a_subscription):
     from tartiflette.types.exceptions.tartiflette import NotSubscriptionField
 
