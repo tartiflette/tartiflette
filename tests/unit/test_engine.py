@@ -1,3 +1,5 @@
+import asyncio
+
 from unittest.mock import Mock
 
 import pytest
@@ -173,3 +175,40 @@ async def test_engine_execute_custom_resolver(clean_registry):
     )
     assert await e.execute("query { a }") == {"data": {"a": "customed!"}}
     assert a.called
+
+
+@pytest.mark.asyncio
+async def test_engine_subscribe(clean_registry):
+    from tartiflette import Engine, Subscription, Resolver
+
+    @Subscription("Subscription.counter", schema_name="subscribe_counter")
+    async def _subscription_counter_subscription(
+        parent_result, args, *_args, **_kwargs
+    ):
+        start_at = args["startAt"]
+        while start_at > 0:
+            await asyncio.sleep(0.01)
+            start_at -= 1
+            yield start_at
+
+    @Resolver("Subscription.counter", schema_name="subscribe_counter")
+    async def _subscription_counter_query(parent_result, *_args, **_kwargs):
+        return parent_result
+
+    e = Engine(
+        """
+        type Query {
+          a: String
+        }
+        
+        type Subscription {
+          counter(startAt: Int!): Int!
+        }
+        """,
+        schema_name="subscribe_counter",
+    )
+
+    expected_values = list(range(4))
+
+    async for result in e.subscribe("subscription { counter(startAt: 4) }"):
+        assert result == {"data": {"counter": expected_values.pop()}}

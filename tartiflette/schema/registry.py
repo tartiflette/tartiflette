@@ -45,7 +45,9 @@ class SchemaRegistry:
     def _register(
         schema_name: str,
         where: str,
-        obj: Optional[Union["Directive", "Resolver", "Scalar"]],
+        obj: Optional[
+            Union["Directive", "Resolver", "Scalar", "Subscription"]
+        ],
     ) -> None:
         if not obj:
             return
@@ -79,6 +81,13 @@ class SchemaRegistry:
         schema_name: str = "default", scalar: Optional["Scalar"] = None
     ) -> None:
         SchemaRegistry._register(schema_name, "scalars", scalar)
+
+    @staticmethod
+    def register_subscription(
+        schema_name: str = "default",
+        subscription: Optional["Subscription"] = None,
+    ) -> None:
+        SchemaRegistry._register(schema_name, "subscriptions", subscription)
 
     @staticmethod
     def register_sdl(

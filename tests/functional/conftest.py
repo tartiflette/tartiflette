@@ -4,6 +4,7 @@ import pytest
 
 from tartiflette import Engine, Resolver
 from tartiflette.schema.registry import SchemaRegistry
+from tartiflette.subscription.subscription import Subscription
 
 _CURR_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -65,8 +66,9 @@ def pytest_runtest_setup(item):
     if not marker:
         return
 
-    resolvers = marker.kwargs.get("resolvers")
-    if not resolvers:
+    resolvers = marker.kwargs.get("resolvers") or {}
+    subscriptions = marker.kwargs.get("subscriptions") or {}
+    if not (resolvers or subscriptions):
         return
 
     schema_name = _get_schema_name_from_marker(marker)
@@ -75,17 +77,30 @@ def pytest_runtest_setup(item):
     SchemaRegistry._schemas.setdefault(schema_name, {})
 
     # Reset schema resolvers
-    SchemaRegistry._schemas[schema_name]["resolvers"] = {}
+    if resolvers:
+        SchemaRegistry._schemas[schema_name]["resolvers"] = {}
+
+    if subscriptions:
+        SchemaRegistry._schemas[schema_name]["subscriptions"] = {}
 
     # Apply "Resolver" decorators to resolvers functions
     for name, implementation in resolvers.items():
         Resolver(name, schema_name=schema_name)(implementation)
+
+    for name, implementation in subscriptions.items():
+        Subscription(name, schema_name=schema_name)(implementation)
 
     # Bake resolvers
     for resolver in (
         SchemaRegistry._schemas[schema_name].get("resolvers") or {}
     ).values():
         resolver.bake(_TTFTT_ENGINES[schema_name]._schema)
+
+    # Bake subscriptions
+    for subscription in (
+        SchemaRegistry._schemas[schema_name].get("subscriptions") or {}
+    ).values():
+        subscription.bake(_TTFTT_ENGINES[schema_name]._schema)
 
     # Re-bake engine schema
     _TTFTT_ENGINES[schema_name]._schema.bake()

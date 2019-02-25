@@ -1,6 +1,6 @@
 import asyncio
 
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, AsyncIterable, Callable, Dict, List, Optional
 
 from tartiflette.executors.types import ExecutionContext
 from tartiflette.types.exceptions.tartiflette import (
@@ -43,17 +43,9 @@ def _get_datas(root_nodes: List["NodeField"]) -> Optional[dict]:
     return data
 
 
-async def execute(
-    operations: Dict[Optional[str], List["NodeOperationDefinition"]],
-    operation_name: Optional[str],
-    request_ctx: Optional[Dict[str, Any]],
-    initial_value: Optional[Any],
-    error_coercer: Callable[[Exception], dict],
-) -> dict:
-    execution_ctx = ExecutionContext()
-
+def get_operation(operations, operation_name):
     try:
-        operation = operations[operation_name]
+        return operations[operation_name], None
     except KeyError:
         if operation_name or len(operations) != 1:
             error = (
@@ -65,22 +57,85 @@ async def execute(
                     "Must provide operation name if query contains multiple operations."
                 )
             )
-            return {"data": None, "errors": [error_coercer(error)]}
+            return None, [error]
+        return operations[list(operations.keys())[0]], None
 
-        operation = operations[list(operations.keys())[0]]
 
-    root_nodes = operation.children
+async def execute(
+    operations: Dict[Optional[str], List["NodeOperationDefinition"]],
+    operation_name: Optional[str],
+    request_ctx: Optional[Dict[str, Any]],
+    initial_value: Optional[Any],
+    error_coercer: Callable[[Exception], dict],
+) -> dict:
+    # pylint: disable=too-many-locals
+    execution_ctx = ExecutionContext()
 
-    await _execute(
-        root_nodes,
+    operation, errors = get_operation(operations, operation_name)
+
+    if errors:
+        return {"data": None, "errors": [error_coercer(err) for err in errors]}
+
+    return await execute_fields(
+        operation.children,
         execution_ctx,
         request_ctx,
         initial_value=initial_value,
+        error_coercer=error_coercer,
         allow_parallelization=operation.allow_parallelization,
     )
 
+
+async def subscribe(
+    operations: Dict[Optional[str], List["NodeOperationDefinition"]],
+    operation_name: Optional[str],
+    request_ctx: Optional[Dict[str, Any]],
+    initial_value: Optional[Any],
+    error_coercer: Callable[[Exception], dict],
+) -> AsyncIterable[Dict[str, Any]]:
+    # pylint: disable=too-many-locals
+    execution_ctx = ExecutionContext()
+
+    operation, errors = get_operation(operations, operation_name)
+
+    if errors:
+        yield {"data": None, "errors": [error_coercer(err) for err in errors]}
+
+    root_nodes = operation.children
+
+    source_event_stream = await root_nodes[0].create_source_event_stream(
+        execution_ctx, request_ctx, parent_result=initial_value
+    )
+
+    async for message in source_event_stream:
+        yield await execute_fields(
+            root_nodes,
+            execution_ctx,
+            request_ctx,
+            initial_value=message,
+            error_coercer=error_coercer,
+            allow_parallelization=operation.allow_parallelization,
+        )
+
+
+async def execute_fields(
+    fields,
+    execution_ctx,
+    request_ctx,
+    initial_value,
+    error_coercer,
+    allow_parallelization=True,
+):
+    await _execute(
+        fields,
+        execution_ctx,
+        request_ctx,
+        initial_value=initial_value,
+        allow_parallelization=allow_parallelization,
+    )
+
     results = {
-        "data": _get_datas(root_nodes),
+        "data": _get_datas(fields),
         "errors": [error_coercer(err) for err in execution_ctx.errors if err],
     }
 

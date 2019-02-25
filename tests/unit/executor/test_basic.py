@@ -5,8 +5,13 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from tartiflette.executors.basic import get_operation
 from tartiflette.resolver.factory import default_error_coercer
-from tartiflette.types.exceptions.tartiflette import GraphQLError
+from tartiflette.types.exceptions.tartiflette import (
+    GraphQLError,
+    UnknownAnonymousdOperation,
+    UnknownNamedOperation,
+)
 
 
 @pytest.mark.asyncio
@@ -209,3 +214,58 @@ async def test_executor_basic_execute_initial_value(initial_value):
 
     assert b.called_with(exec_ctx, request_ctx, initial_value)
     assert a.called_with(exec_ctx, request_ctx, initial_value)
+
+
+_OPERATION_MOCK = Mock()
+
+
+@pytest.mark.parametrize(
+    "operations,operation_name,expected",
+    [
+        (
+            {"operation_name": _OPERATION_MOCK},
+            "operation_name",
+            (_OPERATION_MOCK, None),
+        ),
+        (
+            {"unknown": _OPERATION_MOCK},
+            "operation_name",
+            (
+                None,
+                [
+                    UnknownNamedOperation(
+                        "Unknown operation named < operation_name >."
+                    )
+                ],
+            ),
+        ),
+        (
+            {"unknown_1": _OPERATION_MOCK, "unknown_2": _OPERATION_MOCK},
+            None,
+            (
+                None,
+                [
+                    UnknownAnonymousdOperation(
+                        "Must provide operation name if query contains multiple "
+                        "operations."
+                    )
+                ],
+            ),
+        ),
+        ({"unknown": _OPERATION_MOCK}, None, (_OPERATION_MOCK, None)),
+        ({None: _OPERATION_MOCK}, None, (_OPERATION_MOCK, None)),
+    ],
+)
+def test_executor_get_operation(operations, operation_name, expected):
+    operation, errors = get_operation(operations, operation_name)
+
+    expected_operation, expected_errors = expected
+    if expected_operation:
+        assert operation == expected_operation
+        assert errors is None
+    if expected_errors:
+        assert len(expected_errors) == len(errors)
+        for expected_error, error in zip(expected_errors, errors):
+            assert type(expected_error) is type(error)
+            assert str(expected_error) == str(error)
+        assert operation is None
