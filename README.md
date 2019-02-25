@@ -117,6 +117,7 @@ Here are the subjects we are working on:
 * [X] NodeDefinition: Check that the Type exists.
 * [X] (Directive) Integrate the directive's execution in the Executor.
 * [X] (Directive) introspection based on directive
+* [X] Subscription Support
 
 ### SDL - Schema Definition Language
 
@@ -137,7 +138,6 @@ Here are the subjects we are working on:
 ## Roadmap - Milestone 2
 
 * [ ] Implement **[Apollo Cache Control](https://github.com/apollographql/apollo-cache-control)**
-* [ ] Think about `subscriptions`
 
 ## Integration Example
 
