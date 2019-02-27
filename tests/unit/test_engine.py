@@ -276,5 +276,7 @@ async def test_engine_subscribe_with_default_resolver_alias(clean_registry):
 
     expected_values = list(range(4))
 
-    async for result in e.subscribe("subscription { aliasCounter: counter(startAt: 4) }"):
+    async for result in e.subscribe(
+        "subscription { aliasCounter: counter(startAt: 4) }"
+    ):
         assert result == {"data": {"aliasCounter": expected_values.pop()}}
