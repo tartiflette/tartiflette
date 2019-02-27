@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+## [0.4.1] - 2019-02-27
+
+### Fixed
+
+- [ISSUE-128](https://github.com/dailymotion/tartiflette/issues/128): Use a specific default resolver for subscription which doesn't implement a dedicated resolver.
+
 ## [0.4.0] - 2019-02-25
 
 ### Added

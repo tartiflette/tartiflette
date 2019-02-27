@@ -51,7 +51,7 @@ _TEST_REQUIRE = [
     "pytest-cov==2.6.1",
     "pytest-asyncio==0.10.0",
     "pytest-xdist",
-    "pylint==2.1.1",
+    "pylint==2.3.0",
     "xenon",
     "black==18.9b0",
     "isort",
@@ -59,7 +59,7 @@ _TEST_REQUIRE = [
 
 _BENCHMARK_REQUIRE = ["pytest-benchmark==3.2.2"]
 
-_VERSION = "0.4.0"
+_VERSION = "0.4.1"
 
 _PACKAGES = find_packages(exclude=["tests*"])
 

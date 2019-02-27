@@ -212,3 +212,71 @@ async def test_engine_subscribe(clean_registry):
 
     async for result in e.subscribe("subscription { counter(startAt: 4) }"):
         assert result == {"data": {"counter": expected_values.pop()}}
+
+
+@pytest.mark.asyncio
+async def test_engine_subscribe_with_default_resolver(clean_registry):
+    from tartiflette import Engine, Subscription, Resolver
+
+    @Subscription("Subscription.counter", schema_name="subscribe_counter")
+    async def _subscription_counter_subscription(
+        parent_result, args, *_args, **_kwargs
+    ):
+        start_at = args["startAt"]
+        while start_at > 0:
+            await asyncio.sleep(0.01)
+            start_at -= 1
+            yield start_at
+
+    e = Engine(
+        """
+        type Query {
+          a: String
+        }
+
+        type Subscription {
+          counter(startAt: Int!): Int!
+        }
+        """,
+        schema_name="subscribe_counter",
+    )
+
+    expected_values = list(range(4))
+
+    async for result in e.subscribe("subscription { counter(startAt: 4) }"):
+        assert result == {"data": {"counter": expected_values.pop()}}
+
+
+@pytest.mark.asyncio
+async def test_engine_subscribe_with_default_resolver_alias(clean_registry):
+    from tartiflette import Engine, Subscription, Resolver
+
+    @Subscription("Subscription.counter", schema_name="subscribe_counter")
+    async def _subscription_counter_subscription(
+        parent_result, args, *_args, **_kwargs
+    ):
+        start_at = args["startAt"]
+        while start_at > 0:
+            await asyncio.sleep(0.01)
+            start_at -= 1
+            yield start_at
+
+    e = Engine(
+        """
+        type Query {
+          a: String
+        }
+
+        type Subscription {
+          counter(startAt: Int!): Int!
+        }
+        """,
+        schema_name="subscribe_counter",
+    )
+
+    expected_values = list(range(4))
+
+    async for result in e.subscribe(
+        "subscription { aliasCounter: counter(startAt: 4) }"
+    ):
+        assert result == {"data": {"aliasCounter": expected_values.pop()}}

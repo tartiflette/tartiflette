@@ -356,7 +356,7 @@ class GraphQLSchema:
                     self.query_type
                 )
             )
-        elif (
+        if (
             self.mutation_type != "Mutation"
             and self.mutation_type not in self._gql_types
         ):
@@ -365,7 +365,7 @@ class GraphQLSchema:
                     self.mutation_type
                 )
             )
-        elif (
+        if (
             self.subscription_type != "Subscription"
             and self.subscription_type not in self._gql_types
         ):
