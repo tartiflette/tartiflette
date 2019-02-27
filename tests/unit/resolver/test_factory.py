@@ -1,4 +1,4 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -488,3 +488,108 @@ def test_resolver_factory__set_typename(res, typename, expected):
 
     assert _set_typename(res, typename) is None
     assert get_typename(res) == expected
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "parent_result",
+    [
+        None,
+        1,
+        "value",
+        {
+            "none": None,
+            "int": 1,
+            "string": "value",
+            "dict": {"value": "value"},
+        },
+    ],
+)
+async def test_default_subscription_resolver(parent_result):
+    from tartiflette.resolver.factory import (
+        default_resolver,
+        default_subscription_resolver,
+    )
+
+    info = Mock()
+    info.schema_field = Mock()
+    info.schema_field.name = "myField"
+
+    default_resolver_mock = Mock(wraps=default_resolver)
+
+    subscription_resolver = default_subscription_resolver(
+        default_resolver_mock
+    )
+
+    assert (
+        await subscription_resolver(parent_result, None, None, info)
+        == parent_result
+    )
+
+    default_resolver_mock.assert_called_once_with(
+        {"myField": parent_result}, None, None, info
+    )
+
+
+_CUSTOM_DEFAULT_RESOLVER = lambda *args, **kwargs: {}
+
+
+@pytest.mark.parametrize(
+    (
+        "is_subscription",
+        "custom_default_resolver",
+        "update_func_called",
+        "default_subscription_resolver_called",
+    ),
+    [
+        (False, None, False, False),
+        (True, None, False, True),
+        (False, _CUSTOM_DEFAULT_RESOLVER, True, False),
+        (True, _CUSTOM_DEFAULT_RESOLVER, True, False),
+    ],
+)
+def test_resolverexecutor_bake(
+    is_subscription,
+    custom_default_resolver,
+    update_func_called,
+    default_subscription_resolver_called,
+):
+    from tartiflette.resolver.factory import (
+        _ResolverExecutor,
+        default_resolver,
+        default_subscription_resolver,
+    )
+
+    schema_field = Mock(schema=None)
+    schema_field.subscribe = Mock() if is_subscription else None
+
+    with patch(
+        "tartiflette.resolver.factory.default_subscription_resolver",
+        wraps=default_subscription_resolver,
+    ) as default_subscription_resolver_mock:
+        resolver_executor = _ResolverExecutor(default_resolver, schema_field)
+        resolver_executor.update_coercer = Mock()
+        resolver_executor.update_func = Mock(
+            wraps=resolver_executor.update_func
+        )
+        resolver_executor.apply_directives = Mock()
+
+        resolver_executor.bake(custom_default_resolver)
+
+        resolver_executor.update_coercer.assert_called_once()
+
+        if update_func_called:
+            resolver_executor.update_func.assert_called_once_with(
+                custom_default_resolver
+            )
+        else:
+            resolver_executor.update_func.assert_not_called()
+
+        if default_subscription_resolver_called:
+            default_subscription_resolver_mock.assert_called_once_with(
+                default_resolver
+            )
+        else:
+            default_subscription_resolver_mock.assert_not_called()
+
+        resolver_executor.apply_directives.assert_called_once()

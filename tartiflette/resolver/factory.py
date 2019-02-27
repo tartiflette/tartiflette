@@ -260,6 +260,10 @@ class _ResolverExecutor:
             and custom_default_resolver is not None
         ):
             self.update_func(custom_default_resolver)
+
+        if self._schema_field.subscribe and self._raw_func is default_resolver:
+            self._raw_func = default_subscription_resolver(self._raw_func)
+
         self.apply_directives()
 
     @property
@@ -285,6 +289,20 @@ class _ResolverExecutor:
         except AttributeError:
             pass
         return False
+
+
+def default_subscription_resolver(func: Callable):
+    async def func_wrapper(
+        parent_result: Optional[Any],
+        args: Dict[str, Any],
+        ctx: Optional[Dict[str, Any]],
+        info: "Info",
+    ) -> Optional[Any]:
+        return await func(
+            {info.schema_field.name: parent_result}, args, ctx, info
+        )
+
+    return func_wrapper
 
 
 async def default_resolver(

@@ -166,6 +166,7 @@ def test_resolver_factory__resolver_executor_update_bake(
 ):
     from tartiflette.resolver.factory import default_resolver
 
+    _resolver_executor_mock._schema_field.subscribe = None
     _resolver_executor_mock.update_func = Mock()
     _resolver_executor_mock.update_coercer = Mock()
     _resolver_executor_mock.apply_directives = Mock()
@@ -185,6 +186,7 @@ def test_resolver_factory__resolver_executor_update_bake(
     assert _resolver_executor_mock.bake(None) is None
     assert not _resolver_executor_mock.update_func.called
     assert _resolver_executor_mock._raw_func is not "T"
+    assert _resolver_executor_mock._raw_func is default_resolver
 
     assert _resolver_executor_mock.bake("T") is None
     assert _resolver_executor_mock.update_func.called
