@@ -26,6 +26,8 @@ class OnIntrospectionDirective:
         _directive_args: Dict[str, Any],
         next_directive: Callable,
         introspected_element: Any,
+        _ctx: Optional[Dict[str, Any]],
+        _info: "Info",
     ) -> Any:
         return next_directive(introspected_element)
 

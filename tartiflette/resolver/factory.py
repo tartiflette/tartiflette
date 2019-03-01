@@ -174,12 +174,12 @@ def _introspection_directives(directives: list) -> Callable:
     return func
 
 
-def _execute_introspection_directives(elements: list) -> list:
+def _execute_introspection_directives(elements: list, ctx, info) -> list:
     results = []
     for element in elements:
         try:
             directives = _introspection_directives(element.directives)
-            result = directives(element)
+            result = directives(element, ctx, info)
             if result:
                 results.append(result)
         except (AttributeError, TypeError):
@@ -211,11 +211,11 @@ class _ResolverExecutor:
         self._coercer = _get_coercer(schema_field)
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
 
-    async def _introspection(self, element: Any) -> Optional[Any]:
+    async def _introspection(self, element: Any, ctx, info) -> Optional[Any]:
         if isinstance(element, list):
-            return _execute_introspection_directives(element)
+            return _execute_introspection_directives(element, ctx, info)
 
-        elements = _execute_introspection_directives([element])
+        elements = _execute_introspection_directives([element], ctx, info)
         try:
             return elements[0]
         except IndexError:
@@ -237,7 +237,7 @@ class _ResolverExecutor:
 
             result = await self._func(parent_result, default_args, ctx, info)
             if info.execution_ctx.is_introspection:
-                result = await self._introspection(result)
+                result = await self._introspection(result, ctx, info)
             return result, self._coercer(result, info)
         except Exception as e:  # pylint: disable=broad-except
             return e, None
