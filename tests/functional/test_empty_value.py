@@ -49,41 +49,80 @@ async def resolver_y(_pr, _args, _ctx, _info):
 _ENGINE = Engine(_SDL, schema_name="test_empty_values")
 
 
-@pytest.mark.asyncio
-async def test_empty_values_1():
-    assert (
-        await _ENGINE.execute(
+@pytest.mark.parametrize(
+    "query,expected",
+    [
+        (
             """
-        query {
-            string1
-            stringList
-            stringListNonNull
-            nonNullStringList
-            nonNullStringListNonNull
-        }
-        """
-        )
-        == {
-            "data": None,
-            "errors": [
-                {
-                    "message": "Invalid value (value: None) for field `nonNullStringListNonNull` of type `[String!]!`",
-                    "path": ["nonNullStringListNonNull"],
-                    "locations": [{"line": 7, "column": 13}],
-                },
-                {
-                    "message": "Invalid value (value: None) for field `stringListNonNull` of type `[String]!`",
-                    "path": ["stringListNonNull"],
-                    "locations": [{"line": 5, "column": 13}],
-                },
-                {
-                    "message": "Invalid value (value: None) for field `string1` of type `String!`",
-                    "path": ["string1"],
-                    "locations": [{"line": 3, "column": 13}],
-                },
-            ],
-        }
-    )
+            query {
+                string1
+            }""",
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Invalid value (value: None) for field `string1` of type `String!`",
+                        "path": ["string1"],
+                        "locations": [{"line": 3, "column": 17}],
+                    }
+                ],
+            },
+        ),
+        (
+            """
+            query {
+                stringList
+            }
+            """,
+            {"data": {"stringList": None}},
+        ),
+        (
+            """
+            query {
+                nonNullStringList
+            }
+            """,
+            {"data": {"nonNullStringList": None}},
+        ),
+        (
+            """
+            query {
+                stringListNonNull
+            }
+            """,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Invalid value (value: None) for field `stringListNonNull` of type `[String]!`",
+                        "path": ["stringListNonNull"],
+                        "locations": [{"line": 3, "column": 17}],
+                    }
+                ],
+            },
+        ),
+        (
+            """
+            query {
+                nonNullStringListNonNull
+            }
+            """,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Invalid value (value: None) for field `nonNullStringListNonNull` of type `[String!]!`",
+                        "path": ["nonNullStringListNonNull"],
+                        "locations": [{"line": 3, "column": 17}],
+                    }
+                ],
+            },
+        ),
+    ],
+)
+@pytest.mark.asyncio
+async def test_empty_values_1(query, expected):
+    assert await _ENGINE.execute(query) == expected
 
 
 @pytest.mark.asyncio
