@@ -26,7 +26,8 @@ def test_resolver_factory__built_in_coercer_none_val():
 def test_resolver_factory__object_coercer():
     from tartiflette.resolver.factory import _object_coercer
 
-    assert _object_coercer(None, None, None) == {}
+    assert _object_coercer(None, None, None) == None
+    assert _object_coercer(None, Mock(), None) == {}
 
 
 def test_resolver_factory__list_coercer():

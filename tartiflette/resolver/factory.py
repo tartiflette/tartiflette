@@ -15,6 +15,9 @@ def _built_in_coercer(func: Callable, val: Optional[Any], _: "Info") -> Any:
 def _object_coercer(
     raw_type: Optional[str], val: Optional[Any], *_args, **_kwargs
 ) -> dict:
+    if val is None:
+        return None
+
     _set_typename(val, raw_type)
     return {}
 

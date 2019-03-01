@@ -23,6 +23,11 @@ async def test_tartiflette_execute_nested_error(clean_registry):
     }
     """
 
+    @Resolver("Query.test")
+    @Resolver("Obj.deep")
+    async def resolver_x(*_args, **_kwargs):
+        return {}
+
     @Resolver("Nested.lastUpdate")
     async def func_field_resolver(*args, **kwargs):
         return [
