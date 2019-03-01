@@ -372,6 +372,7 @@ class SchemaTransformer(Transformer_InPlace):
         name = None
         gql_type = None
         default_value = None
+        directives = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
@@ -383,6 +384,8 @@ class SchemaTransformer(Transformer_InPlace):
                 default_value = child.value
             elif child.type == "discard":
                 pass
+            elif child.type == "directives":
+                directives = child.value
             else:
                 raise UnexpectedASTNode(
                     "Unexpected AST node `{}`, type `{}`".format(
@@ -394,6 +397,7 @@ class SchemaTransformer(Transformer_InPlace):
             gql_type=gql_type,
             default_value=default_value,
             description=description,
+            directives=directives,
         )
 
     def directive_definition(self, tree: Tree) -> Tree:

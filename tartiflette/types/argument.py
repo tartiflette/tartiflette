@@ -1,5 +1,6 @@
-from typing import Any, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
+from tartiflette.types.helpers import get_directive_implem_list
 from tartiflette.types.type import GraphQLType
 
 
@@ -18,6 +19,7 @@ class GraphQLArgument:
         gql_type: Union[str, GraphQLType],
         default_value: Optional[Any] = None,
         description: Optional[str] = None,
+        directives: Optional[Dict[str, Optional[dict]]] = None,
         schema=None,
     ) -> None:
         # TODO: Narrow the default_value type ?
@@ -27,16 +29,21 @@ class GraphQLArgument:
         self.description = description
         self._type = {}
         self._schema = schema
+        self._directives = directives
+
+        # Introspection Attribute
+        self._directives_implementations = None
 
     def __repr__(self) -> str:
         return (
             "{}(name={!r}, gql_type={!r}, "
-            "default_value={!r}, description={!r})".format(
+            "default_value={!r}, description={!r}, directives={!r})".format(
                 self.__class__.__name__,
                 self.name,
                 self.gql_type,
                 self.default_value,
                 self.description,
+                self.directives,
             )
         )
 
@@ -49,6 +56,7 @@ class GraphQLArgument:
             and self.name == other.name
             and self.gql_type == other.gql_type
             and self.default_value == other.default_value
+            and self.directives == other.directives
         )
 
     # Introspection Attribute
@@ -57,18 +65,24 @@ class GraphQLArgument:
         return self._type
 
     @property
+    def directives(self) -> List[Dict[str, Any]]:
+        return self._directives_implementations
+
+    @property
     def is_required(self) -> bool:
         if not isinstance(self.gql_type, GraphQLType):
             return False
         return self.gql_type.is_not_null and self.default_value is None
 
-    # Introspection Attribute
     @property
     def defaultValue(self) -> Any:  # pylint: disable=invalid-name
         return self.default_value
 
     def bake(self, schema: "GraphQLSchema") -> None:
         self._schema = schema
+        self._directives_implementations = get_directive_implem_list(
+            self._directives, self._schema
+        )
         if isinstance(self.gql_type, GraphQLType):
             self._type = self.gql_type
         else:
