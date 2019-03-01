@@ -55,9 +55,9 @@ async def test_empty_values_1():
         await _ENGINE.execute(
             """
         query {
-            nonNullStringList
             string1
             stringList
+            stringListNonNull
             nonNullStringList
             nonNullStringListNonNull
         }
@@ -67,14 +67,19 @@ async def test_empty_values_1():
             "data": None,
             "errors": [
                 {
-                    "message": "Invalid value (value: None) for field `string1` of type `String!`",
-                    "path": ["string1"],
-                    "locations": [{"line": 4, "column": 13}],
-                },
-                {
                     "message": "Invalid value (value: None) for field `nonNullStringListNonNull` of type `[String!]!`",
                     "path": ["nonNullStringListNonNull"],
                     "locations": [{"line": 7, "column": 13}],
+                },
+                {
+                    "message": "Invalid value (value: None) for field `stringListNonNull` of type `[String]!`",
+                    "path": ["stringListNonNull"],
+                    "locations": [{"line": 5, "column": 13}],
+                },
+                {
+                    "message": "Invalid value (value: None) for field `string1` of type `String!`",
+                    "path": ["string1"],
+                    "locations": [{"line": 3, "column": 13}],
                 },
             ],
         }
