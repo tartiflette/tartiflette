@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+## [0.4.2] - 2019-03-01
+
+### Fixed
+
+- [ISSUE-126](https://github.com/dailymotion/tartiflette/issues/126): Now, child of a None result are no more executed
+
 ## [0.4.1] - 2019-02-27
 
 ### Fixed
