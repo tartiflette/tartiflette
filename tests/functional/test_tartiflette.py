@@ -27,16 +27,18 @@ async def test_tartiflette_execute_basic(clean_registry):
     mock_two = Mock()
 
     @Resolver("Test.field")
-    async def func_field_resolver(parent, arguments, request_ctx, info):
+    async def func_field_resolver(*_args, **_kwargs):
         mock_one()
         return None
 
+    @Resolver("RootQuery.testField")
+    async def func_testfield_resolver(*_args, **_kwargs):
+        return {}
+
     @Resolver("RootQuery.defaultField")
-    async def func_default_query_resolver(
-        parent, arguments, request_ctx, info
-    ):
+    async def func_default_query_resolver(*_args, **_kwargs):
         mock_two()
-        return
+        return 1
 
     ttftt = Engine(schema_sdl)
 

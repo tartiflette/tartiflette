@@ -191,7 +191,7 @@ class NodeField(Node):
             ):
                 self.parent.bubble_error()
             execution_ctx.add_error(gql_error)
-        elif self.children:
+        elif self.children and raw is not None:
             await self._execute_children(
                 execution_ctx, request_ctx, result=raw, coerced=coerced
             )
