@@ -134,11 +134,3 @@ class GraphQLField:
 
         for arg in self.arguments.values():
             arg.bake(self._schema)
-
-    def get_arguments_default_values(self) -> Dict[str, Any]:
-        # return a new instance each call cause we don't want caller to modify ours.
-        return {
-            key: val.default_value
-            for key, val in self.arguments.items()
-            if val.default_value
-        }

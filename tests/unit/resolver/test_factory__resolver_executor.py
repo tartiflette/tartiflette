@@ -2,6 +2,8 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
+from tests.unit.utils import AsyncMock
+
 
 def test_resolver_factory__resolver_executor_instance():
     from tartiflette.resolver.factory import _ResolverExecutor
@@ -25,7 +27,7 @@ def test_resolver_factory__resolver_executor_instance():
     assert not res_ex._shall_produce_list
 
 
-class AsyncMock(MagicMock):
+class FakeAsyncMock(MagicMock):
     async def __call__(self, *args, **kwargs):
         super().__call__(*args, **kwargs)
         return "aResult"
@@ -38,9 +40,9 @@ def _resolver_executor_mock():
     field = Mock()
     field.schema = None
     field.gql_type = "aType"
-    field.get_arguments_default_values = Mock(return_value={})
+    field.arguments = {}
 
-    res_ex = _ResolverExecutor(AsyncMock(), field)
+    res_ex = _ResolverExecutor(FakeAsyncMock(), field)
     return res_ex
 
 
@@ -81,11 +83,20 @@ async def test_resolver_factory__resolver_executor___call__(
     info.execution_ctx.is_introspection = False
 
     _resolver_executor_mock._coercer = Mock(return_value="LOL")
-    _resolver_executor_mock._introspection = AsyncMock()
+    _resolver_executor_mock._introspection = FakeAsyncMock()
 
-    r, c = await _resolver_executor_mock(p_r, args, req_ctx, info)
-    assert r == "aResult"
-    assert c == "LOL"
+    with patch(
+        "tartiflette.resolver.factory.coerce_arguments",
+        new_callable=AsyncMock,
+        side_effect=[{"AB": "M2B"}],
+    ) as coerce_arguments_mock:
+        r, c = await _resolver_executor_mock(p_r, arg_mock, req_ctx, info)
+        coerce_arguments_mock.assert_called_once_with(
+            {}, arg_mock, req_ctx, info
+        )
+        assert r == "aResult"
+        assert c == "LOL"
+
     assert _resolver_executor_mock._func.call_args_list == [
         ((p_r, {"AB": "M2B"}, req_ctx, info),)
     ]

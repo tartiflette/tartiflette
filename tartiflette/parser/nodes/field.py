@@ -8,6 +8,7 @@ from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import GraphQLError
 from tartiflette.types.helpers import get_typename
 from tartiflette.types.location import Location
+from tartiflette.utils.arguments import coerce_arguments
 
 from .node import Node
 
@@ -120,29 +121,25 @@ class NodeField(Node):
                 "provide a source event stream with < @Subscription >."
             )
 
-        # TODO: refactor this to have re-usable code with `_ResolverExecutor`
-        arguments = (
-            self.field_executor.schema_field.get_arguments_default_values()
-        )
-        arguments.update(
-            {
-                argument.name: argument.value
-                for argument in self.arguments.values()
-            }
+        info = Info(
+            query_field=self,
+            schema_field=self.field_executor.schema_field,
+            schema=self.schema,
+            path=self.path,
+            location=self.location,
+            execution_ctx=execution_ctx,
         )
 
         return self.subscribe(
             parent_result,
-            arguments,
-            request_ctx,
-            Info(
-                query_field=self,
-                schema_field=self.field_executor.schema_field,
-                schema=self.schema,
-                path=self.path,
-                location=self.location,
-                execution_ctx=execution_ctx,
+            await coerce_arguments(
+                self.field_executor.schema_field.arguments,
+                self.arguments,
+                request_ctx,
+                info,
             ),
+            request_ctx,
+            info,
         )
 
     async def __call__(
