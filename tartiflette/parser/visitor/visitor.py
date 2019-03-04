@@ -23,6 +23,7 @@ from tartiflette.parser.nodes.operation_definition import (
     NodeOperationDefinition,
 )
 from tartiflette.parser.nodes.variable_definition import NodeVariableDefinition
+from tartiflette.parser.visitor.list_value import ListValue
 from tartiflette.parser.visitor.object_value import ObjectValue
 from tartiflette.parser.visitor.visitor_context import InternalVisitorContext
 from tartiflette.schema import GraphQLSchema
@@ -82,6 +83,7 @@ class TartifletteVisitor(Visitor):
                 "SelectionSet": self._on_selection_set_in,
                 "ObjectValue": self._on_object_value_in,
                 "ObjectField": self._on_object_field_in,
+                "ListValue": self._on_list_value_in,
             },
             {
                 "default": self._out,
@@ -94,7 +96,8 @@ class TartifletteVisitor(Visitor):
                 "FragmentSpread": self._on_fragment_spread_out,
                 "OperationDefinition": self._on_operation_definition_out,
                 "InlineFragment": self._on_inline_fragment_out,
-                "ObjectValue": self._on_object_value_out,
+                "ObjectValue": self._on_object_or_list_value_out,
+                "ListValue": self._on_object_or_list_value_out,
             },
         ]
 
@@ -274,9 +277,7 @@ class TartifletteVisitor(Visitor):
         self._internal_ctx.argument.value = element.get_value()
         self._add_argument_to_parent()
 
-
-    def _on_object_value_in(self, _: _VisitorElement, *_args, **_kwargs):
-        node = ObjectValue()
+    def _objlist_value_in(self, node):
         if (
             self._internal_ctx.argument
             and self._internal_ctx.argument.value is None
@@ -289,10 +290,15 @@ class TartifletteVisitor(Visitor):
         node.parent = self._internal_ctx.current_object_value
         self._internal_ctx.current_object_value = node
 
+    def _on_object_value_in(self, _: _VisitorElement, *_args, **_kwargs):
+        self._objlist_value_in(ObjectValue())
+
     def _on_object_field_in(self, element: _VisitorElement, *_args, **_kwargs):
         self._internal_ctx.current_object_value.set_key(element.name)
 
-    def _on_object_value_out(self, _: _VisitorElement, *_args, **_kwargs):
+    def _on_object_or_list_value_out(
+        self, _: _VisitorElement, *_args, **_kwargs
+    ):
         self._internal_ctx.current_object_value = (
             self._internal_ctx.current_object_value.parent
         )
@@ -300,7 +306,8 @@ class TartifletteVisitor(Visitor):
         if self._internal_ctx.current_object_value is None:
             self._add_argument_to_parent()
 
-
+    def _on_list_value_in(self, _: _VisitorElement, *_args, **_kwargs):
+        self._objlist_value_in(ListValue())
 
     def _on_variable_in(
         self, element: _VisitorElement, *_args, **_kwargs

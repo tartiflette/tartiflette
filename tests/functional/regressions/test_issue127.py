@@ -129,7 +129,7 @@ _ENGINE = Engine(_SDL, schema_name="test_issue127")
             {"lol": 20},
             {
                 "data": {
-                    "updateRecipe": {
+                    "createRecipe": {
                         "id": 1,
                         "name": "The best Tartiflette by Eric Guelpa",
                         "cookingTime": 20,
