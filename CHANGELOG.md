@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - [ISSUE-127](https://github.com/dailymotion/tartiflette/issues/127): Now Object and List are supported as input values for arguments
 
->Note: This patch doesn't include validation of theses Values (yet), this will be done in a more global PR about Document Validation that is coming soon
+>Note: This patch doesn't include validation of theses Values (yet), this will be done in a more global PR about Document Validation that is coming soon [ISSUE-121](https://github.com/dailymotion/tartiflette/issues/121)
 
 ## [0.5.0] - 2019-03-01
 
