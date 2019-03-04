@@ -9,7 +9,7 @@ class OnBuildDirective:
 
 class OnExecutionDirective:
     @staticmethod
-    async def on_execution(
+    async def on_field_execution(
         _directive_args: Dict[str, Any],
         next_resolver: Callable,
         parent_result: Optional[Any],

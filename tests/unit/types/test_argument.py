@@ -21,11 +21,12 @@ def test_graphql_argument_repr():
         gql_type="Test",
         default_value=42,
         description="description",
+        directives=None,
     )
 
     assert (
         arg.__repr__() == "GraphQLArgument(name='Name', gql_type='Test', "
-        "default_value=42, description='description')"
+        "default_value=42, description='description', directives=None)"
     )
     assert arg == eval(repr(arg))
 

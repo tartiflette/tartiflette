@@ -9,11 +9,11 @@ def test_common_directive_creation():
     assert c is not None
     assert hasattr(c, "on_build")
     assert hasattr(c, "on_introspection")
-    assert hasattr(c, "on_execution")
+    assert hasattr(c, "on_field_execution")
 
 
 @pytest.mark.asyncio
-async def test_common_directives_on_execution_call():
+async def test_common_directives_on_field_execution_call():
     from tartiflette.directive.common import CommonDirective
     from unittest.mock import Mock
 
@@ -22,7 +22,9 @@ async def test_common_directives_on_execution_call():
     async def lol(*args, **kwargs):
         a(*args, **kwargs)
 
-    await CommonDirective.on_execution({}, lol, "PARIS", "EST", "MAGIC", "!")
+    await CommonDirective.on_field_execution(
+        {}, lol, "PARIS", "EST", "MAGIC", "!"
+    )
 
     assert a.called_with("PARIS", "EST", "MAGIC", "!")
 

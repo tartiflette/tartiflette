@@ -49,7 +49,7 @@ class Directive:
             )
 
     def __call__(self, implementation):
-        if not iscoroutinefunction(implementation.on_execution):
+        if not iscoroutinefunction(implementation.on_field_execution):
             raise NonAwaitableDirective(
                 "%s is not awaitable" % repr(implementation)
             )

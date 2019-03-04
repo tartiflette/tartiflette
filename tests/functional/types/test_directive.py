@@ -165,7 +165,9 @@ async def test_tartiflette_directive_declaration(clean_registry):
     @Directive("lol2")
     class Loled2(CommonDirective):
         @staticmethod
-        async def on_execution(_directive_args, func, pr, args, rctx, info):
+        async def on_field_execution(
+            _directive_args, func, pr, args, rctx, info
+        ):
             return (await func(pr, args, rctx, info)) + int(
                 _directive_args["value"]
             )
@@ -185,7 +187,9 @@ async def test_tartiflette_directive_declaration(clean_registry):
     @Directive("lol")
     class Loled(CommonDirective):
         @staticmethod
-        async def on_execution(_directive_arg, func, pr, args, rctx, info):
+        async def on_field_execution(
+            _directive_arg, func, pr, args, rctx, info
+        ):
             return (await func(pr, args, rctx, info)) + 1
 
     ttftt = Engine(schema_sdl)

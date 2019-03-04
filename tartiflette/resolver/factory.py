@@ -156,7 +156,7 @@ def _surround_with_execution_directives(
 ) -> Callable:
     for directive in reversed(directives):
         func = partial(
-            directive["callables"].on_execution, directive["args"], func
+            directive["callables"].on_field_execution, directive["args"], func
         )
     return func
 

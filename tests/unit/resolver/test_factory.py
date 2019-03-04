@@ -335,9 +335,9 @@ def test_resolver_factory__surround_with_execution_directives():
     )
 
     cllbs_a = Mock()
-    cllbs_a.on_execution = Mock()
+    cllbs_a.on_field_execution = Mock()
     cllbs_b = Mock()
-    cllbs_b.on_execution = Mock()
+    cllbs_b.on_field_execution = Mock()
 
     directives = [
         {"callables": cllbs_a, "args": {"a": "b"}},
@@ -346,10 +346,10 @@ def test_resolver_factory__surround_with_execution_directives():
 
     r = _surround_with_execution_directives("A", directives)
     assert r is not None
-    assert r.func is cllbs_a.on_execution
+    assert r.func is cllbs_a.on_field_execution
     a, b = r.args
     assert a == {"a": "b"}
-    assert b.func is cllbs_b.on_execution
+    assert b.func is cllbs_b.on_field_execution
     a, b = b.args
     assert a == {"c": "d"}
     assert b == "A"
