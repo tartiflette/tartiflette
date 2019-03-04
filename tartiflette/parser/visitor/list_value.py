@@ -9,7 +9,6 @@ class ListValue(list):
 
     def set_value(self, value: Any) -> None:
         self.append(value)
-        print(self)
 
     @property
     def parent(self) -> Any:
