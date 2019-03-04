@@ -37,6 +37,7 @@ class InternalVisitorContext:
         self._path = path or ""
         self._field_path = field_path or []
         self._fields = fields or {}
+        self._current_object_value = None
 
     def clone(self) -> "InternalVisitorContext":
         return InternalVisitorContext(
@@ -52,6 +53,14 @@ class InternalVisitorContext:
             deepcopy(self._field_path),
             dict(self._fields),
         )
+
+    @property
+    def current_object_value(self) -> "ObjectValue":
+        return self._current_object_value
+
+    @current_object_value.setter
+    def current_object_value(self, cov) -> None:
+        self._current_object_value = cov
 
     @property
     def operation(self) -> Optional["NodeOperationDefinition"]:

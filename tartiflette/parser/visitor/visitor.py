@@ -23,6 +23,8 @@ from tartiflette.parser.nodes.operation_definition import (
     NodeOperationDefinition,
 )
 from tartiflette.parser.nodes.variable_definition import NodeVariableDefinition
+from tartiflette.parser.visitor.list_value import ListValue
+from tartiflette.parser.visitor.object_value import ObjectValue
 from tartiflette.parser.visitor.visitor_context import InternalVisitorContext
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
@@ -79,6 +81,9 @@ class TartifletteVisitor(Visitor):
                 "OperationDefinition": self._on_operation_definition_in,
                 "InlineFragment": self._on_inline_fragment_in,
                 "SelectionSet": self._on_selection_set_in,
+                "ObjectValue": self._on_object_value_in,
+                "ObjectField": self._on_object_field_in,
+                "ListValue": self._on_list_value_in,
             },
             {
                 "default": self._out,
@@ -91,6 +96,8 @@ class TartifletteVisitor(Visitor):
                 "FragmentSpread": self._on_fragment_spread_out,
                 "OperationDefinition": self._on_operation_definition_out,
                 "InlineFragment": self._on_inline_fragment_out,
+                "ObjectValue": self._on_object_or_list_value_out,
+                "ListValue": self._on_object_or_list_value_out,
             },
         ]
 
@@ -234,6 +241,17 @@ class TartifletteVisitor(Visitor):
 
         self._internal_ctx.directive = None
 
+    def _add_argument_to_parent(self):
+        if not self._internal_ctx.directive:
+            self._internal_ctx.node.arguments[
+                self._internal_ctx.argument.name
+            ] = self._internal_ctx.argument
+            return
+
+        self._internal_ctx.directive.arguments[
+            self._internal_ctx.argument.name
+        ] = self._internal_ctx.argument
+
     def _on_value_in(
         self,
         element: Union[
@@ -246,20 +264,50 @@ class TartifletteVisitor(Visitor):
         *_args,
         **_kwargs,
     ) -> None:
+        if self._internal_ctx.current_object_value is not None:
+            self._internal_ctx.current_object_value.set_value(
+                element.get_value()
+            )
+            return
+
         if hasattr(self._internal_ctx.node, "default_value"):
             self._internal_ctx.node.default_value = element.get_value()
             return
 
         self._internal_ctx.argument.value = element.get_value()
+        self._add_argument_to_parent()
 
-        if not self._internal_ctx.directive:
-            self._internal_ctx.node.arguments[
-                self._internal_ctx.argument.name
-            ] = self._internal_ctx.argument
-        else:
-            self._internal_ctx.directive.arguments[
-                self._internal_ctx.argument.name
-            ] = self._internal_ctx.argument
+    def _objlist_value_in(self, node):
+        if (
+            self._internal_ctx.argument
+            and self._internal_ctx.argument.value is None
+        ):
+            self._internal_ctx.argument.value = node
+
+        if self._internal_ctx.current_object_value is not None:
+            self._internal_ctx.current_object_value.set_value(node)
+
+        node.parent = self._internal_ctx.current_object_value
+        self._internal_ctx.current_object_value = node
+
+    def _on_object_value_in(self, _: _VisitorElement, *_args, **_kwargs):
+        self._objlist_value_in(ObjectValue())
+
+    def _on_object_field_in(self, element: _VisitorElement, *_args, **_kwargs):
+        self._internal_ctx.current_object_value.set_key(element.name)
+
+    def _on_object_or_list_value_out(
+        self, _: _VisitorElement, *_args, **_kwargs
+    ):
+        self._internal_ctx.current_object_value = (
+            self._internal_ctx.current_object_value.parent
+        )
+
+        if self._internal_ctx.current_object_value is None:
+            self._add_argument_to_parent()
+
+    def _on_list_value_in(self, _: _VisitorElement, *_args, **_kwargs):
+        self._objlist_value_in(ListValue())
 
     def _on_variable_in(
         self, element: _VisitorElement, *_args, **_kwargs
@@ -270,16 +318,15 @@ class TartifletteVisitor(Visitor):
 
         var_name = element.name
         try:
-            self._internal_ctx.argument.value = self._vars[var_name]
+            if self._internal_ctx.current_object_value is not None:
+                self._internal_ctx.current_object_value.set_value(
+                    self._vars[var_name]
+                )
+                return
 
-            if not self._internal_ctx.directive:
-                self._internal_ctx.node.arguments[
-                    self._internal_ctx.argument.name
-                ] = self._internal_ctx.argument
-            else:
-                self._internal_ctx.directive.arguments[
-                    self._internal_ctx.argument.name
-                ] = self._internal_ctx.argument
+            self._internal_ctx.argument.value = self._vars[var_name]
+            self._add_argument_to_parent()
+
         except KeyError:
             self._add_exception(UnknownVariableException(var_name))
 
