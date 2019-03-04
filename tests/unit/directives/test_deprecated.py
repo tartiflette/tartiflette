@@ -6,7 +6,7 @@ def test_deprecated_on_introspection():
     d2 = Mock(return_value=areturn_value)
     aschema = Mock()
 
-    Deprecated.on_introspection({"reason": "A"}, d2, aschema)
+    Deprecated.on_introspection({"reason": "A"}, d2, aschema, None, None)
 
     assert areturn_value.isDeprecated
     assert areturn_value.deprecationReason == "A"

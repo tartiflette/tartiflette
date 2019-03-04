@@ -52,16 +52,16 @@ async def test_resolver_factory__resolver_executor__introspection(
         "tartiflette.resolver.factory._execute_introspection_directives",
         return_value=["A"],
     ) as mocked_intro:
-        r = await _resolver_executor_mock._introspection(["T"])
-        assert mocked_intro.call_args_list == [((["T"],),)]
+        r = await _resolver_executor_mock._introspection(["T"], None, None)
+        assert mocked_intro.call_args_list == [((["T"], None, None),)]
         assert r == ["A"]
 
     with patch(
         "tartiflette.resolver.factory._execute_introspection_directives",
         return_value=["A"],
     ) as mocked_intro:
-        r = await _resolver_executor_mock._introspection("T")
-        assert mocked_intro.call_args_list == [((["T"],),)]
+        r = await _resolver_executor_mock._introspection("T", None, None)
+        assert mocked_intro.call_args_list == [((["T"], None, None),)]
         assert r == "A"
 
 
@@ -97,7 +97,7 @@ async def test_resolver_factory__resolver_executor___call__(
     r, c = await _resolver_executor_mock(p_r, args, req_ctx, info)
 
     assert _resolver_executor_mock._introspection.call_args_list == [
-        (("aResult",),)
+        (("aResult", req_ctx, info),)
     ]
 
     async def a_raising_func(*args, **kwargs):

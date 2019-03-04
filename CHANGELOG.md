@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+## [0.5.0] - 2019-03-01
+
+### Added
+
+- Pass `ctx` & `info` as argument to `on_introspection` directive's method.
+
 ## [0.4.2] - 2019-03-01
 
 ### Fixed

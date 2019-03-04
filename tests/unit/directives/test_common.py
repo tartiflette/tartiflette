@@ -33,7 +33,7 @@ def test_common_directives_on_introspection_call():
 
     c2 = Mock()
 
-    CommonDirective.on_introspection({}, c2, "IE")
+    CommonDirective.on_introspection({}, c2, "IE", None, None)
 
     assert c2.called_with("IE")
 
