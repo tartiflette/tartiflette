@@ -16,6 +16,7 @@ def _import_modules(modules):
     if modules:
         invalidate_caches()
         return [import_module(x) for x in modules]
+    return None
 
 
 class Engine:
