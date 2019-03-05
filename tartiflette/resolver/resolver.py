@@ -22,7 +22,7 @@ class Resolver:
     Use the Resolver decorator the following way:
 
         @Resolver("SomeObject.field")
-        def field_resolver(parent, arguments, request_ctx, info):
+        async def field_resolver(parent, arguments, request_ctx, info):
             do your stuff
             return 42
     """

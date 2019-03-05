@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+## [0.6.1] - 2019-03-05
+
+### Changed
+
+- Add docstring and remove `_` prefix on unused parameter on public API.
+- Clean some unused stuff.
+
 ## [0.6.0] - 2019-03-04
 
 ### Added

@@ -16,9 +16,6 @@ class ExecutionContext:
 
 
 class Info:
-
-    __SAMEVALUE__ = "__SAMEVALUE__"
-
     def __init__(
         self,
         query_field: "NodeField",

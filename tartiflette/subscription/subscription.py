@@ -10,6 +10,28 @@ from tartiflette.types.exceptions.tartiflette import (
 
 
 class Subscription:
+    """
+    This decorator allows you to link a GraphQL Schema subscription field to a
+    subscription generator.
+
+    For example, for the following SDL:
+
+        type Subscription {
+            countdown(startAt: Int!): Int!
+        }
+
+    Use the Subscription decorator the following way:
+
+        @Subscription("Subscription.countdown")
+        async def countdown_subscription(parent, arguments, request_ctx, info):
+            countdown = arguments["startAt"]
+            while countdown > 0:
+                yield countdown
+                countdown -= 1
+                await asyncio.sleep(1)
+            yield 0
+    """
+
     def __init__(self, name: str, schema_name: str = "default") -> None:
         self._name = name
         self._implementation = None
