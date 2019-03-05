@@ -41,8 +41,8 @@ def test_graphql_input_object_repr():
     assert (
         input_object.__repr__() == "GraphQLInputObjectType(name='Name', "
         "fields=OrderedDict(["
-        "('test', GraphQLArgument(name='arg', gql_type='Int', default_value=None, description=None)), "
-        "('another', GraphQLArgument(name='arg', gql_type='String', default_value=None, description=None))"
+        "('test', GraphQLArgument(name='arg', gql_type='Int', default_value=None, description=None, directives=None)), "
+        "('another', GraphQLArgument(name='arg', gql_type='String', default_value=None, description=None, directives=None))"
         "]), description='description')"
     )
     assert input_object == eval(repr(input_object))

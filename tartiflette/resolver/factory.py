@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.types.exceptions.tartiflette import InvalidValue, NullError
 from tartiflette.types.helpers import has_typename, reduce_type
+from tartiflette.utils.arguments import coerce_arguments
 
 
 def _built_in_coercer(func: Callable, val: Optional[Any], _: "Info") -> Any:
@@ -156,7 +157,7 @@ def _surround_with_execution_directives(
 ) -> Callable:
     for directive in reversed(directives):
         func = partial(
-            directive["callables"].on_execution, directive["args"], func
+            directive["callables"].on_field_execution, directive["args"], func
         )
     return func
 
@@ -230,12 +231,15 @@ class _ResolverExecutor:
         info: "Info",
     ) -> (Any, Any):
         try:
-            default_args = self._schema_field.get_arguments_default_values()
-            default_args.update(
-                {argument.name: argument.value for argument in args.values()}
+            result = await self._func(
+                parent_result,
+                await coerce_arguments(
+                    self._schema_field.arguments, args, ctx, info
+                ),
+                ctx,
+                info,
             )
 
-            result = await self._func(parent_result, default_args, ctx, info)
             if info.execution_ctx.is_introspection:
                 result = await self._introspection(result, ctx, info)
             return result, self._coercer(result, info)

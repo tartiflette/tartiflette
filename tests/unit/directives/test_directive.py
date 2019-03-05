@@ -7,7 +7,7 @@ def test_directive_implementation():
     from tartiflette.directive.directive import Directive
 
     class dontcare:
-        async def on_execution(self, *args, **kwargs):
+        async def on_field_execution(self, *args, **kwargs):
             pass
 
     a_directive = Directive("deprecated", schema_name="Ninja")
@@ -20,7 +20,7 @@ def test_directive_implementation_except():
     from tartiflette.types.exceptions.tartiflette import NonAwaitableDirective
 
     class dontcare:
-        def on_execution(self, *args, **kwargs):
+        def on_field_execution(self, *args, **kwargs):
             pass
 
     a_directive = Directive("deprecated", schema_name="Ninja")
@@ -53,7 +53,7 @@ def test_directive_bake_except_unknowdirective(clean_registry):
     schema.find_directive = schema_find_directive
 
     class dontcare:
-        async def on_execution(self, *args, **kwargs):
+        async def on_field_execution(self, *args, **kwargs):
             pass
 
     a_directive(dontcare)
@@ -75,7 +75,7 @@ def test_directive_bake(clean_registry):
     schema.find_directive = schema_find_directive
 
     class dontcare:
-        async def on_execution(self, *args, **kwargs):
+        async def on_field_execution(self, *args, **kwargs):
             pass
 
     a_directive(dontcare)

@@ -9,7 +9,7 @@ class OnBuildDirective:
 
 class OnExecutionDirective:
     @staticmethod
-    async def on_execution(
+    async def on_field_execution(
         _directive_args: Dict[str, Any],
         next_resolver: Callable,
         parent_result: Optional[Any],
@@ -18,6 +18,17 @@ class OnExecutionDirective:
         info: "Info",
     ) -> Any:
         return await next_resolver(parent_result, args, ctx, info)
+
+    @staticmethod
+    async def on_argument_execution(
+        _directive_args: Dict[str, Any],
+        next_directive: Callable,
+        argument_definition: "GraphQLArgument",
+        args: Dict[str, Any],
+        ctx: Optional[Dict[str, Any]],
+        info: "Info",
+    ) -> Any:
+        return await next_directive(argument_definition, args, ctx, info)
 
 
 class OnIntrospectionDirective:

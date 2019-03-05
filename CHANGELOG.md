@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+## [0.6.0] - 2019-03-04
+
+### Added
+
+- [ISSUE-133](https://github.com/dailymotion/tartiflette/issues/133)Add an `on_argument_execution` directive method to handle argument directive hook.
+
+### Changed
+
+- Rename `on_execution` directive method name to `on_execution_field`.
+
+### Fixed
+
+- Properly set `directives` to `GraphQLArgument` at bake time.
+
 ## [0.5.1] - 2019-03-04
 
 ### Fixed
