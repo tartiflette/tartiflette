@@ -9,7 +9,7 @@
 
 Following on our experience in managing GraphQL APIs in production **for more than a year**, we've decided to build a brand new GraphQL Engine.
 
-Here are the subjects we were working during 2018 and early of 2019:
+Here are the subjects we were working during 2018 and early 2019:
 
 ## Communication and documentation
 
@@ -17,12 +17,12 @@ Here are the subjects we were working during 2018 and early of 2019:
 * [X] (API) Describe the API that will be used by the Tartiflette users.
   * [x] (API) [Engine constructor](https://github.com/dailymotion/tartiflette/blob/master/docs/API.md#engine-initialization)
   * [X] (API) How to declare custom directives in the Engine Constructor.
-  * [X] (API) How to declare middleware on a resolver.
-  * [X] (API) Executor.
-  * [x] (API) Resolver.
+  * [X] (API) How to declare middlewares on a resolver.
+  * [X] (API) Executor implementation.
+  * [x] (API) Resolver implementation.
   * [x] (API) Resolver - `Info` parameter.
 * [x] (Website) Landing page for https://tartiflette.io
-* [x] (Website) Expose documentation on https://tartiflette.io
+* [x] (Website) Publish documentation on https://tartiflette.io
 
 ## Query Parser
 
@@ -39,12 +39,12 @@ Here are the subjects we were working during 2018 and early of 2019:
 * [x] Abstract and Compound Types: Unions
 * [X] NodeDefinition: Check that the Type exists.
 * [X] (Directive) Integrate the directive's execution in the Executor.
-* [X] (Directive) introspection based on directive
+* [X] (Directive) introspection based on directives
 * [X] Subscription Support
 
 ## SDL - Schema Definition Language
 
-* [x] Build a `Parser` which parse the [Schema Definition Language](https://github.com/facebook/graphql/blob/master/spec/Section%202%20--%20Language.md) and created the associated schema and types as Python objects.
+* [x] Build a `Parser` which parse the [Schema Definition Language](https://github.com/facebook/graphql/blob/master/spec/Section%202%20--%20Language.md) and creates the associated schema and types as Python objects.
 * [X] Think about custom Scalar API
 * [x] (Introspection) Implement the `__type` Field.
 * [x] (Introspection) Implement the `__schema`Field.

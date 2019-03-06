@@ -4,9 +4,9 @@ title: Running a Query
 sidebar_label: 6. Running a Query
 ---
 
-We are going to use what [we developed in the previous steps](/docs/tutorial/write-your-resolvers).
+We are going to use what [we developed in the previous step](/docs/tutorial/write-your-resolvers).
 
-In order to query the **Recipes Manager GraphQL API**, `tartiflette-aiohttp` embed the GraphiQL client, available at this address [http://localhost:8080/graphiql](http://localhost:8080/graphiql) when your server is live.
+In order to query the **Recipes Manager GraphQL API**, `tartiflette-aiohttp` embeds the GraphiQL client, available at this address [http://localhost:8080/graphiql](http://localhost:8080/graphiql) when your server is live.
 
 ## Get all the recipes
 
@@ -49,7 +49,7 @@ query {
 
 ## Get only one recipe
 
-Below, a request to select only on recipe, by its `id`.
+Below, a request to select only one recipe, by its `id`.
 
 ```graphql
 {

@@ -14,16 +14,16 @@ Welcome, glad to see you here.
 
 Source: [https://graphql.org/](https://graphql.org/)
 
-## Shoud I use Tartiflette only?
+## Can I use standaloned Tartiflette for my project ?
 
-Our engine follows the [GraphQL Specification](https://facebook.github.io/graphql/), which doesn't specify any transport layer. You are able to integrate the tartiflette engine wherever you need and use whatever transport layer you want: JSON RPC, gRPC or obviously HTTP.
+Our engine follows the [GraphQL Specification](https://facebook.github.io/graphql/), which doesn't specify any transport layer. You can integrate the Tartiflette Engine wherever you need and use whatever transport layer you want: JSON RPC, gRPC or, obviously, HTTP.
 
-In addition to the Tartiflette Engine, and based on common integrations of GraphQL, we developed a GraphQL HTTP Library, which uses `aiohttp` to expose the tartiflette engine through HTTP.
+In addition to the Tartiflette Engine, and based on common integrations of GraphQL, we developed a GraphQL HTTP Library, which uses the awesome `aiohttp` library to expose the Tartiflette Engine through HTTP.
 
 ![tartiflette integration into tartiflette-aiohttp](/docs/assets/tartiflette-aiohttp.png)
 
-If you just landed in the GraphQL world, or if you don't want to deal with the integration of Tartiflette behind an HTTP layer, we suggest you use `tartiflette-aiohttp`.
+If you just landed in the GraphQL world, or if you don't want to deal with the integration of Tartiflette behind an HTTP layer, we suggest the use of `tartiflette-aiohttp`.
 
 For advanced use-cases, you should jump to the API documentation of Tartiflette.
 
-This is the perfect moment to start the tutorial which is based on `tartiflette-aiohttp`.
+In any case, this is the perfect moment to start [the tutorial](/docs/tutorial) which is based on `tartiflette-aiohttp`.

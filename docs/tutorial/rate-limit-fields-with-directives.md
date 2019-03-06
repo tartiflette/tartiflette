@@ -4,9 +4,9 @@ title: Rate limit your fields with directives
 sidebar_label: 12. Rate limit your fields with directives
 ---
 
-Based [on what we discovered in the previous step](/docs/tutorial/extend-with-directives/), we will extend the capabilities of our GraphQL with the help of directives..
+Based [on what we discovered in the previous step](/docs/tutorial/extend-with-directives/), we will extend the capabilities of our GraphQL API with the help of directives.
 
-In our fabulous **Recipe Manager GraphQL API**, we want to limit the use of the recipe modification by adding a rate limit behavior.
+In our fabulous **Recipes Manager GraphQL API**, we want to limit the use of the recipe modification by adding a rate limit behavior.
 
 This rate limiting will be added by extending our SDL by creating a new directive called `rateLimiting`. It will allow us to apply a rate limiting on whichever field we want.
 
@@ -34,9 +34,9 @@ input RecipeInput {
 
 ## **recipes_manager/directives/rate_limiting.py**
 
-This file will contain our implementation of the `@rateLimiting` directive, described previously.
+This file will contain our implementation of the `@rateLimiting` directive described previously.
 
-This is a pretty simple implementation of rate limiting, built for our tutorial purpose, you should not use this dumb implementation in production.
+> Note: This is a pretty simple implementation of rate limiting, built for our tutorial purpose, you should not use this dumb implementation in production.
 
 ```python
 from typing import Any, Callable, Dict, Optional
@@ -64,13 +64,13 @@ def rate_limit_check_and_bump(name, max_attempts, duration):
     if int(time.time()) > (rule["start_time"] + rule["duration"]):
         rate_limit_new_rule(name, max_attempts, duration)
         return True
-    
+
     _RATE_LIMIT_RULES[name]["nb_attempts"] = rule["nb_attempts"] + 1
 
     if rule["nb_attempts"] >= rule["max_attempts"]:
         rate_limit_new_rule(name, max_attempts, duration)
         return False
-    
+
     return True
 
 
@@ -120,8 +120,8 @@ $ python -m recipes_manager
 ```graphql
 mutation {
   updateRecipe(input: {
-        id: 1, 
-        name: "The best Tartiflette by Eric Guelpa", 
+        id: 1,
+        name: "The best Tartiflette by Eric Guelpa",
         cookingTime: 12
   }) {
     id
@@ -131,6 +131,6 @@ mutation {
 }
 ```
 
-Execute the query 6 times. :tada:
+Execute the query 6 times and you'll notice you have been rate limited. :tada:
 
 ![Rate limiting demo](/docs/assets/ratelimiting.gif)

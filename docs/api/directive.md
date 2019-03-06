@@ -4,12 +4,12 @@ title: Directive
 sidebar_label: Directive
 ---
 
-Tartiflette bases most of its extensibility on Directives. A directive will allow you to execute some behavior at 4 stages.
+Tartiflette bases most of its extensibility on Directives. A directive will allow you to execute a behavior at 4 different stages.
 
-* `on_build`: Implement some behavior during the build process of the SDL
-* `on_field_execution`: Implement a specific behavior during the field execution. _(e.g Access Rights on a specific field, apply a specific rate limit on a field.)_
-* `on_argument_execution`: Implement a specific behavior during the argument execution. _(e.g Check the format of an input.)_
-* `on_introspection`: During an introspection query, allow you to append some metadata to the fields or even give you the ability to remove objects _(e.g dynamic introspection based on access rights)_
+* `on_build`: To wrap your directive around the build process of the SDL.
+* `on_field_execution`: Allows you to wrap the field execution _(e.g. Access Rights on a specific field, apply a specific rate limit on a field.)_.
+* `on_argument_execution`: Allows you to wrap the argument execution _(e.g. Check the format of an input.)_.
+* `on_introspection`: During an introspection query, allows you to wrap the schema fields to add metadata _(e.g. add deprecated information)_ to fields or even to remove objects _(e.g. dynamic introspection based on access rights)_.
 
 ## How to declare a new directive?
 
@@ -32,7 +32,7 @@ from tartiflette.directive import Directive, CommonDirective
 @Directive("myDirective")
 class MyDirective(CommonDirective):
     @staticmethod
-    def on_build(_schema: "GraphQLSchema") -> None:
+    def on_build(schema: "GraphQLSchema") -> None:
         ######################
         # Add your code here #
         ######################
@@ -50,7 +50,7 @@ class MyDirective(CommonDirective):
         # Add your code here #
         ######################
         return await next_resolver(parent_result, args, ctx, info)
-    
+
     @staticmethod
     async def on_argument_execution(
         directive_args: Dict[str, Any],

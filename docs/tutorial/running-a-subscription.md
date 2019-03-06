@@ -4,11 +4,11 @@ title: Running a Subscription
 sidebar_label: 10. Running a Subscription
 ---
 
-The `subscription` will bring real time to your applications, and a feeling of reactivity for your clients.
+The `subscription` will bring real time capabilities to your applications, and a feeling of reactivity for your clients.
 
-Open your favorite browser at this URL -> [http://localhost:8080/graphiql](http://localhost:8080/graphiql) and execute this following request.
+Open your favorite browser at this URL [http://localhost:8080/graphiql](http://localhost:8080/graphiql) and execute the following request.
 
-The response will be auto-updated after each message it will receive.
+The response will be auto-updated after each message it receives.
 
 ## Subscribe to the cooking timer
 

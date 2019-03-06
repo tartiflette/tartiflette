@@ -4,11 +4,11 @@ title: Install Tartiflette package from pipenv
 sidebar_label: 3. Install Tartiflette
 ---
 
-Tartiflette is available on [pypi.org](https://pypi.org/project/tartiflette/), you can install it through pip or pipenv. In our tutorial, we would rather use "[pipenv](https://docs.pipenv.org/)" as it embed both the package management and the virtual environment management.
+Tartiflette is available on [pypi.org](https://pypi.org/project/tartiflette/) and you can install it through pip or pipenv. In our tutorial, we would rather use "[pipenv](https://docs.pipenv.org/)" as it embeds both the package management and the virtual environment management.
 
 ## Installation dependencies
 
-As Tartiflette based its Executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*. You'll need these following commands on your environment to use the library. `cmake`, `bison` and `flex`.
+As Tartiflette based its executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*, you'll need these following binaries in your environment to use the library: `cmake`, `bison` and `flex`.
 
 *MacOSX*
 ```bash
@@ -22,7 +22,7 @@ apt-get install cmake flex bison
 
 ## Installation
 
-Tada! We are now going to install Tartiflette !
+Are you ready? We are now going to install Tartiflette !
 
 In our tutorial, we want to expose our GraphQL API through HTTP. In order to build this API easily and quickly, we're going to use the HTTP distribution of Tartiflette called [`tartiflette-aiohttp`](https://github.com/dailymotion/tartiflette-aiohttp).
 
@@ -30,11 +30,11 @@ In our tutorial, we want to expose our GraphQL API through HTTP. In order to bui
 # Create virtualenv
 pipenv --python 3.7
 
-# Install Tartiflette :tada:
+# Install Tartiflette
 pipenv install tartiflette-aiohttp
 
 # Enter into the virtualenv
 pipenv shell
 ```
 
-This is the time to write your first Tartiflette code, the "Recipes Manager GraphQL API" is coming. 
+:tada: It's now time to write your first Tartiflette code, the "Recipes Manager GraphQL API" is coming.

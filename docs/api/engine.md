@@ -4,9 +4,9 @@ title: Engine
 sidebar_label: Engine
 ---
 
-The way to generate the engine is pretty simple.
+The way to generate an engine is pretty simple.
 
-The engine accepts at least one parameter, called "sdl", the other [are documented in the advanced part](#advanced-constructor).
+The engine accepts at least one parameter, called "sdl", the other are [documented in the advanced usage](#advanced-constructor) part of the documents.
 
 ```python
 from tartiflette import Engine
@@ -19,7 +19,7 @@ Engine(
 )
 ```
 
-## Use the SDL parameter as different types 
+## Using the `sdl` parameter with different types
 
 ### When the `sdl` parameter contains the raw schema
 
@@ -64,7 +64,7 @@ engine = tartiflette.Engine(
 
 ### When the `sdl` parameter targets a folder
 
-Every file which ends by `.sdl` will be concatenated, in lexicographical order.
+Every file which ends by `.sdl` of `.graphql` will be concatenated, in lexicographical order.
 
 ```python
 import tartiflette
@@ -105,7 +105,7 @@ engine = tartiflette.Engine(
 1. **sdl:** Schema Definition Language, detailed above.
 2. **schema_name:** Schema used from the **[Schema Registry](/docs/api/schema-registry/)**. _(default: "default")_
 3. **[error_coercer](#parameter-error-coercer):** Coercer used when an error is raised.
-4. **[custom_default_resolver](#parameter-custom-default-resolver):** Use another default resolver. (useful to override the behavior for resolving a property, snakecase -> camelcase and vice versa).
+4. **[custom_default_resolver](#parameter-custom-default-resolver):** Use another default resolver. Useful if you want to override the behavior for resolving a property, e.g. from snake_case to camelCase and vice versa.
 5. **[exclude_builtins_scalars](#parameter-exclude-builtins-scalars):** List of scalars you want to exclude from the default list.
 
 ### Parameter: `error_coercer`
@@ -125,7 +125,7 @@ e = Engine(
 
 ### Parameter: `custom_default_resolver`
 
-Use another default resolver. Could be useful to override the behavior for resolving a property, snakecase -> camelcase and vice versa.
+Use another default resolver. It can be useful to override the behavior for resolving a property, from snake_case to camelCase and vice versa.
 
 ```python
 async def my_default_resolver(parent_result, arguments, context, info):
@@ -140,7 +140,7 @@ e = Engine(
 
 ### Parameter: `exclude_builtins_scalars`
 
-List of scalars you want to exclude [from the default list](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/scalar/__init__.py). Useful if you define by yourself the default scalar in the SDL.
+List of scalars you want to exclude [from the default list](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/scalar/__init__.py). Useful if you want to define the default scalars yourself in the SDL.
 
 ```python
 e = Engine(

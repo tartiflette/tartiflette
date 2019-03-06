@@ -4,9 +4,9 @@ title: Extend with directives
 sidebar_label: 11. Extend with directives
 ---
 
-A directive is a way of describing a behavior you can apply on differents objects in your SDL. It looks like a Decorator in our favorite language, Python. The possible applications are numerous, access permissions, limit the introspection, rate limiting, auto-generating resolver function etc ... the only limit is your imagination.
+A directive is a way of describing a behavior you can apply on different objects in your SDL. It looks like a Decorator in our favorite language, Python. The possible applications are numerous, access permissions, limiting the introspection, rate limiting, auto-generating resolver function etc ... the only limit is your imagination.
 
-Tartiflette includes the `@deprecated` directive, which allow you to define a field as deprecated _(The introspection will flag the field as deprecated)_.
+Tartiflette includes the `@deprecated` directive, which allows you to define a field as deprecated _(The introspection will flag the field as deprecated)_.
 
 ```graphql
 directive @deprecated(
@@ -24,12 +24,12 @@ type Recipe {
 
 ## How to implement?
 
-Tartiflette bases most of its extensibility on Directives. A directive will allow you to execute some behavior at 4 stages.
+Tartiflette gets most of its extensibility by Directives. A directive will allow you to execute some logic at any of the following 4 stages:
 
-* `on_build`: Implement some behavior during the build process of the SDL
-* `on_field_execution`: Implement a specific behavior during the field execution. _(e.g Access Rights on a specific field, apply a specific rate limit on a field.)_
-* `on_argument_execution`: Implement a specific behavior during the argument execution. _(e.g Check the format of an input.)_
-* `on_introspection`: During an introspection query, allow you to append some metadata to the fields or even give you the ability to remove objects _(e.g dynamic introspection based on access rights)_
+* `on_build`: To wrap your directive around the build process of the SDL.
+* `on_field_execution`: Allows you to wrap the field execution _(e.g. Access Rights on a specific field, apply a specific rate limit on a field.)_.
+* `on_argument_execution`: Allows you to wrap the argument execution _(e.g. Check the format of an input.)_.
+* `on_introspection`: During an introspection query, allows you to wrap the schema fields to add metadata _(e.g. add deprecated information)_ to fields or even to remove objects _(e.g. dynamic introspection based on access rights)_.
 
 ### How to declare a new directive?
 
@@ -60,7 +60,7 @@ class RateLimiting(CommonDirective):
         # Add your code here #
         ######################
         return await next_resolver(parent_result, args, ctx, info)
-    
+
     @staticmethod
     async def on_argument_execution(
         directive_args: Dict[str, Any],
@@ -89,4 +89,4 @@ class RateLimiting(CommonDirective):
         return next_directive(introspected_element)
 ```
 
-In the next steps we will implement some specific behavior based on the directives.
+In the next steps we will implement some specific behavior in this directive.

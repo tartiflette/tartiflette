@@ -4,20 +4,20 @@ title: Subscription
 sidebar_label: Subscription
 ---
 
-Subscription is the third operation available on GraphQL. It bring the [event-based subscriptions](https://graphql.org/blog/subscriptions-in-graphql-and-relay/#event-based-subscriptions) mindset to the Engine.
+Subscription is the third operation available in GraphQL. It bring the [event-based subscriptions](https://graphql.org/blog/subscriptions-in-graphql-and-relay/#event-based-subscriptions) mindset to the Engine.
 
-Up to you to implement the Event technology you want, like Google Pub/Sub, Nats, Redis ... in our example, we decided to focus on the feature.
+It's up to you to implement the Event technology you want, like Google Pub/Sub, Nats, Redis ... in our example, we decided to focus purely on the Engine part of the feature.
 
-## `Engine`: How to execute the subscription?
+## `Engine`: How to execute a subscription?
 
-The Engine is responsible of executing both the Query/Mutation and the Subscription. The first ones are executed by the `execute` method, and the last one, Subscription, is executed by the method named `subscribe`.
+The Engine is responsible for executing both the `Query`/`Mutation`s and the `Subscription`s. The first ones are executed by the `execute` method, where the `Subscription`, is executed by the method named `subscribe`.
 
-Here are the parameters available on the `subscribe` method of `Engine`.
+The parameters that are available on the `subscribe` method of `Engine`.
 * `query`: the GraphQL request / query as UTF8-encoded string
 * `operation_name`: the operation name to execute
 * `context`: a dict containing anything you need
 * `variables`: the variables used in the GraphQL request
-* `initial_value`: an initial value corresponding to the root type being executed
+* `initial_value`: an initial value given to the resolver of the root type
 
 ```python
 
@@ -40,7 +40,7 @@ result = engine.subscribe(
     initial_value: {}
 )
 
-# `result` will yield with that kind of values
+# `result` will yield with this kind of values
 # {
 #     "data": {
 #         "videoLive": {
@@ -51,9 +51,9 @@ result = engine.subscribe(
 # }
 ```
 
-## `@Subscription` How to subscribe to a field?
+## `@Subscription`: How to subscribe to a field?
 
-In the tartiflette engine, we implemented subscription simply by implementing a specific decorator _(@Subscription)_ over a function which returns an async generators, that it. For advanced use-cases, take a look of putting a Resolver on top of a `Resolver`.
+In the Tartiflette Engine to subscribe to a field, you simply use the decorator _(@Subscription)_ over a function which returns an async generator. That's all there is to it. For advanced use-cases, take a look at putting a `Resolver` on top of a `Subscription` (see below).
 
 ```python
 import asyncio
@@ -85,9 +85,9 @@ async def subscription_cooking_time(
   }
 ```
 
-## `@Resolver`: Manipulation and shape the result of a `@Subscription` function
+## `@Resolver`: Manipulating and shaping the result of a `@Subscription` function
 
-In some cases, especially when you use tools like Redis, Google Pub/Sub etc ... the value which will be yield won't be structured as expected by the Schema. In addition to the `@Subscription`, you can implement the `@Resolver` to shape the data accordingly to the return type.
+In some cases, especially when you use tools like Redis, Google Pub/Sub etc ... the value which will be `yield`ed won't be structured as expected by the Schema. In addition to the `@Subscription` decorator, you can implement a wrapper `@Resolver` to shape the data accordingly to the return type.
 
 ```python
 import asyncio
@@ -105,7 +105,7 @@ async def resolver_cooking_time(
       "remainingTime": parent_result,
       "status": "COOKING"
     }
-  
+
   return {
     "remainingTime": 0,
     "status": "COOKED"

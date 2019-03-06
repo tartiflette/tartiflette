@@ -4,14 +4,14 @@ title: Execution
 sidebar_label: Execution
 ---
 
-Aside the building of the Engine, the `execute` method of the `Engine` is responsible of executing the GraphQL query from the client.
+Aside from the building of the Engine, the `execute` method of the `Engine` is responsible for executing the GraphQL query coming from the client.
 
-It takes in parameters:
+Its parameters are:
 * `query`: The GraphQL Request/Query as UTF8-encoded string _(sent by the client)_
 * `operation_name`: Operation name to execute
 * `context`: A dict containing anything you need to be pass through the execution process
 * `variables`: The variables used in the GraphQL request
-* `initial_value`: An initial value corresponding to the root type being executed
+* `initial_value`: An initial value given to the resolver of the root type
 
 ```python
 

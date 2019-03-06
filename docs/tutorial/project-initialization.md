@@ -4,13 +4,13 @@ title: Initialization of your Tartiflette recipes manager GraphQL API.
 sidebar_label: 2. Project initialization
 ---
 
-We are going to create a Tartiflette recipe manager GraphQL API, an exciting application which will allow you to manage efficiently all your recipes.
+We are going to create a Tartiflette recipes manager GraphQL API, an exciting application which will allow you to manage efficiently all your recipes.
 
 Here is a list of some features we're going to implement:
 
 * List recipes _(`Query` operation)_
 * Add a new recipe _(`Mutation` operation)_
-* Launch and wait for the end of the cooking process _(`Subscription` operation)_ 
+* Launch and wait for the end of the cooking process _(`Subscription` operation)_
 * Adding rate limiting on updating recipes _(How to implement `directives`)_
 * Do not expose all your GraphQL API for everyone, limit the administration features, `Mutation`, to administrators.
 
@@ -27,7 +27,7 @@ mkdir ttftt-recipes-manager/
 cd ttftt-recipes-manager
 ```
 
-We will put all our python files into the module `recipes_manager`.
+We will put all our python files into the python module `recipes_manager`.
 ```
 mkdir -p recipes_manager
 ```
@@ -65,7 +65,7 @@ touch recipes_manager/directives/rate_limiting.py
 touch recipes_manager/directives/require_auth.py
 ```
 
-Your tree should looks like this:
+Your tree should look something like this:
 
 ```bash
 .
@@ -93,10 +93,10 @@ Your tree should looks like this:
 
 We will need some data to execute `query`, `mutation` and `subscription`.
 
-Fill the file **recipes_manager/data.py** with these data.
+Fill the file **recipes_manager/data.py** with this data.
 
 ```python
-# Dictrionnary which contains the ingredients based on the
+# Dictionary which contains the ingredients based on the
 # Recipe ID as key.
 INGREDIENTS_QUANTITY = {
     1: [

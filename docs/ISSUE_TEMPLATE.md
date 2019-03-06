@@ -10,8 +10,8 @@ Please provide the steps to reproduce your problem and, if possible, a full repr
 * [ ] **Executed in docker:** _e.g Yes_
 * [ ] **Dockerfile sample:** _Link of sample_
 * [ ] **GraphQL Schema & Query:** _e.g gist, pastebin or directly the query_
-* [ ] **Is a regression from a previous versions?** _e.g Yes_
-* [ ] **Stacktrace** _e.g gist, pastebin..._
+* [ ] **Is it a regression from a previous versions?** _e.g Yes_
+* [ ] **Stack trace** _e.g gist, pastebin..._
 
 ## Request a feature
 

@@ -6,12 +6,12 @@
   - [Executor](#executor)
   - [Continuous integration](#continuous-integration)
 
-These topics list is not frozen, we will iterate on them to improve Tartiflette to be more and more performant and compliant with the specification.
+This topics list is not frozen, we will iterate on them to improve Tartiflette to be more and more performant and compliant with the specification.
 
 ## Communication and documentation
 
 * [ ] Provide code samples about the Subscription over Redis, Nats, Google Pub/Sub.
-* [ ] Provide code samples about advanced use-cases of Directives (introspection, on build etc ...)
+* [ ] Provide code samples about advanced use-cases of Directives (introspection, on build, etc.)
 
 ## Directives
 
@@ -25,4 +25,4 @@ These topics list is not frozen, we will iterate on them to improve Tartiflette 
 
 ## Continuous integration
 
-* [ ] Provide official docker images for tartiflette-aiohttp
+* [ ] Provide official docker images for `tartiflette-aiohttp`

@@ -1,12 +1,12 @@
 ---
 id: write-your-mutation-resolvers
 title: Write your mutation resolvers
-sidebar_label: 6. Write your mutation resolvers
+sidebar_label: 7. Write your mutation resolvers
 ---
 
-If you plan to build an application, most of the time, you want to expose mutation endpoints, well known as "PUT", "DELETE", "POST" in the REST full world. In the GraphQL world, all the actions which mutate the data are available behind the operation `mutation`. 
+If you plan to build an application, most of the time, you want to expose mutation endpoints, well known as "PUT", "DELETE" and "POST" in the REST-full world. In the GraphQL world though, all the actions which mutate the data are available behind the `mutation` operation.
 
-The `mutation` type looks like the Query one, with some less features _(no union, interface, arguments)_. 
+The `mutation` operation type looks like the `query` one but with some features less _(no unions, interfaces, arguments)_.
 
 Thus, we will expose a field to update a recipe, either its name or cooking time.
 
@@ -14,7 +14,7 @@ First, here is the SDL
 
 ## **recipes_manager/sdl/Mutation.graphql**
 
-Compare to the Query types, the mutation types are less complex, you have to named them `input` instead of `type`.
+Compared to the `query` types, the `mutation` types are less complex, you have to name them `input` instead of `type`.
 
 ```graphql
 type Mutation {
@@ -30,7 +30,7 @@ input RecipeInput {
 
 ## **recipes_manager/mutation_resolvers.py**
 
-Below the resolver which is in charge of updating the recipe metadata.
+And now the resolver which is in charge of updating the recipe metadata.
 
 ```python
 import collections
@@ -43,7 +43,7 @@ from recipes_manager.data import INGREDIENTS_QUANTITY, RECIPES
 @Resolver("Mutation.updateRecipe")
 async def resolver_recipe(parent, args, ctx, info):
     recipe_input = args["input"]
-    
+
     for index, recipe in enumerate(RECIPES):
         if recipe["id"] == recipe_input["id"]:
             if "name" in recipe_input:

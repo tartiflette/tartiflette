@@ -4,17 +4,17 @@ title: Write your resolvers
 sidebar_label: 5. Write your resolvers
 ---
 
-[Previsouly](/docs/tutorial/create-server), we created our application instance with a [first iteration of our Schema](/docs/tutorial/create-server#recipes-manager-sdl-querygraphql), based on the SDL. Aside, we are going to bind some data to our Schema, thanks to the resolvers, which are in charge of making the bridge between the Schema and your application logic. 
+[Previsouly](/docs/tutorial/create-server), we created our application instance with a [first iteration of our Schema](/docs/tutorial/create-server#recipes-manager-sdl-querygraphql) using the SDL. Now, we're going to bind some data to our Schema, using resolvers, which are in charge of linking the Schema with your application logic.
 
 ## What is a resolver?
 
-A resolver is a function _(which could be asynchronous)_ attached to a field of your Schema. It will be in charge of providing data accordingly to the fields or objects it is attached on.
+A resolver is a function _(which can be asynchronous)_ that is attached to a field of your Schema. It will be in charge of providing data accordingly to the fields or objects it is attached to.
 
-### How to attach a resolver to a Schema with Tartiflette?
+### How to attach a resolver to a Schema field with Tartiflette?
 
-With tartiflette, it is very straighforward to attach a resolver function to the Schema.
+With Tartiflette, it is very straighforward to attach a resolver function to Schema field.
 
-We provide a decorator named `Resolver` which will attach your function resolution to the Schema field specified. 
+We provide a decorator named `Resolver` which will attach your function to the specified Schema field.
 
 ```python
 from tartiflette import Resolver
@@ -27,6 +27,8 @@ async def resolver_fieldname(parent, args, ctx, info):
 ```
 
 In this example, the function `resolver_fieldname` will be executed each time the field `hello` is called.
+
+> Note: by default, the root type name for query operations is `Query` so the full name of the field is `Query.hello`.
 
 If you want to know more about the Resolver part, we suggest taking a look at [the Resolver API documentation](/docs/api/resolver).
 
@@ -65,14 +67,14 @@ async def resolver_recipe(parent, args, ctx, info):
 async def resolver_recipe(parent, args, ctx, info):
     if parent and parent["id"] in INGREDIENTS_QUANTITY:
         return INGREDIENTS_QUANTITY[parent["id"]]
-    
+
     return None
 
 ```
 
 ## Launch the app
 
-Your Recipes Manager GraphQL API is now able to return data. Launch it with this following command and go to the next step to know how to query your GraphQL API.
+Your Recipes Manager GraphQL API is now able to return data. Launch it with the following command and go to the next step to find out how to query your GraphQL API.
 
 ```bash
 $ python -m recipes_manager

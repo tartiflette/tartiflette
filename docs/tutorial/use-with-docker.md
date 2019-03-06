@@ -1,7 +1,7 @@
 ---
 id: use-with-docker
 title: Use with Docker
-sidebar_label: 13. Use with Docker
+sidebar_label: 14. Use with Docker
 ---
 
 For those who want to use **Tartiflette** within a docker image, you can find a `Dockerfile` sample below.
