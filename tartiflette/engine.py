@@ -15,8 +15,8 @@ from tartiflette.types.exceptions.tartiflette import GraphQLError
 def _import_modules(modules):
     if modules:
         invalidate_caches()
-        return [import_module(x) for x in modules]
-    return None
+
+    return [import_module(x) for x in modules]
 
 
 class Engine:
@@ -31,9 +31,6 @@ class Engine:
     ) -> None:
         # TODO: Use the kwargs and add them to the schema
         # SDL can be: raw SDL, file path, folder path, file list, schema object
-        if not modules:
-            modules = []
-
         if isinstance(modules, str):
             modules = [modules]
 
