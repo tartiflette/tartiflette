@@ -5,7 +5,7 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_introspection___schema_resolver():
-    from tartiflette.introspection import __schema_resolver
+    from tartiflette.schema.introspection import __schema_resolver
 
     info = Mock()
     info.execution_ctx = Mock()
@@ -20,7 +20,7 @@ async def test_introspection___schema_resolver():
 
 @pytest.mark.asyncio
 async def test_introspection___type_resolver():
-    from tartiflette.introspection import __type_resolver
+    from tartiflette.schema.introspection import __type_resolver
 
     info = Mock()
     info.execution_ctx = Mock()
@@ -52,7 +52,7 @@ def _get_parent_results_mock(typename):
     ],
 )
 async def test_introspection___typename_resolver(parent_result, expected):
-    from tartiflette.introspection import __typename_resolver
+    from tartiflette.schema.introspection import __typename_resolver
 
     def my_find_type(name):
         if name == "LOL":

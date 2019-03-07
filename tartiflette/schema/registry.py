@@ -101,19 +101,17 @@ class SchemaRegistry:
         sdl_files_list = _get_builtins_sdl_files(exclude_builtins_scalars)
 
         full_sdl = ""
-        if not isinstance(sdl, GraphQLSchema):
-            if isinstance(sdl, list):
-                sdl_files_list += sdl
-            elif os.path.isfile(sdl):
-                sdl_files_list.append(sdl)
-            elif os.path.isdir(sdl):
-                sdl_files_list += glob(
-                    os.path.join(sdl, "**/*.sdl"), recursive=True
-                ) + glob(os.path.join(sdl, "**/*.graphql"), recursive=True)
-            else:
-                full_sdl = sdl
+
+        if isinstance(sdl, list):
+            sdl_files_list += sdl
+        elif os.path.isfile(sdl):
+            sdl_files_list.append(sdl)
+        elif os.path.isdir(sdl):
+            sdl_files_list += glob(
+                os.path.join(sdl, "**/*.sdl"), recursive=True
+            ) + glob(os.path.join(sdl, "**/*.graphql"), recursive=True)
         else:
-            SchemaRegistry._schemas[schema_name]["inst"] = sdl
+            full_sdl = sdl
 
         # Convert SDL files into big schema and parse it
         for filepath in sdl_files_list:
