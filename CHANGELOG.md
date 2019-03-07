@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+## [0.6.2] - 2019-03-07
+
+### Added
+
+- [ISSUE-140](https://github.com/dailymotion/tartiflette/issues/140): A new parameter in Engine() constructor, you can now specify a list of modules containing your decorated code such as:
+
+  1. Resolver
+  2. Subscription
+  3. Mutation
+  4. Scalar
+  5. Directive
+
+  IE:
+
+  ```python
+  Engine = Engine(a_sdl, modules=["some.module", "another.module", "oh.another.module"])
+  ```
+
 ## [0.6.1] - 2019-03-05
 
 ### Changed
@@ -18,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- [ISSUE-133](https://github.com/dailymotion/tartiflette/issues/133)Add an `on_argument_execution` directive method to handle argument directive hook.
+- [ISSUE-133](https://github.com/dailymotion/tartiflette/issues/133): Add an `on_argument_execution` directive method to handle argument directive hook.
 
 ### Changed
 
