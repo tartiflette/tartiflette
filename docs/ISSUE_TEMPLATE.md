@@ -7,11 +7,11 @@ Please provide the steps to reproduce your problem and, if possible, a full repr
 * [ ] **Explain with a simple sentence the expected behavior**
 * [ ] **Tartiflette version:** _e.g 0.1.0_
 * [ ] **Python version:** _e.g 3.6_
-* [ ] **Executed in docker:** _e.g Yes_
+* [ ] **Executed in docker:** _Yes|No_
 * [ ] **Dockerfile sample:** _Link of sample_
 * [ ] **GraphQL Schema & Query:** _e.g gist, pastebin or directly the query_
-* [ ] **Is a regression from a previous versions?** _e.g Yes_
-* [ ] **Stacktrace** _e.g gist, pastebin..._
+* [ ] **Is it a regression from a previous versions?** _e.g Yes|No_
+* [ ] **Stack trace**
 
 ## Request a feature
 

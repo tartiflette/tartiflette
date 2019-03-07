@@ -1,13 +1,14 @@
-# Contribution to Tartiflette
+# Contributing to Tartiflette
 
 :tada: Thanks for being here :tada:
 
-* [Code of Conduct](#code-of-conduct)
-* [How can I contribute?](#how-can-i-contribute)
-  * [Reporting Bugs](#reporting-bugs)
-  * [Suggesting Enhancements](#suggesting-enhancements)
-  * [Pull Requests](#pull-requests)
-* [Changelog](#changelog)
+- [Contributing to Tartiflette](#contributing-to-tartiflette)
+  - [Code of conduct](#code-of-conduct)
+  - [How can I contribute?](#how-can-i-contribute)
+    - [Reporting bugs](#reporting-bugs)
+    - [Suggesting enhancements](#suggesting-enhancements)
+    - [Pull Requests](#pull-requests)
+  - [Changelog](#changelog)
 
 ## Code of conduct
 
@@ -24,11 +25,11 @@ Please provide the steps to reproduce your problem and, if possible, a full repr
 * [ ] **Explain with a simple sentence the expected behavior**
 * [ ] **Tartiflette version:** _e.g 0.1.0_
 * [ ] **Python version:** _e.g 3.6_
-* [ ] **Executed in docker:** _Yes_
+* [ ] **Executed in docker:** _Yes|No_
 * [ ] **Dockerfile sample:** _Link of sample_
-* [ ] **GraphQL Schema & Query:** _gist, pastebin or directly the query_
-* [ ] **Explain with a simple sentence the behavior expected**
-* [ ] **Is a regression from a previous versions?** _e.g Yes_
+* [ ] **GraphQL Schema & Query:** _e.g gist, pastebin or directly the query_
+* [ ] **Is it a regression from a previous versions?** _e.g Yes|No_
+* [ ] **Stack trace**
 
 ### Suggesting enhancements
 
@@ -50,7 +51,7 @@ Before coding anything, be sure to:
 Before submitting your pull-request, make sure the following is done.
 
 * [ ] Fork [the repository](https://github.com/dailymotion/tartiflette) and create your branch from `master` so that it can be merged easily.
-* [ ] Update CHANGELOG.md with your change (include reference to issue & your pull request).
+* [ ] Update CHANGELOG.md with your change (include reference to the issue & this PR).
 * [ ] Make sure all of the significant new logic is covered by tests.
 * [ ] Make sure all quality checks are green _[(Gazr specification)](https://gazr.io)_.
 
