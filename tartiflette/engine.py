@@ -15,8 +15,8 @@ from tartiflette.types.exceptions.tartiflette import GraphQLError
 def _import_modules(modules):
     if modules:
         invalidate_caches()
-
-    return [import_module(x) for x in modules]
+        return [import_module(x) for x in modules]
+    return []
 
 
 class Engine:
