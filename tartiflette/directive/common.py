@@ -92,7 +92,7 @@ class OnIntrospectionDirective:
         :return: Any
         """
         # pylint: disable=unused-argument
-        return next_directive(introspected_element)
+        return next_directive(introspected_element, ctx, info)
 
 
 class CommonDirective(
