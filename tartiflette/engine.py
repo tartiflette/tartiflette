@@ -22,15 +22,29 @@ def _import_modules(modules):
 class Engine:
     def __init__(
         self,
-        sdl: Union[str, List[str], "GraphQLSchema"],
+        sdl: Union[str, List[str]],
         schema_name: str = "default",
         error_coercer: Callable[[Exception], dict] = default_error_coercer,
         custom_default_resolver: Optional[Callable] = None,
         exclude_builtins_scalars: Optional[List[str]] = None,
         modules: Optional[Union[str, List[str]]] = None,
     ) -> None:
-        # TODO: Use the kwargs and add them to the schema
-        # SDL can be: raw SDL, file path, folder path, file list, schema object
+        """Create an engine by analyzing the SDL and connecting it with the imported Resolver, Mutation,
+        Subscription, Directive and Scalar linking them through the schema_name.
+
+        Then using `await an_engine.execute(query)` will resolve your GQL requests.
+
+        Arguments:
+            sdl {Union[str, List[str]]} -- The SDL to work with.
+
+        Keyword Arguments:
+            schema_name {str} -- The name of the SDL (default: {"default"})
+            error_coercer {Callable[[Exception], dict]} -- An optional callable in charge of transforming an Exception into an error dict (default: {default_error_coercer})
+            custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
+            exclude_builtins_scalars {Optional[List[str]]} -- An optional list of string containing the names of the builtin scalar you don't want to be automatically included, usually it's Date, DateTime or Time scalars (default: {None})
+            modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
+        """
+
         if isinstance(modules, str):
             modules = [modules]
 
