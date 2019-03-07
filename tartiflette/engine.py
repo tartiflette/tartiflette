@@ -1,3 +1,4 @@
+from importlib import import_module, invalidate_caches
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
 from tartiflette.executors.basic import (
@@ -11,6 +12,13 @@ from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import GraphQLError
 
 
+def _import_modules(modules):
+    if modules:
+        invalidate_caches()
+        return [import_module(x) for x in modules]
+    return []
+
+
 class Engine:
     def __init__(
         self,
@@ -19,9 +27,15 @@ class Engine:
         error_coercer: Callable[[Exception], dict] = default_error_coercer,
         custom_default_resolver: Optional[Callable] = None,
         exclude_builtins_scalars: Optional[List[str]] = None,
+        modules: Optional[Union[str, List[str]]] = None,
     ) -> None:
         # TODO: Use the kwargs and add them to the schema
         # SDL can be: raw SDL, file path, folder path, file list, schema object
+        if isinstance(modules, str):
+            modules = [modules]
+
+        self._modules = _import_modules(modules)
+
         self._error_coercer = error_coercer
         self._parser = TartifletteRequestParser()
         SchemaRegistry.register_sdl(schema_name, sdl, exclude_builtins_scalars)
