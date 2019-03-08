@@ -157,7 +157,6 @@ list of modules containing your decorated code such as:
 
 * `@Resolver`
 * `@Subscription`
-* `@Mutation`
 * `@Scalar`
 * `@Directive`
 
