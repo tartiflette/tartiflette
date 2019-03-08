@@ -75,21 +75,6 @@ engine = tartiflette.Engine(
 )
 ```
 
-### When the `sdl` parameter is a Schema object
-
-```python
-import tartiflette
-
-sdl = """
-type Query {
-    hello: String
-}
-"""
-
-schema = tartiflette.Schema(sdl)
-engine = tartiflette.Engine(schema)
-```
-
 ## Advanced constructor
 
 The engine provides an advanced interface for initialization. It accepts optional and named parameters.
