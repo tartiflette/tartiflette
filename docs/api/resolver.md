@@ -4,7 +4,7 @@ title: Resolver
 sidebar_label: Resolver
 ---
 
-The most common way to assign a specific resolver to a Field, is to decorate your resolver function with the `@Resolver` decorator. Your function [MUST BE compliant with the function signature](#function-signature) and be `async`.
+The most common way to assign a specific resolver to a Field is to decorate your resolver function with the `@Resolver` decorator. Your function [MUST BE compliant with the function signature](#function-signature) and be `async`.
 
 ```python
 from tartiflette import Resolver
@@ -18,7 +18,7 @@ async def my_hello_resolver(parent, args, context, info):
 
 Every resolver in Tartiflette accepts four positional arguments:
 
-_(This signature has been highly inspired by the GraphQL.js implementation)_
+_(This signature is highly inspired by the GraphQL.js implementation)_
 
 ```python
 async def my_hello_resolver(parent, args, context, info):

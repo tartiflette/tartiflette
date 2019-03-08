@@ -4,9 +4,9 @@ title: Subscription
 sidebar_label: Subscription
 ---
 
-Subscription is the third operation available in GraphQL. It bring the [event-based subscriptions](https://graphql.org/blog/subscriptions-in-graphql-and-relay/#event-based-subscriptions) mindset to the Engine.
+Subscription is the third operation available in GraphQL. It brings the [event-based subscriptions](https://graphql.org/blog/subscriptions-in-graphql-and-relay/#event-based-subscriptions) mindset to the Engine.
 
-UIt's up to you to implement the Event technology you want, like Google Pub/Sub, Nats, Redis ... in our example, we decided to focus purely on the Engine part of the feature.
+It's up to you to implement the Event technology you want, like Google Pub/Sub, Nats, Redis ... in our example, we decided to focus purely on the Engine part of the feature.
 
 ## `Engine`: How to execute a subscription?
 

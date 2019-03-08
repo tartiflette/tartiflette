@@ -4,7 +4,7 @@ title: Getting started with Tartiflette
 sidebar_label: 1. Getting started
 ---
 
-Welcome ! Whether you are a GraphQL newbie or experienced veteran, Tartiflette will help you to build a powerful GraphQL API.
+Welcome! Whether you are a GraphQL newbie or experienced veteran, Tartiflette will help you to build a powerful GraphQL API.
 
 This tutorial will explain to you the main features of Tartiflette as well as some more advanced ones _(dynamic introspection, SDL Directives & more)_
 
@@ -17,13 +17,13 @@ Here are the topics we will cover during this _Getting Started Tutorial_.
 * Install the Tartiflette library _(and sub-dependencies)_.
 * Declare your schema using the SDL _(Schema Definition Language)_.
 * Create a Tartiflette _(Server)_ instance.
-* Write Query, Mutation and Subscription resolvers.
+* Write Query, Mutation, and Subscription resolvers.
 * Run Query, Mutation and Subscription requests on your **Engine**.
 * Declare and use custom directives _(Advanced)_.
 * Secure nodes with directives _(Advanced)_.
 * Expose different portions of the schema in the introspection based on context (Dynamic introspection) _(Advanced)_.
 
-The tutorial's end result is available on github at [tartiflette-aiohttp-tutorial](https://github.com/dailymotion/tartiflette-aiohttp-tutorial).
+The tutorial's end result is available on GitHub at [tartiflette-aiohttp-tutorial](https://github.com/dailymotion/tartiflette-aiohttp-tutorial).
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ Moreover, we will intensively use the command line to manipulate files or launch
 
 ### System requirements
 
-Be sure that your setup contains:
+Make sure that your setup contains:
 * Python 3.6+ via Pipenv
 * git
 * Package manager (e.g: homebrew on Macosx or apt on Ubuntu)

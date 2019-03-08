@@ -14,7 +14,7 @@ Welcome, glad to see you here.
 
 Source: [https://graphql.org/](https://graphql.org/)
 
-## Can I use standaloned Tartiflette for my project ?
+## Can I use a standalone Tartiflette for my project?
 
 Our engine follows the [GraphQL Specification](https://facebook.github.io/graphql/), which doesn't specify any transport layer. You can integrate the Tartiflette Engine wherever you need and use whatever transport layer you want: JSON RPC, gRPC or, obviously, HTTP.
 

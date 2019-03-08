@@ -48,7 +48,7 @@ Here are the subjects we were working during 2018 and early 2019:
 * [X] Think about custom Scalar API
 * [x] (Introspection) Implement the `__type` Field.
 * [x] (Introspection) Implement the `__schema`Field.
-* [X] (Directive) Append directive informations _(from SDL)_ as metadata on Fields / Types.
+* [X] (Directive) Append directive information _(from SDL)_ as metadata on Fields / Types.
 * [X] (Directive) Implement the declaration of the custom directives into the Engine constructor.
 * [X] (Directive) Implement @deprecated
 

@@ -4,7 +4,7 @@ title: Extend with directives
 sidebar_label: 11. Extend with directives
 ---
 
-A directive is a way of describing a behavior you can apply on different objects in your SDL. It looks like a Decorator in our favorite language, Python. The possible applications are numerous, access permissions, limiting the introspection, rate limiting, auto-generating resolver function etc ... the only limit is your imagination.
+A directive is a way of describing a behavior you can apply to different objects in your SDL. It looks like a Decorator in our favorite language, Python. The possible applications are numerous, access permissions, limiting the introspection, rate limiting, auto-generating resolver function etc ... the only limit is your imagination.
 
 Tartiflette includes the `@deprecated` directive, which allows you to define a field as deprecated _(The introspection will flag the field as deprecated)_.
 
@@ -92,4 +92,4 @@ class RateLimiting(CommonDirective):
         return next_directive(introspected_element)
 ```
 
-In the next steps we will implement some specific behavior in this directive.
+In the next steps, we will implement some specific behavior in this directive.
