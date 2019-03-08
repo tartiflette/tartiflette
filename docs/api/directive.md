@@ -78,5 +78,5 @@ class MyDirective(CommonDirective):
         ######################
         # Add your code here #
         ######################
-        return next_directive(introspected_element)
+        return next_directive(introspected_element, ctx, info)
 ```
