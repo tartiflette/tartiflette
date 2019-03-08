@@ -1,6 +1,6 @@
 from typing import Any, Callable, Dict, List, Optional
 
-from tartiflette.introspection import (
+from tartiflette.schema.introspection import (
     SCHEMA_ROOT_FIELD_DEFINITION,
     TYPENAME_ROOT_FIELD_DEFINITION,
     prepare_type_root_field,
