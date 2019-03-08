@@ -12,7 +12,7 @@ A resolver is a function _(which can be asynchronous)_ that is attached to a fie
 
 ### How to attach a resolver to a Schema field with Tartiflette?
 
-With Tartiflette, it is very straighforward to attach a resolver function to Schema field.
+With Tartiflette, it is very straightforward to attach a resolver function to the Schema field.
 
 We provide a decorator named `Resolver` which will attach your function to the specified Schema field.
 
@@ -34,10 +34,10 @@ If you want to know more about the Resolver part, we suggest taking a look at [t
 
 ## Write code
 
-In our example we will have 3 different resolvers.
+In our example, we will have 3 different resolvers.
 * One which will resolve the recipes list: `@Resolver("Query.recipes")`
 * Another which will resolve only one recipe: `@Resolver("Query.recipe")`
-* A last one which will resolve a sub field of the `Recipe` object, the ingredients quantity: `@Resolver("Recipe.ingredientsQuantity")`
+* A last one which will resolve a subfield of the `Recipe` object, the ingredients quantity: `@Resolver("Recipe.ingredientsQuantity")`
 
 **filename: recipes_manager/query_resolvers.py**
 ```python

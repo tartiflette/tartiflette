@@ -6,7 +6,7 @@ sidebar_label: Engine
 
 The way to generate an engine is pretty simple.
 
-The engine accepts at least one parameter, called "sdl", the other are [documented in the advanced usage](#advanced-constructor) part of the documents.
+The engine accepts at least one parameter, called "sdl", the others are [documented in the advanced usage](#advanced-constructor) part of the documents.
 
 ```python
 from tartiflette import Engine
@@ -20,7 +20,7 @@ Engine(
 )
 ```
 
-## Using the SDL _(Schema Definition Language)_ parameter with different types 
+## Using the SDL _(Schema Definition Language)_ parameter with different types
 
 ### When the `sdl` parameter contains the raw schema
 
@@ -38,7 +38,7 @@ engine = tartiflette.Engine(
 
 ### When the `sdl` parameter targets a file
 
-The filepath specified has to contain the full schema definition language.
+The file path specified has to contain the full schema definition language.
 
 ```python
 import tartiflette
@@ -65,7 +65,7 @@ engine = tartiflette.Engine(
 
 ### When the `sdl` parameter targets a folder
 
-Every file which ends by `.graphql` _(or `.sdl`)_ will be concatenated, in lexicographical order.
+Every file which ends by `.graphql` _(or `.sdl`)_ will be concatenated in lexicographical order.
 
 ```python
 import tartiflette
@@ -112,7 +112,7 @@ e = Engine(
 
 ### Parameter: `custom_default_resolver`
 
-Use another default resolver. It can be useful to override the behavior for resolving a property, sfrom `snake_case` to `camelCase` and vice versa.
+Use another default resolver. It can be useful to override the behavior for resolving a property, from `snake_case` to `camelCase` and vice versa.
 
 ```python
 async def my_default_resolver(parent_result, arguments, context, info):
@@ -159,7 +159,7 @@ engine = Engine(
 )
 ```
 
-instead of 
+instead of
 ```python
 import recipes_manager.query_resolvers
 import recipes_manager.mutation_resolvers

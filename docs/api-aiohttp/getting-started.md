@@ -151,8 +151,8 @@ web.run_app(
 
 ### Tartiflette with subscriptions
 
-Tartiflette embeds an easy way to deal with subscriptions. The only thing to do is
-to fill in the `subscription_ws_endpoint` parameter and everything will work out
+Tartiflette embeds an easy way to deal with subscriptions. It's as simple as
+adding the `subscription_ws_endpoint` parameter and everything will work out
 of the box with `aiohttp` WebSockets. You can see a full example
 [here](examples/aiohttp/dogs).
 
@@ -161,7 +161,7 @@ of the box with `aiohttp` WebSockets. You can see a full example
 Tartiflette allows you to set up an instance of GraphiQL easily to quickly test
 your queries. The easiest way to do that is to set the `graphiql_enabled`
 parameter to `True`. Then, you can customize your GraphiQL instance by filling
-the `graphiql_options` parameter as bellow:
+the `graphiql_options` parameter as below:
 
 ```python
 from aiohttp import web

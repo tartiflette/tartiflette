@@ -106,7 +106,7 @@ class RateLimiting(CommonDirective):
 
 ## How can we test it?
 
-In order to simulate the rate limiting. Be sure that your application is running.
+To simulate the rate limiting, make sure that your application is running, then execute the GraphQL query below.
 
 ```bash
 $ python -m recipes_manager

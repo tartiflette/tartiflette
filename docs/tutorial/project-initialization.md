@@ -32,7 +32,7 @@ We will put all our python files into the python module `recipes_manager`.
 mkdir -p recipes_manager
 ```
 
-Moreover, we are going to create multiple files which will contains our application code.
+Moreover, we are going to create multiple files which will contain our application code.
 * `recipes_manager/app.py`: Entrypoint of our application. In charge of the initialization of `tartiflette-aiohttp`.
 * `recipes_manager/sdl`: Folder which will contain our SDL _(Schema Definition Language)_ files.
   * `recipes_manager/sdl/Query.graphql`: Schema with our Query objects.
@@ -97,7 +97,7 @@ Fill the file **recipes_manager/data.py** with this data.
 
 ```python
 # Dictionary which contains the ingredients based on the
-# Recipe ID as key.
+# Recipe ID as the key.
 INGREDIENTS_QUANTITY = {
     1: [
         { "name": "potato", "quantity": 10, "type": "UNIT" },

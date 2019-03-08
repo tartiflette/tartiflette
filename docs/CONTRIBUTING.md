@@ -39,9 +39,9 @@ Please provide the steps to reproduce your problem and, if possible, a full repr
 
 Don't hesitate to ask a new feature or join in and send us a pull request with your own feature!
 
-Before coding anything, be sure to:
+Before coding anything, make sure to:
 
-* **Stage 1 - Proposal:** Propose your changes / ideas through an issue _(optional)_
+* **Stage 1 - Proposal:** Propose your changes/ideas through an issue _(optional)_
 * **Stage 2 - Draft:** Push your code & create a pull-request with the `WHY` of your work.
 * **Stage 3 - Candidate:** Stable code, tested & documented.
 * **Stage 4 - :tada:** Your code is merged and available.

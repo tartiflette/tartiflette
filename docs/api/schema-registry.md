@@ -6,7 +6,7 @@ sidebar_label: Schema Registry
 
 By default, all the resolvers created using the `@Resolver` decorator, are registered to the "default" schema in the `Schema Registry`.
 
-#### What is aim of the Schema Registry?
+#### What is the aim of the Schema Registry?
 
 The `Schema Registry` is an advanced use-case of Tartiflette, used by the developers who want to expose multiple Engines from the same codebase.
 

@@ -8,7 +8,7 @@ We discovered how to Query and Mutate data, now, we are going to discover a more
 
 In this tutorial, we'll implement a subscription which will wait for the end of the cooking process for a given recipe.
 
-During the cooking process, we'll notify the user each second about the remaining time, and in the end, we'll notify that the cooking is over.
+During the cooking process, we'll notify the client each second about the remaining time, and at the end, we'll notify that the cooking is over.
 
 This feature will allow the client of our GraphQL API to update its UI in real time.
 
@@ -38,7 +38,7 @@ type CookingTimer {
 
 ## **recipes_manager/subscription_resolvers.py**
 
-In the Tartiflette Engine, we allow you to link a subscription resolver to your schema simply by using the corresponding decorator _(@Subscription)_ over a function which returns an async generator, that it. For advanced use-cases, we suggest to use pub/sub mecanisms like Redis, Nats, Google Pub/Sub, Amazon EQS etc...
+In the Tartiflette Engine, we allow you to link a subscription resolver to your schema simply by using the corresponding decorator _(@Subscription)_ over a function which returns an async generator, that it. For advanced use-cases, we suggest using pub/sub mechanisms like Redis, Nats, Google Pub/Sub, Amazon EQS etc...
 
 ```python
 import asyncio
@@ -74,7 +74,7 @@ In case the data `yield`ed is not compliant with the Schema's return type, you c
 
 ## How can we use it?
 
-As mentionned previously, for this tutorial, we decided to use the simplest form of a Subscription in Tartiflette, and we didn't cover the transport layer.
+As mentioned previously, for this tutorial, we decided to use the simplest form of a Subscription in Tartiflette, and we didn't cover the transport layer.
 
 Do you remember that the Recipes Manager GraphQL API is based on the `tartiflette-aiohttp`? Aside from the HTTP layer, it also provides a way to expose Subscription operations through a Web Socket.
 
@@ -96,7 +96,7 @@ By defining the `subscription_ws_endpoint` parameter, a WebSocket endpoint is cr
 
 ## Launch the app
 
-Your Recipes Manager GraphQL API is now able to provide subscriptions to your clients. Launch it with this following command and go to the next step to know how to deal with subscription in your GraphQL API.
+Your Recipes Manager GraphQL API is now able to provide subscriptions to your clients. Launch it with this following command and go to the next step to know how to deal with subscriptions in your GraphQL API.
 
 > Note: WebSockets are only available on `GET` HTTP requests so the `/ws` endpoint is created on a `GET` HTTP endpoint and ignores the `executor_http_methods` which only apply to query and mutation requests on `/graphql`.
 

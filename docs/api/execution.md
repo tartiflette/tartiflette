@@ -4,7 +4,7 @@ title: Execution
 sidebar_label: Execution
 ---
 
-Aside from the building of the Engine, the `execute` method of the `Engine` is responsible for executing the GraphQL query coming from the client.
+Aside from building the `Engine`, the `execute` method is responsible for executing the GraphQL query coming from the client.
 
 Its parameters are:
 * `query`: The GraphQL Request/Query as UTF8-encoded string _(sent by the client)_

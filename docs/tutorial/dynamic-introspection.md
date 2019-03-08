@@ -4,7 +4,7 @@ title: Dynamic introspection
 sidebar_label: 13. Dynamic introspection
 ---
 
-One of the most powerful feature of GraphQL is to provide an introspection of its own Schema, which gives the developer the ability to build tools based on the result of the introspection. [The best example is GraphiQL, the GraphQL Explorer.](https://github.com/graphql/graphiql).
+One of the most powerful features of GraphQL is to provide an introspection of its Schema, which gives the developer the ability to build tools based on the result of the introspection. [The best example is GraphiQL, the GraphQL Explorer.](https://github.com/graphql/graphiql).
 
 ## Introspection caveats
 
@@ -75,7 +75,7 @@ input RecipeInput {
 
 ## How can we test it?
 
-In order to simulate the non introspectable feature. Be sure that your application is running.
+To simulate the non-introspectable feature, make sure that your application is running.
 
 ```bash
 $ python -m recipes_manager
@@ -88,7 +88,7 @@ $ python -m recipes_manager
 
 Execute the following query to retrieve the list of mutation fields.
 
-* Without the `@nonIntrospectable` you **will** see the `updateRecipe` field.	
+* Without the `@nonIntrospectable` you **will** see the `updateRecipe` field.
 * With the `@nonIntrospectable` in your schema you **won't** see the `updateRecipe` field.
 
 ```graphql
