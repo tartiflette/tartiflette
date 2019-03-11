@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+## [0.6.4] - 2019-03-11
+
+### Fixed
+
+- Apply directives on sub-levels arguments.
+
+
 ## [0.6.3] - 2019-03-07
 
 ### Fixed
