@@ -1,13 +1,15 @@
+from functools import partial
 from unittest.mock import Mock
 
 import pytest
 
 from tartiflette.utils.arguments import (
     UNDEFINED_VALUE,
-    _coerce_argument,
-    _surround_with_argument_execution_directives,
+    argument_coercer,
     coerce_arguments,
+    surround_with_argument_execution_directives,
 )
+from tests.functional.utils import AsyncMock
 
 
 def _create_mock_arg(name, value):
@@ -22,6 +24,9 @@ def _create_mock_def_arg(name, default_value):
     arg_mock.name = name
     arg_mock.default_value = default_value
     arg_mock.directives = []
+    arg_mock.coercer = Mock(
+        wraps=partial(argument_coercer, arg_mock), new_callable=AsyncMock
+    )
     return arg_mock
 
 
@@ -41,12 +46,12 @@ def _create_mock_def_arg(name, default_value):
         ),
     ],
 )
-async def test_coerce_argument(default_value, args, expected):
+async def test_argument_coercer(default_value, args, expected):
     argument_definition_mock = Mock()
     argument_definition_mock.name = "myArg"
     argument_definition_mock.default_value = default_value
     assert (
-        await _coerce_argument(argument_definition_mock, args, {}, Mock())
+        await argument_coercer(argument_definition_mock, args, {}, Mock())
         == expected
     )
 
@@ -63,7 +68,7 @@ def test_surround_with_argument_execution_directives():
         {"callables": cllbs_b, "args": {"c": "d"}},
     ]
 
-    r = _surround_with_argument_execution_directives("A", directives)
+    r = surround_with_argument_execution_directives("A", directives)
     assert r is not None
     assert r.func is cllbs_a.on_argument_execution
     a, b = r.args
@@ -73,7 +78,7 @@ def test_surround_with_argument_execution_directives():
     assert a == {"c": "d"}
     assert b == "A"
 
-    assert _surround_with_argument_execution_directives("A", []) == "A"
+    assert surround_with_argument_execution_directives("A", []) == "A"
 
 
 @pytest.mark.asyncio

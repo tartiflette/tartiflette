@@ -1,6 +1,5 @@
 from typing import Any, Callable, Dict, List, Optional
 
-from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.type import GraphQLType
 
 
@@ -17,13 +16,15 @@ class GraphQLInputObjectType(GraphQLType):
     def __init__(
         self,
         name: str,
-        fields: Dict[str, GraphQLArgument],
+        fields: Dict[str, "GraphQLArgument"],
         description: Optional[str] = None,
         schema: Optional["GraphQLSchema"] = None,
     ) -> None:
         super().__init__(name=name, description=description, schema=schema)
         self._fields = fields
-        self._input_fields: List[GraphQLArgument] = list(self._fields.values())
+        self._input_fields: List["GraphQLArgument"] = list(
+            self._fields.values()
+        )
 
     def __repr__(self) -> str:
         return "{}(name={!r}, fields={!r}, description={!r})".format(
@@ -32,6 +33,10 @@ class GraphQLInputObjectType(GraphQLType):
 
     def __eq__(self, other: Any) -> bool:
         return super().__eq__(other) and self._fields == other._fields
+
+    @property
+    def arguments(self) -> Dict[str, "GraphQLArgument"]:
+        return self._fields
 
     # Introspection Attribute
     @property
@@ -42,7 +47,7 @@ class GraphQLInputObjectType(GraphQLType):
     @property
     def inputFields(  # pylint: disable=invalid-name
         self
-    ) -> List[GraphQLArgument]:
+    ) -> List["GraphQLArgument"]:
         return self._input_fields
 
     def bake(
