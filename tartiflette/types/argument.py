@@ -1,7 +1,12 @@
+from functools import partial
 from typing import Any, Dict, List, Optional, Union
 
 from tartiflette.types.helpers import get_directive_implem_list
 from tartiflette.types.type import GraphQLType
+from tartiflette.utils.arguments import (
+    argument_coercer,
+    surround_with_argument_execution_directives,
+)
 
 
 class GraphQLArgument:
@@ -30,6 +35,7 @@ class GraphQLArgument:
         self._type = {}
         self._schema = schema
         self._directives = directives
+        self.coercer = None
 
         # Introspection Attribute
         self._directives_implementations = None
@@ -58,6 +64,10 @@ class GraphQLArgument:
             and self.default_value == other.default_value
             and self.directives == other.directives
         )
+
+    @property
+    def schema(self) -> "GraphQLSchema":
+        return self._schema
 
     # Introspection Attribute
     @property
@@ -88,3 +98,10 @@ class GraphQLArgument:
         else:
             self._type["name"] = self.gql_type
             self._type["kind"] = self._schema.find_type(self.gql_type).kind
+
+        self.coercer = partial(
+            surround_with_argument_execution_directives(
+                argument_coercer, self.directives
+            ),
+            self,
+        )
