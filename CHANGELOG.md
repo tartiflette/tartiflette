@@ -5,16 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Released]
 
-## [Next] - yyyy-mm-dd
+## [0.6.5] - 2019-03-12
 
 ### Changed
 
 - It is no more possible to pass an instance of GraphQLSchema to the Engine Constructor.
 - Introspection code moved into the schema submodule.
-
-## [Released]
+- Introspection no longer return __ starting fields data
 
 ## [0.6.4] - 2019-03-11
 
