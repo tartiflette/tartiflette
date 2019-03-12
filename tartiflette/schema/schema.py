@@ -51,10 +51,6 @@ class GraphQLSchema:
         self._gql_types: Dict[str, GraphQLType] = {}
         # Directives
         self._directives: Dict[str, GraphQLDirective] = {}
-        # All `GraphQLObjectType`s implementing a given interface
-        self._implementations: Dict[str, List[GraphQLType]] = {}
-        # All non-abstract types possible for a given abstract type
-        self._possible_types: Dict[str, Dict[str, bool]] = {}
         self._enums: Dict[str, GraphQLEnumType] = {}
         self._custom_scalars: Dict[str, GraphQLScalarType] = {}
         self.name = name
