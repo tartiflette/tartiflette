@@ -127,21 +127,6 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
                         "isDeprecated": True,
                         "deprecationReason": "Unused anymore",
                     },
-                    {
-                        "isDeprecated": False,
-                        "name": "__schema",
-                        "deprecationReason": None,
-                    },
-                    {
-                        "name": "__type",
-                        "isDeprecated": False,
-                        "deprecationReason": None,
-                    },
-                    {
-                        "name": "__typename",
-                        "deprecationReason": None,
-                        "isDeprecated": False,
-                    },
                 ]
             }
         }
@@ -271,22 +256,7 @@ async def test_tartiflette_non_introspectable_execution_directive(
                         "name": "fieldNormal",
                         "isDeprecated": False,
                         "deprecationReason": None,
-                    },
-                    {
-                        "name": "__schema",
-                        "deprecationReason": None,
-                        "isDeprecated": False,
-                    },
-                    {
-                        "name": "__type",
-                        "deprecationReason": None,
-                        "isDeprecated": False,
-                    },
-                    {
-                        "name": "__typename",
-                        "isDeprecated": False,
-                        "deprecationReason": None,
-                    },
+                    }
                 ]
             }
         }

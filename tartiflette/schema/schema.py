@@ -161,7 +161,11 @@ class GraphQLSchema:
     #  Introspection Attribute
     @property
     def types(self) -> List[GraphQLType]:
-        return list(self._gql_types.values())
+        return [
+            self._gql_types[x]
+            for x in self._gql_types
+            if not x.startswith("__")
+        ]
 
     def find_type(self, name: str) -> GraphQLType:
         return self._gql_types[name]
@@ -325,6 +329,7 @@ class GraphQLSchema:
                             gql_type.name, iface_name
                         )
                     )
+
                 for iface_field in iface_type.fields:
                     try:
                         gql_type_field = gql_type.find_field(iface_field.name)

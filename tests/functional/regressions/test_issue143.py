@@ -65,11 +65,6 @@ async def test_issue143():
                         "name": "c",
                         "deprecationReason": None,
                     },
-                    {
-                        "isDeprecated": False,
-                        "name": "__typename",
-                        "deprecationReason": None,
-                    },
                 ]
             }
         }

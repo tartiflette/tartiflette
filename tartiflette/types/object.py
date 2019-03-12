@@ -61,8 +61,10 @@ class GraphQLObjectType(GraphQLType):
     @property
     def fields(self) -> List[GraphQLField]:
         try:
-            return list(self._fields.values())
-        except AttributeError:
+            return [
+                self._fields[x] for x in self._fields if not x.startswith("__")
+            ]
+        except (AttributeError, TypeError):
             pass
         return []
 
@@ -79,7 +81,7 @@ class GraphQLObjectType(GraphQLType):
             self._interfaces.append(interface)
             interface.possibleTypes.append(self)
 
-        for field in self.fields:
+        for field in list(self._fields.values()):
             try:
                 field.bake(schema, self, custom_default_resolver)
             except AttributeError:
