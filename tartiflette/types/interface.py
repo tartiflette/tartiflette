@@ -46,7 +46,7 @@ class GraphQLInterfaceType(GraphQLType):
     @property
     def fields(self) -> List[GraphQLField]:
         try:
-            return list(self._fields.values())
+            return [self._fields[x] for x in self._fields if x.startswith("__")]
         except AttributeError:
             pass
         return []
@@ -58,7 +58,7 @@ class GraphQLInterfaceType(GraphQLType):
     ) -> None:
         super().bake(schema, custom_default_resolver)
 
-        for field in self.fields:
+        for field in list(self._fields.values()):
             field.bake(schema, self, custom_default_resolver)
 
     # introspection attribute
