@@ -47,7 +47,7 @@ class GraphQLInterfaceType(GraphQLType):
     def fields(self) -> List[GraphQLField]:
         try:
             return [
-                self._fields[x] for x in self._fields if x.startswith("__")
+                self._fields[x] for x in self._fields if not x.startswith("__")
             ]
         except (AttributeError, TypeError):
             pass

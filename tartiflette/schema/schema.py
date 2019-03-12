@@ -329,6 +329,7 @@ class GraphQLSchema:
                             gql_type.name, iface_name
                         )
                     )
+
                 for iface_field in iface_type.fields:
                     try:
                         gql_type_field = gql_type.find_field(iface_field.name)

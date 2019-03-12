@@ -327,7 +327,7 @@ def test_schema_validate_named_types(
             True,
             False,
         ),
-    ],
+    ],ids=["1", "2", "3", "4", "5", "6", "7"]
 )
 def test_schema_validate_object_follow_interfaces(
     full_sdl, expected_error, expected_value, clean_registry
