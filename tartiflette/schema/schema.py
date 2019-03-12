@@ -161,7 +161,11 @@ class GraphQLSchema:
     #  Introspection Attribute
     @property
     def types(self) -> List[GraphQLType]:
-        return [self._gql_types[x] for x in self._gql_types if not x.startswith("__")]
+        return [
+            self._gql_types[x]
+            for x in self._gql_types
+            if not x.startswith("__")
+        ]
 
     def find_type(self, name: str) -> GraphQLType:
         return self._gql_types[name]

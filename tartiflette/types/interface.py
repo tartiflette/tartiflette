@@ -46,8 +46,10 @@ class GraphQLInterfaceType(GraphQLType):
     @property
     def fields(self) -> List[GraphQLField]:
         try:
-            return [self._fields[x] for x in self._fields if x.startswith("__")]
-        except AttributeError:
+            return [
+                self._fields[x] for x in self._fields if x.startswith("__")
+            ]
+        except (AttributeError, TypeError):
             pass
         return []
 
