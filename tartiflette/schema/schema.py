@@ -16,6 +16,7 @@ from tartiflette.types.exceptions.tartiflette import (
 )
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import reduce_type
+from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.types.interface import GraphQLInterfaceType
 from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
@@ -57,6 +58,7 @@ class GraphQLSchema:
         self._possible_types: Dict[str, Dict[str, bool]] = {}
         self._enums: Dict[str, GraphQLEnumType] = {}
         self._custom_scalars: Dict[str, GraphQLScalarType] = {}
+        self._input_types: List[str] = []
         self.name = name
 
     def __repr__(self) -> str:
@@ -214,6 +216,8 @@ class GraphQLSchema:
                 )
             )
         self._gql_types[value.name] = value
+        if isinstance(value, GraphQLInputObjectType):
+            self._input_types.append(value.name)
 
     def add_enum_definition(self, value: GraphQLEnumType) -> None:
         if self._enums.get(value.name):
@@ -224,6 +228,7 @@ class GraphQLSchema:
                 )
             )
         self._enums[value.name] = value
+        self._input_types.append(value.name)
 
     def add_custom_scalar_definition(self, value: GraphQLScalarType) -> None:
         if self._custom_scalars.get(value.name):
@@ -234,6 +239,7 @@ class GraphQLSchema:
                 )
             )
         self._custom_scalars[value.name] = value
+        self._input_types.append(value.name)
 
     def get_field_by_name(self, name: str) -> GraphQLField:
         try:
@@ -279,6 +285,8 @@ class GraphQLSchema:
             self._validate_union_is_acceptable,
             self._validate_all_scalars_have_implementations,
             self._validate_enum_values_are_unique,
+            self._validate_arguments_have_valid_type,
+            self._validate_input_type_composed_of_input_type,
             # TODO: Validate Field: default value must be of given type
             # TODO: Check all objects have resolvers (at least in parent)
         ]
@@ -427,6 +435,40 @@ class GraphQLSchema:
                             "is not unique in the GraphQL schema.".format(
                                 type_name, str(value.value)
                             )
+                        )
+        return True
+
+    def _validate_args(self, arg, parent_info_message) -> bool:
+        rtype = reduce_type(arg.gql_type)
+        if not rtype in self._input_types:
+            raise GraphQLSchemaError(
+                message=f"Argument < {arg.name} > of {parent_info_message} is not an InputType"
+            )
+
+    def _validate_arguments_have_valid_type(self) -> bool:
+        for _, gqltype in self._gql_types.items():
+            try:
+                for field in gqltype.fields:
+                    for arg in field.args:
+                        self._validate_args(
+                            arg, f"field < {gqltype}.{field.name} >"
+                        )
+            except AttributeError:
+                pass
+
+        for _, directive in self._directives.items():
+            for arg in directive.args:
+                self._validate_args(arg, f"directive < {directive.name} >")
+
+        return True
+
+    def _validate_input_type_composed_of_input_type(self) -> bool:
+        for typename, gqltype in self._gql_types.items():
+            if isinstance(gqltype, GraphQLInputObjectType):
+                for field in gqltype.inputFields:
+                    if reduce_type(field.gql_type) not in self._input_types:
+                        raise GraphQLSchemaError(
+                            message=f"Field < {typename}.{field.name} > is not a valid InputType"
                         )
         return True
 

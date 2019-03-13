@@ -25,7 +25,7 @@ async def argument_coercer(argument_definition, args, ctx, info):
     value = UNDEFINED_VALUE
     try:
         value = args[argument_definition.name]
-    except KeyError:
+    except (KeyError, TypeError):
         pass
 
     if value is UNDEFINED_VALUE and argument_definition.default_value:
@@ -45,6 +45,17 @@ async def argument_coercer(argument_definition, args, ctx, info):
 
     if not isinstance(schema_type, GraphQLInputObjectType):
         return value
+
+    if (
+        not isinstance(argument_definition.gql_type, str)
+        and argument_definition.gql_type.is_list
+    ):
+        return await asyncio.gather(
+            *[
+                coerce_arguments(schema_type.arguments, x, ctx, info)
+                for x in value
+            ]
+        )
 
     return await coerce_arguments(schema_type.arguments, value, ctx, info)
 
