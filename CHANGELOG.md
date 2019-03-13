@@ -5,13 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+# [Released]
+
+## [0.6.6] - 2019-03-13
 
 ### Added
 
-- [PR-155](https://github.com/dailymotion/tartiflette/pull/155): Add support for `extensions` field in GraphQLError exceptions and allow importing exceptions more easily.
-
-## [Released]
+- [PR-155](https://github.com/dailymotion/tartiflette/pull/155): Add support for `extensions` field in GraphQLError exceptions and allow importing exceptions more easily. (Thanks [@ultrabug](https://github.com/ultrabug))
+- [ISSUE-154](https://github.com/dailymotion/tartiflette/issues/154): Validate that an argument of a field and directive is an InputType. Also validate that all inputType are composed of inputType.
 
 ## [0.6.5] - 2019-03-12
 
@@ -119,7 +120,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.3.6] - 2019-01-30
 
-### Fixed
+### Fixed
 
 - [ISSUE-109](https://github.com/dailymotion/tartiflette/issues/109): Manage SelectionSet errors on leaf/non-leaf field.
 
@@ -129,7 +130,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Add type hints & some refactoring / code cleaning.
 
-### Fixed
+### Fixed
 
 - [ISSUE-108](https://github.com/dailymotion/tartiflette/issues/108): Understand .graphql files as SDL ones
 
