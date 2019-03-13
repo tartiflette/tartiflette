@@ -57,6 +57,25 @@ from tartiflette.types.location import Location
                 "locations": [{"line": 2, "column": 2}],
             },
         ),
+        (
+            "Init GraphQLError",
+            {
+                "path": ["init", "path"],
+                "locations": [Location(line=1, column=1)],
+                "user_message": "User GraphQLError",
+                "extensions": {"code": 123},
+            },
+            {
+                "path": ["coerce", "value", "path"],
+                "locations": [Location(line=2, column=2)],
+            },
+            {
+                "message": "User GraphQLError",
+                "path": ["coerce", "value", "path"],
+                "locations": [{"line": 2, "column": 2}],
+                "extensions": {"code": 123},
+            },
+        ),
     ],
 )
 def test_graphqlerror_coerce_value(

@@ -12,6 +12,7 @@ class GraphQLError(Exception):
         locations: Optional[List[Location]] = None,
         user_message: str = None,
         more_info: str = "",
+        extensions: Optional[dict] = None,
     ) -> None:
         super().__init__(message)
         self.message = message  # Developer message by default
@@ -19,6 +20,7 @@ class GraphQLError(Exception):
         self.more_info = more_info
         self.path = path or None
         self.locations = locations or []
+        self.extensions = extensions or {}
 
     def coerce_value(
         self,
@@ -35,13 +37,16 @@ class GraphQLError(Exception):
             pass
         except TypeError:
             pass
-        return {
+        errors = {
             "message": self.user_message
             if self.user_message
             else self.message,
             "path": path or self.path,
             "locations": computed_locations,
         }
+        if self.extensions:
+            errors["extensions"] = dict(self.extensions)
+        return errors
 
 
 class ImproperlyConfigured(GraphQLError):
