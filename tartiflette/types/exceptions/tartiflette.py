@@ -45,7 +45,7 @@ class GraphQLError(Exception):
             "locations": computed_locations,
         }
         if self.extensions:
-            errors["extensions"] = self.extensions
+            errors["extensions"] = dict(self.extensions)
         return errors
 
 
