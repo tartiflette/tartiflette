@@ -13,7 +13,8 @@ class CustomError(GraphQLError):
 @Resolver("Query.viewer", schema_name="test_pr155")
 async def resolver_query_viewer(*_, **__):
     raise CustomError(
-        "this is an error message", extensions={"code": "custom code"})
+        "this is an error message", extensions={"code": "custom code"}
+    )
 
 
 @Resolver("Query.admin", schema_name="test_pr155")
