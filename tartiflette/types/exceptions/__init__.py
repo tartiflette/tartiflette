@@ -1,1 +1,1 @@
-from tartiflette.types.exceptions.tartiflette import *
+from tartiflette.types.exceptions.tartiflette import GraphQLError
