@@ -51,9 +51,9 @@ class GraphQLSchema:
         # Types, definitions and implementations
         self._gql_types: Dict[str, GraphQLType] = {}
         # Directives
-        self._directives: Dict[str, GraphQLDirective] = {}
-        self._enums: Dict[str, GraphQLEnumType] = {}
-        self._custom_scalars: Dict[str, GraphQLScalarType] = {}
+        self._directive_definitions: Dict[str, GraphQLDirective] = {}
+        self._enum_definitions: Dict[str, GraphQLEnumType] = {}
+        self._custom_scalar_definitions: Dict[str, GraphQLScalarType] = {}
         self._input_types: List[str] = []
         self.name = name
 
@@ -178,30 +178,31 @@ class GraphQLSchema:
     #  Introspection Attribute
     @property
     def directives(self) -> List[GraphQLDirective]:
-        return list(self._directives.values())
+        return list(self._directive_definitions.values())
 
     def find_directive(self, name: str) -> GraphQLDirective:
-        return self._directives[name]
+        return self._directive_definitions[name]
 
     @property
     def enums(self) -> Dict[str, GraphQLEnumType]:
-        return self._enums
+        return self._enum_definitions
 
     def find_enum(self, name: str) -> GraphQLEnumType:
-        return self._enums.get(name)
+        return self._enum_definitions.get(name)
 
     def find_scalar(self, name: str) -> Optional[GraphQLScalarType]:
-        return self._custom_scalars.get(name)
+        return self._custom_scalar_definitions.get(name)
 
-    def add_directive(self, value: GraphQLDirective) -> None:
-        if self._directives.get(value.name):
+    def add_directive_definition(self, value: GraphQLDirective) -> None:
+        if self._directive_definitions.get(value.name):
             raise RedefinedImplementation(
                 "new GraphQL directive definition `{}` "
                 "overrides existing directive definition `{}`.".format(
-                    value.name, repr(self._directives.get(value.name))
+                    value.name,
+                    repr(self._directive_definitions.get(value.name)),
                 )
             )
-        self._directives[value.name] = value
+        self._directive_definitions[value.name] = value
 
     def add_definition(self, value: GraphQLType) -> None:
         if self._gql_types.get(value.name):
@@ -216,25 +217,26 @@ class GraphQLSchema:
             self._input_types.append(value.name)
 
     def add_enum_definition(self, value: GraphQLEnumType) -> None:
-        if self._enums.get(value.name):
+        if self._enum_definitions.get(value.name):
             raise RedefinedImplementation(
                 "new GraphQL enum definition `{}` "
                 "overrides existing enum definition `{}`.".format(
-                    value.name, repr(self._enums.get(value.name))
+                    value.name, repr(self._enum_definitions.get(value.name))
                 )
             )
-        self._enums[value.name] = value
+        self._enum_definitions[value.name] = value
         self._input_types.append(value.name)
 
     def add_custom_scalar_definition(self, value: GraphQLScalarType) -> None:
-        if self._custom_scalars.get(value.name):
+        if self._custom_scalar_definitions.get(value.name):
             raise RedefinedImplementation(
                 "new GraphQL scalar definition `{}` "
                 "overrides existing scalar definition `{}`.".format(
-                    value.name, repr(self._custom_scalars.get(value.name))
+                    value.name,
+                    repr(self._custom_scalar_definitions.get(value.name)),
                 )
             )
-        self._custom_scalars[value.name] = value
+        self._custom_scalar_definitions[value.name] = value
         self._input_types.append(value.name)
 
     def get_field_by_name(self, name: str) -> GraphQLField:
@@ -453,7 +455,7 @@ class GraphQLSchema:
             except AttributeError:
                 pass
 
-        for directive in self._directives.values():
+        for directive in self._directive_definitions.values():
             for arg in directive.args:
                 self._validate_type_is_an_input_types(
                     arg,
@@ -498,11 +500,11 @@ class GraphQLSchema:
         for gql_type in self._gql_types.values():
             gql_type.bake(self, custom_default_resolver)
 
-        for directive in self._directives.values():
+        for directive in self._directive_definitions.values():
             directive.bake(self)
 
     def call_onbuild_directives(self) -> None:
-        for name, directive in self._directives.items():
+        for name, directive in self._directive_definitions.items():
             try:
                 directive.implementation.on_build(self)
             except AttributeError:

@@ -430,7 +430,7 @@ class SchemaTransformer(Transformer_InPlace):
             arguments=arguments,
             description=description,
         )
-        self._schema.add_directive(directive)
+        self._schema.add_directive_definition(directive)
         return Tree("directive_definition", [directive])
 
     def directive_locations(self, tree: Tree) -> SchemaNode:
