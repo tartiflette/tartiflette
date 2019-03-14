@@ -42,7 +42,7 @@ class GraphQLField:
         self._is_leaf = False
 
     @property
-    def directives(self) -> List[Dict[str, Any]]:
+    def directive_implementations(self) -> List[Dict[str, Any]]:
         return self._directives_implementations
 
     def __repr__(self) -> str:
@@ -55,7 +55,7 @@ class GraphQLField:
                 self.arguments,
                 self.resolver,
                 self.description,
-                self.directives,
+                self.directive_implementations,
             )
         )
 
@@ -69,7 +69,8 @@ class GraphQLField:
             and self.gql_type == other.gql_type
             and self.arguments == other.arguments
             and self.resolver == other.resolver
-            and self.directives == other.directives
+            and self.directive_implementations
+            == other.directive_implementations
         )
 
     # Introspection Attribute

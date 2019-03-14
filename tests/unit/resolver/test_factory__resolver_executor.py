@@ -125,7 +125,7 @@ async def test_resolver_factory__resolver_executor___call__(
 def test_resolver_factory__resolver_executor_apply_directives(
     _resolver_executor_mock
 ):
-    _resolver_executor_mock._schema_field.directives = ["B"]
+    _resolver_executor_mock._schema_field.directive_implementations = ["B"]
 
     with patch(
         "tartiflette.resolver.factory._surround_with_execution_directives",
@@ -136,13 +136,13 @@ def test_resolver_factory__resolver_executor_apply_directives(
             (
                 (
                     _resolver_executor_mock._raw_func,
-                    _resolver_executor_mock._schema_field.directives,
+                    _resolver_executor_mock._schema_field.directive_implementations,
                 ),
             )
         ]
         assert _resolver_executor_mock._func == "LOL"
 
-    del _resolver_executor_mock._schema_field.directives
+    del _resolver_executor_mock._schema_field.directive_implementations
 
     assert _resolver_executor_mock.apply_directives() is None
     assert _resolver_executor_mock._func is _resolver_executor_mock._raw_func

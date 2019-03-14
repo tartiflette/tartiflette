@@ -15,7 +15,7 @@ from tartiflette.types.exceptions.tartiflette import (
     UnknownSchemaFieldResolver,
 )
 from tartiflette.types.field import GraphQLField
-from tartiflette.types.helpers import reduce_type
+from tartiflette.types.helpers import get_directive_implem_list, reduce_type
 from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.types.interface import GraphQLInterfaceType
 from tartiflette.types.non_null import GraphQLNonNull
@@ -56,6 +56,8 @@ class GraphQLSchema:
         self._custom_scalar_definitions: Dict[str, GraphQLScalarType] = {}
         self._input_types: List[str] = []
         self.name = name
+        self.directive_implementations = {}
+        self.schema_directives = {}
 
     def __repr__(self) -> str:
         return (
@@ -263,6 +265,10 @@ class GraphQLSchema:
         :return: None
         """
         self.inject_introspection()
+        # TODO ISSUE-134 Do we really want to do this ?
+        # self.directive_implementations = get_directive_implem_list(
+        #     self.schema_directives, self
+        # )
         self.bake_types(custom_default_resolver)
         self.call_onbuild_directives()
         self.validate()

@@ -44,7 +44,7 @@ class GraphQLEnumValue:
         return self.value
 
     @property
-    def directives(self) -> List[Dict[str, Any]]:
+    def directive_implementations(self) -> List[Dict[str, Any]]:
         return self._directives_implementations
 
     def bake(self, schema: "GraphQLSchema") -> None:

@@ -23,7 +23,7 @@ def _create_mock_def_arg(name, default_value):
     arg_mock = Mock()
     arg_mock.name = name
     arg_mock.default_value = default_value
-    arg_mock.directives = []
+    arg_mock.directive_implementations = []
     arg_mock.coercer = Mock(
         wraps=partial(argument_coercer, arg_mock), new_callable=AsyncMock
     )

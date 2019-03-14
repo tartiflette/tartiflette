@@ -36,8 +36,6 @@ class GraphQLArgument:
         self._schema = schema
         self._directives = directives
         self.coercer = None
-
-        # Introspection Attribute
         self._directives_implementations = None
 
     def __repr__(self) -> str:
@@ -49,7 +47,7 @@ class GraphQLArgument:
                 self.gql_type,
                 self.default_value,
                 self.description,
-                self.directives,
+                self.directive_implementations,
             )
         )
 
@@ -62,7 +60,8 @@ class GraphQLArgument:
             and self.name == other.name
             and self.gql_type == other.gql_type
             and self.default_value == other.default_value
-            and self.directives == other.directives
+            and self.directive_implementations
+            == other.directive_implementations
         )
 
     @property
@@ -75,7 +74,7 @@ class GraphQLArgument:
         return self._type
 
     @property
-    def directives(self) -> List[Dict[str, Any]]:
+    def directive_implementations(self) -> List[Dict[str, Any]]:
         return self._directives_implementations
 
     @property
@@ -101,7 +100,7 @@ class GraphQLArgument:
 
         self.coercer = partial(
             surround_with_argument_execution_directives(
-                argument_coercer, self.directives
+                argument_coercer, self.directive_implementations
             ),
             self,
         )

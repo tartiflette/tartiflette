@@ -405,7 +405,7 @@ def test_resolver_factory__execute_introspection_directives(
     assert _execute_introspection_directives(elements, None, None) == elements
 
     elem = Mock()
-    elem.directives = directive_list_mock
+    elem.directive_implementations = directive_list_mock
 
     assert _execute_introspection_directives([elem], None, None) is not None
     directive_list_mock[0]["callables"].on_introspection.assert_called_once()

@@ -179,7 +179,9 @@ def _execute_introspection_directives(elements: list, ctx, info) -> list:
     results = []
     for element in elements:
         try:
-            directives = _introspection_directives(element.directives)
+            directives = _introspection_directives(
+                element.directive_implementations
+            )
             result = directives(element, ctx, info)
             if result:
                 results.append(result)
@@ -249,7 +251,7 @@ class _ResolverExecutor:
     def apply_directives(self) -> None:
         try:
             self._func = _surround_with_execution_directives(
-                self._raw_func, self._schema_field.directives
+                self._raw_func, self._schema_field.directive_implementations
             )
         except AttributeError:
             self._func = self._raw_func

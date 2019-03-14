@@ -53,7 +53,12 @@ class SchemaTransformer(Transformer_InPlace):
         return tree.children
 
     def schema_definition(self, tree: Tree) -> Tree:
-        # TODO: Save schema directives if there are some.
+        for child in tree.children:
+            try:
+                if child.type == "directives":
+                    self._schema.schema_directives = child.value
+            except AttributeError:
+                pass
         return tree
 
     def type_system_definition(self, tree: Tree) -> Tree:
