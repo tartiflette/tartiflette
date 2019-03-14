@@ -31,6 +31,14 @@ enum IngredientQuality  {
     SOSO
 }
 
+input Ingredientrrrte {
+    id: Int
+    name: String
+    type: String
+    quality: IngredientQuality
+    aListOfNumber: [Int]
+}
+
 type Ingredient {
     id: Int
     name: String
@@ -43,7 +51,7 @@ input PathRecipeInput {
     id: Int
     name: String
     cookingTime: Int
-    ingredients: [Ingredient]
+    ingredients: [Ingredientrrrte]
 }
 
 type ListObjectWithObject {

@@ -5,38 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
-
-- [PR-155](https://github.com/dailymotion/tartiflette/pull/155): Add support for `extensions` field in GraphQLError exceptions and allow importing exceptions more easily.
-
 ## [Released]
 
-## [0.6.5] - 2019-03-12
+### [0.6.6] - 2019-03-13
 
-### Changed
+#### Added
+
+- [PR-155](https://github.com/dailymotion/tartiflette/pull/155): Add support for `extensions` field in GraphQLError exceptions and allow importing exceptions more easily. (Thanks [@ultrabug](https://github.com/ultrabug))
+- [ISSUE-154](https://github.com/dailymotion/tartiflette/issues/154): Validate that an argument of a field and directive is an InputType. Also validate that all inputType are composed of inputType.
+
+### [0.6.5] - 2019-03-12
+
+#### Changed
 
 - It is no more possible to pass an instance of GraphQLSchema to the Engine Constructor.
 - Introspection code moved into the schema submodule.
 - Introspection no longer return __ starting fields data
 
-## [0.6.4] - 2019-03-11
+### [0.6.4] - 2019-03-11
 
-### Fixed
+#### Fixed
 
 - Apply directives on sub-levels arguments.
 
+### [0.6.3] - 2019-03-07
 
-## [0.6.3] - 2019-03-07
-
-### Fixed
+#### Fixed
 
 - [ISSUE-143](https://github.com/dailymotion/tartiflette/issues/143): Fix regression in on_introspection directive method call
 
-## [0.6.2] - 2019-03-07
+### [0.6.2] - 2019-03-07
 
-### Added
+#### Added
 
 - [ISSUE-140](https://github.com/dailymotion/tartiflette/issues/140): A new parameter in Engine() constructor, you can now specify a list of modules containing your decorated code such as:
 
@@ -52,90 +52,90 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   Engine = Engine(a_sdl, modules=["some.module", "another.module", "oh.another.module"])
   ```
 
-## [0.6.1] - 2019-03-05
+### [0.6.1] - 2019-03-05
 
-### Changed
+#### Changed
 
 - Add docstring and remove `_` prefix on unused parameter on public API.
 - Clean some unused stuff.
 
-## [0.6.0] - 2019-03-04
+### [0.6.0] - 2019-03-04
 
-### Added
+#### Added
 
 - [ISSUE-133](https://github.com/dailymotion/tartiflette/issues/133): Add an `on_argument_execution` directive method to handle argument directive hook.
 
-### Changed
+#### Changed
 
 - Rename `on_execution` directive method name to `on_execution_field`.
 
-### Fixed
+#### Fixed
 
 - Properly set `directives` to `GraphQLArgument` at bake time.
 
-## [0.5.1] - 2019-03-04
+### [0.5.1] - 2019-03-04
 
-### Fixed
+#### Fixed
 
 - [ISSUE-127](https://github.com/dailymotion/tartiflette/issues/127): Now Object and List are supported as input values for arguments
 
 >Note: This patch doesn't include validation of theses Values (yet), this will be done in a more global PR about Document Validation that is coming soon [ISSUE-121](https://github.com/dailymotion/tartiflette/issues/121)
 
-## [0.5.0] - 2019-03-01
+### [0.5.0] - 2019-03-01
 
-### Added
+#### Added
 
 - Pass `ctx` & `info` as argument to `on_introspection` directive's method.
 
-## [0.4.2] - 2019-03-01
+### [0.4.2] - 2019-03-01
 
-### Fixed
+#### Fixed
 
 - [ISSUE-126](https://github.com/dailymotion/tartiflette/issues/126): Now, child of a None result are no more executed
 
-## [0.4.1] - 2019-02-27
+### [0.4.1] - 2019-02-27
 
-### Fixed
+#### Fixed
 
 - [ISSUE-128](https://github.com/dailymotion/tartiflette/issues/128): Use a specific default resolver for subscription which doesn't implement a dedicated resolver.
 
-## [0.4.0] - 2019-02-25
+### [0.4.0] - 2019-02-25
 
-### Added
+#### Added
 
 - [ISSUE-113](https://github.com/dailymotion/tartiflette/issues/113) Handle subscriptions as async generator.
 
-### Fixed
+#### Fixed
 
 - [ISSUE-119](https://github.com/dailymotion/tartiflette/issues/119): Add an `initial_value` parameter on the `execute`'s engine method.
 
-## [0.3.7] - 2019-02-06
+### [0.3.7] - 2019-02-06
 
-### Fixed
+#### Fixed
 
 - [ISSUE-99](https://github.com/dailymotion/tartiflette/issues/99): Raise errors on non unique arguments on fields or directives.
 - [ISSUE-114](https://github.com/dailymotion/tartiflette/issues/114): Execute only the specified operation or throw on error if not exists.
 - [ISSUE-117](https://github.com/dailymotion/tartiflette/issues/117): Execute top-level mutation selection set serially.
 
-## [0.3.6] - 2019-01-30
+### [0.3.6] - 2019-01-30
 
-### Fixed
+#### Fixed
 
 - [ISSUE-109](https://github.com/dailymotion/tartiflette/issues/109): Manage SelectionSet errors on leaf/non-leaf field.
 
-## [0.3.5] - 2019-01-30
+### [0.3.5] - 2019-01-30
 
-### Changed
+#### Changed
 
 - Add type hints & some refactoring / code cleaning.
 
-### Fixed
+#### Fixed
 
 - [ISSUE-108](https://github.com/dailymotion/tartiflette/issues/108): Understand .graphql files as SDL ones
 
 ### [0.3.4] - 2019-01-25
 
-### Fixed
+#### Fixed
 
 - [ISSUE-97](https://github.com/dailymotion/tartiflette/issues/97): Raise errors on undefined arguments on nodes or directives.
 - [ISSUE-103](https://github.com/dailymotion/tartiflette/issues/103): Process enum values.
@@ -151,7 +151,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add link to tartiflette-aiohttp in readme.
 - Add a `ttftt_engine` pytest marker to improve the way we handle functional tests.
 
-### Fixed
+#### Fixed
 
 - [ISSUE-85](https://github.com/dailymotion/tartiflette/issues/85): Raise errors on non-unique named operation definition.
 - [ISSUE-86](https://github.com/dailymotion/tartiflette/issues/86): Raise errors on not alone anonymous operation.
