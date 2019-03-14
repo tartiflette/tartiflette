@@ -30,7 +30,7 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
             False,
         ),
         (
-            """enum AnEnum { ALOL } type aType { a(lol: Int!): String } type AnInputType { a: String } type Mutation { aa(a: String, b:AnEnum, c:AnInputType!): aType } type Query { aa: aType } directive @adirective(a: String, b:AnEnum, c:AnInputType!) on FIELD_DEFINITION""",
+            """enum AnEnum { ALOL } type aType { a(lol: Int!): String } type AnInputType { a: String } type Mutation { aa(a: String, b:AnEnum, c:String!): aType } type Query { aa: aType } directive @adirective(a: String, b:AnEnum, c:AnInputType!) on FIELD_DEFINITION""",
             True,
             True,
         ),
