@@ -446,7 +446,7 @@ class GraphQLSchema:
             )
 
     def _validate_arguments_have_valid_type(self) -> bool:
-        for _, gqltype in self._gql_types.items():
+        for gqltype in self._gql_types.values():
             try:
                 for field in gqltype.fields:
                     for arg in field.args:
@@ -457,7 +457,7 @@ class GraphQLSchema:
             except AttributeError:
                 pass
 
-        for _, directive in self._directives.items():
+        for directive in self._directives.values():
             for arg in directive.args:
                 self._validate_type_is_an_input_types(
                     arg,
