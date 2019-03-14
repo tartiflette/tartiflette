@@ -438,11 +438,11 @@ class GraphQLSchema:
                         )
         return True
 
-    def _validate_args(self, arg, parent_info_message) -> bool:
-        rtype = reduce_type(arg.gql_type)
+    def _validate_type_is_an_input_types(self, obj, message_prefix) -> bool:
+        rtype = reduce_type(obj.gql_type)
         if not rtype in self._input_types:
             raise GraphQLSchemaError(
-                message=f"Argument < {arg.name} > of {parent_info_message} is not an InputType"
+                message=f"{message_prefix} is of type <{rtype}> which is not a Scalar, an Enum or an InputObject"
             )
 
     def _validate_arguments_have_valid_type(self) -> bool:
@@ -450,26 +450,30 @@ class GraphQLSchema:
             try:
                 for field in gqltype.fields:
                     for arg in field.args:
-                        self._validate_args(
-                            arg, f"field < {gqltype}.{field.name} >"
+                        self._validate_type_is_an_input_types(
+                            arg,
+                            f"Argument <{arg.name}> of Field <{gqltype}.{field.name}>",
                         )
             except AttributeError:
                 pass
 
         for _, directive in self._directives.items():
             for arg in directive.args:
-                self._validate_args(arg, f"directive < {directive.name} >")
+                self._validate_type_is_an_input_types(
+                    arg,
+                    f"Argument <{arg.name}> of Directive <{directive.name}>",
+                )
 
         return True
 
     def _validate_input_type_composed_of_input_type(self) -> bool:
-        for typename, gqltype in self._gql_types.items():
+        for typename in self._input_types:
+            gqltype = self._gql_types[typename]
             if isinstance(gqltype, GraphQLInputObjectType):
                 for field in gqltype.inputFields:
-                    if reduce_type(field.gql_type) not in self._input_types:
-                        raise GraphQLSchemaError(
-                            message=f"Field < {typename}.{field.name} > is not a valid InputType"
-                        )
+                    self._validate_type_is_an_input_types(
+                        field, f"Field <{typename}.{field.name}>"
+                    )
         return True
 
     def inject_introspection(self) -> None:

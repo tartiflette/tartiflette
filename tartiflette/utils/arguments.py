@@ -25,7 +25,7 @@ async def argument_coercer(argument_definition, args, ctx, info):
     value = UNDEFINED_VALUE
     try:
         value = args[argument_definition.name]
-    except (KeyError, TypeError):
+    except KeyError:
         pass
 
     if value is UNDEFINED_VALUE and argument_definition.default_value:
