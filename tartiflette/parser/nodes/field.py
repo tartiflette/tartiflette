@@ -1,11 +1,14 @@
 import asyncio
 
 from functools import partial
-from typing import Any, Callable, Coroutine, Dict, List, Optional
+from typing import Any, Callable, Coroutine, Dict, List, Optional, Union
 
 from tartiflette.executors.types import ExecutionContext, Info
 from tartiflette.schema import GraphQLSchema
-from tartiflette.types.exceptions.tartiflette import GraphQLError
+from tartiflette.types.exceptions.tartiflette import (
+    GraphQLError,
+    MultipleException,
+)
 from tartiflette.types.helpers import get_typename
 from tartiflette.types.location import Location
 from tartiflette.utils.arguments import coerce_arguments
@@ -169,26 +172,43 @@ class NodeField(Node):
             self.marshalled = coerced
 
         if isinstance(raw, Exception):
-            try:
-                if callable(raw.coerce_value):
-                    gql_error = raw
-            except (TypeError, AttributeError):
-                gql_error = GraphQLError(str(raw), self.path, [self.location])
-
-            gql_error.coerce_value = partial(
-                gql_error.coerce_value,
-                path=self.path,
-                locations=[self.location],
-            )
-
             if (
                 (self.cant_be_null or self.contains_not_null)
                 and self.parent
                 and self.cant_be_null
             ):
                 self.parent.bubble_error()
-            execution_ctx.add_error(gql_error)
+
+            _add_errors_to_execution_context(
+                execution_ctx, raw, self.path, self.location
+            )
         elif self.children and raw is not None:
             await self._execute_children(
                 execution_ctx, request_ctx, result=raw, coerced=coerced
             )
+
+
+def _add_errors_to_execution_context(
+    execution_context: ExecutionContext,
+    raw_exception: Union[Exception, MultipleException],
+    path: Union[str, List[str]],
+    location: "Location",
+) -> None:
+    exceptions = (
+        raw_exception.exceptions
+        if isinstance(raw_exception, MultipleException)
+        else [raw_exception]
+    )
+
+    for exception in exceptions:
+        try:
+            if callable(exception.coerce_value):
+                gql_error = exception
+        except (TypeError, AttributeError):
+            gql_error = GraphQLError(str(exception), path, [location])
+
+        gql_error.coerce_value = partial(
+            gql_error.coerce_value, path=path, locations=[location]
+        )
+
+        execution_context.add_error(gql_error)

@@ -143,6 +143,11 @@ type Query {
     myArg: MyInput! @debug
   ): String
 
+  anotherField(
+    myInputArg: String! @validateChoices(choices: ["VALID"])
+    myArg: MyInput! @debug
+  ): [String]
+
   stopedField(
     stopedArg: MyStopedInput!
   ): String
@@ -196,6 +201,78 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue133")
                         "locations": [{"line": 3, "column": 15}],
                         "path": ["aField"],
                     }
+                ],
+            },
+        ),
+        (
+            """
+            query {
+              aField(myArg: {
+                myInputArg: {
+                  myInputInputArg1: "INVALID"
+                  myInputInputArg2: "INVALID"
+                }
+              })
+            }
+            """,
+            {
+                "data": {"aField": None},
+                "errors": [
+                    {
+                        "message": "Value of argument < myInputInputArg1 > "
+                        "on field < aField > is invalid. Valid options are "
+                        "< VALID >.",
+                        "locations": [{"line": 3, "column": 15}],
+                        "path": ["aField"],
+                    },
+                    {
+                        "message": "Value of argument < myInputInputArg2 > "
+                        "on field < aField > is invalid. Valid options are "
+                        "< VALID >.",
+                        "locations": [{"line": 3, "column": 15}],
+                        "path": ["aField"],
+                    },
+                ],
+            },
+        ),
+        (
+            """
+            query {
+              anotherField(
+                myInputArg: "INVALID",
+                myArg: {
+                  myInputArg: {
+                    myInputInputArg1: "INVALID"
+                    myInputInputArg2: "INVALID"
+                  }
+                }
+              )
+            }
+            """,
+            {
+                "data": {"anotherField": None},
+                "errors": [
+                    {
+                        "message": "Value of argument < myInputArg > on field "
+                        "< anotherField > is invalid. Valid options are "
+                        "< VALID >.",
+                        "locations": [{"line": 3, "column": 15}],
+                        "path": ["anotherField"],
+                    },
+                    {
+                        "message": "Value of argument < myInputInputArg1 > "
+                        "on field < anotherField > is invalid. Valid options "
+                        "are < VALID >.",
+                        "locations": [{"line": 3, "column": 15}],
+                        "path": ["anotherField"],
+                    },
+                    {
+                        "message": "Value of argument < myInputInputArg2 > "
+                        "on field < anotherField > is invalid. Valid options "
+                        "are < VALID >.",
+                        "locations": [{"line": 3, "column": 15}],
+                        "path": ["anotherField"],
+                    },
                 ],
             },
         ),

@@ -3,8 +3,10 @@ import asyncio
 from functools import partial
 from typing import Any, Callable, Dict, List, Optional
 
+from tartiflette.types.exceptions.tartiflette import MultipleException
 from tartiflette.types.helpers import reduce_type
 from tartiflette.types.input_object import GraphQLInputObjectType
+from tartiflette.utils.errors import to_graphql_error
 
 UNDEFINED_VALUE = object()
 
@@ -70,11 +72,26 @@ async def coerce_arguments(
         *[
             argument_definition.coercer(input_args, ctx, info)
             for argument_definition in argument_definitions.values()
-        ]
+        ],
+        return_exceptions=True,
     )
 
-    return {
-        argument_name: result
-        for argument_name, result in zip(argument_definitions, results)
-        if result is not UNDEFINED_VALUE
-    }
+    coerced_arguments = {}
+    exceptions = []
+
+    for argument_name, result in zip(argument_definitions, results):
+        if isinstance(result, MultipleException):
+            exceptions.extend(result.exceptions)
+            continue
+
+        if isinstance(result, Exception):
+            exceptions.append(to_graphql_error(result))
+            continue
+
+        if result is not UNDEFINED_VALUE:
+            coerced_arguments[argument_name] = result
+
+    if exceptions:
+        raise MultipleException(exceptions)
+
+    return coerced_arguments

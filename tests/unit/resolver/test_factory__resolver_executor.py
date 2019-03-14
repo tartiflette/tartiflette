@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
+from tartiflette.types.exceptions.tartiflette import MultipleException
 from tests.unit.utils import AsyncMock
 
 
@@ -88,7 +89,7 @@ async def test_resolver_factory__resolver_executor___call__(
     with patch(
         "tartiflette.resolver.factory.coerce_arguments",
         new_callable=AsyncMock,
-        side_effect=[{"AB": "M2B"}],
+        return_value={"AB": "M2B"},
     ) as coerce_arguments_mock:
         r, c = await _resolver_executor_mock(p_r, arg_mock, req_ctx, info)
         coerce_arguments_mock.assert_called_once_with(

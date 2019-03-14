@@ -49,6 +49,14 @@ class GraphQLError(Exception):
         return errors
 
 
+class MultipleException(Exception):
+    exceptions = None
+
+    def __init__(self, exceptions=None):
+        super().__init__()
+        self.exceptions = exceptions
+
+
 class ImproperlyConfigured(GraphQLError):
     pass
 
