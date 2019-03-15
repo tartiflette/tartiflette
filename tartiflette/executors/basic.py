@@ -34,13 +34,14 @@ async def _execute(
 
 
 def _get_datas(root_nodes: List["NodeField"]) -> Optional[dict]:
-    # TODO: understand what is it for
     data = {}
     for node in root_nodes:
         if node.cant_be_null and node.marshalled is None:
             return None
-        data[node.alias] = node.marshalled
-    return data
+        if not node.is_execution_stopped:
+            data[node.alias] = node.marshalled
+
+    return data or None
 
 
 def get_operation(operations, operation_name):

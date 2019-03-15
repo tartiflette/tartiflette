@@ -52,6 +52,10 @@ class InlineFragmentInfo:
     def __init__(self, atype: str, depth: int) -> None:
         self.type = atype
         self.depth = depth
+        self.directives = []
+
+    def add_directive(self, directive):
+        self.directives.append(directive)
 
 
 class TartifletteVisitor(Visitor):
@@ -241,8 +245,10 @@ class TartifletteVisitor(Visitor):
                 self._internal_ctx.directive = None
                 return
 
-        print(self._internal_ctx.node)
-        self._internal_ctx.node.add_directive(
+        destination = (
+            self._internal_ctx.inline_fragment_info or self._internal_ctx.node
+        )
+        destination.add_directive(
             {
                 "callables": directive.implementation,
                 "args": {
@@ -402,6 +408,10 @@ class TartifletteVisitor(Visitor):
             element.get_alias(),
             subscribe=field.subscribe,
         )
+
+        if self._internal_ctx.inline_fragment_info:
+            for directive in self._internal_ctx.inline_fragment_info.directives:
+                node.add_directive(directive)
 
         node.set_parent(self._internal_ctx.node)
         if self._internal_ctx.node:

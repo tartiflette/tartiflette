@@ -2,29 +2,195 @@ import pytest
 
 
 async def _resolver(*args, **kwargs):
-    return {"name": "a", "nickname": "n", "barkVolume": 25}
+    return {
+        "name": "a",
+        "nickname": "n",
+        "barkVolume": 25,
+        "owner": {"name": "owen"},
+    }
 
 
 @pytest.mark.asyncio
 @pytest.mark.ttftt_engine(resolvers={"Query.dog": _resolver})
-async def test_issue158(engine):
-    print(
-        await engine.execute(
+@pytest.mark.parametrize(
+    "query,expected",
+    [
+        (
             """
-        fragment lol on Dog {
-            nickname: Int
-        }
-        query {
+    query {
             dog {
                 name @skip(if: true)
                 nickname @include(if: true)
                 barkVolume
-                ...lol @skip(if: false)
-                ... @include(if: true) {
-                    name
-                }
             }
         }
-        """
-        )
-    )
+    """,
+            {"data": {"dog": {"barkVolume": 25, "nickname": "n"}}},
+        ),
+        (
+            """
+    query {
+            dog {
+                name @skip(if: false)
+                nickname @include(if: false)
+                barkVolume
+            }
+        }
+    """,
+            {"data": {"dog": {"barkVolume": 25, "name": "a"}}},
+        ),
+        (
+            """
+    query {
+            dog {
+                name @skip(if: false) @include(if: true)
+                nickname
+                barkVolume
+            }
+        }
+    """,
+            {
+                "data": {
+                    "dog": {"barkVolume": 25, "name": "a", "nickname": "n"}
+                }
+            },
+        ),
+        (
+            """
+    query {
+            dog {
+                name @skip(if: false) @include(if: false)
+                nickname
+                barkVolume
+            }
+        }
+    """,
+            {"data": {"dog": {"barkVolume": 25, "nickname": "n"}}},
+        ),
+        (
+            """
+    query {
+            dog {
+                name @skip(if: true) @include(if: false)
+                nickname
+                barkVolume
+            }
+        }
+    """,
+            {"data": {"dog": {"barkVolume": 25, "nickname": "n"}}},
+        ),
+        (
+            """
+    query {
+            dog {
+                name @skip(if: true) @include(if: true)
+                nickname
+                barkVolume
+            }
+        }
+    """,
+            {"data": {"dog": {"barkVolume": 25, "nickname": "n"}}},
+        ),
+        (
+            """
+    query {
+            dog @skip(if: true) {
+                name
+                nickname
+                barkVolume
+            }
+        }
+    """,
+            {"data": None},
+        ),
+        (
+            """
+    query {
+            dog @skip(if: false) {
+                name
+                nickname
+                barkVolume
+            }
+        }
+    """,
+            {
+                "data": {
+                    "dog": {"name": "a", "nickname": "n", "barkVolume": 25}
+                }
+            },
+        ),
+        (
+            """
+    query {
+            dog @include(if: false) {
+                name
+                nickname
+                barkVolume
+            }
+        }
+    """,
+            {"data": None},
+        ),
+        (
+            """
+    query {
+            dog @inclue(if: true) {
+                name
+                nickname
+                barkVolume
+            }
+        }
+    """,
+            {
+                "data": {
+                    "dog": {"name": "a", "nickname": "n", "barkVolume": 25}
+                }
+            },
+        ),
+        (
+            """
+    query {
+        dog {
+            ... @include(if: true) {
+                name
+                nickname
+                barkVolume
+            }
+            owner {
+                name
+            }
+        }
+    }
+    """,
+            {
+                "data": {
+                    "dog": {
+                        "owner": {"name": "owen"},
+                        "name": "a",
+                        "nickname": "n",
+                        "barkVolume": 25,
+                    }
+                }
+            },
+        ),
+        (
+            """
+    query {
+        dog {
+            ... @include(if: false) {
+                name
+                nickname
+                barkVolume
+            }
+            owner {
+                name
+            }
+        }
+    }
+    """,
+            {"data": {"dog": {"owner": {"name": "owen"}}}},
+        ),
+    ],
+)
+async def test_issue158(engine, query, expected):
+    assert await engine.execute(query) == expected

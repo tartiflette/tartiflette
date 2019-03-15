@@ -39,6 +39,7 @@ class NodeField(Node):
         self.marshalled: Dict[str, Any] = {}
         self.alias = alias or self.name
         self.subscribe = subscribe
+        self.is_execution_stopped = False
 
     @property
     def cant_be_null(self) -> bool:
@@ -173,6 +174,7 @@ class NodeField(Node):
                 ),
             )
         except SkipExecution:
+            self.is_execution_stopped = True
             return  # field_executor asked execution to be stopped for this branch
 
         if parent_marshalled is not None:
