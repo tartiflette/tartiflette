@@ -518,13 +518,14 @@ class _VisitorElementInlineFragment(_VisitorElement):
         super().__init__(lib, ffi, "InlineFragment", internal_element)
 
     def get_named_type(self) -> Optional[str]:
-        return self._get_name_string(
-            self._lib.GraphQLAstNamedType_get_name(
-                self._lib.GraphQLAstInlineFragment_get_type_condition(
-                    self._internal_element
-                )
-            )
+        type_cond = self._lib.GraphQLAstInlineFragment_get_type_condition(
+            self._internal_element
         )
+        if type_cond != _FFI.NULL:
+            return self._get_name_string(
+                self._lib.GraphQLAstNamedType_get_name(type_cond)
+            )
+        return None
 
 
 class _VisitorElementSelectionSet(_VisitorElement):

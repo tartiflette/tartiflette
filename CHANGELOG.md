@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - [ISSUE-139](https://github.com/dailymotion/tartiflette/issues/139): Handle multiple exceptions on argument coercing.
+- [ISSUE-163](https://github.com/dailymotion/tartiflette/issues/163): Fix crash with non-typed inline fragment
 
 ## [Released]
 
