@@ -20,13 +20,16 @@ from tartiflette.language.ast import (
     InterfaceTypeExtensionNode,
     IntValueNode,
     ListTypeNode,
+    ListValueNode,
     Location,
     NamedTypeNode,
     NameNode,
     NonNullTypeNode,
     NullValueNode,
+    ObjectFieldNode,
     ObjectTypeDefinitionNode,
     ObjectTypeExtensionNode,
+    ObjectValueNode,
     OperationTypeDefinitionNode,
     ScalarTypeDefinitionNode,
     ScalarTypeExtensionNode,
@@ -177,6 +180,53 @@ def lark_to_enum_value_node(tree: "Tree") -> "EnumValueNode":
     token = tree.children[0]
     return EnumValueNode(
         value=token.value, location=lark_to_location_node(token)
+    )
+
+
+def lark_to_list_value_node(tree: "Tree") -> "ListValueNode":
+    """
+    TODO:
+    :param tree: TODO:
+    :type tree: Tree
+    :return: TODO:
+    :rtype: ListValueNode
+    """
+    return ListValueNode(
+        values=[child.value for child in tree.children],
+        location=lark_to_location_node(tree.meta),
+    )
+
+
+def lark_to_object_field_node(tree: "Tree") -> "ObjectFieldNode":
+    """
+    TODO:
+    :param tree: TODO:
+    :type tree: Tree
+    :return: TODO:
+    :rtype: ObjectFieldNode
+    """
+    node_info = _extract_node_info(
+        tree.children, types_to_value=["name", "value"]
+    )
+
+    return ObjectFieldNode(
+        name=node_info["name"],
+        value=node_info["value"],
+        location=lark_to_location_node(tree.meta),
+    )
+
+
+def lark_to_object_value_node(tree: "Tree") -> "ObjectValueNode":
+    """
+    TODO:
+    :param tree: TODO:
+    :type tree: Tree
+    :return: TODO:
+    :rtype: ObjectValueNode
+    """
+    return ObjectValueNode(
+        fields=[child.value for child in tree.children],
+        location=lark_to_location_node(tree.meta),
     )
 
 

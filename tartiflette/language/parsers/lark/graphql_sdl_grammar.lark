@@ -15,20 +15,20 @@ INPUT: "input"
 ON: "on"
 SCALAR: "scalar"
 EXTEND: "extend"
-keyword_tokens: SCHEMA
-              | QUERY
-              | MUTATION
-              | SUBSCRIPTION
-              | TYPE
-              | DIRECTIVE
-              | INTERFACE
-              | IMPLEMENTS
-              | UNION
-              | ENUM
-              | INPUT
-              | ON
-              | SCALAR
-              | EXTEND
+_keyword_tokens: SCHEMA
+               | QUERY
+               | MUTATION
+               | SUBSCRIPTION
+               | TYPE
+               | DIRECTIVE
+               | INTERFACE
+               | IMPLEMENTS
+               | UNION
+               | ENUM
+               | INPUT
+               | ON
+               | SCALAR
+               | EXTEND
 
 
 //
@@ -52,6 +52,7 @@ IGNORED: UNICODE_BOM
 // Lexical Tokens
 //
 name: /[_A-Za-z][_0-9A-Za-z]*/
+    | _keyword_tokens
 
 
 //
@@ -128,6 +129,13 @@ arguments_definition: "(" input_value_definition+ ")"
 //
 // Directives
 //
+EXECUTABLE_DIRECTIVE_LOCATION: "QUERY"
+                             | "MUTATION"
+                             | "SUBSCRIPTION"
+                             | "FIELD"
+                             | "FRAGMENT_DEFINITION"
+                             | "FRAGMENT_SPREAD"
+                             | "INLINE_FRAGMENT"
 TYPE_SYSTEM_DIRECTIVE_LOCATION: "SCHEMA"
                               | "SCALAR"
                               | "OBJECT"
@@ -141,7 +149,8 @@ TYPE_SYSTEM_DIRECTIVE_LOCATION: "SCHEMA"
                               | "INPUT_FIELD_DEFINITION"
 directive: "@" name arguments?
 directives: directive+
-directive_location: TYPE_SYSTEM_DIRECTIVE_LOCATION
+directive_location: EXECUTABLE_DIRECTIVE_LOCATION
+                  | TYPE_SYSTEM_DIRECTIVE_LOCATION
 directive_locations: "|"? directive_location ("|" directive_location)*
 
 
@@ -167,16 +176,16 @@ enum_type_definition: description? ENUM name directives? enum_values_definition?
 input_value_definition: description? name ":" type default_value? directives?
 input_fields_definition: "{" input_value_definition+ "}"
 input_object_type_definition: description? INPUT name directives? input_fields_definition?
-type_definition: scalar_type_definition
-               | object_type_definition
-               | interface_type_definition
-               | union_type_definition
-               | enum_type_definition
-               | input_object_type_definition
+?type_definition: scalar_type_definition
+                | object_type_definition
+                | interface_type_definition
+                | union_type_definition
+                | enum_type_definition
+                | input_object_type_definition
 directive_definition: description? DIRECTIVE "@" name arguments_definition? ON directive_locations
-type_system_definition: schema_definition
-                      | type_definition
-                      | directive_definition
+?type_system_definition: schema_definition
+                       | type_definition
+                       | directive_definition
 schema_extension: EXTEND SCHEMA directives? "{" operation_type_definition+ "}"
                 | EXTEND SCHEMA directives
 scalar_type_extension: EXTEND SCALAR name directives
@@ -191,14 +200,14 @@ enum_type_extension: EXTEND ENUM name directives? enum_values_definition
                    | EXTEND ENUM name directives
 input_object_type_extension: EXTEND INPUT name directives? input_fields_definition
                            | EXTEND INPUT name directives
-type_extension: scalar_type_extension
-              | object_type_extension
-              | interface_type_extension
-              | union_type_extension
-              | enum_type_extension
-              | input_object_type_extension
-type_system_extension: schema_extension
-                     | type_extension
-definition: type_system_definition
-          | type_system_extension
+?type_extension: scalar_type_extension
+               | object_type_extension
+               | interface_type_extension
+               | union_type_extension
+               | enum_type_extension
+               | input_object_type_extension
+?type_system_extension: schema_extension
+                      | type_extension
+?definition: type_system_definition
+           | type_system_extension
 document: definition+

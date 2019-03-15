@@ -24,12 +24,15 @@ from tartiflette.language.parsers.lark.transformers.converters import (
     lark_to_interface_type_definition_node,
     lark_to_interface_type_extension_node,
     lark_to_list_type_node,
+    lark_to_list_value_node,
     lark_to_name_node,
     lark_to_named_type_node,
     lark_to_non_null_type_node,
     lark_to_null_value_node,
+    lark_to_object_field_node,
     lark_to_object_type_definition_node,
     lark_to_object_type_extension_node,
+    lark_to_object_value_node,
     lark_to_operation_type_definition_node,
     lark_to_scalar_type_definition_node,
     lark_to_scalar_type_extension_node,
@@ -158,6 +161,45 @@ class NodeTransformer(Transformer_InPlace):
         # pylint: disable=no-self-use
         return SchemaNode(
             type="enum_value", value=lark_to_enum_value_node(tree)
+        )
+
+    def list_value(self, tree: "Tree") -> "SchemaNode":
+        """
+        TODO:
+        :param tree: TODO:
+        :type tree: Tree
+        :return: TODO:
+        :rtype: SchemaNode
+        """
+        # pylint: disable=no-self-use
+        return SchemaNode(
+            type="list_value", value=lark_to_list_value_node(tree)
+        )
+
+    def object_field(self, tree: "Tree") -> "SchemaNode":
+        """
+        TODO:
+        :param tree: TODO:
+        :type tree: Tree
+        :return: TODO:
+        :rtype: SchemaNode
+        """
+        # pylint: disable=no-self-use
+        return SchemaNode(
+            type="object_field", value=lark_to_object_field_node(tree)
+        )
+
+    def object_value(self, tree: "Tree") -> "SchemaNode":
+        """
+        TODO:
+        :param tree: TODO:
+        :type tree: Tree
+        :return: TODO:
+        :rtype: SchemaNode
+        """
+        # pylint: disable=no-self-use
+        return SchemaNode(
+            type="object_value", value=lark_to_object_value_node(tree)
         )
 
     def value(self, tree: "Tree") -> "SchemaNode":
@@ -685,61 +727,6 @@ class NodeTransformer(Transformer_InPlace):
             type="input_object_type_extension",
             value=lark_to_input_object_type_extension_node(tree),
         )
-
-    def type_definition(self, tree: "Tree") -> "SchemaNode":
-        """
-        TODO:
-        :param tree: TODO:
-        :type tree: Tree
-        :return: TODO:
-        :rtype: SchemaNode
-        """
-        # pylint: disable=no-self-use
-        return tree.children[0]
-
-    def type_system_definition(self, tree: "Tree") -> "SchemaNode":
-        """
-        TODO:
-        :param tree: TODO:
-        :type tree: Tree
-        :return: TODO:
-        :rtype: SchemaNode
-        """
-        # pylint: disable=no-self-use
-        return tree.children[0]
-
-    def type_extension(self, tree: "Tree") -> "SchemaNode":
-        """
-        TODO:
-        :param tree: TODO:
-        :type tree: Tree
-        :return: TODO:
-        :rtype: SchemaNode
-        """
-        # pylint: disable=no-self-use
-        return tree.children[0]
-
-    def type_system_extension(self, tree: "Tree") -> "SchemaNode":
-        """
-        TODO:
-        :param tree: TODO:
-        :type tree: Tree
-        :return: TODO:
-        :rtype: SchemaNode
-        """
-        # pylint: disable=no-self-use
-        return tree.children[0]
-
-    def definition(self, tree: "Tree") -> "SchemaNode":
-        """
-        TODO:
-        :param tree: TODO:
-        :type tree: Tree
-        :return: TODO:
-        :rtype: SchemaNode
-        """
-        # pylint: disable=no-self-use
-        return tree.children[0]
 
     def document(self, tree: "Tree") -> "Tree":
         """
