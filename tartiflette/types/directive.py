@@ -20,6 +20,9 @@ class GraphQLDirective:
     ENUM_VALUE = "ENUM_VALUE"
     INPUT_OBJECT = "INPUT_OBJECT"
     INPUT_FIELD_DEFINITION = "INPUT_FIELD_DEFINITION"
+    FIELD = "FIELD"
+    FRAGMENT_SPREAD = "FRAGMENT_SPREAD"
+    INLINE_FRAGMENT = "INLINE_FRAGMENT"
 
     POSSIBLE_LOCATIONS = [
         SCHEMA,
@@ -33,6 +36,9 @@ class GraphQLDirective:
         ENUM_VALUE,
         INPUT_OBJECT,
         INPUT_FIELD_DEFINITION,
+        FIELD,
+        FRAGMENT_SPREAD,
+        INLINE_FRAGMENT,
     ]
 
     def __init__(

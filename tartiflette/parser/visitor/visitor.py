@@ -238,7 +238,19 @@ class TartifletteVisitor(Visitor):
                         locations=[element.get_location()],
                     )
                 )
+                self._internal_ctx.directive = None
+                return
 
+        print(self._internal_ctx.node)
+        self._internal_ctx.node.add_directive(
+            {
+                "callables": directive.implementation,
+                "args": {
+                    x.name: x.value
+                    for x in self._internal_ctx.directive.arguments.values()
+                },
+            }
+        )
         self._internal_ctx.directive = None
 
     def _add_argument_to_parent(self):
@@ -664,6 +676,7 @@ class TartifletteVisitor(Visitor):
         # results on a continue_child=0 or not. The goal here is to not process
         # children of a node which result to a continue_child=0 while still
         # processing its siblings.
+        print("IN ", element.libgraphql_type)
         if (
             self._in_fragment_spread_context
             and not self.continue_child
@@ -687,6 +700,7 @@ class TartifletteVisitor(Visitor):
         # results on a continue_child=0 or not. The goal here is to not process
         # children of a node which result to a continue_child=0 while still
         # processing its siblings.
+        print("OUT", element.libgraphql_type)
         if (
             self._in_fragment_spread_context
             and not self.continue_child
