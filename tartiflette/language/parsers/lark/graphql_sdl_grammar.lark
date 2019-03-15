@@ -1,0 +1,204 @@
+//
+// Constants
+//
+SCHEMA: "schema"
+QUERY: "query"
+MUTATION: "mutation"
+SUBSCRIPTION: "subscription"
+TYPE: "type"
+DIRECTIVE: "directive"
+INTERFACE: "interface"
+IMPLEMENTS: "implements"
+UNION: "union"
+ENUM: "enum"
+INPUT: "input"
+ON: "on"
+SCALAR: "scalar"
+EXTEND: "extend"
+keyword_tokens: SCHEMA
+              | QUERY
+              | MUTATION
+              | SUBSCRIPTION
+              | TYPE
+              | DIRECTIVE
+              | INTERFACE
+              | IMPLEMENTS
+              | UNION
+              | ENUM
+              | INPUT
+              | ON
+              | SCALAR
+              | EXTEND
+
+
+//
+// Ignored Tokens
+//
+UNICODE_BOM: /\ufeff/
+WHITE_SPACE: /[\s\t]/+
+LINE_TERMINATOR: /[\f\r\n]/+
+COMMENT: /#[^\n\r]*/
+COMA: ","
+IGNORED: UNICODE_BOM
+       | WHITE_SPACE
+       | LINE_TERMINATOR
+       | COMMENT
+       | COMA
+
+%ignore IGNORED
+
+
+//
+// Lexical Tokens
+//
+name: /[_A-Za-z][_0-9A-Za-z]*/
+
+
+//
+// Values miscellaneous
+//
+SIGN: "+"
+    | "-"
+NEGATIVE_SIGN: "-"
+NON_ZERO_DIGIT: "1".."9"
+DIGIT: "0".."9"
+FRACTIONAL_PART: "." DIGIT+
+EXPONENT_INDICATOR: "e"
+                  | "E"
+EXPONENT_PART: EXPONENT_INDICATOR SIGN? DIGIT+
+INTEGER_PART: NEGATIVE_SIGN? "0"
+            | NEGATIVE_SIGN? NON_ZERO_DIGIT DIGIT*
+STRING: /("(?!"").*?(?<!\\)(\\\\)*?")/i
+LONG_STRING: /(""".*?(?<!\\)(\\\\)*?""")/is
+TRUE: "true"
+FALSE: "false"
+NULL: "null"
+
+
+//
+// Values
+//
+int_value: INTEGER_PART
+float_value: INTEGER_PART FRACTIONAL_PART
+           | INTEGER_PART EXPONENT_PART
+           | INTEGER_PART FRACTIONAL_PART EXPONENT_PART
+string_value: STRING
+            | LONG_STRING
+boolean_value: TRUE
+             | FALSE
+null_value: NULL
+enum_value: name // TODO: but not "true", "false" or "null"
+list_value: "[" "]"
+          | "[" value+ "]"
+object_field: name ":" value
+object_value: "{" "}"
+            | "{" object_field+ "}"
+value: int_value
+     | float_value
+     | string_value
+     | boolean_value
+     | null_value
+     | enum_value
+     | list_value
+     | object_value
+default_value: "=" value
+
+
+//
+// Document miscellaneous
+//
+named_type: name
+list_type: "[" type "]"
+non_null_type: named_type "!"
+             | list_type "!"
+type: named_type
+    | list_type
+    | non_null_type
+description: string_value
+
+
+//
+// Arguments
+//
+argument: name ":" value
+arguments: "(" argument+ ")"
+arguments_definition: "(" input_value_definition+ ")"
+
+
+//
+// Directives
+//
+TYPE_SYSTEM_DIRECTIVE_LOCATION: "SCHEMA"
+                              | "SCALAR"
+                              | "OBJECT"
+                              | "FIELD_DEFINITION"
+                              | "ARGUMENT_DEFINITION"
+                              | "INTERFACE"
+                              | "UNION"
+                              | "ENUM"
+                              | "ENUM_VALUE"
+                              | "INPUT_OBJECT"
+                              | "INPUT_FIELD_DEFINITION"
+directive: "@" name arguments?
+directives: directive+
+directive_location: TYPE_SYSTEM_DIRECTIVE_LOCATION
+directive_locations: "|"? directive_location ("|" directive_location)*
+
+
+//
+// Document
+//
+operation_type: QUERY
+              | MUTATION
+              | SUBSCRIPTION
+operation_type_definition: operation_type ":" named_type
+schema_definition: SCHEMA directives? "{" operation_type_definition+ "}"
+scalar_type_definition: description? SCALAR name directives?
+field_definition: description? name arguments_definition? ":" type directives?
+fields_definition: "{" field_definition+ "}"
+implements_interfaces: IMPLEMENTS named_type ("&" named_type)*
+object_type_definition: description? TYPE name implements_interfaces? directives? fields_definition?
+interface_type_definition: description? INTERFACE name directives? fields_definition?
+union_member_types: "=" "|"? named_type ("|" named_type)*
+union_type_definition: description? UNION name directives? union_member_types?
+enum_value_definition: description? enum_value directives?
+enum_values_definition: "{" enum_value_definition+ "}"
+enum_type_definition: description? ENUM name directives? enum_values_definition?
+input_value_definition: description? name ":" type default_value? directives?
+input_fields_definition: "{" input_value_definition+ "}"
+input_object_type_definition: description? INPUT name directives? input_fields_definition?
+type_definition: scalar_type_definition
+               | object_type_definition
+               | interface_type_definition
+               | union_type_definition
+               | enum_type_definition
+               | input_object_type_definition
+directive_definition: description? DIRECTIVE "@" name arguments_definition? ON directive_locations
+type_system_definition: schema_definition
+                      | type_definition
+                      | directive_definition
+schema_extension: EXTEND SCHEMA directives? "{" operation_type_definition+ "}"
+                | EXTEND SCHEMA directives
+scalar_type_extension: EXTEND SCALAR name directives
+object_type_extension: EXTEND TYPE name implements_interfaces? directives? fields_definition
+                     | EXTEND TYPE name implements_interfaces? directives
+                     | EXTEND TYPE name implements_interfaces
+interface_type_extension: EXTEND INTERFACE name directives? fields_definition
+                        | EXTEND INTERFACE name directives
+union_type_extension: EXTEND UNION name directives? union_member_types
+                    | EXTEND UNION name directives
+enum_type_extension: EXTEND ENUM name directives? enum_values_definition
+                   | EXTEND ENUM name directives
+input_object_type_extension: EXTEND INPUT name directives? input_fields_definition
+                           | EXTEND INPUT name directives
+type_extension: scalar_type_extension
+              | object_type_extension
+              | interface_type_extension
+              | union_type_extension
+              | enum_type_extension
+              | input_object_type_extension
+type_system_extension: schema_extension
+                     | type_extension
+definition: type_system_definition
+          | type_system_extension
+document: definition+
