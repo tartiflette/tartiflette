@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import Node
 
@@ -12,28 +12,26 @@ class SelectionSetNode(Node):
 
     def __init__(
         self,
-        selections: List[
-            Union["FieldNode", "FragmentSpreadNode", "InlineFragmentNode"]
-        ],
+        selections: List["SelectionNode"],
         location: Optional["Location"] = None,
     ) -> None:
         """
         TODO:
         :param selections: TODO:
         :param location: TODO:
-        :type selections: TODO:
-        :type location: TODO:
+        :type selections: List["SelectionNode"]
+        :type location: Optional[Location]
         """
         self.selections = selections
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, SelectionSetNode)
@@ -47,7 +45,7 @@ class SelectionSetNode(Node):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "SelectionSetNode(selections=%r, location=%r)" % (
             self.selections,

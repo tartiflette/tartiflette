@@ -8,7 +8,14 @@ class ObjectTypeDefinitionNode(TypeDefinitionNode):
     TODO:
     """
 
-    __slots__ = ("description", "name", "interfaces", "directives", "fields")
+    __slots__ = (
+        "description",
+        "name",
+        "interfaces",
+        "directives",
+        "fields",
+        "location",
+    )
 
     def __init__(
         self,
@@ -22,7 +29,7 @@ class ObjectTypeDefinitionNode(TypeDefinitionNode):
         """
         TODO:
         :param name: TODO:
-        :param description: TODO:
+        :param description: TODO:cl
         :param interfaces: TODO:
         :param directives: TODO:
         :param fields: TODO:

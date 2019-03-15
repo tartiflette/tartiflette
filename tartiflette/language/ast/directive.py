@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import Node
 
@@ -21,21 +21,21 @@ class DirectiveNode(Node):
         :param name: TODO:
         :param arguments: TODO:
         :param location: TODO:
-        :type name: TODO:
-        :type arguments: TODO:
-        :type location: TODO:
+        :type name: NameNode
+        :type arguments: Optional[List[ArgumentNode]]
+        :type location: Optional[Location]
         """
         self.name = name
         self.arguments = arguments
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, DirectiveNode)
@@ -50,7 +50,7 @@ class DirectiveNode(Node):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "DirectiveNode(name=%r, arguments=%r, location=%r)" % (
             self.name,

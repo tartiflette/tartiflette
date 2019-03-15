@@ -1,14 +1,14 @@
 from typing import Any, List, Optional
 
-from tartiflette.language.ast.base import TypeSystemExtensionNode
+from tartiflette.language.ast.base import TypeExtensionNode
 
 
-class ObjectTypeExtensionNode(TypeSystemExtensionNode):
+class ObjectTypeExtensionNode(TypeExtensionNode):
     """
     TODO:
     """
 
-    __slots__ = ("name", "interfaces", "directives", "fields")
+    __slots__ = ("name", "interfaces", "directives", "fields", "location")
 
     def __init__(
         self,

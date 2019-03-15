@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from tartiflette.language.ast.base import TypeNode
 
@@ -19,20 +19,20 @@ class ListTypeNode(TypeNode):
         TODO:
         :param type: TODO:
         :param location: TODO:
-        :type type: TODO:
-        :type location: TODO:
+        :type type: Union[NamedTypeNode, NonNullTypeNode]
+        :type location: Optional[Location]
         """
         # pylint: disable=redefined-builtin
         self.type = type
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, ListTypeNode)
@@ -43,7 +43,7 @@ class ListTypeNode(TypeNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "ListTypeNode(type=%r, location=%r)" % (
             self.type,
@@ -67,20 +67,20 @@ class NonNullTypeNode(TypeNode):
         TODO:
         :param type: TODO:
         :param location: TODO:
-        :type type: TODO:
-        :type location: TODO:
+        :type type: Union[NamedTypeNode, ListTypeNode]
+        :type location: Optional[Location]
         """
         # pylint: disable=redefined-builtin
         self.type = type
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, NonNullTypeNode)
@@ -91,7 +91,7 @@ class NonNullTypeNode(TypeNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "NonNullTypeNode(type=%r, location=%r)" % (
             self.type,

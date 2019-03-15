@@ -46,8 +46,8 @@ class ParsedData:
         TODO:
         :param c_parsed: TODO:
         :param destroy_cb: TODO:
-        :type c_parsed: TODO:
-        :type destroy_cb: TODO:
+        :type c_parsed: CData
+        :type destroy_cb: CData
         """
         self._c_parsed = c_parsed
         self._destroy_cb = destroy_cb
@@ -79,9 +79,9 @@ def _parse_context_manager(query: Union[str, bytes]) -> ParsedData:
     """
     TODO:
     :param query: TODO:
-    :type query: TODO:
+    :type query: Union[str, bytes]
     :return: TODO:
-    :rtype: TODO:
+    :rtype: ParsedData
     """
     if isinstance(query, str):
         query = query.encode("UTF-8")
@@ -110,9 +110,9 @@ def _parse_to_json_ast(query: Union[str, bytes]) -> bytes:
     """
     TODO:
     :param query: TODO:
-    :type query: TODO:
+    :type query: Union[str, bytes]
     :return: TODO:
-    :rtype: TODO:
+    :rtype: bytes
     """
     with _parse_context_manager(query) as parsed:
         return _FFI.string(_LIB.graphql_ast_to_json(parsed))
@@ -122,9 +122,9 @@ def parse_to_document(query: Union[str, bytes]) -> "DocumentNode":
     """
     TODO:
     :param query: TODO:
-    :type query: TODO:
+    :type query: Union[str, bytes]
     :return: TODO:
-    :rtype: TODO:
+    :rtype: DocumentNode
 
     :Example:
     TODO:

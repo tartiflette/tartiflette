@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import Node, ValueNode
 
@@ -17,19 +17,19 @@ class BooleanValueNode(ValueNode):
         TODO:
         :param value: TODO:
         :param location: TODO:
-        :type value: TODO:
-        :type location: TODO:
+        :type value: bool
+        :type location: Optional[Location]
         """
         self.value = value
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, BooleanValueNode)
@@ -62,19 +62,19 @@ class EnumValueNode(ValueNode):
         TODO:
         :param value: TODO:
         :param location: TODO:
-        :type value: TODO:
-        :type location: TODO:
+        :type value: str
+        :type location: Optional[Location]
         """
         self.value = value
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, EnumValueNode)
@@ -85,7 +85,7 @@ class EnumValueNode(ValueNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "EnumValueNode(value=%r, location=%r)" % (
             self.value,
@@ -107,19 +107,19 @@ class FloatValueNode(ValueNode):
         TODO:
         :param value: TODO:
         :param location: TODO:
-        :type value: TODO:
-        :type location: TODO:
+        :type value: str
+        :type location: Optional[Location]
         """
         self.value = value
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, FloatValueNode)
@@ -130,7 +130,7 @@ class FloatValueNode(ValueNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "FloatValueNode(value=%r, location=%r)" % (
             self.value,
@@ -152,19 +152,19 @@ class IntValueNode(ValueNode):
         TODO:
         :param value: TODO:
         :param location: TODO:
-        :type value: TODO:
-        :type location: TODO:
+        :type value: str
+        :type location: Optional[Location]
         """
         self.value = value
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, IntValueNode)
@@ -175,7 +175,7 @@ class IntValueNode(ValueNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "IntValueNode(value=%r, location=%r)" % (
             self.value,
@@ -194,18 +194,18 @@ class NullValueNode(ValueNode):
         """
         TODO:
         :param location: TODO:
-        :type location: TODO:
+        :type location: Optional[Location]
         """
         self.value = None
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, NullValueNode)
@@ -216,7 +216,7 @@ class NullValueNode(ValueNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "NullValueNode(location=%r)" % self.location
 
@@ -235,19 +235,19 @@ class StringValueNode(ValueNode):
         TODO:
         :param value: TODO:
         :param location: TODO:
-        :type value: TODO:
-        :type location: TODO:
+        :type value: str
+        :type location: Optional[Location]
         """
         self.value = value
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, StringValueNode)
@@ -258,7 +258,7 @@ class StringValueNode(ValueNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "StringValueNode(value=%r, location=%r)" % (
             self.value,
@@ -280,19 +280,19 @@ class ListValueNode(ValueNode):
         TODO:
         :param values: TODO:
         :param location: TODO:
-        :type values: TODO:
-        :type location: TODO:
+        :type values: List[ValueNode]
+        :type location: Optional[Location]
         """
         self.values = values
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, ListValueNode)
@@ -305,7 +305,7 @@ class ListValueNode(ValueNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "ListValueNode(values=%r, location=%r)" % (
             self.values,
@@ -331,21 +331,21 @@ class ObjectFieldNode(Node):
         :param name: TODO:
         :param value: TODO:
         :param location: TODO:
-        :type name: TODO:
-        :type value: TODO:
-        :type location: TODO:
+        :type name: NameNode
+        :type value: ValueNode
+        :type location: Optional[Location]
         """
         self.name = name
         self.value = value
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, ObjectFieldNode)
@@ -360,7 +360,7 @@ class ObjectFieldNode(Node):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "ObjectFieldNode(name=%r, value=%r, location=%r)" % (
             self.name,
@@ -369,7 +369,7 @@ class ObjectFieldNode(Node):
         )
 
 
-class ObjectValueNode(Node):
+class ObjectValueNode(ValueNode):
     """
     TODO:
     """
@@ -385,19 +385,19 @@ class ObjectValueNode(Node):
         TODO:
         :param fields: TODO:
         :param location: TODO:
-        :type fields: TODO:
-        :type location: TODO:
+        :type fields: List[ObjectFieldNode]
+        :type location: Optional[Location]
         """
         self.fields = fields
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, ObjectValueNode)
@@ -410,7 +410,7 @@ class ObjectValueNode(Node):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "ObjectValueNode(fields=%r, location=%r)" % (
             self.fields,

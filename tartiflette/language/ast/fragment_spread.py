@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import SelectionNode
 
@@ -21,21 +21,21 @@ class FragmentSpreadNode(SelectionNode):
         :param name: TODO:
         :param directives: TODO:
         :param location: TODO:
-        :type name: TODO:
-        :type directives: TODO:
-        :type location: TODO:
+        :type name: NameNode
+        :type directives: Optional[List[DirectiveNode]]
+        :type location: Optional[Location]
         """
         self.name = name
         self.directives = directives
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, FragmentSpreadNode)
@@ -50,7 +50,7 @@ class FragmentSpreadNode(SelectionNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "FragmentSpreadNode(name=%r, directives=%r, location=%r)" % (
             self.name,

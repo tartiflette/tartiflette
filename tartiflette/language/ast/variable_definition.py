@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Any, Optional
 
 from tartiflette.language.ast.base import Node
 
@@ -13,7 +13,7 @@ class VariableDefinitionNode(Node):
     def __init__(
         self,
         variable: "VariableNode",
-        type: Union["NamedTypeNode", "NonNullTypeNode", "ListTypeNode"],
+        type: "TypeNode",
         default_value: Optional["ValueNode"] = None,
         location: Optional["Location"] = None,
     ) -> None:
@@ -23,10 +23,10 @@ class VariableDefinitionNode(Node):
         :param type: TODO:
         :param default_value: TODO:
         :param location: TODO:
-        :type variable: TODO:
-        :type type: TODO:
-        :type default_value: TODO:
-        :type location: TODO:
+        :type variable: VariableNode
+        :type type: TypeNode
+        :type default_value: Optional[ValueNode]
+        :type location: Optional[Location]
         """
         # pylint: disable=redefined-builtin
         self.variable = variable
@@ -34,13 +34,13 @@ class VariableDefinitionNode(Node):
         self.default_value = default_value
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, VariableDefinitionNode)
@@ -56,7 +56,7 @@ class VariableDefinitionNode(Node):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return (
             "VariableDefinitionNode(variable=%r, type=%r, default_value=%r, location=%r)"

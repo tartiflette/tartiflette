@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import SelectionNode
 
@@ -23,23 +23,23 @@ class InlineFragmentNode(SelectionNode):
         :param type_condition: TODO:
         :param directives: TODO:
         :param location: TODO:
-        :type selection_set: TODO:
-        :type type_condition: TODO:
-        :type directives: TODO:
-        :type location: TODO:
+        :type selection_set: SelectionSetNode
+        :type type_condition: Optional[NamedTypeNode]
+        :type directives: Optional[List[DirectiveNode]]
+        :type location: Optional[Location]
         """
         self.selection_set = selection_set
         self.type_condition = type_condition
         self.directives = directives
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, InlineFragmentNode)
@@ -55,7 +55,7 @@ class InlineFragmentNode(SelectionNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return (
             "InlineFragmentNode(type_condition=%r, directives=%r, selection_set=%r, location=%r)"

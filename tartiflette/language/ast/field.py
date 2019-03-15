@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import SelectionNode
 
@@ -34,12 +34,12 @@ class FieldNode(SelectionNode):
         :param directives: TODO:
         :param selection_set: TODO:
         :param location: TODO:
-        :type name: TODO:
-        :type alias: TODO:
-        :type arguments: TODO:
-        :type directives: TODO:
-        :type selection_set: TODO:
-        :type location: TODO:
+        :type name: NameNode
+        :type alias: Optional[NameNode]
+        :type arguments: Optional[List[ArgumentNode]]
+        :type directives: Optional[List[DirectiveNode]]
+        :type selection_set: Optional[SelectionSetNode]
+        :type location: Optional[Location]
         """
         self.name = name
         self.alias = alias
@@ -48,13 +48,13 @@ class FieldNode(SelectionNode):
         self.selection_set = selection_set
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, FieldNode)
@@ -72,7 +72,7 @@ class FieldNode(SelectionNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return (
             "FieldNode(alias=%r, name=%r, arguments=%r, directives=%r, selection_set=%r, location=%r)"

@@ -1,9 +1,9 @@
 from typing import Any, List, Optional
 
-from tartiflette.language.ast.base import TypeSystemExtensionNode
+from tartiflette.language.ast.base import TypeExtensionNode
 
 
-class EnumTypeExtensionNode(TypeSystemExtensionNode):
+class EnumTypeExtensionNode(TypeExtensionNode):
     """
     TODO:
     """

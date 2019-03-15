@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 from tartiflette.language.ast.base import Node
 
@@ -21,21 +21,21 @@ class ArgumentNode(Node):
         :param name: TODO:
         :param value: TODO:
         :param location: TODO:
-        :type name: TODO:
-        :type value: TODO:
-        :type location: TODO:
+        :type name: NameNode
+        :type value: ValueNode
+        :type location: Optional[Location]
         """
         self.name = name
         self.value = value
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, ArgumentNode)
@@ -50,7 +50,7 @@ class ArgumentNode(Node):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "ArgumentNode(name=%r, value=%r, location=%r)" % (
             self.name,

@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import Node
 
@@ -12,28 +12,26 @@ class DocumentNode(Node):
 
     def __init__(
         self,
-        definitions: List[
-            Union["FragmentDefinitionNode", "OperationDefinitionNode"]
-        ],
+        definitions: List["DefinitionNode"],
         location: Optional["Location"] = None,
     ) -> None:
         """
         TODO:
         :param definitions: TODO:
         :param location: TODO:
-        :type definitions: TODO:
-        :type location: TODO:
+        :type definitions: List[DefinitionNode]
+        :type location: Optional[Location]
         """
         self.definitions = definitions
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, DocumentNode)
@@ -47,7 +45,7 @@ class DocumentNode(Node):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "DocumentNode(definitions=%r, location=%r)" % (
             self.definitions,

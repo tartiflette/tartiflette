@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 
 class Location:
@@ -21,23 +21,23 @@ class Location:
         :param column: TODO:
         :param line_end: TODO:
         :param column_end: TODO:
-        :type line: TODO:
-        :type column: TODO:
-        :type line_end: TODO:
-        :type column_end: TODO:
+        :type line: int
+        :type column: int
+        :type line_end: Optional[int]
+        :type column_end: Optional[int]
         """
         self.line = line
         self.column = column
         self.line_end = line_end
         self.column_end = column_end
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, Location)
@@ -53,7 +53,7 @@ class Location:
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "Location(line=%r, column=%r, line_end=%r, column_end=%r)" % (
             self.line,

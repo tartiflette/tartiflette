@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 from tartiflette.language.ast.base import TypeNode
 
@@ -17,19 +17,19 @@ class NamedTypeNode(TypeNode):
         TODO:
         :param name: TODO:
         :param location: TODO:
-        :type name: TODO:
-        :type location: TODO:
+        :type name: NameNode
+        :type location: Optional[Location]
         """
         self.name = name
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, NamedTypeNode)
@@ -40,7 +40,7 @@ class NamedTypeNode(TypeNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return "NamedTypeNode(name=%r, location=%r)" % (
             self.name,

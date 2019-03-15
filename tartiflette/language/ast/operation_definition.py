@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
-from tartiflette.language.ast.base import DefinitionNode
+from tartiflette.language.ast.base import ExecutableDefinitionNode
 
 
-class OperationDefinitionNode(DefinitionNode):
+class OperationDefinitionNode(ExecutableDefinitionNode):
     """
     TODO:
     """
@@ -34,12 +34,12 @@ class OperationDefinitionNode(DefinitionNode):
         :param variable_definitions: TODO:
         :param directives: TODO:
         :param location: TODO:
-        :type operation_type: TODO:
-        :type selection_set: TODO:
-        :type name: TODO:
-        :type variable_definitions: TODO:
-        :type directives: TODO:
-        :type location: TODO:
+        :type operation_type: str
+        :type selection_set: SelectionSetNode
+        :type name: Optional[NameNode]
+        :type variable_definitions: Optional[List[VariableDefinitionNode]]
+        :type directives: Optional[List[DirectiveNode]]
+        :type location: Optional[Location]
         """
         self.operation_type = operation_type
         self.selection_set = selection_set
@@ -48,13 +48,13 @@ class OperationDefinitionNode(DefinitionNode):
         self.directives = directives
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, OperationDefinitionNode)
@@ -72,7 +72,7 @@ class OperationDefinitionNode(DefinitionNode):
         """
         TODO:
         :return: TODO:
-        :rtype: TODO:
+        :rtype: str
         """
         return (
             "OperationDefinitionNode(operation_type=%r, name=%r, variable_definitions=%r, directives=%r, selection_set=%r, location=%r)"

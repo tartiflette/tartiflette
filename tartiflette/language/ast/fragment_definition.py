@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
-from tartiflette.language.ast.base import DefinitionNode
+from tartiflette.language.ast.base import ExecutableDefinitionNode
 
 
-class FragmentDefinitionNode(DefinitionNode):
+class FragmentDefinitionNode(ExecutableDefinitionNode):
     """
     TODO:
     """
@@ -31,11 +31,11 @@ class FragmentDefinitionNode(DefinitionNode):
         :param selection_set: TODO:
         :param directives: TODO:
         :param location: TODO:
-        :type name: TODO:
-        :type type_condition: TODO:
-        :type selection_set: TODO:
-        :type directives: TODO:
-        :type location: TODO:
+        :type name: NameNode
+        :type type_condition: NamedTypeNode
+        :type selection_set: SelectionSetNode
+        :type directives: Optional[List[DirectiveNode]]
+        :type location: Optional[Location]
         """
         self.name = name
         self.type_condition = type_condition
@@ -43,13 +43,13 @@ class FragmentDefinitionNode(DefinitionNode):
         self.directives = directives
         self.location = location
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """
         TODO:
         :param other: TODO:
-        :type other: TODO:
+        :type other: Any
         :return: TODO:
-        :rtype: TODO:
+        :rtype: bool
         """
         return self is other or (
             isinstance(other, FragmentDefinitionNode)
