@@ -48,6 +48,21 @@ _BASE_DIR = os.path.dirname(__file__)
 
 
 @pytest.mark.parametrize(
+    "sdl_file_path",
+    [
+        os.path.join(_BASE_DIR, "fixtures", "simple.graphql"),
+        os.path.join(_BASE_DIR, "fixtures", "advanced.graphql"),
+        os.path.join(_BASE_DIR, "fixtures", "kitchen-sink.graphql"),
+        os.path.join(_BASE_DIR, "fixtures", "keyword-tokens.graphql"),
+        os.path.join(_BASE_DIR, "fixtures", "github.graphql"),
+    ],
+)
+def test_parse_without_exception(sdl_file_path):
+    with open(sdl_file_path) as sdl_file:
+        assert isinstance(parse_to_document(sdl_file.read()), DocumentNode)
+
+
+@pytest.mark.parametrize(
     "sdl_file_path,expected",
     [
         (
