@@ -161,13 +161,13 @@ async def test_issue92_fragment_inordered():
                     {
                         "args": [
                             {
-                                "name": "reason",
-                                "defaultValue": "Deprecated",
                                 "type": {
                                     "ofType": None,
                                     "name": "String",
                                     "kind": "SCALAR",
                                 },
+                                "name": "reason",
+                                "defaultValue": "Deprecated",
                             }
                         ],
                         "name": "deprecated",
@@ -177,6 +177,52 @@ async def test_issue92_fragment_inordered():
                         "name": "non_introspectable",
                         "locations": ["FIELD_DEFINITION"],
                         "args": [],
+                    },
+                    {
+                        "locations": [
+                            "FIELD",
+                            "FRAGMENT_SPREAD",
+                            "INLINE_FRAGMENT",
+                        ],
+                        "args": [
+                            {
+                                "name": "if",
+                                "defaultValue": None,
+                                "type": {
+                                    "name": None,
+                                    "kind": "NON_NULL",
+                                    "ofType": {
+                                        "ofType": None,
+                                        "kind": "SCALAR",
+                                        "name": "Boolean",
+                                    },
+                                },
+                            }
+                        ],
+                        "name": "skip",
+                    },
+                    {
+                        "name": "include",
+                        "locations": [
+                            "FIELD",
+                            "FRAGMENT_SPREAD",
+                            "INLINE_FRAGMENT",
+                        ],
+                        "args": [
+                            {
+                                "defaultValue": None,
+                                "type": {
+                                    "ofType": {
+                                        "ofType": None,
+                                        "name": "Boolean",
+                                        "kind": "SCALAR",
+                                    },
+                                    "name": None,
+                                    "kind": "NON_NULL",
+                                },
+                                "name": "if",
+                            }
+                        ],
                     },
                 ],
                 "queryType": {"name": "Query"},
@@ -193,19 +239,19 @@ async def test_issue92_fragment_inordered():
                         ],
                         "fields": [
                             {
-                                "isDeprecated": False,
-                                "args": [],
-                                "deprecationReason": None,
                                 "name": "name",
                                 "type": {
                                     "ofType": {
-                                        "name": "String",
                                         "kind": "SCALAR",
                                         "ofType": None,
+                                        "name": "String",
                                     },
-                                    "name": None,
                                     "kind": "NON_NULL",
+                                    "name": None,
                                 },
+                                "isDeprecated": False,
+                                "args": [],
+                                "deprecationReason": None,
                             }
                         ],
                         "enumValues": None,
@@ -220,19 +266,19 @@ async def test_issue92_fragment_inordered():
                         ],
                         "fields": [
                             {
-                                "name": "name",
+                                "isDeprecated": False,
                                 "args": [],
+                                "deprecationReason": None,
+                                "name": "name",
                                 "type": {
-                                    "name": None,
                                     "ofType": {
-                                        "ofType": None,
                                         "kind": "SCALAR",
                                         "name": "String",
+                                        "ofType": None,
                                     },
+                                    "name": None,
                                     "kind": "NON_NULL",
                                 },
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                             }
                         ],
                         "enumValues": None,
@@ -251,19 +297,19 @@ async def test_issue92_fragment_inordered():
                         "possibleTypes": None,
                         "fields": [
                             {
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                                 "name": "name",
-                                "args": [],
                                 "type": {
+                                    "kind": "NON_NULL",
                                     "ofType": {
+                                        "kind": "SCALAR",
                                         "ofType": None,
                                         "name": "String",
-                                        "kind": "SCALAR",
                                     },
                                     "name": None,
-                                    "kind": "NON_NULL",
                                 },
+                                "isDeprecated": False,
+                                "args": [],
+                                "deprecationReason": None,
                             }
                         ],
                         "enumValues": None,
@@ -274,38 +320,38 @@ async def test_issue92_fragment_inordered():
                         "inputFields": None,
                         "interfaces": [
                             {
-                                "ofType": None,
                                 "name": "Pet",
                                 "kind": "INTERFACE",
+                                "ofType": None,
                             }
                         ],
                         "possibleTypes": None,
                         "fields": [
                             {
-                                "args": [],
-                                "deprecationReason": None,
                                 "name": "name",
                                 "type": {
-                                    "kind": "NON_NULL",
                                     "ofType": {
                                         "ofType": None,
                                         "kind": "SCALAR",
                                         "name": "String",
                                     },
                                     "name": None,
+                                    "kind": "NON_NULL",
                                 },
-                                "isDeprecated": False,
-                            },
-                            {
-                                "name": "owner",
                                 "isDeprecated": False,
                                 "args": [],
                                 "deprecationReason": None,
+                            },
+                            {
                                 "type": {
+                                    "kind": "OBJECT",
                                     "ofType": None,
                                     "name": "Human",
-                                    "kind": "OBJECT",
                                 },
+                                "name": "owner",
+                                "args": [],
+                                "isDeprecated": False,
+                                "deprecationReason": None,
                             },
                         ],
                         "enumValues": None,
@@ -318,50 +364,50 @@ async def test_issue92_fragment_inordered():
                         "possibleTypes": None,
                         "fields": [
                             {
+                                "args": [],
+                                "deprecationReason": None,
                                 "name": "id",
                                 "type": {
-                                    "ofType": None,
                                     "name": "String",
+                                    "ofType": None,
                                     "kind": "SCALAR",
                                 },
                                 "isDeprecated": False,
-                                "args": [],
-                                "deprecationReason": None,
                             }
                         ],
                         "enumValues": None,
                     },
                     {
+                        "possibleTypes": None,
                         "kind": "OBJECT",
                         "name": "Query",
                         "inputFields": None,
                         "interfaces": [],
-                        "possibleTypes": None,
+                        "enumValues": None,
                         "fields": [
                             {
-                                "name": "dog",
-                                "type": {
-                                    "ofType": None,
-                                    "name": "Dog",
-                                    "kind": "OBJECT",
-                                },
                                 "isDeprecated": False,
                                 "args": [],
                                 "deprecationReason": None,
+                                "name": "dog",
+                                "type": {
+                                    "ofType": None,
+                                    "kind": "OBJECT",
+                                    "name": "Dog",
+                                },
                             },
                             {
+                                "isDeprecated": False,
+                                "name": "sentient",
+                                "deprecationReason": None,
+                                "args": [],
                                 "type": {
                                     "ofType": None,
                                     "name": "Mixed",
                                     "kind": "UNION",
                                 },
-                                "name": "sentient",
-                                "args": [],
-                                "isDeprecated": False,
-                                "deprecationReason": None,
                             },
                         ],
-                        "enumValues": None,
                     },
                     {
                         "kind": "OBJECT",
@@ -371,15 +417,15 @@ async def test_issue92_fragment_inordered():
                         "possibleTypes": None,
                         "fields": [
                             {
-                                "isDeprecated": False,
                                 "args": [],
-                                "deprecationReason": None,
                                 "name": "mutateDog",
                                 "type": {
+                                    "kind": "OBJECT",
                                     "ofType": None,
                                     "name": "MutateDogPayload",
-                                    "kind": "OBJECT",
                                 },
+                                "isDeprecated": False,
+                                "deprecationReason": None,
                             }
                         ],
                         "enumValues": None,
@@ -393,19 +439,19 @@ async def test_issue92_fragment_inordered():
                         "fields": None,
                         "enumValues": [
                             {
+                                "isDeprecated": False,
                                 "name": "Value1",
                                 "deprecationReason": None,
-                                "isDeprecated": False,
                             },
                             {
+                                "deprecationReason": "Unused anymore",
                                 "isDeprecated": True,
                                 "name": "Value2",
-                                "deprecationReason": "Unused anymore",
                             },
                             {
-                                "isDeprecated": False,
                                 "name": "Value3",
                                 "deprecationReason": None,
+                                "isDeprecated": False,
                             },
                         ],
                     },
@@ -415,7 +461,7 @@ async def test_issue92_fragment_inordered():
                         "inputFields": None,
                         "interfaces": None,
                         "possibleTypes": [
-                            {"kind": "OBJECT", "name": "Dog", "ofType": None},
+                            {"name": "Dog", "ofType": None, "kind": "OBJECT"},
                             {
                                 "kind": "OBJECT",
                                 "name": "Human",
@@ -445,11 +491,11 @@ async def test_issue92_fragment_inordered():
                         "enumValues": None,
                     },
                     {
+                        "kind": "SCALAR",
                         "name": "Boolean",
                         "inputFields": None,
                         "interfaces": None,
                         "possibleTypes": None,
-                        "kind": "SCALAR",
                         "fields": None,
                         "enumValues": None,
                     },
@@ -499,13 +545,13 @@ async def test_issue92_fragment_inordered():
                         "enumValues": None,
                     },
                     {
-                        "possibleTypes": None,
-                        "interfaces": None,
                         "kind": "SCALAR",
                         "name": "String",
                         "inputFields": None,
-                        "enumValues": None,
+                        "interfaces": None,
+                        "possibleTypes": None,
                         "fields": None,
+                        "enumValues": None,
                     },
                     {
                         "kind": "SCALAR",

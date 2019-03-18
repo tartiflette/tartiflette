@@ -134,7 +134,7 @@ async def _resolver(*args, **kwargs):
         (
             """
     query {
-            dog @inclue(if: true) {
+            dog @include(if: true) {
                 name
                 nickname
                 barkVolume
@@ -182,6 +182,53 @@ async def _resolver(*args, **kwargs):
                 nickname
                 barkVolume
             }
+            owner {
+                name
+            }
+        }
+    }
+    """,
+            {"data": {"dog": {"owner": {"name": "owen"}}}},
+        ),
+        (
+            """
+    fragment DogFragment on Dog {
+        name
+        nickname
+        barkVolume
+    }
+
+    query {
+        dog {
+            ... DogFragment @include(if: true)
+            owner {
+                name
+            }
+        }
+    }
+    """,
+            {
+                "data": {
+                    "dog": {
+                        "owner": {"name": "owen"},
+                        "name": "a",
+                        "nickname": "n",
+                        "barkVolume": 25,
+                    }
+                }
+            },
+        ),
+        (
+            """
+    fragment DogFragment on Dog {
+        name
+        nickname
+        barkVolume
+    }
+
+    query {
+        dog {
+            ... DogFragment @include(if: false)
             owner {
                 name
             }

@@ -8,7 +8,6 @@ class Skip(CommonDirective):
     async def on_field_execution(
         directive_args, next_resolver, parent_result, args, ctx, info
     ):
-        print("LOL")
         if directive_args["if"]:
             raise SkipExecution()
 
