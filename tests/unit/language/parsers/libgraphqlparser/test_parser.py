@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 
 from tartiflette.language.ast import (
@@ -28,6 +30,54 @@ from tartiflette.language.ast import (
     VariableNode,
 )
 from tartiflette.language.parsers.libgraphqlparser import parse_to_document
+from tartiflette.language.parsers.libgraphqlparser.parser import (
+    ParsedData,
+    _parse_context_manager,
+    _parse_to_json_ast,
+)
+from tartiflette.types.exceptions.tartiflette import GraphQLSyntaxError
+
+
+def test_parseddata__enter__():
+    c_parsed_mock = Mock()
+    destroy_cb_mock = Mock()
+
+    parsed_data = ParsedData(c_parsed_mock, destroy_cb_mock)
+
+    destroy_cb_mock.assert_not_called()
+
+    with parsed_data as parsed:
+        assert parsed is c_parsed_mock
+
+    destroy_cb_mock.assert_called_once_with(c_parsed_mock)
+
+
+@pytest.mark.parametrize("query", [b"{ a }", "{ a }"])
+def test_parse_context_manager(query):
+    result = _parse_context_manager(query)
+    assert isinstance(result, ParsedData)
+
+
+def test_parse_context_manager_error():
+    with pytest.raises(GraphQLSyntaxError):
+        _parse_context_manager("{ a { }")
+
+
+@pytest.mark.parametrize(
+    "query,expected",
+    [
+        (
+            b"{ a { a1 a2 } }",
+            b'{"kind":"Document","loc":{"start": {"line": 1,"column":1}, "end": {"line":1,"column":16}},"definitions":[{"kind":"OperationDefinition","loc":{"start": {"line": 1,"column":1}, "end": {"line":1,"column":16}},"operation":"query","name":null,"variableDefinitions":null,"directives":null,"selectionSet":{"kind":"SelectionSet","loc":{"start": {"line": 1,"column":1}, "end": {"line":1,"column":16}},"selections":[{"kind":"Field","loc":{"start": {"line": 1,"column":3}, "end": {"line":1,"column":14}},"alias":null,"name":{"kind":"Name","loc":{"start": {"line": 1,"column":3}, "end": {"line":1,"column":4}},"value":"a"},"arguments":null,"directives":null,"selectionSet":{"kind":"SelectionSet","loc":{"start": {"line": 1,"column":5}, "end": {"line":1,"column":14}},"selections":[{"kind":"Field","loc":{"start": {"line": 1,"column":7}, "end": {"line":1,"column":9}},"alias":null,"name":{"kind":"Name","loc":{"start": {"line": 1,"column":7}, "end": {"line":1,"column":9}},"value":"a1"},"arguments":null,"directives":null,"selectionSet":null},{"kind":"Field","loc":{"start": {"line": 1,"column":10}, "end": {"line":1,"column":12}},"alias":null,"name":{"kind":"Name","loc":{"start": {"line": 1,"column":10}, "end": {"line":1,"column":12}},"value":"a2"},"arguments":null,"directives":null,"selectionSet":null}]}}]}}]}',
+        ),
+        (
+            "{ a { a1 a2 } }",
+            b'{"kind":"Document","loc":{"start": {"line": 1,"column":1}, "end": {"line":1,"column":16}},"definitions":[{"kind":"OperationDefinition","loc":{"start": {"line": 1,"column":1}, "end": {"line":1,"column":16}},"operation":"query","name":null,"variableDefinitions":null,"directives":null,"selectionSet":{"kind":"SelectionSet","loc":{"start": {"line": 1,"column":1}, "end": {"line":1,"column":16}},"selections":[{"kind":"Field","loc":{"start": {"line": 1,"column":3}, "end": {"line":1,"column":14}},"alias":null,"name":{"kind":"Name","loc":{"start": {"line": 1,"column":3}, "end": {"line":1,"column":4}},"value":"a"},"arguments":null,"directives":null,"selectionSet":{"kind":"SelectionSet","loc":{"start": {"line": 1,"column":5}, "end": {"line":1,"column":14}},"selections":[{"kind":"Field","loc":{"start": {"line": 1,"column":7}, "end": {"line":1,"column":9}},"alias":null,"name":{"kind":"Name","loc":{"start": {"line": 1,"column":7}, "end": {"line":1,"column":9}},"value":"a1"},"arguments":null,"directives":null,"selectionSet":null},{"kind":"Field","loc":{"start": {"line": 1,"column":10}, "end": {"line":1,"column":12}},"alias":null,"name":{"kind":"Name","loc":{"start": {"line": 1,"column":10}, "end": {"line":1,"column":12}},"value":"a2"},"arguments":null,"directives":null,"selectionSet":null}]}}]}}]}',
+        ),
+    ],
+)
+def test_parse_to_json_ast(query, expected):
+    assert _parse_to_json_ast(query) == expected
 
 
 @pytest.mark.parametrize(
