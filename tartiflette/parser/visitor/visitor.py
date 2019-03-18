@@ -48,10 +48,14 @@ from tartiflette.types.exceptions.tartiflette import (
 from tartiflette.types.helpers import reduce_type
 
 
-class InlineFragmentInfo:
+class FragmentData:
     def __init__(self, atype: str, depth: int) -> None:
         self.type = atype
         self.depth = depth
+        self.directives = []
+
+    def add_directive(self, directive):
+        self.directives.append(directive)
 
 
 class TartifletteVisitor(Visitor):
@@ -83,6 +87,7 @@ class TartifletteVisitor(Visitor):
                 "SelectionSet": self._on_selection_set_in,
                 "ObjectValue": self._on_object_value_in,
                 "ObjectField": self._on_object_field_in,
+                "FragmentSpread": self._on_fragment_spread_in,
                 "ListValue": self._on_list_value_in,
             },
             {
@@ -239,6 +244,21 @@ class TartifletteVisitor(Visitor):
                     )
                 )
 
+        destination = (
+            self._internal_ctx.inline_fragment_info
+            or self._internal_ctx.fragment_spread
+            or self._internal_ctx.node
+        )
+        if destination:
+            destination.add_directive(
+                {
+                    "callables": directive.implementation,
+                    "args": {
+                        x.name: x.value
+                        for x in self._internal_ctx.directive.arguments.values()
+                    },
+                }
+            )
         self._internal_ctx.directive = None
 
     def _add_argument_to_parent(self):
@@ -335,6 +355,7 @@ class TartifletteVisitor(Visitor):
         element: _VisitorElementField,
         *_args,
         type_cond_depth: int = -1,
+        directives: List[Dict[str, Any]] = None,
         **_kwargs,
     ) -> None:
         # pylint: disable=too-many-locals
@@ -390,6 +411,16 @@ class TartifletteVisitor(Visitor):
             element.get_alias(),
             subscribe=field.subscribe,
         )
+
+        if self._internal_ctx.inline_fragment_info:
+            for (
+                directive
+            ) in self._internal_ctx.inline_fragment_info.directives:
+                node.add_directive(directive)
+
+        if directives:
+            for directive in directives:
+                node.add_directive(directive)
 
         node.set_parent(self._internal_ctx.node)
         if self._internal_ctx.node:
@@ -535,7 +566,10 @@ class TartifletteVisitor(Visitor):
         self._internal_ctx.fragment_definition = None
 
     def _fragment_spread(
-        self, ctx: InternalVisitorContext, element: _VisitorElement
+        self,
+        ctx: InternalVisitorContext,
+        element: _VisitorElement,
+        directives: [Dict[str, Any]],
     ) -> None:
         _ctx = self._internal_ctx
         self._internal_ctx = ctx
@@ -556,21 +590,34 @@ class TartifletteVisitor(Visitor):
         self._internal_ctx.type_condition = cfd.type_condition
 
         self._in_fragment_spread_context = True
+        kwargs = {"type_cond_depth": depth}
         for saved_callback in cfd.callbacks:
-            saved_callback(  # Simulate calling a the right place.
-                type_cond_depth=depth
-            )
+            kwargs["directives"] = None
+            if depth == self._internal_ctx.depth:
+                kwargs["directives"] = directives
+
+            saved_callback(**kwargs)  # Simulate calling a the right place.
+
         self._in_fragment_spread_context = False
 
         self._internal_ctx.type_condition = None
         self._internal_ctx = _ctx
 
+    def _on_fragment_spread_in(self, _: _VisitorElement, *_args, **_kwargs):
+        self._internal_ctx.fragment_spread = FragmentData(None, None)
+
     def _on_fragment_spread_out(
         self, element: _VisitorElement, *_args, **_kwargs
     ) -> None:
         self._to_call_later.append(
-            partial(self._fragment_spread, self._internal_ctx.clone(), element)
+            partial(
+                self._fragment_spread,
+                self._internal_ctx.clone(),
+                element,
+                self._internal_ctx.fragment_spread.directives,
+            )
         )
+        self._internal_ctx.fragment_spread = None
 
     def _on_operation_definition_in(
         self, element: _VisitorElementOperationDefinition, *_args, **_kwargs
@@ -611,7 +658,7 @@ class TartifletteVisitor(Visitor):
         self, element: _VisitorElementInlineFragment, *_args, **_kwargs
     ) -> None:
         a_type = element.get_named_type()
-        self._internal_ctx.inline_fragment_info = InlineFragmentInfo(
+        self._internal_ctx.inline_fragment_info = FragmentData(
             a_type, self._internal_ctx.depth
         )
         self._internal_ctx.type_condition = a_type
@@ -664,6 +711,7 @@ class TartifletteVisitor(Visitor):
         # results on a continue_child=0 or not. The goal here is to not process
         # children of a node which result to a continue_child=0 while still
         # processing its siblings.
+
         if (
             self._in_fragment_spread_context
             and not self.continue_child
@@ -687,6 +735,7 @@ class TartifletteVisitor(Visitor):
         # results on a continue_child=0 or not. The goal here is to not process
         # children of a node which result to a continue_child=0 while still
         # processing its siblings.
+
         if (
             self._in_fragment_spread_context
             and not self.continue_child

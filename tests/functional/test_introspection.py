@@ -214,47 +214,80 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
     """,
         operation_name="Test",
     )
-
     assert {
         "data": {
             "__schema": {
                 "subscriptionType": {"name": "CustomRootSubscription"},
                 "types": [
-                    {"kind": "OBJECT", "name": "CustomRootQuery"},
-                    {"name": "CustomRootMutation", "kind": "OBJECT"},
-                    {"kind": "OBJECT", "name": "CustomRootSubscription"},
-                    {"kind": "SCALAR", "name": "Boolean"},
-                    {"kind": "SCALAR", "name": "Date"},
+                    {"name": "CustomRootQuery", "kind": "OBJECT"},
+                    {"kind": "OBJECT", "name": "CustomRootMutation"},
+                    {"name": "CustomRootSubscription", "kind": "OBJECT"},
+                    {"name": "Boolean", "kind": "SCALAR"},
+                    {"name": "Date", "kind": "SCALAR"},
                     {"name": "DateTime", "kind": "SCALAR"},
                     {"kind": "SCALAR", "name": "Float"},
-                    {"name": "ID", "kind": "SCALAR"},
+                    {"kind": "SCALAR", "name": "ID"},
                     {"kind": "SCALAR", "name": "Int"},
                     {"kind": "SCALAR", "name": "String"},
-                    {"kind": "SCALAR", "name": "Time"},
+                    {"name": "Time", "kind": "SCALAR"},
                 ],
-                "queryType": {"name": "CustomRootQuery"},
-                "mutationType": {"name": "CustomRootMutation"},
                 "directives": [
                     {
+                        "description": None,
+                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
+                        "name": "deprecated",
                         "args": [
                             {
-                                "defaultValue": "Deprecated",
                                 "name": "reason",
+                                "defaultValue": "Deprecated",
                                 "type": {"name": "String", "kind": "SCALAR"},
                                 "description": None,
                             }
                         ],
-                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
-                        "description": None,
-                        "name": "deprecated",
                     },
                     {
                         "locations": ["FIELD_DEFINITION"],
                         "args": [],
-                        "description": None,
                         "name": "non_introspectable",
+                        "description": None,
+                    },
+                    {
+                        "name": "skip",
+                        "locations": [
+                            "FIELD",
+                            "FRAGMENT_SPREAD",
+                            "INLINE_FRAGMENT",
+                        ],
+                        "args": [
+                            {
+                                "defaultValue": None,
+                                "type": {"name": None, "kind": "NON_NULL"},
+                                "name": "if",
+                                "description": None,
+                            }
+                        ],
+                        "description": None,
+                    },
+                    {
+                        "name": "include",
+                        "locations": [
+                            "FIELD",
+                            "FRAGMENT_SPREAD",
+                            "INLINE_FRAGMENT",
+                        ],
+                        "description": None,
+                        "args": [
+                            {
+                                "name": "if",
+                                "type": {"name": None, "kind": "NON_NULL"},
+                                "description": None,
+                                "defaultValue": None,
+                            }
+                        ],
                     },
                 ],
+                "mutationType": {"name": "CustomRootMutation"},
+                "queryType": {"name": "CustomRootQuery"},
             }
         }
     } == result
@@ -315,44 +348,77 @@ async def test_tartiflette_execute_schema_introspection_output_exclude_scalars(
     """,
         operation_name="Test",
     )
-
     assert {
         "data": {
             "__schema": {
-                "subscriptionType": {"name": "CustomRootSubscription"},
                 "mutationType": {"name": "CustomRootMutation"},
-                "types": [
-                    {"name": "CustomRootQuery", "kind": "OBJECT"},
-                    {"name": "CustomRootMutation", "kind": "OBJECT"},
-                    {"name": "CustomRootSubscription", "kind": "OBJECT"},
-                    {"name": "Boolean", "kind": "SCALAR"},
-                    {"name": "Float", "kind": "SCALAR"},
-                    {"name": "ID", "kind": "SCALAR"},
-                    {"name": "Int", "kind": "SCALAR"},
-                    {"name": "String", "kind": "SCALAR"},
-                    {"name": "Time", "kind": "SCALAR"},
-                ],
                 "directives": [
                     {
-                        "name": "deprecated",
+                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
                         "args": [
                             {
-                                "description": None,
                                 "name": "reason",
                                 "defaultValue": "Deprecated",
+                                "description": None,
                                 "type": {"kind": "SCALAR", "name": "String"},
                             }
                         ],
+                        "name": "deprecated",
                         "description": None,
-                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
                     },
                     {
-                        "locations": ["FIELD_DEFINITION"],
+                        "name": "non_introspectable",
                         "description": None,
                         "args": [],
-                        "name": "non_introspectable",
+                        "locations": ["FIELD_DEFINITION"],
+                    },
+                    {
+                        "locations": [
+                            "FIELD",
+                            "FRAGMENT_SPREAD",
+                            "INLINE_FRAGMENT",
+                        ],
+                        "description": None,
+                        "name": "skip",
+                        "args": [
+                            {
+                                "description": None,
+                                "type": {"kind": "NON_NULL", "name": None},
+                                "defaultValue": None,
+                                "name": "if",
+                            }
+                        ],
+                    },
+                    {
+                        "args": [
+                            {
+                                "type": {"kind": "NON_NULL", "name": None},
+                                "defaultValue": None,
+                                "description": None,
+                                "name": "if",
+                            }
+                        ],
+                        "locations": [
+                            "FIELD",
+                            "FRAGMENT_SPREAD",
+                            "INLINE_FRAGMENT",
+                        ],
+                        "name": "include",
+                        "description": None,
                     },
                 ],
+                "types": [
+                    {"kind": "OBJECT", "name": "CustomRootQuery"},
+                    {"name": "CustomRootMutation", "kind": "OBJECT"},
+                    {"kind": "OBJECT", "name": "CustomRootSubscription"},
+                    {"kind": "SCALAR", "name": "Boolean"},
+                    {"name": "Float", "kind": "SCALAR"},
+                    {"kind": "SCALAR", "name": "ID"},
+                    {"kind": "SCALAR", "name": "Int"},
+                    {"name": "String", "kind": "SCALAR"},
+                    {"name": "Time", "kind": "SCALAR"},
+                ],
+                "subscriptionType": {"name": "CustomRootSubscription"},
                 "queryType": {"name": "CustomRootQuery"},
             }
         }
@@ -484,13 +550,13 @@ fragment TypeRef on __Type {
                     {
                         "args": [
                             {
-                                "defaultValue": "Deprecated",
                                 "type": {
-                                    "name": "String",
                                     "ofType": None,
+                                    "name": "String",
                                     "kind": "SCALAR",
                                 },
                                 "name": "reason",
+                                "defaultValue": "Deprecated",
                             }
                         ],
                         "name": "deprecated",
@@ -500,6 +566,52 @@ fragment TypeRef on __Type {
                         "name": "non_introspectable",
                         "locations": ["FIELD_DEFINITION"],
                         "args": [],
+                    },
+                    {
+                        "locations": [
+                            "FIELD",
+                            "FRAGMENT_SPREAD",
+                            "INLINE_FRAGMENT",
+                        ],
+                        "args": [
+                            {
+                                "name": "if",
+                                "defaultValue": None,
+                                "type": {
+                                    "name": None,
+                                    "kind": "NON_NULL",
+                                    "ofType": {
+                                        "ofType": None,
+                                        "kind": "SCALAR",
+                                        "name": "Boolean",
+                                    },
+                                },
+                            }
+                        ],
+                        "name": "skip",
+                    },
+                    {
+                        "name": "include",
+                        "locations": [
+                            "FIELD",
+                            "FRAGMENT_SPREAD",
+                            "INLINE_FRAGMENT",
+                        ],
+                        "args": [
+                            {
+                                "defaultValue": None,
+                                "type": {
+                                    "ofType": {
+                                        "ofType": None,
+                                        "name": "Boolean",
+                                        "kind": "SCALAR",
+                                    },
+                                    "name": None,
+                                    "kind": "NON_NULL",
+                                },
+                                "name": "if",
+                            }
+                        ],
                     },
                 ],
                 "types": [

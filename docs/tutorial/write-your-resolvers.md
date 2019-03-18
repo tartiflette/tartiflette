@@ -49,7 +49,7 @@ from recipes_manager.data import INGREDIENTS, RECIPES
 
 
 @Resolver("Query.recipes")
-async def resolver_recipe(parent, args, ctx, info):
+async def resolver_recipes(parent, args, ctx, info):
     return RECIPES
 
 

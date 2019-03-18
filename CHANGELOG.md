@@ -5,14 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Released]
 
-### Added
+### [0.6.7] - 2019-03-18
+
+#### Added
 
 - [ISSUE-139](https://github.com/dailymotion/tartiflette/issues/139): Handle multiple exceptions on argument coercing.
-- [ISSUE-163](https://github.com/dailymotion/tartiflette/issues/163): Fix crash with non-typed inline fragment
+- [ISSUE-158](https://github.com/dailymotion/tartiflette/issues/158): Add Support for @skip, @include directive.
 
-## [Released]
+#### Fixed
+
+- [ISSUE-163](https://github.com/dailymotion/tartiflette/issues/163): Fix crash with non-typed inline fragment.
 
 ### [0.6.6] - 2019-03-13
 

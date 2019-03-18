@@ -4,13 +4,13 @@ from tartiflette import Engine
 from tartiflette.directive import CommonDirective, Directive
 
 
-@Directive("include", schema_name="test_issue101")
-class IncludeDirective(CommonDirective):
+@Directive("testdire", schema_name="test_issue101")
+class Test101Directive(CommonDirective):
     pass
 
 
 _SDL = """
-directive @include(
+directive @testdire(
   if: Boolean! = false
   ifs: [Boolean!]
   conditions: [Boolean!]!
@@ -257,19 +257,19 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
         (
             """
             query {
-              cat(id: 1) @include {
+              cat(id: 1) @testdire {
                 name
               }
             }
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 3, "column": 26}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 3, "column": 26}],
                 },
@@ -279,7 +279,7 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """
             query {
               ... on Query {
-                cat(id: 1) @include {
+                cat(id: 1) @testdire {
                   name
                 }
               }
@@ -287,12 +287,12 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 28}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 28}],
                 },
@@ -301,7 +301,7 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
         (
             """
             fragment QueryFields on Query {
-              cat(id: 1) @include {
+              cat(id: 1) @testdire {
                 name
               }
             }
@@ -311,12 +311,12 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 3, "column": 26}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 3, "column": 26}],
                 },
@@ -326,7 +326,7 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """
             fragment QueryFields on Query {
               ... on Query {
-                cat(id: 1) @include {
+                cat(id: 1) @testdire {
                   name
                 }
               }
@@ -337,12 +337,12 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 28}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 28}],
                 },
@@ -353,18 +353,18 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """
             query {
               cat(id: 1) {
-                doesKnowCommand(catCommand: "JUMP") @include
+                doesKnowCommand(catCommand: "JUMP") @testdire
               }
             }
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 53}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 53}],
                 },
@@ -375,19 +375,19 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             query {
               ... on Query {
                 cat(id: 1) {
-                  doesKnowCommand(catCommand: "JUMP") @include
+                  doesKnowCommand(catCommand: "JUMP") @testdire
                 }
               }
             }
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 5, "column": 55}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 5, "column": 55}],
                 },
@@ -397,7 +397,7 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """
             fragment QueryFields on Query {
               cat(id: 1) {
-                doesKnowCommand(catCommand: "JUMP") @include
+                doesKnowCommand(catCommand: "JUMP") @testdire
               }
             }
             query {
@@ -406,12 +406,12 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 53}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 53}],
                 },
@@ -422,7 +422,7 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             fragment QueryFields on Query {
               ... on Query {
                 cat(id: 1) {
-                  doesKnowCommand(catCommand: "JUMP") @include
+                  doesKnowCommand(catCommand: "JUMP") @testdire
                 }
               }
             }
@@ -432,12 +432,12 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 5, "column": 55}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 5, "column": 55}],
                 },
@@ -447,7 +447,7 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """
             fragment CatFields on Cat {
               ... on Cat {
-                doesKnowCommand(catCommand: "JUMP") @include
+                doesKnowCommand(catCommand: "JUMP") @testdire
               }
             }
 
@@ -465,12 +465,12 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 53}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 4, "column": 53}],
                 },
@@ -487,7 +487,7 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
 
             fragment QueryFields on Query {
               ... on Query {
-                cat(id: 1) @include {
+                cat(id: 1) @testdire {
                   ...CatFields
                 }
               }
@@ -499,12 +499,12 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
             """,
             [
                 {
-                    "message": "Missing required < conditions > argument on < @include > directive.",
+                    "message": "Missing required < conditions > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 10, "column": 28}],
                 },
                 {
-                    "message": "Missing required < list > argument on < @include > directive.",
+                    "message": "Missing required < list > argument on < @testdire > directive.",
                     "path": None,
                     "locations": [{"line": 10, "column": 28}],
                 },

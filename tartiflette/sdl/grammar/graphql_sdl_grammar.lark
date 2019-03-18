@@ -223,6 +223,9 @@ TYPE_SYSTEM_DIRECTIVE_LOCATION: "SCHEMA"
                               | "ENUM"
                               | "INPUT_OBJECT"
                               | "INPUT_FIELD_DEFINITION"
+                              | "FIELD"
+                              | "FRAGMENT_SPREAD"
+                              | "INLINE_FRAGMENT"
 
 //
 // TEXT TOKENS
