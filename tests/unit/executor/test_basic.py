@@ -77,6 +77,7 @@ def _get_mocked_root_nodes(cbn, marsh, alias):
     a.cant_be_null = cbn
     a.marshalled = marsh
     a.alias = alias
+    a.is_execution_stopped = False
     return a
 
 
@@ -116,8 +117,8 @@ def _get_mocked_error():
 @pytest.mark.parametrize(
     "errors,expected",
     [
-        ([], {"data": {}}),
-        ([_get_mocked_error()], {"data": {}, "errors": [{"a": "b"}]}),
+        ([], {"data": None}),
+        ([_get_mocked_error()], {"data": None, "errors": [{"a": "b"}]}),
     ],
 )
 async def test_executor_basic_execute(errors, expected, monkeypatch):
@@ -177,7 +178,7 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
     )
 
     assert a == {
-        "data": {},
+        "data": None,
         "errors": [{"message": "Error from custom_error_coercer"}],
     }
 
