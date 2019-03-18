@@ -237,6 +237,77 @@ async def _resolver(*args, **kwargs):
     """,
             {"data": {"dog": {"owner": {"name": "owen"}}}},
         ),
+        (
+            """
+    fragment DogFragment on Dog {
+        name
+        nickname @skip(if: true)
+        barkVolume
+    }
+
+    query {
+        dog {
+            ... @include(if: true) {
+                ... DogFragment @include(if: true)
+            }
+            owner {
+                name
+            }
+        }
+    }
+    """,
+            {
+                "data": {
+                    "dog": {
+                        "owner": {"name": "owen"},
+                        "name": "a",
+                        "nickname": "n",
+                    }
+                }
+            },
+        ),
+        (
+            """
+    fragment DogFragment on Dog {
+        name
+        nickname @skip(if: true)
+        barkVolume
+    }
+
+    query {
+        dog {
+            ... @include(if: true) {
+                ... DogFragment @include(if: false)
+            }
+            owner {
+                name
+            }
+        }
+    }
+    """,
+            {"data": {"dog": {"owner": {"name": "owen"}}}},
+        ),
+        (
+            """
+    fragment DogFragment on Dog {
+        name
+        nickname @skip(if: true)
+        barkVolume
+    }
+
+    query {
+        dog {
+            ... @include(if: false) {
+                ... DogFragment @include(if: true)
+            }
+            owner {
+                name
+            }
+        }
+    }
+    """,
+            {"data": {"dog": {"owner": {"name": "owen"}}}},
+        ),
     ],
 )
 async def test_issue158(engine, query, expected):
