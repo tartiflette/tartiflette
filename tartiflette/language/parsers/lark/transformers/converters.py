@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Any, Dict, List, Optional, Union
 
 from tartiflette.language.ast import (
     ArgumentNode,
@@ -48,20 +48,23 @@ class UnexpectedASTNode(Exception):
 
 
 def _extract_node_info(
-    children, types_to_value=None, types_to_list=None, types_to_ignore=None
-):
+    children: List[Union["Token", "SchemaNode"]],
+    types_to_value: Optional[List[str]] = None,
+    types_to_list: Optional[Dict[str, str]] = None,
+    types_to_ignore: Optional[List[str]] = None,
+) -> Dict[str, Any]:
     """
     TODO:
     :param children: TODO:
     :param types_to_value: TODO:
     :param types_to_list: TODO:
     :param types_to_ignore: TODO:
-    :type children: TODO:
-    :type types_to_value: TODO:
-    :type types_to_list: TODO:
-    :type types_to_ignore: TODO:
+    :type children: List[Union[Token, SchemaNode]]
+    :type types_to_value: Optional[List[str]]
+    :type types_to_list: Optional[Dict[str, str]]
+    :type types_to_ignore: Optional[List[str]]
     :return: TODO:
-    :rtype: TODO:
+    :rtype: Dict[str, Any]
     """
     types_to_value = types_to_value or []
     types_to_list = types_to_list or {}
@@ -85,12 +88,12 @@ def _extract_node_info(
 
 
 def lark_to_location_node(
-    token_or_tree_meta: Union["Tree", "Token"]
+    token_or_tree_meta: Union["Meta", "Token"]
 ) -> "Location":
     """
     TODO:
     :param token_or_tree_meta: TODO:
-    :type token_or_tree_meta: Union[Tree, Token]
+    :type token_or_tree_meta: Union[Meta, Token]
     :return: TODO:
     :rtype: Location
     """

@@ -1,6 +1,8 @@
 import os
 import time
 
+from unittest.mock import Mock, patch
+
 import pytest
 
 from tartiflette.language.ast import (
@@ -6798,3 +6800,26 @@ def test_parse_without_exception(sdl_file_path):
 def test_parse_to_document(sdl_file_path, expected):
     with open(sdl_file_path) as sdl_file:
         assert parse_to_document(sdl_file.read()) == expected
+
+
+def test_parse_to_document_mock():
+    parsed_mock = Mock()
+    node_transformed = Mock()
+
+    sdl = "type MyType { a: String }"
+
+    with patch(
+        "tartiflette.language.parsers.lark.parser._LARK_PARSER.parse",
+        return_value=parsed_mock,
+    ) as lark_parser_mock:
+        with patch(
+            "tartiflette.language.parsers.lark.parser.NodeTransformer",
+            return_value=node_transformed,
+        ) as node_transformer_mock:
+            with patch(
+                "tartiflette.language.parsers.lark.parser.TokenTransformer"
+            ) as token_transformer_mock:
+                assert parse_to_document(sdl) == node_transformed.document_node
+                node_transformer_mock.assert_called_once()
+                token_transformer_mock.assert_called_once()
+                lark_parser_mock.assert_called_once_with(sdl)

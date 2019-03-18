@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 from lark import v_args
 from lark.visitors import Transformer_InPlace
@@ -62,6 +62,19 @@ class SchemaNode:
         # pylint: disable=redefined-builtin
         self.type = type
         self.value = value
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        TODO:
+        :param other: TODO:
+        :type other: Any
+        :return: TODO:
+        :rtype: bool
+        """
+        return self is other or (
+            isinstance(other, SchemaNode)
+            and (self.type == other.type and self.value == other.value)
+        )
 
     def __repr__(self) -> str:
         """
