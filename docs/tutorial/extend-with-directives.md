@@ -16,7 +16,7 @@ directive @deprecated(
 type Recipe {
   id: Int
   name: String
-  ingredientsQuantity: [IngredientQuantity]
+  ingredients: [Ingredient]
   cookingTime: Int
   title: String @deprecated(reason: "Use `name` instead.")
 }

@@ -98,7 +98,7 @@ Fill the file **recipes_manager/data.py** with this data.
 ```python
 # Dictionary which contains the ingredients based on the
 # Recipe ID as the key.
-INGREDIENTS_QUANTITY = {
+INGREDIENTS = {
     1: [
         { "name": "potato", "quantity": 10, "type": "UNIT" },
         { "name": "onion", "quantity": 2, "type": "UNIT" },
