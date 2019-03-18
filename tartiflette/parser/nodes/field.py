@@ -8,6 +8,7 @@ from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLError,
     MultipleException,
+    SkipExecution,
 )
 from tartiflette.types.helpers import get_typename
 from tartiflette.types.location import Location
@@ -38,6 +39,7 @@ class NodeField(Node):
         self.marshalled: Dict[str, Any] = {}
         self.alias = alias or self.name
         self.subscribe = subscribe
+        self.is_execution_stopped = False
 
     @property
     def cant_be_null(self) -> bool:
@@ -50,6 +52,11 @@ class NodeField(Node):
     @property
     def shall_produce_list(self) -> bool:
         return self.field_executor.shall_produce_list
+
+    def add_directive(
+        self, directive: Dict[str, Union["Directive", Dict[str, Any]]]
+    ):
+        self.field_executor.add_directive(directive)
 
     def bubble_error(self) -> None:
         if self.cant_be_null is False:
@@ -152,19 +159,23 @@ class NodeField(Node):
         parent_result: Optional[Any] = None,
         parent_marshalled: Optional[Any] = None,
     ) -> None:
-        raw, coerced = await self.field_executor(
-            parent_result,
-            self.arguments,
-            request_ctx,
-            Info(
-                query_field=self,
-                schema_field=self.field_executor.schema_field,
-                schema=self.schema,
-                path=self.path,
-                location=self.location,
-                execution_ctx=execution_ctx,
-            ),
-        )
+        try:
+            raw, coerced = await self.field_executor(
+                parent_result,
+                self.arguments,
+                request_ctx,
+                Info(
+                    query_field=self,
+                    schema_field=self.field_executor.schema_field,
+                    schema=self.schema,
+                    path=self.path,
+                    location=self.location,
+                    execution_ctx=execution_ctx,
+                ),
+            )
+        except SkipExecution:
+            self.is_execution_stopped = True
+            return  # field_executor asked execution to be stopped for this branch
 
         if parent_marshalled is not None:
             parent_marshalled[self.alias] = coerced

@@ -1,7 +1,11 @@
 from functools import partial
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from tartiflette.types.exceptions.tartiflette import InvalidValue, NullError
+from tartiflette.types.exceptions.tartiflette import (
+    InvalidValue,
+    NullError,
+    SkipExecution,
+)
 from tartiflette.types.helpers import has_typename, reduce_type
 from tartiflette.utils.arguments import coerce_arguments
 
@@ -243,6 +247,8 @@ class _ResolverExecutor:
             if info.execution_ctx.is_introspection:
                 result = await self._introspection(result, ctx, info)
             return result, self._coercer(result, info)
+        except SkipExecution as e:
+            raise e
         except Exception as e:  # pylint: disable=broad-except
             return e, None
 
@@ -253,6 +259,13 @@ class _ResolverExecutor:
             )
         except AttributeError:
             self._func = self._raw_func
+
+    def add_directive(
+        self, directive: Dict[str, Union["Directive", Dict[str, Any]]]
+    ) -> None:
+        self._func = _surround_with_execution_directives(
+            self._func, [directive]
+        )
 
     def update_func(self, func: Callable) -> None:
         self._raw_func = func

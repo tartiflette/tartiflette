@@ -30,13 +30,13 @@ class GraphQLError(Exception):
         **_kwargs,
     ):
         computed_locations = []
+
         try:
             for location in locations or self.locations:
                 computed_locations.append(location.collect_value())
-        except AttributeError:
+        except (AttributeError, TypeError):
             pass
-        except TypeError:
-            pass
+
         errors = {
             "message": self.user_message
             if self.user_message
@@ -44,6 +44,7 @@ class GraphQLError(Exception):
             "path": path or self.path,
             "locations": computed_locations,
         }
+
         if self.extensions:
             errors["extensions"] = dict(self.extensions)
         return errors
@@ -215,4 +216,8 @@ class UnknownVariableException(GraphQLError):
 
 
 class UnknownGraphQLType(GraphQLError):
+    pass
+
+
+class SkipExecution(Exception):
     pass

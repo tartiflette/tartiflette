@@ -418,6 +418,7 @@ def test_parser_visitor__on_field_in_a_fragment(a_visitor, an_element):
         "an_inline_fragment_type"
     )
     a_visitor._internal_ctx.inline_fragment_info.depth = 2
+    a_visitor._internal_ctx.inline_fragment_info.directives = []
     a_visitor._internal_ctx.type_condition = (
         a_visitor._internal_ctx.inline_fragment_info.type
     )
@@ -784,6 +785,10 @@ def test_parser_visitor__on_fragment_definition_out(a_visitor, an_element):
 
 def test_parser_visitor__on_fragment_spread_out(a_visitor, an_element):
     a_visitor._to_call_later = []
+
+    a_visitor._internal_ctx = Mock()
+    a_visitor._internal_ctx.fragment_spread = Mock()
+    a_visitor._internal_ctx.fragment_spread.directives = []
 
     a_visitor._on_fragment_spread_out(an_element)
 

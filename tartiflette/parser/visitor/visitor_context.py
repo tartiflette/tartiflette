@@ -19,7 +19,7 @@ class InternalVisitorContext:
         directive: Optional["NodeDirective"] = None,
         type_condition: Optional[str] = None,
         fragment_definition: Optional["NodeFragmentDefinition"] = None,
-        inline_fragment_info: Optional["InlineFragmentInfo"] = None,
+        inline_fragment_info: Optional["FragmentData"] = None,
         depth: int = 0,
         path: Optional[str] = None,
         field_path: Optional[List[str]] = None,
@@ -38,6 +38,7 @@ class InternalVisitorContext:
         self._field_path = field_path or []
         self._fields = fields or {}
         self._current_object_value = None
+        self._fragment_spread = None
 
     def clone(self) -> "InternalVisitorContext":
         return InternalVisitorContext(
@@ -53,6 +54,14 @@ class InternalVisitorContext:
             deepcopy(self._field_path),
             dict(self._fields),
         )
+
+    @property
+    def fragment_spread(self) -> "FragmentData":
+        return self._fragment_spread
+
+    @fragment_spread.setter
+    def fragment_spread(self, val: "FragmentData") -> None:
+        self._fragment_spread = val
 
     @property
     def current_object_value(self) -> "ObjectValue":
@@ -111,11 +120,11 @@ class InternalVisitorContext:
         self._fragment_definition = val
 
     @property
-    def inline_fragment_info(self) -> Optional["InlineFragmentInfo"]:
+    def inline_fragment_info(self) -> Optional["FragmentData"]:
         return self._inline_fragment_info
 
     @inline_fragment_info.setter
-    def inline_fragment_info(self, val: "InlineFragmentInfo") -> None:
+    def inline_fragment_info(self, val: "FragmentData") -> None:
         self._inline_fragment_info = val
 
     @property
