@@ -31,6 +31,18 @@ async def _resolver(*args, **kwargs):
             """
     query {
             dog {
+                name @skip(if: true)
+                nickname @include(if: false)
+                barkVolume @skip(if: true)
+            }
+        }
+    """,
+            {"data": {"dog": {}}},
+        ),
+        (
+            """
+    query {
+            dog {
                 name @skip(if: false)
                 nickname @include(if: false)
                 barkVolume

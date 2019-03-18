@@ -249,15 +249,16 @@ class TartifletteVisitor(Visitor):
             or self._internal_ctx.fragment_spread
             or self._internal_ctx.node
         )
-        destination.add_directive(
-            {
-                "callables": directive.implementation,
-                "args": {
-                    x.name: x.value
-                    for x in self._internal_ctx.directive.arguments.values()
-                },
-            }
-        )
+        if destination:
+            destination.add_directive(
+                {
+                    "callables": directive.implementation,
+                    "args": {
+                        x.name: x.value
+                        for x in self._internal_ctx.directive.arguments.values()
+                    },
+                }
+            )
         self._internal_ctx.directive = None
 
     def _add_argument_to_parent(self):
