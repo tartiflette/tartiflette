@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import Node, ValueNode
 
@@ -11,13 +11,13 @@ class BooleanValueNode(ValueNode):
     __slots__ = ("value", "location")
 
     def __init__(
-        self, value: Union[str, bool], location: Optional["Location"] = None
+        self, value: bool, location: Optional["Location"] = None
     ) -> None:
         """
         TODO:
         :param value: TODO:
         :param location: TODO:
-        :type value: Union[str, bool]
+        :type value: bool
         :type location: Optional[Location]
         """
         self.value = value
@@ -101,13 +101,13 @@ class FloatValueNode(ValueNode):
     __slots__ = ("value", "location")
 
     def __init__(
-        self, value: Union[str, float], location: Optional["Location"] = None
+        self, value: float, location: Optional["Location"] = None
     ) -> None:
         """
         TODO:
         :param value: TODO:
         :param location: TODO:
-        :type value: Union[str, float]
+        :type value: float
         :type location: Optional[Location]
         """
         self.value = value
@@ -146,13 +146,13 @@ class IntValueNode(ValueNode):
     __slots__ = ("value", "location")
 
     def __init__(
-        self, value: Union[str, int], location: Optional["Location"] = None
+        self, value: int, location: Optional["Location"] = None
     ) -> None:
         """
         TODO:
         :param value: TODO:
         :param location: TODO:
-        :type value: Union[str, int]
+        :type value: int
         :type location: Optional[Location]
         """
         self.value = value

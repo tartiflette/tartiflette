@@ -972,7 +972,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value="0.0",
+                                                value=0.0,
                                                 location=Location(
                                                     line=5,
                                                     column=35,
@@ -998,7 +998,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value="10.20",
+                                                value=10.20,
                                                 location=Location(
                                                     line=5,
                                                     column=46,
@@ -1024,7 +1024,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value="1e3",
+                                                value=1000.0,
                                                 location=Location(
                                                     line=5,
                                                     column=59,
@@ -1050,7 +1050,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value="1.234e2",
+                                                value=123.4,
                                                 location=Location(
                                                     line=6,
                                                     column=21,
@@ -1076,7 +1076,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value="-1.234e2",
+                                                value=-123.4,
                                                 location=Location(
                                                     line=6,
                                                     column=36,
@@ -1124,7 +1124,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                 ),
                                             ),
                                             value=IntValueNode(
-                                                value="0",
+                                                value=0,
                                                 location=Location(
                                                     line=7,
                                                     column=33,
@@ -1150,7 +1150,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                 ),
                                             ),
                                             value=IntValueNode(
-                                                value="10",
+                                                value=10,
                                                 location=Location(
                                                     line=7,
                                                     column=42,
@@ -1176,7 +1176,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                 ),
                                             ),
                                             value=IntValueNode(
-                                                value="-10",
+                                                value=-10,
                                                 location=Location(
                                                     line=7,
                                                     column=52,
@@ -1391,7 +1391,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                         ),
                                                     ),
                                                     FloatValueNode(
-                                                        value="-1.234e2",
+                                                        value=-123.4,
                                                         location=Location(
                                                             line=10,
                                                             column=63,
@@ -1400,7 +1400,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                         ),
                                                     ),
                                                     IntValueNode(
-                                                        value="-10",
+                                                        value=-10,
                                                         location=Location(
                                                             line=10,
                                                             column=73,
@@ -1563,7 +1563,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                             ),
                                                         ),
                                                         value=FloatValueNode(
-                                                            value="-1.234e2",
+                                                            value=-123.4,
                                                             location=Location(
                                                                 line=15,
                                                                 column=24,
@@ -1589,7 +1589,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                             ),
                                                         ),
                                                         value=IntValueNode(
-                                                            value="-10",
+                                                            value=-10,
                                                             location=Location(
                                                                 line=16,
                                                                 column=22,
@@ -2411,7 +2411,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                             value=ListValueNode(
                                                 values=[
                                                     IntValueNode(
-                                                        value="123",
+                                                        value=123,
                                                         location=Location(
                                                             line=3,
                                                             column=39,
@@ -2420,7 +2420,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                         ),
                                                     ),
                                                     IntValueNode(
-                                                        value="456",
+                                                        value=456,
                                                         location=Location(
                                                             line=3,
                                                             column=44,
@@ -2575,7 +2575,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                                                     ),
                                                                                 ),
                                                                                 value=IntValueNode(
-                                                                                    value="10",
+                                                                                    value=10,
                                                                                     location=Location(
                                                                                         line=8,
                                                                                         column=41,
@@ -2999,7 +2999,7 @@ from tartiflette.language.parsers.libgraphqlparser import parse_to_document
                                                 ),
                                             ),
                                             value=IntValueNode(
-                                                value="123",
+                                                value=123,
                                                 location=Location(
                                                     line=24,
                                                     column=27,
