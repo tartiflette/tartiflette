@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class DescriptionNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL description.
     """
 
     __slots__ = ("value", "location")
@@ -14,9 +14,8 @@ class DescriptionNode(Node):
         self, value: str, location: Optional["Location"] = None
     ) -> None:
         """
-        TODO:
-        :param value: TODO:
-        :param location: TODO:
+        :param value: value of the description
+        :param location: location of the description in the query/SDL
         :type value: str
         :type location: Optional[Location]
         """
@@ -25,10 +24,10 @@ class DescriptionNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -38,8 +37,8 @@ class DescriptionNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a DescriptionNode instance.
+        :return: the representation of a DescriptionNode instance
         :rtype: str
         """
         return "DescriptionNode(value=%r, location=%r)" % (

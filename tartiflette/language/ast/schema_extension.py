@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeSystemExtensionNode
 
 class SchemaExtensionNode(TypeSystemExtensionNode):
     """
-    TODO:
+    AST node representing a GraphQL schema extension.
     """
 
     __slots__ = ("directives", "operation_type_definitions", "location")
@@ -19,10 +19,10 @@ class SchemaExtensionNode(TypeSystemExtensionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param directives: TODO:
-        :param operation_type_definitions: TODO:
-        :param location: TODO:
+        :param directives: directives of the schema extension
+        :param operation_type_definitions: operation type definitions of the
+        schema extension
+        :param location: location of the schema extension in the query/SDL
         :type directives: Optional[List[DirectiveNode]]
         :type operation_type_definitions: Optional[List[OperationTypeDefinitionNode]]
         :type location: Optional[Location]
@@ -33,10 +33,10 @@ class SchemaExtensionNode(TypeSystemExtensionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -51,11 +51,12 @@ class SchemaExtensionNode(TypeSystemExtensionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a SchemaExtensionNode instance.
+        :return: the representation of a SchemaExtensionNode instance
         :rtype: str
         """
         return (
-            "SchemaExtensionNode(directives=%r, operation_type_definitions=%r, location=%r)"
+            "SchemaExtensionNode(directives=%r, "
+            "operation_type_definitions=%r, location=%r)"
             % (self.directives, self.operation_type_definitions, self.location)
         )

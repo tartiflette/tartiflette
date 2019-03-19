@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeExtensionNode
 
 class UnionTypeExtensionNode(TypeExtensionNode):
     """
-    TODO:
+    AST node representing a GraphQL union type extension.
     """
 
     __slots__ = ("name", "directives", "types", "location")
@@ -18,11 +18,10 @@ class UnionTypeExtensionNode(TypeExtensionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param directives: TODO:
-        :param types: TODO:
-        :param location: TODO:
+        :param name: name of the union type extension
+        :param directives: directives of the union type extension
+        :param types: types of the union type extension
+        :param location: location of the union type extension in the query/SDL
         :type name: NameNode
         :type directives: Optional[List[DirectiveNode]]
         :type types: Optional[List[NamedTypeNode]]
@@ -35,10 +34,10 @@ class UnionTypeExtensionNode(TypeExtensionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -53,11 +52,12 @@ class UnionTypeExtensionNode(TypeExtensionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an UnionTypeExtensionNode instance.
+        :return: the representation of an UnionTypeExtensionNode instance
         :rtype: str
         """
         return (
-            "UnionTypeExtensionNode(name=%r, directives=%r, types=%r, location=%r)"
+            "UnionTypeExtensionNode(name=%r, directives=%r, types=%r, "
+            "location=%r)"
             % (self.name, self.directives, self.types, self.location)
         )

@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeExtensionNode
 
 class ObjectTypeExtensionNode(TypeExtensionNode):
     """
-    TODO:
+    AST node representing a GraphQL object type extension.
     """
 
     __slots__ = ("name", "interfaces", "directives", "fields", "location")
@@ -19,12 +19,11 @@ class ObjectTypeExtensionNode(TypeExtensionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param interfaces: TODO:
-        :param directives: TODO:
-        :param fields: TODO:
-        :param location: TODO:
+        :param name: name of the object type extension
+        :param interfaces: interfaces of the object type extension
+        :param directives: directives of the object type extension
+        :param fields: fields of the object type extension
+        :param location: location of the object type extension in the query/SDL
         :type name: NameNode
         :type interfaces: Optional[List[NamedTypeNode]]
         :type directives: Optional[List[DirectiveNode]]
@@ -39,10 +38,10 @@ class ObjectTypeExtensionNode(TypeExtensionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -58,12 +57,13 @@ class ObjectTypeExtensionNode(TypeExtensionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an ObjectTypeExtensionNode instance.
+        :return: the representation of an ObjectTypeExtensionNode instance
         :rtype: str
         """
         return (
-            "ObjectTypeExtensionNode(name=%r, interfaces=%r, directives=%r, fields=%r, location=%r)"
+            "ObjectTypeExtensionNode(name=%r, interfaces=%r, directives=%r, "
+            "fields=%r, location=%r)"
             % (
                 self.name,
                 self.interfaces,

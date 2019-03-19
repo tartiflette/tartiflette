@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import ExecutableDefinitionNode
 
 class OperationDefinitionNode(ExecutableDefinitionNode):
     """
-    TODO:
+    AST node representing a GraphQL operation definition.
     """
 
     __slots__ = (
@@ -27,13 +27,13 @@ class OperationDefinitionNode(ExecutableDefinitionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param operation_type: TODO:
-        :param selection_set: TODO:
-        :param name: TODO:
-        :param variable_definitions: TODO:
-        :param directives: TODO:
-        :param location: TODO:
+        :param operation_type: operation type of the operation definition
+        :param selection_set: selection set of the operation definition
+        :param name: name of the operation definition
+        :param variable_definitions: variable definitions of the operation
+        definition
+        :param directives: directives of the operation definition
+        :param location: location of the operation definition in the query/SDL
         :type operation_type: str
         :type selection_set: SelectionSetNode
         :type name: Optional[NameNode]
@@ -50,10 +50,10 @@ class OperationDefinitionNode(ExecutableDefinitionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -70,12 +70,14 @@ class OperationDefinitionNode(ExecutableDefinitionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an OperationDefinitionNode instance.
+        :return: the representation of an OperationDefinitionNode instance
         :rtype: str
         """
         return (
-            "OperationDefinitionNode(operation_type=%r, name=%r, variable_definitions=%r, directives=%r, selection_set=%r, location=%r)"
+            "OperationDefinitionNode(operation_type=%r, name=%r, "
+            "variable_definitions=%r, directives=%r, selection_set=%r, "
+            "location=%r)"
             % (
                 self.operation_type,
                 self.name,

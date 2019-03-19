@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 class Location:
     """
-    TODO:
+    AST node representing a GraphQL location.
     """
 
     __slots__ = ("line", "column", "line_end", "column_end")
@@ -16,11 +16,10 @@ class Location:
         column_end: Optional[int] = None,
     ) -> None:
         """
-        TODO:
-        :param line: TODO:
-        :param column: TODO:
-        :param line_end: TODO:
-        :param column_end: TODO:
+        :param line: start line number of the location
+        :param column: start column number of the location
+        :param line_end: end line number of the location
+        :param column_end: end column number of the location
         :type line: int
         :type column: int
         :type line_end: Optional[int]
@@ -33,10 +32,10 @@ class Location:
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -51,8 +50,8 @@ class Location:
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a Location instance.
+        :return: the representation of a Location instance
         :rtype: str
         """
         return "Location(line=%r, column=%r, line_end=%r, column_end=%r)" % (

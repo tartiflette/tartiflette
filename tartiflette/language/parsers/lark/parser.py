@@ -20,14 +20,21 @@ _LARK_PARSER = Lark.open(
 
 def parse_to_document(sdl: Union[str, bytes]) -> "DocumentNode":
     """
-    TODO:
-    :param sdl: TODO:
-    :type sdl: Union[str, bytes]
-    :return: TODO:
+    Returns a DocumentNode instance which represents the SDL after being
+    parsed.
+    :param sdl: sdl to parse and transform into a DocumentNode
+    :type query: Union[str, bytes]
+    :return: a DocumentNode representing the sdl
     :rtype: DocumentNode
 
     :Example:
-    TODO:
+
+    >>> from tartiflette.language.parsers.lark import parse_to_document
+    >>>
+    >>>
+    >>> sdl_document = parse_to_document('''type Query {
+    >>>   hello(name: String!): String!
+    >>> }''')
     """
     parsed = _LARK_PARSER.parse(sdl)
     node_transformer = NodeTransformer()

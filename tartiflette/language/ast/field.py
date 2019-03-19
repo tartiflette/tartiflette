@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import SelectionNode
 
 class FieldNode(SelectionNode):
     """
-    TODO:
+    AST node representing a GraphQL field.
     """
 
     __slots__ = (
@@ -27,13 +27,12 @@ class FieldNode(SelectionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param alias: TODO:
-        :param arguments: TODO:
-        :param directives: TODO:
-        :param selection_set: TODO:
-        :param location: TODO:
+        :param name: name of the field
+        :param alias: alias of the field
+        :param arguments: arguments of the field
+        :param directives: directives of the field
+        :param selection_set: selection set of the field
+        :param location: location of the field in the query/SDL
         :type name: NameNode
         :type alias: Optional[NameNode]
         :type arguments: Optional[List[ArgumentNode]]
@@ -50,10 +49,10 @@ class FieldNode(SelectionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -70,12 +69,13 @@ class FieldNode(SelectionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a FieldNode instance.
+        :return: the representation of a FieldNode instance
         :rtype: str
         """
         return (
-            "FieldNode(alias=%r, name=%r, arguments=%r, directives=%r, selection_set=%r, location=%r)"
+            "FieldNode(alias=%r, name=%r, arguments=%r, directives=%r, "
+            "selection_set=%r, location=%r)"
             % (
                 self.alias,
                 self.name,

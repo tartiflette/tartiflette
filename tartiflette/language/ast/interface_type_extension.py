@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeExtensionNode
 
 class InterfaceTypeExtensionNode(TypeExtensionNode):
     """
-    TODO:
+    AST node representing a GraphQL interface type extension.
     """
 
     __slots__ = ("name", "directives", "fields", "location")
@@ -18,11 +18,11 @@ class InterfaceTypeExtensionNode(TypeExtensionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param directives: TODO:
-        :param fields: TODO:
-        :param location: TODO:
+        :param name: name of the interface type extension
+        :param directives: directives of the interface type extension
+        :param fields: fields of the interface type extension
+        :param location: location of the interface type extension in the
+        query/SDL
         :type name: NameNode
         :type directives: Optional[List[DirectiveNode]]
         :type fields: Optional[List[FieldDefinitionNode]]
@@ -35,10 +35,10 @@ class InterfaceTypeExtensionNode(TypeExtensionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -53,11 +53,12 @@ class InterfaceTypeExtensionNode(TypeExtensionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an InterfaceTypeExtensionNode instance.
+        :return: the representation of an InterfaceTypeExtensionNode instance
         :rtype: str
         """
         return (
-            "InterfaceTypeExtensionNode(name=%r, directives=%r, fields=%r, location=%r)"
+            "InterfaceTypeExtensionNode(name=%r, directives=%r, fields=%r, "
+            "location=%r)"
             % (self.name, self.directives, self.fields, self.location)
         )

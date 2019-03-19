@@ -43,7 +43,7 @@ from tartiflette.language.ast import (
 
 class UnexpectedASTNode(Exception):
     """
-    TODO:
+    Raised when an unexpected node type is encoutered.
     """
 
 
@@ -54,17 +54,23 @@ def _extract_node_info(
     types_to_ignore: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     """
-    TODO:
-    :param children: TODO:
-    :param types_to_value: TODO:
-    :param types_to_list: TODO:
-    :param types_to_ignore: TODO:
+    Extracts information from a node's children depending on the parameters
+    options.
+    :param children: list of child to parse and from which we should extract
+    information
+    :param types_to_value: list of child types for which we should add the
+    value to the returned information
+    :param types_to_list: mapping of child type to returned information key.
+    The key must be the type of children and the value the key where all
+    matched children will be stored in the returned information
+    :param types_to_ignore: list of node type we should ignore
     :type children: List[Union[Token, SchemaNode]]
     :type types_to_value: Optional[List[str]]
     :type types_to_list: Optional[Dict[str, str]]
     :type types_to_ignore: Optional[List[str]]
-    :return: TODO:
+    :return: a dictionary containing data extracted from children
     :rtype: Dict[str, Any]
+    :raises UnexpectedASTNode: raised when an unexpected type is encountered
     """
     types_to_value = types_to_value or []
     types_to_list = types_to_list or {}
@@ -91,10 +97,10 @@ def lark_to_location_node(
     token_or_tree_meta: Union["Meta", "Token"]
 ) -> "Location":
     """
-    TODO:
-    :param token_or_tree_meta: TODO:
+    Creates and returns a Location instance from a Meta or Token Lark instance.
+    :param token_or_tree_meta: Meta or Token Lark instance containing metadata
     :type token_or_tree_meta: Union[Meta, Token]
-    :return: TODO:
+    :return: a Location instance
     :rtype: Location
     """
     return Location(
@@ -107,10 +113,11 @@ def lark_to_location_node(
 
 def lark_to_int_value_node(tree: "Tree") -> "IntValueNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an IntValueNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an IntValueNode instance extracted from the parsing of the tree
     :rtype: IntValueNode
     """
     token = tree.children[0]
@@ -121,10 +128,11 @@ def lark_to_int_value_node(tree: "Tree") -> "IntValueNode":
 
 def lark_to_float_value_node(tree: "Tree") -> "FloatValueNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a FloatValueNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a FloatValueNode instance extracted from the parsing of the tree
     :rtype: FloatValueNode
     """
     token = tree.children[0]
@@ -135,10 +143,11 @@ def lark_to_float_value_node(tree: "Tree") -> "FloatValueNode":
 
 def lark_to_string_value_node(tree: "Tree") -> "StringValueNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a StringValueNode instance extracted from the parsing
+    of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a StringValueNode instance extracted from the parsing of the tree
     :rtype: StringValueNode
     """
     token = tree.children[0]
@@ -149,10 +158,11 @@ def lark_to_string_value_node(tree: "Tree") -> "StringValueNode":
 
 def lark_to_boolean_value_node(tree: "Tree") -> "BooleanValueNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a BooleanValueNode instance extracted from the parsing
+    of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a BooleanValueNode instance extracted from the parsing of the tree
     :rtype: BooleanValueNode
     """
     token = tree.children[0]
@@ -163,10 +173,11 @@ def lark_to_boolean_value_node(tree: "Tree") -> "BooleanValueNode":
 
 def lark_to_null_value_node(tree: "Tree") -> "NullValueNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a NullValueNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a NullValueNode instance extracted from the parsing of the tree
     :rtype: NullValueNode
     """
     return NullValueNode(location=lark_to_location_node(tree.children[0]))
@@ -174,10 +185,11 @@ def lark_to_null_value_node(tree: "Tree") -> "NullValueNode":
 
 def lark_to_enum_value_node(tree: "Tree") -> "EnumValueNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an EnumValueNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an EnumValueNode instance extracted from the parsing of the tree
     :rtype: EnumValueNode
     """
     token = tree.children[0]
@@ -188,10 +200,11 @@ def lark_to_enum_value_node(tree: "Tree") -> "EnumValueNode":
 
 def lark_to_list_value_node(tree: "Tree") -> "ListValueNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a ListValueNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a ListValueNode instance extracted from the parsing of the tree
     :rtype: ListValueNode
     """
     return ListValueNode(
@@ -202,10 +215,11 @@ def lark_to_list_value_node(tree: "Tree") -> "ListValueNode":
 
 def lark_to_object_field_node(tree: "Tree") -> "ObjectFieldNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an ObjectFieldNode instance extracted from the parsing
+    of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an ObjectFieldNode instance extracted from the parsing of the tree
     :rtype: ObjectFieldNode
     """
     node_info = _extract_node_info(
@@ -221,10 +235,11 @@ def lark_to_object_field_node(tree: "Tree") -> "ObjectFieldNode":
 
 def lark_to_object_value_node(tree: "Tree") -> "ObjectValueNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an ObjectValueNode instance extracted from the parsing
+    of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an ObjectValueNode instance extracted from the parsing of the tree
     :rtype: ObjectValueNode
     """
     return ObjectValueNode(
@@ -235,10 +250,11 @@ def lark_to_object_value_node(tree: "Tree") -> "ObjectValueNode":
 
 def lark_to_description_node(tree: "Tree") -> "DescriptionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a DescriptionNode instance extracted from the parsing
+    of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a DescriptionNode instance extracted from the parsing of the tree
     :rtype: DescriptionNode
     """
     token = tree.children[0]
@@ -249,10 +265,11 @@ def lark_to_description_node(tree: "Tree") -> "DescriptionNode":
 
 def lark_to_name_node(tree: "Tree") -> "NameNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a NameNode instance extracted from the parsing of the
+    tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a NameNode instance extracted from the parsing of the tree
     :rtype: NameNode
     """
     token = tree.children[0]
@@ -261,10 +278,11 @@ def lark_to_name_node(tree: "Tree") -> "NameNode":
 
 def lark_to_named_type_node(tree: "Tree") -> "NamedTypeNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a NamedTypeNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a NamedTypeNode instance extracted from the parsing of the tree
     :rtype: NamedTypeNode
     """
     token = tree.children[0].value
@@ -275,10 +293,11 @@ def lark_to_named_type_node(tree: "Tree") -> "NamedTypeNode":
 
 def lark_to_argument_node(tree: "Tree") -> "ArgumentNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an ArgumentNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an ArgumentNode instance extracted from the parsing of the tree
     :rtype: ArgumentNode
     """
     node_info = _extract_node_info(
@@ -294,10 +313,11 @@ def lark_to_argument_node(tree: "Tree") -> "ArgumentNode":
 
 def lark_to_directive_node(tree: "Tree") -> "DirectiveNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a DirectiveNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a DirectiveNode instance extracted from the parsing of the tree
     :rtype: DirectiveNode
     """
     node_info = _extract_node_info(
@@ -311,28 +331,16 @@ def lark_to_directive_node(tree: "Tree") -> "DirectiveNode":
     )
 
 
-# def lark_to_operation_type_node(tree: "Tree") -> "OperationTypeNode":
-#     """
-#     TODO:
-#     :param tree: TODO:
-#     :type tree: Tree
-#     :return: TODO:
-#     :rtype: OperationTypeNode
-#     """
-#     token = tree.children[0]
-#     return OperationTypeNode(
-#         value=token.value, location=lark_to_location_node(token)
-#     )
-
-
 def lark_to_operation_type_definition_node(
     tree: "Tree"
 ) -> "OperationTypeDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an OperationTypeDefinitionNode instance extracted from
+    the parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an OperationTypeDefinitionNode instance extracted from the parsing
+    of the tree
     :rtype: OperationTypeDefinitionNode
     """
     node_info = _extract_node_info(
@@ -348,10 +356,12 @@ def lark_to_operation_type_definition_node(
 
 def lark_to_schema_definition_node(tree: "Tree") -> "SchemaDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a SchemaDefinitionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a SchemaDefinitionNode instance extracted from the parsing of the
+    tree
     :rtype: SchemaDefinitionNode
     """
     node_info = _extract_node_info(
@@ -380,10 +390,12 @@ def lark_to_scalar_type_definition_node(
     tree: "Tree"
 ) -> "ScalarTypeDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a ScalarTypeDefinitionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a ScalarTypeDefinitionNode instance extracted from the parsing of
+    the tree
     :rtype: ScalarTypeDefinitionNode
     """
     node_info = _extract_node_info(
@@ -402,10 +414,11 @@ def lark_to_scalar_type_definition_node(
 
 def lark_to_list_type_node(tree: "Tree") -> "ListTypeNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a ListTypeNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a ListTypeNode instance extracted from the parsing of the tree
     :rtype: ListTypeNode
     """
     token = tree.children[0]
@@ -416,10 +429,11 @@ def lark_to_list_type_node(tree: "Tree") -> "ListTypeNode":
 
 def lark_to_non_null_type_node(tree: "Tree") -> "NonNullTypeNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a NonNullTypeNode instance extracted from the parsing
+    of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a NonNullTypeNode instance extracted from the parsing of the tree
     :rtype: NonNullTypeNode
     """
     token = tree.children[0]
@@ -428,28 +442,16 @@ def lark_to_non_null_type_node(tree: "Tree") -> "NonNullTypeNode":
     )
 
 
-# def lark_to_default_value_node(tree: "Tree") -> "DefaultValueNode":
-#     """
-#     TODO:
-#     :param tree: TODO:
-#     :type tree: Tree
-#     :return: TODO:
-#     :rtype: DefaultValueNode
-#     """
-#     value_node = tree.children[0].value
-#     return DefaultValueNode(
-#         value=value_node.value, location=value_node.location
-#     )
-
-
 def lark_to_input_value_definition_node(
     tree: "Tree"
 ) -> "InputValueDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an InputValueDefinitionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an InputValueDefinitionNode instance extracted from the parsing of
+    the tree
     :rtype: InputValueDefinitionNode
     """
     node_info = _extract_node_info(
@@ -473,28 +475,16 @@ def lark_to_input_value_definition_node(
     )
 
 
-# def lark_to_directive_location_node(tree: "Tree") -> "DirectiveLocationNode":
-#     """
-#     TODO:
-#     :param tree: TODO:
-#     :type tree: Tree
-#     :return: TODO:
-#     :rtype: DirectiveLocationNode
-#     """
-#     token = tree.children[0]
-#     return DirectiveLocationNode(
-#         value=token.value, location=lark_to_location_node(token)
-#     )
-
-
 def lark_to_directive_definition_node(
     tree: "Tree"
 ) -> "DirectiveDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a DirectiveDefinitionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a DirectiveDefinitionNode instance extracted from the parsing of
+    the tree
     :rtype: DirectiveDefinitionNode
     """
     node_info = _extract_node_info(
@@ -519,10 +509,12 @@ def lark_to_directive_definition_node(
 
 def lark_to_implements_interfaces_node(tree: "Tree") -> List["NamedTypeNode"]:
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a list of NamedTypeNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a list of NamedTypeNode instance extracted from the parsing of the
+    tree
     :rtype: List[NamedTypeNode]
     """
     node_info = _extract_node_info(
@@ -541,10 +533,12 @@ def lark_to_implements_interfaces_node(tree: "Tree") -> List["NamedTypeNode"]:
 
 def lark_to_field_definition_node(tree: "Tree") -> "FieldDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a FieldDefinitionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a FieldDefinitionNode instance extracted from the parsing of the
+    tree
     :rtype: FieldDefinitionNode
     """
     node_info = _extract_node_info(
@@ -572,10 +566,12 @@ def lark_to_object_type_definition_node(
     tree: "Tree"
 ) -> "ObjectTypeDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an ObjectTypeDefinitionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an ObjectTypeDefinitionNode instance extracted from the parsing of
+    the tree
     :rtype: ObjectTypeDefinitionNode
     """
     node_info = _extract_node_info(
@@ -604,10 +600,12 @@ def lark_to_interface_type_definition_node(
     tree: "Tree"
 ) -> "InterfaceTypeDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an InterfaceTypeDefinitionNode instance extracted from
+    the parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an InterfaceTypeDefinitionNode instance extracted from the parsing
+    of the tree
     :rtype: InterfaceTypeDefinitionNode
     """
     node_info = _extract_node_info(
@@ -634,10 +632,12 @@ def lark_to_union_type_definition_node(
     tree: "Tree"
 ) -> "UnionTypeDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an UnionTypeDefinitionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an UnionTypeDefinitionNode instance extracted from the parsing of
+    the tree
     :rtype: UnionTypeDefinitionNode
     """
     node_info = _extract_node_info(
@@ -664,10 +664,12 @@ def lark_to_enum_value_definition_node(
     tree: "Tree"
 ) -> "EnumValueDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an EnumValueDefinitionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an EnumValueDefinitionNode instance extracted from the parsing of
+    the tree
     :rtype: EnumValueDefinitionNode
     """
     node_info = _extract_node_info(
@@ -687,10 +689,12 @@ def lark_to_enum_type_definition_node(
     tree: "Tree"
 ) -> "EnumTypeDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an EnumTypeDefinitionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an EnumTypeDefinitionNode instance extracted from the parsing of
+    the tree
     :rtype: EnumTypeDefinitionNode
     """
     node_info = _extract_node_info(
@@ -717,10 +721,12 @@ def lark_to_input_object_type_definition_node(
     tree: "Tree"
 ) -> "InputObjectTypeDefinitionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an InputObjectTypeDefinitionNode instance extracted
+    from the parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an InputObjectTypeDefinitionNode instance extracted from the
+    parsing of the tree
     :rtype: InputObjectTypeDefinitionNode
     """
     node_info = _extract_node_info(
@@ -745,10 +751,12 @@ def lark_to_input_object_type_definition_node(
 
 def lark_to_schema_extension_node(tree: "Tree") -> "SchemaExtensionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a SchemaExtensionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a SchemaExtensionNode instance extracted from the parsing of the
+    tree
     :rtype: SchemaExtensionNode
     """
     node_info = _extract_node_info(
@@ -777,10 +785,12 @@ def lark_to_scalar_type_extension_node(
     tree: "Tree"
 ) -> "ScalarTypeExtensionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a ScalarTypeExtensionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a ScalarTypeExtensionNode instance extracted from the parsing of
+    the tree
     :rtype: ScalarTypeExtensionNode
     """
     node_info = _extract_node_info(
@@ -800,10 +810,12 @@ def lark_to_object_type_extension_node(
     tree: "Tree"
 ) -> "ObjectTypeExtensionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an ObjectTypeExtensionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an ObjectTypeExtensionNode instance extracted from the parsing of
+    the tree
     :rtype: ObjectTypeExtensionNode
     """
     node_info = _extract_node_info(
@@ -830,10 +842,12 @@ def lark_to_interface_type_extension_node(
     tree: "Tree"
 ) -> "InterfaceTypeExtensionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an InterfaceTypeExtensionNode instance extracted from
+    the parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an InterfaceTypeExtensionNode instance extracted from the parsing
+    of the tree
     :rtype: InterfaceTypeExtensionNode
     """
     node_info = _extract_node_info(
@@ -854,10 +868,12 @@ def lark_to_union_type_extension_node(
     tree: "Tree"
 ) -> "UnionTypeExtensionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an UnionTypeExtensionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an UnionTypeExtensionNode instance extracted from the parsing of
+    the tree
     :rtype: UnionTypeExtensionNode
     """
     node_info = _extract_node_info(
@@ -876,10 +892,12 @@ def lark_to_union_type_extension_node(
 
 def lark_to_enum_type_extension_node(tree: "Tree") -> "EnumTypeExtensionNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an EnumTypeExtensionNode instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an EnumTypeExtensionNode instance extracted from the parsing of
+    the tree
     :rtype: EnumTypeExtensionNode
     """
     node_info = _extract_node_info(
@@ -900,10 +918,12 @@ def lark_to_input_object_type_extension_node(
     tree: "Tree"
 ) -> "InputObjectTypeExtension":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns an InputObjectTypeExtension instance extracted from the
+    parsing of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: an InputObjectTypeExtension instance extracted from the parsing of
+    the tree
     :rtype: InputObjectTypeExtension
     """
     node_info = _extract_node_info(
@@ -922,10 +942,11 @@ def lark_to_input_object_type_extension_node(
 
 def lark_to_document_node(tree: "Tree") -> "DocumentNode":
     """
-    TODO:
-    :param tree: TODO:
+    Creates and returns a DocumentNode instance extracted from the parsing of
+    the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: TODO:
+    :return: a DocumentNode instance extracted from the parsing of the tree
     :rtype: DocumentNode
     """
     return DocumentNode(

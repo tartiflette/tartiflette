@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeNode
 
 class ListTypeNode(TypeNode):
     """
-    TODO:
+    AST node representing a GraphQL list type.
     """
 
     __slots__ = ("type", "location")
@@ -16,9 +16,8 @@ class ListTypeNode(TypeNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param type: TODO:
-        :param location: TODO:
+        :param type: type of the list type
+        :param location: location of the list type in the query/SDL
         :type type: Union[NamedTypeNode, NonNullTypeNode]
         :type location: Optional[Location]
         """
@@ -28,10 +27,10 @@ class ListTypeNode(TypeNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -41,8 +40,8 @@ class ListTypeNode(TypeNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a ListTypeNode instance.
+        :return: the representation of a ListTypeNode instance
         :rtype: str
         """
         return "ListTypeNode(type=%r, location=%r)" % (
@@ -53,7 +52,7 @@ class ListTypeNode(TypeNode):
 
 class NonNullTypeNode(TypeNode):
     """
-    TODO:
+    AST node representing a GraphQL non null type.
     """
 
     __slots__ = ("type", "location")
@@ -64,9 +63,8 @@ class NonNullTypeNode(TypeNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param type: TODO:
-        :param location: TODO:
+        :param type: type of the non null type
+        :param location: location of the non null type in the query/SDL
         :type type: Union[NamedTypeNode, ListTypeNode]
         :type location: Optional[Location]
         """
@@ -76,10 +74,10 @@ class NonNullTypeNode(TypeNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -89,8 +87,8 @@ class NonNullTypeNode(TypeNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a NonNullTypeNode instance.
+        :return: the representation of a NonNullTypeNode instance
         :rtype: str
         """
         return "NonNullTypeNode(type=%r, location=%r)" % (

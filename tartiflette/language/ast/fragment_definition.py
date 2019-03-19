@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import ExecutableDefinitionNode
 
 class FragmentDefinitionNode(ExecutableDefinitionNode):
     """
-    TODO:
+    AST node representing a GraphQL fragment definition.
     """
 
     __slots__ = (
@@ -25,12 +25,11 @@ class FragmentDefinitionNode(ExecutableDefinitionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param type_condition: TODO:
-        :param selection_set: TODO:
-        :param directives: TODO:
-        :param location: TODO:
+        :param name: name of the fragment definition
+        :param type_condition: type condition of the fragment definition
+        :param selection_set: selection set of the fragment definition
+        :param directives: directives of the fragment definition
+        :param location: location of the fragment definition in the query/SDL
         :type name: NameNode
         :type type_condition: NamedTypeNode
         :type selection_set: SelectionSetNode
@@ -45,10 +44,10 @@ class FragmentDefinitionNode(ExecutableDefinitionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -64,12 +63,13 @@ class FragmentDefinitionNode(ExecutableDefinitionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
-        :rtype: TODO:
+        Returns the representation of a FragmentDefinitionNode instance.
+        :return: the representation of a FragmentDefinitionNode instance
+        :rtype: str
         """
         return (
-            "FragmentDefinitionNode(name=%r, type_condition=%r, directives=%r, selection_set=%r, location=%r)"
+            "FragmentDefinitionNode(name=%r, type_condition=%r, "
+            "directives=%r, selection_set=%r, location=%r)"
             % (
                 self.name,
                 self.type_condition,

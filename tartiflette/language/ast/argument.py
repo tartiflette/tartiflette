@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class ArgumentNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL argument.
     """
 
     __slots__ = ("name", "value", "location")
@@ -17,10 +17,9 @@ class ArgumentNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param value: TODO:
-        :param location: TODO:
+        :param name: name of the argument
+        :param value: value of the argument
+        :param location: location of the argument in the query/SDL
         :type name: NameNode
         :type value: ValueNode
         :type location: Optional[Location]
@@ -31,10 +30,10 @@ class ArgumentNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -48,8 +47,8 @@ class ArgumentNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an ArgumentNode instance.
+        :return: the representation of an ArgumentNode instance
         :rtype: str
         """
         return "ArgumentNode(name=%r, value=%r, location=%r)" % (

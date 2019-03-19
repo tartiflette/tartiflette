@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeDefinitionNode
 
 class EnumTypeDefinitionNode(TypeDefinitionNode):
     """
-    TODO:
+    AST node representing a GraphQL enum type definition.
     """
 
     __slots__ = ("description", "name", "directives", "values", "location")
@@ -19,12 +19,11 @@ class EnumTypeDefinitionNode(TypeDefinitionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param description: TODO:
-        :param directives: TODO:
-        :param values: TODO:
-        :param location: TODO:
+        :param name: name of the enum type definition
+        :param description: description of the enum type definition
+        :param directives: directives of the enum type definition
+        :param values: possible values of the enum type definition
+        :param location: location of the enum type definition in the query/SDL
         :type name: NameNode
         :type description: Optional[DescriptionNode]
         :type directives: Optional[List[DirectiveNode]]
@@ -39,10 +38,10 @@ class EnumTypeDefinitionNode(TypeDefinitionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -58,12 +57,13 @@ class EnumTypeDefinitionNode(TypeDefinitionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an EnumTypeDefinitionNode instance.
+        :return: the representation of an EnumTypeDefinitionNode instance
         :rtype: str
         """
         return (
-            "EnumTypeDefinitionNode(description=%r, name=%r, directives=%r, values=%r, location=%r)"
+            "EnumTypeDefinitionNode(description=%r, name=%r, directives=%r, "
+            "values=%r, location=%r)"
             % (
                 self.description,
                 self.name,

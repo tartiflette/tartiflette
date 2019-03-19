@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeDefinitionNode
 
 class ScalarTypeDefinitionNode(TypeDefinitionNode):
     """
-    TODO:
+    AST node representing a GraphQL scalar type definition.
     """
 
     __slots__ = ("description", "name", "directives", "location")
@@ -18,11 +18,11 @@ class ScalarTypeDefinitionNode(TypeDefinitionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param description: TODO:
-        :param directives: TODO:
-        :param location: TODO:
+        :param name: name of the scalar type definition
+        :param description: description of the scalar type definition
+        :param directives: directives of the scalar type definition
+        :param location: location of the scalar type definition in the
+        query/SDL
         :type name: NameNode
         :type description: Optional[DescriptionNode]
         :type directives: Optional[List[DirectiveNode]]
@@ -35,10 +35,10 @@ class ScalarTypeDefinitionNode(TypeDefinitionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -53,11 +53,12 @@ class ScalarTypeDefinitionNode(TypeDefinitionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a ScalarTypeDefinitionNode instance.
+        :return: the representation of a ScalarTypeDefinitionNode instance
         :rtype: str
         """
         return (
-            "ScalarTypeDefinitionNode(description=%r, name=%r, directives=%r, location=%r)"
+            "ScalarTypeDefinitionNode(description=%r, name=%r, directives=%r, "
+            "location=%r)"
             % (self.description, self.name, self.directives, self.location)
         )

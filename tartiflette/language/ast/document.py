@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class DocumentNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL document.
     """
 
     __slots__ = ("definitions", "location")
@@ -16,9 +16,8 @@ class DocumentNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param definitions: TODO:
-        :param location: TODO:
+        :param definitions: definitions of the document
+        :param location: location of the document in the query/SDL
         :type definitions: List[DefinitionNode]
         :type location: Optional[Location]
         """
@@ -27,10 +26,10 @@ class DocumentNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -43,8 +42,8 @@ class DocumentNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a DocumentNode instance.
+        :return: the representation of a DocumentNode instance
         :rtype: str
         """
         return "DocumentNode(definitions=%r, location=%r)" % (

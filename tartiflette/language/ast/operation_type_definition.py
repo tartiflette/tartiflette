@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class OperationTypeDefinitionNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL operation type definition.
     """
 
     __slots__ = ("operation_type", "type", "location")
@@ -17,10 +17,10 @@ class OperationTypeDefinitionNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param operation_type: TODO:
-        :param type: TODO:
-        :param location: TODO:
+        :param operation_type: operation type of the operation type definition
+        :param type: type of the operation type definition
+        :param location: location of the operation type definition in the
+        query/SDL
         :type operation_type: str
         :type type: NamedTypeNode
         :type location: Optional[Location]
@@ -32,10 +32,10 @@ class OperationTypeDefinitionNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -49,11 +49,11 @@ class OperationTypeDefinitionNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an OperationTypeDefinitionNode instance.
+        :return: the representation of an OperationTypeDefinitionNode instance
         :rtype: str
         """
         return (
-            "OperationTypeDefinitionNode(operation_type=%r, type=%r, location=%r)"
-            % (self.operation_type, self.type, self.location)
+            "OperationTypeDefinitionNode(operation_type=%r, type=%r, "
+            "location=%r)" % (self.operation_type, self.type, self.location)
         )

@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import ValueNode
 
 class VariableNode(ValueNode):
     """
-    TODO:
+    AST node representing a GraphQL variable.
     """
 
     __slots__ = ("name", "location")
@@ -14,9 +14,8 @@ class VariableNode(ValueNode):
         self, name: "NameNode", location: Optional["Location"] = None
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param location: TODO:
+        :param name: name of the variable
+        :param location: location of the variable in the query/SDL
         :type name: NameNode
         :type location: Optional[Location]
         """
@@ -25,10 +24,10 @@ class VariableNode(ValueNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -38,8 +37,8 @@ class VariableNode(ValueNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a VariableNode instance.
+        :return: the representation of a VariableNode instance
         :rtype: str
         """
         return "VariableNode(name=%r, location=%r)" % (

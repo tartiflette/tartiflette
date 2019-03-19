@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class DirectiveNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL directive.
     """
 
     __slots__ = ("name", "arguments", "location")
@@ -17,10 +17,9 @@ class DirectiveNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param arguments: TODO:
-        :param location: TODO:
+        :param name: name of the directive
+        :param arguments: arguments of the directive
+        :param location: location of the directive in the query/SDL
         :type name: NameNode
         :type arguments: Optional[List[ArgumentNode]]
         :type location: Optional[Location]
@@ -31,10 +30,10 @@ class DirectiveNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -48,8 +47,8 @@ class DirectiveNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a DirectiveNode instance.
+        :return: the representation of a DirectiveNode instance
         :rtype: str
         """
         return "DirectiveNode(name=%r, arguments=%r, location=%r)" % (

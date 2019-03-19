@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node, ValueNode
 
 class BooleanValueNode(ValueNode):
     """
-    TODO:
+    AST node representing a GraphQL boolean value.
     """
 
     __slots__ = ("value", "location")
@@ -14,9 +14,8 @@ class BooleanValueNode(ValueNode):
         self, value: bool, location: Optional["Location"] = None
     ) -> None:
         """
-        TODO:
-        :param value: TODO:
-        :param location: TODO:
+        :param value: value of the boolean value
+        :param location: location of the boolean value in the query/SDL
         :type value: bool
         :type location: Optional[Location]
         """
@@ -25,10 +24,10 @@ class BooleanValueNode(ValueNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -38,9 +37,9 @@ class BooleanValueNode(ValueNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
-        :rtype: TODO:
+        Returns the representation of a BooleanValueNode instance.
+        :return: the representation of a BooleanValueNode instance
+        :rtype: str
         """
         return "BooleanValueNode(value=%r, location=%r)" % (
             self.value,
@@ -50,7 +49,7 @@ class BooleanValueNode(ValueNode):
 
 class EnumValueNode(ValueNode):
     """
-    TODO:
+    AST node representing a GraphQL enum value.
     """
 
     __slots__ = ("value", "location")
@@ -59,9 +58,8 @@ class EnumValueNode(ValueNode):
         self, value: str, location: Optional["Location"] = None
     ) -> None:
         """
-        TODO:
-        :param value: TODO:
-        :param location: TODO:
+        :param value: value of the enum value
+        :param location: location of the enum value in the query/SDL
         :type value: str
         :type location: Optional[Location]
         """
@@ -70,10 +68,10 @@ class EnumValueNode(ValueNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -83,8 +81,8 @@ class EnumValueNode(ValueNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an EnumValueNode instance.
+        :return: the representation of an EnumValueNode instance
         :rtype: str
         """
         return "EnumValueNode(value=%r, location=%r)" % (
@@ -95,7 +93,7 @@ class EnumValueNode(ValueNode):
 
 class FloatValueNode(ValueNode):
     """
-    TODO:
+    AST node representing a GraphQL float value.
     """
 
     __slots__ = ("value", "location")
@@ -104,9 +102,8 @@ class FloatValueNode(ValueNode):
         self, value: float, location: Optional["Location"] = None
     ) -> None:
         """
-        TODO:
-        :param value: TODO:
-        :param location: TODO:
+        :param value: value of the float value:
+        :param location: location of the float value in the query/SDL
         :type value: float
         :type location: Optional[Location]
         """
@@ -115,10 +112,10 @@ class FloatValueNode(ValueNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -128,8 +125,8 @@ class FloatValueNode(ValueNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a FloatValueNode instance.
+        :return: the representation of a FloatValueNode instance
         :rtype: str
         """
         return "FloatValueNode(value=%r, location=%r)" % (
@@ -140,7 +137,7 @@ class FloatValueNode(ValueNode):
 
 class IntValueNode(ValueNode):
     """
-    TODO:
+    AST node representing a GraphQL integer value.
     """
 
     __slots__ = ("value", "location")
@@ -149,9 +146,8 @@ class IntValueNode(ValueNode):
         self, value: int, location: Optional["Location"] = None
     ) -> None:
         """
-        TODO:
-        :param value: TODO:
-        :param location: TODO:
+        :param value: value of the int value
+        :param location: location of the int value in the query/SDL
         :type value: int
         :type location: Optional[Location]
         """
@@ -160,10 +156,10 @@ class IntValueNode(ValueNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -173,8 +169,8 @@ class IntValueNode(ValueNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an IntValueNode instance.
+        :return: the representation of an IntValueNode instance
         :rtype: str
         """
         return "IntValueNode(value=%r, location=%r)" % (
@@ -185,15 +181,14 @@ class IntValueNode(ValueNode):
 
 class NullValueNode(ValueNode):
     """
-    TODO:
+    AST node representing a GraphQL null value.
     """
 
     __slots__ = ("value", "location")
 
     def __init__(self, location: Optional["Location"] = None) -> None:
         """
-        TODO:
-        :param location: TODO:
+        :param location: location of the null value in the query/SDL
         :type location: Optional[Location]
         """
         self.value: None = None
@@ -201,10 +196,10 @@ class NullValueNode(ValueNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -214,8 +209,8 @@ class NullValueNode(ValueNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a NullValueNode instance.
+        :return: the representation of a NullValueNode instance
         :rtype: str
         """
         return "NullValueNode(location=%r)" % self.location
@@ -223,7 +218,7 @@ class NullValueNode(ValueNode):
 
 class StringValueNode(ValueNode):
     """
-    TODO:
+    AST node representing a GraphQL string value.
     """
 
     __slots__ = ("value", "location")
@@ -232,9 +227,8 @@ class StringValueNode(ValueNode):
         self, value: str, location: Optional["Location"] = None
     ) -> None:
         """
-        TODO:
-        :param value: TODO:
-        :param location: TODO:
+        :param value: value of the string value
+        :param location: location of the string value in the query/SDL
         :type value: str
         :type location: Optional[Location]
         """
@@ -243,10 +237,10 @@ class StringValueNode(ValueNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -256,8 +250,8 @@ class StringValueNode(ValueNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a StringValueNode instance.
+        :return: the representation of a StringValueNode instance
         :rtype: str
         """
         return "StringValueNode(value=%r, location=%r)" % (
@@ -268,7 +262,7 @@ class StringValueNode(ValueNode):
 
 class ListValueNode(ValueNode):
     """
-    TODO:
+    AST node representing a GraphQL list value.
     """
 
     __slots__ = ("values", "location")
@@ -277,9 +271,8 @@ class ListValueNode(ValueNode):
         self, values: List["ValueNode"], location: Optional["Location"] = None
     ) -> None:
         """
-        TODO:
-        :param values: TODO:
-        :param location: TODO:
+        :param values: values of the list value
+        :param location: location of the list value in the query/SDL
         :type values: List[ValueNode]
         :type location: Optional[Location]
         """
@@ -288,10 +281,10 @@ class ListValueNode(ValueNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -303,8 +296,8 @@ class ListValueNode(ValueNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a ListValueNode instance.
+        :return: the representation of a ListValueNode instance
         :rtype: str
         """
         return "ListValueNode(values=%r, location=%r)" % (
@@ -315,7 +308,7 @@ class ListValueNode(ValueNode):
 
 class ObjectFieldNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL object field.
     """
 
     __slots__ = ("name", "value", "location")
@@ -327,10 +320,9 @@ class ObjectFieldNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param value: TODO:
-        :param location: TODO:
+        :param name: name of the object field
+        :param value: value of the object field
+        :param location: location of the object field in the query/SDL
         :type name: NameNode
         :type value: ValueNode
         :type location: Optional[Location]
@@ -341,10 +333,10 @@ class ObjectFieldNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -358,8 +350,8 @@ class ObjectFieldNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an ObjectFieldNode instance.
+        :return: the representation of an ObjectFieldNode instance
         :rtype: str
         """
         return "ObjectFieldNode(name=%r, value=%r, location=%r)" % (
@@ -371,7 +363,7 @@ class ObjectFieldNode(Node):
 
 class ObjectValueNode(ValueNode):
     """
-    TODO:
+    AST node representing a GraphQL object value.
     """
 
     __slots__ = ("fields", "location")
@@ -382,9 +374,8 @@ class ObjectValueNode(ValueNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param fields: TODO:
-        :param location: TODO:
+        :param fields: fields of the object value
+        :param location: location of the object value in the query/SDL
         :type fields: List[ObjectFieldNode]
         :type location: Optional[Location]
         """
@@ -393,10 +384,10 @@ class ObjectValueNode(ValueNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -408,8 +399,8 @@ class ObjectValueNode(ValueNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an ObjectValueNode instance.
+        :return: the representation of an ObjectValueNode instance
         :rtype: str
         """
         return "ObjectValueNode(fields=%r, location=%r)" % (

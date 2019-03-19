@@ -1,7 +1,8 @@
 import json
 import os
 
-from typing import Any, Union
+from types import TracebackType
+from typing import Optional, Type, Union
 
 from cffi import FFI
 
@@ -38,14 +39,14 @@ except OSError:
 
 class ParsedData:
     """
-    TODO:
+    Utils context manager to properly read and free a query parsed with the
+    libgraphqlparser library.
     """
 
     def __init__(self, c_parsed: "CData", destroy_cb: "CData") -> None:
         """
-        TODO:
-        :param c_parsed: TODO:
-        :param destroy_cb: TODO:
+        :param c_parsed: struct GraphQLAstNode *
+        :param destroy_cb: void(*)(struct GraphQLAstNode *)
         :type c_parsed: CData
         :type destroy_cb: CData
         """
@@ -54,34 +55,43 @@ class ParsedData:
 
     def __enter__(self) -> None:
         """
-        TODO:
-        :return: TODO:
-        :rtype: TODO:
+        Returns the result of the query parsed with the libgraphqlparser
+        library.
+        :return: struct GraphQLAstNode *
+        :rtype: CData
         """
         return self._c_parsed
 
-    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+    def __exit__(
+        self,
+        exc_type: Optional[Type],
+        exc_value: Optional[Exception],
+        traceback: Optional[TracebackType],
+    ) -> None:
         """
-        TODO:
-        :param exc_type: TODO:
-        :param exc_value: TODO:
-        :param traceback: TODO:
-        :type exc_type: TODO:
-        :type exc_value: TODO:
-        :type traceback: TODO:
-        :return: TODO:
-        :rtype: TODO:
+        Frees the resource related to the parsing of the query made by the
+        libgraphqlparser library.
+        :param exc_type: class of the exception potentially raised
+        :param exc_value: instance of the exception potentially raised
+        :param traceback: traceback of the exception potentially raised
+        :type exc_type: Optional[Type]
+        :type exc_value: Optional[Exception]
+        :type traceback: Optional[TracebackType]
+        :rtype: None
         """
         self._destroy_cb(self._c_parsed)
 
 
 def _parse_context_manager(query: Union[str, bytes]) -> ParsedData:
     """
-    TODO:
-    :param query: TODO:
+    Parses the query with the libgraphqlparser library and returns a ParsedData
+    instance.
+    :param query: query to parse with libgraphqlparser
     :type query: Union[str, bytes]
-    :return: TODO:
+    :return: a ParsedData instance which is a context manager
     :rtype: ParsedData
+    :raises GraphQLSyntaxError: raised when the libgraphqlparser library
+    couldn't parse the query due to a syntax error.
     """
     if isinstance(query, str):
         query = query.encode("UTF-8")
@@ -108,10 +118,10 @@ def _parse_context_manager(query: Union[str, bytes]) -> ParsedData:
 
 def _parse_to_json_ast(query: Union[str, bytes]) -> bytes:
     """
-    TODO:
-    :param query: TODO:
+    Parses the query and returns its AST JSON representation as bytes.
+    :param query: query to parse
     :type query: Union[str, bytes]
-    :return: TODO:
+    :return: bytes AST JSON representation of the query
     :rtype: bytes
     """
     with _parse_context_manager(query) as parsed:
@@ -120,13 +130,25 @@ def _parse_to_json_ast(query: Union[str, bytes]) -> bytes:
 
 def parse_to_document(query: Union[str, bytes]) -> "DocumentNode":
     """
-    TODO:
-    :param query: TODO:
+    Returns a DocumentNode instance which represents the query after being
+    parsed.
+    :param query: query to parse and transform into a DocumentNode
     :type query: Union[str, bytes]
-    :return: TODO:
+    :return: a DocumentNode representing the query
     :rtype: DocumentNode
 
     :Example:
-    TODO:
+
+    >>> from tartiflette.language.parsers.libgraphqlparser import (
+    >>>     parse_to_document
+    >>> )
+    >>>
+    >>>
+    >>> query_document = parse_to_document('''query MyOperation {
+    >>>   cat(id: 1) {
+    >>>     id
+    >>>     name
+    >>>   }
+    >>> }''')
     """
     return document_from_ast_json(json.loads(_parse_to_json_ast(query)))

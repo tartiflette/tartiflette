@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeDefinitionNode
 
 class InputObjectTypeDefinitionNode(TypeDefinitionNode):
     """
-    TODO:
+    AST node representing a GraphQL input object type definition.
     """
 
     __slots__ = ("description", "name", "directives", "fields", "location")
@@ -19,12 +19,12 @@ class InputObjectTypeDefinitionNode(TypeDefinitionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param description: TODO:
-        :param directives: TODO:
-        :param fields: TODO:
-        :param location: TODO:
+        :param name: name of the input object type definition
+        :param description: description of the input object type definition
+        :param directives: directives of the input object type definition
+        :param fields: fields of the input object type definition
+        :param location: location of the input object type definition in the
+        query/SDL
         :type name: NameNode
         :type description: Optional[DescriptionNode]
         :type directives: Optional[List[DirectiveNode]]
@@ -39,10 +39,10 @@ class InputObjectTypeDefinitionNode(TypeDefinitionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -58,12 +58,15 @@ class InputObjectTypeDefinitionNode(TypeDefinitionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an InputObjectTypeDefinitionNode
+        instance.
+        :return: the representation of an InputObjectTypeDefinitionNode
+        instance
         :rtype: str
         """
         return (
-            "InputObjectTypeDefinitionNode(description=%r, name=%r, directives=%r, fields=%r, location=%r)"
+            "InputObjectTypeDefinitionNode(description=%r, name=%r, "
+            "directives=%r, fields=%r, location=%r)"
             % (
                 self.description,
                 self.name,

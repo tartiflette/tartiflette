@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class SelectionSetNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL selection set.
     """
 
     __slots__ = ("selections", "location")
@@ -16,9 +16,8 @@ class SelectionSetNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param selections: TODO:
-        :param location: TODO:
+        :param selections: selections of the selection set
+        :param location: location of the selection set in the query/SDL
         :type selections: List["SelectionNode"]
         :type location: Optional[Location]
         """
@@ -27,10 +26,10 @@ class SelectionSetNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -43,8 +42,8 @@ class SelectionSetNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a SelectionSetNode instance.
+        :return: the representation of a SelectionSetNode instance
         :rtype: str
         """
         return "SelectionSetNode(selections=%r, location=%r)" % (

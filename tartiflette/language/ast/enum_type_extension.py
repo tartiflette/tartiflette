@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeExtensionNode
 
 class EnumTypeExtensionNode(TypeExtensionNode):
     """
-    TODO:
+    AST node representing a GraphQL enum type extension.
     """
 
     __slots__ = ("name", "directives", "values", "location")
@@ -18,11 +18,10 @@ class EnumTypeExtensionNode(TypeExtensionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param directives: TODO:
-        :param values: TODO:
-        :param location: TODO:
+        :param name: name of the enum type extension node
+        :param directives: directives of the enum type extension node
+        :param values: possible values of the enum type extension node
+        :param location: location of the enum type extension in the query/SDL
         :type name: NameNode
         :type directives: Optional[List[DirectiveNode]]
         :type values: Optional[List[EnumValueDefinitionNode]]
@@ -35,10 +34,10 @@ class EnumTypeExtensionNode(TypeExtensionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -53,11 +52,12 @@ class EnumTypeExtensionNode(TypeExtensionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an EnumTypeExtensionNode instance.
+        :return: the representation of an EnumTypeExtensionNode instance
         :rtype: str
         """
         return (
-            "EnumTypeExtensionNode(name=%r, directives=%r, values=%r, location=%r)"
+            "EnumTypeExtensionNode(name=%r, directives=%r, values=%r, "
+            "location=%r)"
             % (self.name, self.directives, self.values, self.location)
         )

@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import SelectionNode
 
 class FragmentSpreadNode(SelectionNode):
     """
-    TODO:
+    AST node representing a GraphQL fragment spread.
     """
 
     __slots__ = ("name", "directives", "location")
@@ -17,10 +17,9 @@ class FragmentSpreadNode(SelectionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param directives: TODO:
-        :param location: TODO:
+        :param name: name of the fragment spread
+        :param directives: directives of the fragment spread
+        :param location: location of the fragment spread in the query/SDL
         :type name: NameNode
         :type directives: Optional[List[DirectiveNode]]
         :type location: Optional[Location]
@@ -31,10 +30,10 @@ class FragmentSpreadNode(SelectionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -48,8 +47,8 @@ class FragmentSpreadNode(SelectionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a FragmentSpreadNode instance.
+        :return: the representation of a FragmentSpreadNode instance
         :rtype: str
         """
         return "FragmentSpreadNode(name=%r, directives=%r, location=%r)" % (

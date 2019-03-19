@@ -1,17 +1,18 @@
+from unittest.mock import Mock
+
 import pytest
 
 from lark.lexer import Token
-from tartiflette.language.ast import Location
 
+from tartiflette.language.ast import Location
 from tartiflette.language.parsers.lark.transformers.converters import (
     UnexpectedASTNode,
     _extract_node_info,
-    lark_to_location_node
+    lark_to_location_node,
 )
 from tartiflette.language.parsers.lark.transformers.node_transformer import (
     SchemaNode,
 )
-from unittest.mock import Mock
 
 
 @pytest.mark.parametrize(
@@ -73,27 +74,15 @@ def test_extract_node_info_unexpected_ast_node():
         _extract_node_info([SchemaNode(type="unexpected", value=None)])
 
 
-@pytest.mark.parametrize("line,column,end_line,end_column,expected", [
-    (
-        1,
-        2,
-        2,
-        1,
-        Location(line=1, column=2, line_end=2, column_end=1),
-    ),
-    (
-        1,
-        2,
-        3,
-        4,
-        Location(line=1, column=2, line_end=3, column_end=4),
-    ),
-])
+@pytest.mark.parametrize(
+    "line,column,end_line,end_column,expected",
+    [
+        (1, 2, 2, 1, Location(line=1, column=2, line_end=2, column_end=1)),
+        (1, 2, 3, 4, Location(line=1, column=2, line_end=3, column_end=4)),
+    ],
+)
 def test_lark_to_location_node(line, column, end_line, end_column, expected):
     node = Mock(
-        line=line,
-        column=column,
-        end_line=end_line,
-        end_column=end_column,
+        line=line, column=column, end_line=end_line, end_column=end_column
     )
     assert lark_to_location_node(node) == expected

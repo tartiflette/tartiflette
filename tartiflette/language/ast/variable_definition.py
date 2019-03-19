@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class VariableDefinitionNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL variable definition.
     """
 
     __slots__ = ("variable", "type", "default_value", "location")
@@ -18,11 +18,10 @@ class VariableDefinitionNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param variable: TODO:
-        :param type: TODO:
-        :param default_value: TODO:
-        :param location: TODO:
+        :param variable: variable of the variable definition
+        :param type: type of the variable definition
+        :param default_value: default value of the variable definition
+        :param location: location of the variable definition in the query/SDL
         :type variable: VariableNode
         :type type: TypeNode
         :type default_value: Optional[ValueNode]
@@ -36,10 +35,10 @@ class VariableDefinitionNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -54,11 +53,12 @@ class VariableDefinitionNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a VariableDefinitionNode instance.
+        :return: the representation of a VariableDefinitionNode instance
         :rtype: str
         """
         return (
-            "VariableDefinitionNode(variable=%r, type=%r, default_value=%r, location=%r)"
+            "VariableDefinitionNode(variable=%r, type=%r, default_value=%r, "
+            "location=%r)"
             % (self.variable, self.type, self.default_value, self.location)
         )

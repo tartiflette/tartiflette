@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import TypeSystemDefinitionNode
 
 class DirectiveDefinitionNode(TypeSystemDefinitionNode):
     """
-    TODO:
+    AST node representing a GraphQL directive definition.
     """
 
     __slots__ = ("description", "name", "arguments", "locations", "location")
@@ -19,12 +19,11 @@ class DirectiveDefinitionNode(TypeSystemDefinitionNode):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param locations: TODO:
-        :param description: TODO:
-        :param arguments: TODO:
-        :param location: TODO:
+        :param name: name of the directive definition
+        :param locations: locations where the directive definition can be used
+        :param description: description of the directive definition
+        :param arguments: arguments of the directive definition
+        :param location: location of the directive definition in the query/SDL
         :type name: NameNode
         :type locations: List[NameNode]
         :type description: Optional[DescriptionNode]
@@ -39,10 +38,10 @@ class DirectiveDefinitionNode(TypeSystemDefinitionNode):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -58,12 +57,13 @@ class DirectiveDefinitionNode(TypeSystemDefinitionNode):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a DirectiveDefinitionNode instance.
+        :return: the representation of a DirectiveDefinitionNode instance
         :rtype: str
         """
         return (
-            "DirectiveDefinitionNode(description=%r, name=%r, arguments=%r, locations=%r, location=%r)"
+            "DirectiveDefinitionNode(description=%r, name=%r, arguments=%r, "
+            "locations=%r, location=%r)"
             % (
                 self.description,
                 self.name,

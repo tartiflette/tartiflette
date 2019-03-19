@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class InputValueDefinitionNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL input value definition.
     """
 
     __slots__ = (
@@ -27,13 +27,13 @@ class InputValueDefinitionNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param type: TODO:
-        :param description: TODO:
-        :param default_value: TODO:
-        :param directives: TODO:
-        :param location: TODO:
+        :param name: name of the input value definition
+        :param type: type of the input value definition
+        :param description: description of the input value definition
+        :param default_value: default value of the input value definition
+        :param directives: directives of the input value definition
+        :param location: location of the input value definition in the
+        query/SDL
         :type name: NameNode
         :type type: TypeNode
         :type description: Optional[DescriptionNode]
@@ -51,10 +51,10 @@ class InputValueDefinitionNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -71,12 +71,13 @@ class InputValueDefinitionNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an InputValueDefinitionNode instance.
+        :return: the representation of an InputValueDefinitionNode instance
         :rtype: str
         """
         return (
-            "InputValueDefinitionNode(description=%r, name=%r, type=%r, default_value=%r, directives=%r, location=%r)"
+            "InputValueDefinitionNode(description=%r, name=%r, type=%r, "
+            "default_value=%r, directives=%r, location=%r)"
             % (
                 self.description,
                 self.name,

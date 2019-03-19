@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class FieldDefinitionNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL field definition.
     """
 
     __slots__ = (
@@ -27,13 +27,12 @@ class FieldDefinitionNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param type: TODO:
-        :param description: TODO:
-        :param arguments: TODO:
-        :param directives: TODO:
-        :param location: TODO:
+        :param name: name of the field definition
+        :param type: type of the field definition
+        :param description: description of the field definition
+        :param arguments: arguments of the field definition
+        :param directives: directives of the field definition
+        :param location: location of the field definition in the query/SDL
         :type name: NameNode
         :type type: TypeNode
         :type description: Optional[DescriptionNode]
@@ -51,10 +50,10 @@ class FieldDefinitionNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -71,12 +70,13 @@ class FieldDefinitionNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of a FieldDefinitionNode instance.
+        :return: the representation of a FieldDefinitionNode instance
         :rtype: str
         """
         return (
-            "FieldDefinitionNode(description=%r, name=%r, arguments=%r, type=%r, directives=%r, location=%r)"
+            "FieldDefinitionNode(description=%r, name=%r, arguments=%r, "
+            "type=%r, directives=%r, location=%r)"
             % (
                 self.description,
                 self.name,

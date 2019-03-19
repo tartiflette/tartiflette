@@ -9,15 +9,17 @@ _ENUM_VALUE_TOKEN_TYPE = "NAME"
 
 
 def _find_token(
-    node: Union["Token", "Tree"], searched_token_type: str
+    node: Union["Token", "Tree", list], searched_token_type: str
 ) -> Optional["Token"]:
     """
-    TODO:
-    :param node: TODO:
-    :param searched_token_type: TODO:
-    :type node: Union[Token, Tree]
+    Searches for token type in the node provided. The first token corresponding
+    to the searched type is returned. If no token matches the searched type
+    then the value "None" is returned.
+    :param node: object instance in which to search
+    :param searched_token_type: token type to search
+    :type node: Union[Token, Tree, list]
     :type searched_token_type: str
-    :return: TODO:
+    :return: the first token corresponding to the searched type or None
     :rtype: Optional[Token]
     """
     if isinstance(node, Token):
@@ -37,12 +39,12 @@ def _find_token(
 
 def _override_tree_children(tree: "Tree", new_child: Any) -> "Tree":
     """
-    TODO:
-    :param tree: TODO:
-    :param new_child: TODO:
+    Replaces the children of a Tree instance with a single child.
+    :param tree: Tree instance to update
+    :param new_child: new single child of the tree
     :type tree: Tree
     :type new_child: Any
-    :return: TODO:
+    :return: the tree instance with its single child
     :rtype: Tree
     """
     tree.children = [new_child]
@@ -52,15 +54,17 @@ def _override_tree_children(tree: "Tree", new_child: Any) -> "Tree":
 @v_args(tree=True)
 class TokenTransformer(Transformer_InPlace):
     """
-    TODO:
+    Lark transformer which is in charge of cleaning and casting miscellaneous
+    rules in order to be easily reused in NodeTransformer.
     """
 
     def int_value(self, tree: "Tree") -> "Tree":
         """
-        TODO:
-        :param tree: TODO:
+        Replaces the children of the tree with a custom INT_VALUE token and
+        casts the string value to an int value.
+        :param tree: the Tree instance to update
         :type tree: Tree
-        :return: TODO:
+        :return: the three with its INT_VALUE token child
         :rtype: Tree
         """
         # pylint: disable=no-self-use
@@ -78,10 +82,11 @@ class TokenTransformer(Transformer_InPlace):
 
     def float_value(self, tree: "Tree") -> "Tree":
         """
-        TODO:
-        :param tree: TODO:
+        Replaces the children of the tree with a custom FLOAT_VALUE token and
+        casts the string value to a float value.
+        :param tree: the Tree instance to update
         :type tree: Tree
-        :return: TODO:
+        :return: the three with its FLOAT_VALUE token child
         :rtype: Tree
         """
         # pylint: disable=no-self-use
@@ -99,10 +104,11 @@ class TokenTransformer(Transformer_InPlace):
 
     def string_value(self, tree: "Tree") -> "Tree":
         """
-        TODO:
-        :param tree: TODO:
+        Replaces the children of the tree with a custom STRING_VALUE token and
+        removes quotes from the value (single or triple double quotes).
+        :param tree: the Tree instance to update
         :type tree: Tree
-        :return: TODO:
+        :return: the three with its STRING_VALUE token child
         :rtype: Tree
         """
         # pylint: disable=no-self-use
@@ -123,10 +129,11 @@ class TokenTransformer(Transformer_InPlace):
 
     def boolean_value(self, tree: "Tree") -> "Tree":
         """
-        TODO:
-        :param tree: TODO:
+        Replaces the children of the tree with a custom BOOLEAN_VALUE token and
+        casts the string value to a boolean value.
+        :param tree: the Tree instance to update
         :type tree: Tree
-        :return: TODO:
+        :return: the three with its BOOLEAN_VALUE token child
         :rtype: Tree
         """
         # pylint: disable=no-self-use
@@ -144,10 +151,11 @@ class TokenTransformer(Transformer_InPlace):
 
     def null_value(self, tree: "Tree") -> "Tree":
         """
-        TODO:
-        :param tree: TODO:
+        Replaces the children of the tree with a custom NULL_VALUE token and
+        force its value to None.
+        :param tree: the Tree instance to update
         :type tree: Tree
-        :return: TODO:
+        :return: the three with its NULL_VALUE token child
         :rtype: Tree
         """
         # pylint: disable=no-self-use
@@ -165,10 +173,11 @@ class TokenTransformer(Transformer_InPlace):
 
     def enum_value(self, tree: "Tree") -> "Tree":
         """
-        TODO:
-        :param tree: TODO:
+        Replaces the children of the tree with a custom ENUM token and set its
+        value to the underlying name's token value.
+        :param tree: the Tree instance to update
         :type tree: Tree
-        :return: TODO:
+        :return: the three with its ENUM token child
         :rtype: Tree
         """
         # pylint: disable=no-self-use
@@ -186,10 +195,11 @@ class TokenTransformer(Transformer_InPlace):
 
     def name(self, tree: "Tree") -> "Tree":
         """
-        TODO:
-        :param tree: TODO:
+        Replaces the children of the tree with a custom NAME token and set its
+        value to the underlying anonymous's token value.
+        :param tree: the Tree instance to update
         :type tree: Tree
-        :return: TODO:
+        :return: the three with its NAME token child
         :rtype: Tree
         """
         # pylint: disable=no-self-use
@@ -207,10 +217,11 @@ class TokenTransformer(Transformer_InPlace):
 
     def description(self, tree: "Tree") -> "Tree":
         """
-        TODO:
-        :param tree: TODO:
+        Replaces the children of the tree with a custom DESCRIPTION token and
+        set its value to the underlying string value's token value.
+        :param tree: the Tree instance to update
         :type tree: Tree
-        :return: TODO:
+        :return: the three with its DESCRIPTION token child
         :rtype: Tree
         """
         # pylint: disable=no-self-use

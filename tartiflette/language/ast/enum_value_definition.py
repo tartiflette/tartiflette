@@ -5,7 +5,7 @@ from tartiflette.language.ast.base import Node
 
 class EnumValueDefinitionNode(Node):
     """
-    TODO:
+    AST node representing a GraphQL enum value definition.
     """
 
     __slots__ = ("description", "name", "directives", "location")
@@ -18,11 +18,10 @@ class EnumValueDefinitionNode(Node):
         location: Optional["Location"] = None,
     ) -> None:
         """
-        TODO:
-        :param name: TODO:
-        :param description: TODO:
-        :param directives: TODO:
-        :param location: TODO:
+        :param name: name of the enum value definition
+        :param description: description of the enum value definition
+        :param directives: directives of the enum value definition
+        :param location: location of the enum value definition in the query/SDL
         :type name: NameNode
         :type description: Optional[DescriptionNode]
         :type directives: Optional[List[DirectiveNode]]
@@ -35,10 +34,10 @@ class EnumValueDefinitionNode(Node):
 
     def __eq__(self, other: Any) -> bool:
         """
-        TODO:
-        :param other: TODO:
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
         :type other: Any
-        :return: TODO:
+        :return: whether or not `other` is identical to `self`
         :rtype: bool
         """
         return self is other or (
@@ -53,11 +52,12 @@ class EnumValueDefinitionNode(Node):
 
     def __repr__(self) -> str:
         """
-        TODO:
-        :return: TODO:
+        Returns the representation of an EnumValueDefinitionNode instance.
+        :return: the representation of an EnumValueDefinitionNode instance
         :rtype: str
         """
         return (
-            "EnumValueDefinitionNode(description=%r, name=%r, directives=%r, location=%r)"
+            "EnumValueDefinitionNode(description=%r, name=%r, directives=%r, "
+            "location=%r)"
             % (self.description, self.name, self.directives, self.location)
         )

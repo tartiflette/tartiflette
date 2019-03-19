@@ -31,10 +31,11 @@ from tartiflette.language.ast import (
 
 def _parse_location(location_ast: dict) -> "Location":
     """
-    TODO:
-    :param location_ast: TODO:
+    Creates and returns a Location instance from a location's JSON AST
+    libgraphqlparser representation.
+    :param location_ast: location's JSON AST libgraphqlparser representation
     :type location_ast: dict
-    :return: TODO:
+    :return: a Location instance equivalent to the JSON AST representation
     :rtype: Location
     """
     return Location(
@@ -47,10 +48,11 @@ def _parse_location(location_ast: dict) -> "Location":
 
 def _parse_name(name_ast: dict) -> "NameNode":
     """
-    TODO:
-    :param name_ast: TODO:
+    Creates and returns a NameNode instance from a name's JSON AST
+    libgraphqlparser representation.
+    :param name_ast: name's JSON AST libgraphqlparser representation
     :type name_ast: dict
-    :return: TODO:
+    :return: a NameNode instance equivalent to the JSON AST representation
     :rtype: NameNode
     """
     return NameNode(
@@ -60,10 +62,12 @@ def _parse_name(name_ast: dict) -> "NameNode":
 
 def _parse_named_type(named_type_ast: dict) -> "NamedTypeNode":
     """
-    TODO:
-    :param named_type_ast: TODO:
+    Creates and returns a NamedTypeNode instance from a named type's JSON AST
+    libgraphqlparser representation.
+    :param named_type_ast: named type's JSON AST libgraphqlparser
+    representation
     :type named_type_ast: dict
-    :return: TODO:
+    :return: a NamedTypeNode instance equivalent to the JSON AST representation
     :rtype: NamedTypeNode
     """
     return NamedTypeNode(
@@ -74,10 +78,11 @@ def _parse_named_type(named_type_ast: dict) -> "NamedTypeNode":
 
 def _parse_variable(variable_ast: dict) -> "VariableNode":
     """
-    TODO:
-    :param variable_ast: TODO:
+    Creates and returns a VariableNode instance from a variable's JSON AST
+    libgraphqlparser representation.
+    :param variable_ast: variable's JSON AST libgraphqlparser representation
     :type variable_ast: dict
-    :return: TODO:
+    :return: a VariableNode instance equivalent to the JSON AST representation
     :rtype: VariableNode
     """
     return VariableNode(
@@ -88,10 +93,13 @@ def _parse_variable(variable_ast: dict) -> "VariableNode":
 
 def _parse_boolean_value(boolean_value_ast: dict) -> "BooleanValueNode":
     """
-    TODO:
-    :param boolean_value_ast: TODO:
+    Creates and returns a BooleanValueNode instance from a boolean value's JSON
+    AST libgraphqlparser representation.
+    :param boolean_value_ast: boolean value's JSON AST libgraphqlparser
+    representation
     :type boolean_value_ast: dict
-    :return: TODO:
+    :return: a BooleanValueNode instance equivalent to the JSON AST
+    representation
     :rtype: BooleanValueNode
     """
     return BooleanValueNode(
@@ -102,10 +110,13 @@ def _parse_boolean_value(boolean_value_ast: dict) -> "BooleanValueNode":
 
 def _parse_enum_value(enum_value_ast: dict) -> "EnumValueNode":
     """
-    TODO:
-    :param enum_value_ast: TODO:
+    Creates and returns an EnumValueNode instance from an enum value's JSON AST
+    libgraphqlparser representation.
+    :param enum_value_ast: enum value's JSON AST libgraphqlparser
+    representation
     :type enum_value_ast: dict
-    :return: TODO:
+    :return: an EnumValueNode instance equivalent to the JSON AST
+    representation
     :rtype: EnumValueNode
     """
     return EnumValueNode(
@@ -116,10 +127,13 @@ def _parse_enum_value(enum_value_ast: dict) -> "EnumValueNode":
 
 def _parse_float_value(float_value_ast: dict) -> "FloatValueNode":
     """
-    TODO:
-    :param float_value_ast: TODO:
+    Creates and returns a FloatValueNode instance from a float value's JSON AST
+    libgraphqlparser representation.
+    :param float_value_ast: float value's JSON AST libgraphqlparser
+    representation
     :type float_value_ast: dict
-    :return: TODO:
+    :return: a FloatValueNode instance equivalent to the JSON AST
+    representation
     :rtype: FloatValueNode
     """
     return FloatValueNode(
@@ -130,10 +144,11 @@ def _parse_float_value(float_value_ast: dict) -> "FloatValueNode":
 
 def _parse_int_value(int_value_ast: dict) -> "IntValueNode":
     """
-    TODO:
-    :param int_value_ast: TODO:
+    Creates and returns an IntValueNode instance from an int value's JSON AST
+    libgraphqlparser representation.
+    :param int_value_ast: int value's JSON AST libgraphqlparser representation
     :type int_value_ast: dict
-    :return: TODO:
+    :return: an IntValueNode instance equivalent to the JSON AST representation
     :rtype: IntValueNode
     """
     return IntValueNode(
@@ -158,10 +173,12 @@ def _parse_values(
     ]
 ]:
     """
-    TODO:
-    :param values_ast: TODO:
+    Creates and returns a list of ValueNode instances from a list of value's
+    JSON AST libgraphqlparser representation.
+    :param values_ast: list of value's JSON AST libgraphqlparser representation
     :type values_ast: Optional[List[dict]]
-    :return: TODO:
+    :return: a list of ValueNode instances equivalent to the JSON AST
+    representation
     :rtype: List[Union[BooleanValueNode, EnumValueNode, FloatValueNode, IntValueNode, ListValueNode, NullValueNode, ObjectValueNode, StringValueNode, VariableNode]]
     """
     if values_ast:
@@ -171,10 +188,12 @@ def _parse_values(
 
 def _parse_list_value(list_value_ast: dict) -> "ListValueNode":
     """
-    TODO:
-    :param list_value_ast: TODO:
+    Creates and returns a ListValueNode instance from a list value's JSON AST
+    libgraphqlparser representation.
+    :param list_value_ast: list value's JSON AST libgraphqlparser
+    representation
     :type list_value_ast: dict
-    :return: TODO:
+    :return: a ListValueNode instance equivalent to the JSON AST representation
     :rtype: ListValueNode
     """
     return ListValueNode(
@@ -185,10 +204,12 @@ def _parse_list_value(list_value_ast: dict) -> "ListValueNode":
 
 def _parse_null_value(null_value_ast: dict) -> "NullValueNode":
     """
-    TODO:
-    :param null_value_ast: TODO:
+    Creates and returns a NullValueNode instance from a null value's JSON AST
+    libgraphqlparser representation.
+    :param null_value_ast: null value's JSON AST libgraphqlparser
+    representation
     :type null_value_ast: dict
-    :return: TODO:
+    :return: a NullValueNode instance equivalent to the JSON AST representation
     :rtype: NullValueNode
     """
     return NullValueNode(location=_parse_location(null_value_ast["loc"]))
@@ -196,10 +217,13 @@ def _parse_null_value(null_value_ast: dict) -> "NullValueNode":
 
 def _parse_object_field(object_field_ast: dict) -> "ObjectFieldNode":
     """
-    TODO:
-    :param object_field_ast: TODO:
+    Creates and returns an ObjectFieldNode instance from an object field's JSON
+    AST libgraphqlparser representation.
+    :param object_field_ast: object field's JSON AST libgraphqlparser
+    representation
     :type object_field_ast: dict
-    :return: TODO:
+    :return: an ObjectFieldNode instance equivalent to the JSON AST
+    representation
     :rtype: ObjectFieldNode
     """
     return ObjectFieldNode(
@@ -213,10 +237,13 @@ def _parse_object_fields(
     object_fields_ast: Optional[List[dict]]
 ) -> List["ObjectFieldNode"]:
     """
-    TODO:
-    :param object_fields_ast: TODO:
+    Creates and returns a list of ObjectFieldNode instances from a list of
+    object field's JSON AST libgraphqlparser representation.
+    :param object_fields_ast: list of object field's JSON AST libgraphqlparser
+    representation
     :type object_fields_ast: Optional[List[dict]]
-    :return: TODO:
+    :return: a list of ObjectFieldNode instances equivalent to the JSON AST
+    representation
     :rtype: List[ObjectFieldNode]
     """
     if object_fields_ast:
@@ -229,10 +256,13 @@ def _parse_object_fields(
 
 def _parse_object_value(object_value_ast: dict) -> "ObjectValueNode":
     """
-    TODO:
-    :param object_value_ast: TODO:
+    Creates and returns an ObjectValueNode instance from an object value's JSON
+    AST libgraphqlparser representation.
+    :param object_value_ast: object value's JSON AST libgraphqlparser
+    representation
     :type object_value_ast: dict
-    :return: TODO:
+    :return: an ObjectValueNode instance equivalent to the JSON AST
+    representation
     :rtype: ObjectValueNode
     """
     return ObjectValueNode(
@@ -243,10 +273,13 @@ def _parse_object_value(object_value_ast: dict) -> "ObjectValueNode":
 
 def _parse_string_value(string_value_ast: dict) -> "StringValueNode":
     """
-    TODO:
-    :param string_value_ast: TODO:
+    Creates and returns a StringValueNode instance from a string value's JSON
+    AST libgraphqlparser representation.
+    :param string_value_ast: string value's JSON AST libgraphqlparser
+    representation
     :type string_value_ast: dict
-    :return: TODO:
+    :return: a StringValueNode instance equivalent to the JSON AST
+    representation
     :rtype: StringValueNode
     """
     return StringValueNode(
@@ -284,10 +317,11 @@ def _parse_value(
     ]
 ]:
     """
-    TODO:
-    :param value_ast: TODO:
+    Creates and returns a ValueNode instance from a value's JSON AST
+    libgraphqlparser representation.
+    :param value_ast: value's JSON AST libgraphqlparser representation
     :type value_ast: Optional[dict]
-    :return: TODO:
+    :return: a ValueNode instance equivalent to the JSON AST representation
     :rtype: Optional[Union[BooleanValueNode, EnumValueNode, FloatValueNode, IntValueNode, ListValueNode, NullValueNode, ObjectValueNode, StringValueNode, VariableNode]]
     """
     if value_ast:
@@ -297,10 +331,11 @@ def _parse_value(
 
 def _parse_argument(argument_ast: dict) -> "ArgumentNode":
     """
-    TODO:
-    :param argument_ast: TODO:
+    Creates and returns an ArgumentNode instance from an argument's JSON AST
+    libgraphqlparser representation.
+    :param argument_ast: argument's JSON AST libgraphqlparser representation
     :type argument_ast: dict
-    :return: TODO:
+    :return: an ArgumentNode instance equivalent to the JSON AST representation
     :rtype: ArgumentNode
     """
     return ArgumentNode(
@@ -314,10 +349,13 @@ def _parse_arguments(
     arguments_ast: Optional[List[dict]]
 ) -> List["ArgumentNode"]:
     """
-    TODO:
-    :param arguments_ast: TODO:
+    Creates and returns a list of ArgumentNode instances from a list of
+    argument's JSON AST libgraphqlparser representation.
+    :param arguments_ast: list of argument's JSON AST libgraphqlparser
+    representation
     :type arguments_ast: Optional[List[dict]]
-    :return: TODO:
+    :return: a list of ArgumentNode instances equivalent to the JSON AST
+    representation
     :rtype: List[ArgumentNode]
     """
     if arguments_ast:
@@ -327,10 +365,11 @@ def _parse_arguments(
 
 def _parse_directive(directive_ast: dict) -> "DirectiveNode":
     """
-    TODO:
-    :param directive_ast: TODO:
+    Creates and returns a DirectiveNode instance from a directive's JSON AST
+    libgraphqlparser representation.
+    :param directive_ast: directive's JSON AST libgraphqlparser representation
     :type directive_ast: dict
-    :return: TODO:
+    :return: a DirectiveNode instance equivalent to the JSON AST representation
     :rtype: DirectiveNode
     """
     return DirectiveNode(
@@ -344,10 +383,13 @@ def _parse_directives(
     directives_ast: Optional[List[dict]]
 ) -> List["DirectiveNode"]:
     """
-    TODO:
-    :param directives_ast: TODO:
+    Creates and returns a list of DirectiveNode instances from a list of
+    directive's JSON AST libgraphqlparser representation.
+    :param directives_ast: list of directive's JSON AST libgraphqlparser
+    representation
     :type directives_ast: Optional[List[dict]]
-    :return: TODO:
+    :return: a list of DirectiveNode instances equivalent to the JSON AST
+    representation
     :rtype: List[DirectiveNode]
     """
     if directives_ast:
@@ -357,10 +399,11 @@ def _parse_directives(
 
 def _parse_field(field_ast: dict) -> "FieldNode":
     """
-    TODO:
-    :param field_ast: TODO:
+    Creates and returns a FieldNode instance from a field's JSON AST
+    libgraphqlparser representation.
+    :param field_ast: field's JSON AST libgraphqlparser representation
     :type field_ast: dict
-    :return: TODO:
+    :return: a FieldNode instance equivalent to the JSON AST representation
     :rtype: FieldNode
     """
     return FieldNode(
@@ -375,10 +418,13 @@ def _parse_field(field_ast: dict) -> "FieldNode":
 
 def _parse_fragment_spread(fragment_spread_ast: dict) -> "FragmentSpreadNode":
     """
-    TODO:
-    :param fragment_spread_ast: TODO:
+    Creates and returns a FragmentSpreadNode instance from a fragment spread's
+    JSON AST libgraphqlparser representation.
+    :param fragment_spread_ast: fragment spread's JSON AST libgraphqlparser
+    representation
     :type fragment_spread_ast: dict
-    :return: TODO:
+    :return: a FragmentSpreadNode instance equivalent to the JSON AST
+    representation
     :rtype: FragmentSpreadNode
     """
     return FragmentSpreadNode(
@@ -390,10 +436,13 @@ def _parse_fragment_spread(fragment_spread_ast: dict) -> "FragmentSpreadNode":
 
 def _parse_inline_fragment(inline_fragment_ast: dict) -> "InlineFragmentNode":
     """
-    TODO:
-    :param inline_fragment_ast: TODO:
+    Creates and returns an InlineFragmentNode instance from an inline spread's
+    JSON AST libgraphqlparser representation.
+    :param inline_fragment_ast: inline spread's JSON AST libgraphqlparser
+    representation
     :type inline_fragment_ast: dict
-    :return: TODO:
+    :return: an InlineFragmentNode instance equivalent to the JSON AST
+    representation
     :rtype: InlineFragmentNode
     """
     return InlineFragmentNode(
@@ -419,10 +468,11 @@ def _parse_selection(
     selection_ast: dict
 ) -> Union["FieldNode", "FragmentSpreadNode", "InlineFragmentNode"]:
     """
-    TODO:
-    :param selection_ast: TODO:
+    Creates and returns a SelectionNode instance from a selection's JSON AST
+    libgraphqlparser representation.
+    :param selection_ast: selection's JSON AST libgraphqlparser representation
     :type selection_ast: dict
-    :return: TODO:
+    :return: a SelectionNode instance equivalent to the JSON AST representation
     :rtype: Union[FieldNode, FragmentSpreadNode, InlineFragmentNode]
     """
     return _SELECTION_PARSER_MAPPING[selection_ast["kind"]](selection_ast)
@@ -432,10 +482,13 @@ def _parse_selections(
     selections_ast: Optional[List[dict]]
 ) -> List[Union["FieldNode", "FragmentSpreadNode", "InlineFragmentNode"]]:
     """
-    TODO:
-    :param selections_ast: TODO:
+    Creates and returns a list of SelectionNode instances from a list of
+    selection's JSON AST libgraphqlparser representation.
+    :param selections_ast: list of selection's JSON AST libgraphqlparser
+    representation
     :type selections_ast: Optional[List[dict]]
-    :return: TODO:
+    :return: a list of SelectionNode instances equivalent to the JSON AST
+    representation
     :rtype: List[Union[FieldNode, FragmentSpreadNode, InlineFragmentNode]]
     """
     if selections_ast:
@@ -447,10 +500,13 @@ def _parse_selection_set(
     selection_set_ast: Optional[dict]
 ) -> Optional["SelectionSetNode"]:
     """
-    TODO:
-    :param selection_set_ast: TODO:
+    Creates and returns a SelectionSetNode instance from a selection set's JSON
+    AST libgraphqlparser representation.
+    :param selection_set_ast: selection set's JSON AST libgraphqlparser
+    representation
     :type selection_set_ast: Optional[dict]
-    :return: TODO:
+    :return: a SelectionSetNode instance equivalent to the JSON AST
+    representation
     :rtype: Optional[SelectionSetNode]
     """
     if selection_set_ast:
@@ -465,10 +521,13 @@ def _parse_fragment_definition(
     fragment_definition_ast: dict
 ) -> "FragmentDefinitionNode":
     """
-    TODO:
-    :param fragment_definition_ast: TODO:
+    Creates and returns a FragmentDefinitionNode instance from a fragment
+    definition's JSON AST libgraphqlparser representation.
+    :param fragment_definition_ast: fragment definition's JSON AST
+    libgraphqlparser representation
     :type fragment_definition_ast: dict
-    :return: TODO:
+    :return: a FragmentDefinitionNode instance equivalent to the JSON AST
+    representation
     :rtype: FragmentDefinitionNode
     """
     return FragmentDefinitionNode(
@@ -488,10 +547,11 @@ def _parse_type(
     type_ast: dict
 ) -> Union["ListTypeNode", "NonNullTypeNode", "NamedTypeNode"]:
     """
-    TODO:
-    :param type_ast: TODO:
+    Creates and returns a TypeNode from a type's JSON AST libgraphqlparser
+    representation.
+    :param type_ast: type's JSON AST libgraphqlparser representation
     :type type_ast: dict
-    :return: TODO:
+    :return: a TypeNode instance equivalent to the JSON AST representation
     :rtype: Union[ListTypeNode, NonNullTypeNode, NamedTypeNode]
     """
     if type_ast["kind"] == "ListType":
@@ -511,10 +571,13 @@ def _parse_variable_definition(
     variable_definition_ast: dict
 ) -> "VariableDefinitionNode":
     """
-    TODO:
-    :param variable_definition_ast: TODO:
+    Creates and returns a VariableDefinitionNode instance from a variable
+    definition's JSON AST libgraphqlparser representation.
+    :param variable_definition_ast: variable definition's JSON AST
+    libgraphqlparser representation
     :type variable_definition_ast: dict
-    :return: TODO:
+    :return: a VariableDefinitionNode instance equivalent to the JSON AST
+    representation
     :rtype: VariableDefinitionNode
     """
     return VariableDefinitionNode(
@@ -529,10 +592,13 @@ def _parse_variable_definitions(
     variable_definitions_ast: Optional[List[dict]]
 ) -> List["VariableDefinitionNode"]:
     """
-    TODO:
-    :param variable_definitions_ast: TODO:
+    Creates and returns a list of VariableDefinitionNode instances from a list
+    of variable definition's JSON AST libgraphqlparser representation.
+    :param variable_definitions_ast: list of variable definition's JSON AST
+    libgraphqlparser representation
     :type variable_definitions_ast: Optional[List[dict]]
-    :return: TODO:
+    :return: a list of VariableDefinitionNode instances equivalent to the JSON
+    AST representation
     :rtype: List[VariableDefinitionNode]
     """
     if variable_definitions_ast:
@@ -547,10 +613,13 @@ def _parse_operation_definition(
     operation_definition_ast: dict
 ) -> "OperationDefinitionNode":
     """
-    TODO:
-    :param operation_definition_ast: TODO:
+    Creates and returns an OperationDefinitionNode instance from an operation
+    definition's JSON AST libgraphqlparser representation.
+    :param operation_definition_ast: operation definition's JSON AST
+    libgraphqlparser representation
     :type operation_definition_ast: dict
-    :return: TODO:
+    :return: an OperationDefinitionNode instance equivalent to the JSON AST
+    representation
     :rtype: OperationDefinitionNode
     """
     return OperationDefinitionNode(
@@ -579,10 +648,13 @@ def _parse_definition(
     definition_ast: dict
 ) -> Union["FragmentDefinitionNode", "OperationDefinitionNode"]:
     """
-    TODO:
-    :param definition_ast: TODO:
+    Creates and returns a DefinitionNode instance from a definition's JSON AST
+    libgraphqlparser representation.
+    :param definition_ast: definition's JSON AST libgraphqlparser
+    representation
     :type definition_ast: dict
-    :return: TODO:
+    :return: a DefinitionNode instance equivalent to the JSON AST
+    representation
     :rtype: Union[FragmentDefinitionNode, OperationDefinitionNode]
     """
     return _DEFINITION_PARSER_MAPPING[definition_ast["kind"]](definition_ast)
@@ -592,10 +664,13 @@ def _parse_definitions(
     definitions_ast: Optional[List[dict]]
 ) -> List[Union["FragmentDefinitionNode", "OperationDefinitionNode"]]:
     """
-    TODO:
-    :param definitions_ast: TODO:
+    Creates and returns a list of DefinitionNode instances from a list of
+    definition's JSON AST libgraphqlparser representation.
+    :param definitions_ast: list of definition's JSON AST libgraphqlparser
+    representation
     :type definitions_ast: Optional[List[dict]]
-    :return: TODO:
+    :return: a list of DefinitionNode instances equivalent to the JSON AST
+    representation
     :rtype: List[Union[FragmentDefinitionNode, OperationDefinitionNode]]
     """
     if definitions_ast:
@@ -607,14 +682,68 @@ def _parse_definitions(
 
 def document_from_ast_json(document_ast: dict) -> "DocumentNode":
     """
-    TODO:
-    :param document_ast: TODO:
+    Creates and returns a DocumentNode instance from a document's JSON AST
+    libgraphqlparser representation.
+    :param document_ast: document's JSON AST libgraphqlparser representation
     :type document_ast: dict
-    :return: TODO:
+    :return: a DocumentNode instance equivalent to the JSON AST representation
     :rtype: DocumentNode
 
     :Example:
-    TODO:
+
+    >>> from tartiflette.language.parsers.libgraphqlparser.transformers import (
+    >>>     document_from_ast_json
+    >>> )
+    >>>
+    >>>
+    >>> document = document_from_ast_json({
+    >>>     "kind": "Document",
+    >>>     "loc": {
+    >>>         "start": {"line": 2, "column": 13},
+    >>>         "end": {"line": 4, "column": 14},
+    >>>     },
+    >>>     "definitions": [
+    >>>         {
+    >>>             "kind": "OperationDefinition",
+    >>>             "loc": {
+    >>>                 "start": {"line": 2, "column": 13},
+    >>>                 "end": {"line": 4, "column": 14},
+    >>>             },
+    >>>             "operation": "query",
+    >>>             "name": None,
+    >>>             "variableDefinitions": None,
+    >>>             "directives": None,
+    >>>             "selectionSet": {
+    >>>                 "kind": "SelectionSet",
+    >>>                 "loc": {
+    >>>                     "start": {"line": 2, "column": 13},
+    >>>                     "end": {"line": 4, "column": 14},
+    >>>                 },
+    >>>                 "selections": [
+    >>>                     {
+    >>>                         "kind": "Field",
+    >>>                         "loc": {
+    >>>                             "start": {"line": 3, "column": 15},
+    >>>                             "end": {"line": 3, "column": 20},
+    >>>                         },
+    >>>                         "alias": None,
+    >>>                         "name": {
+    >>>                             "kind": "Name",
+    >>>                             "loc": {
+    >>>                                 "start": {"line": 3, "column": 15},
+    >>>                                 "end": {"line": 3, "column": 20},
+    >>>                             },
+    >>>                             "value": "hello",
+    >>>                         },
+    >>>                         "arguments": None,
+    >>>                         "directives": None,
+    >>>                         "selectionSet": None,
+    >>>                     }
+    >>>                 ],
+    >>>             },
+    >>>         }
+    >>>     ],
+    >>> })
     """
     return DocumentNode(
         definitions=_parse_definitions(document_ast["definitions"]),
