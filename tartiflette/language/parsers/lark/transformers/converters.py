@@ -93,21 +93,19 @@ def _extract_node_info(
     return info
 
 
-def lark_to_location_node(
-    token_or_tree_meta: Union["Meta", "Token"]
-) -> "Location":
+def lark_to_location_node(tree_meta: "Meta") -> "Location":
     """
-    Creates and returns a Location instance from a Meta or Token Lark instance.
-    :param token_or_tree_meta: Meta or Token Lark instance containing metadata
-    :type token_or_tree_meta: Union[Meta, Token]
+    Creates and returns a Location instance from a Tree Meta instance.
+    :param tree_meta: Tree Meta Lark instance containing metadata
+    :type tree_meta: Meta
     :return: a Location instance
     :rtype: Location
     """
     return Location(
-        line=token_or_tree_meta.line,
-        column=token_or_tree_meta.column,
-        line_end=token_or_tree_meta.end_line,
-        column_end=token_or_tree_meta.end_column,
+        line=tree_meta.line,
+        column=tree_meta.column,
+        line_end=tree_meta.end_line,
+        column_end=tree_meta.end_column,
     )
 
 
@@ -120,9 +118,8 @@ def lark_to_int_value_node(tree: "Tree") -> "IntValueNode":
     :return: an IntValueNode instance extracted from the parsing of the tree
     :rtype: IntValueNode
     """
-    token = tree.children[0]
     return IntValueNode(
-        value=token.value, location=lark_to_location_node(token)
+        value=tree.children[0].value, location=lark_to_location_node(tree.meta)
     )
 
 
@@ -135,9 +132,8 @@ def lark_to_float_value_node(tree: "Tree") -> "FloatValueNode":
     :return: a FloatValueNode instance extracted from the parsing of the tree
     :rtype: FloatValueNode
     """
-    token = tree.children[0]
     return FloatValueNode(
-        value=token.value, location=lark_to_location_node(token)
+        value=tree.children[0].value, location=lark_to_location_node(tree.meta)
     )
 
 
@@ -150,9 +146,8 @@ def lark_to_string_value_node(tree: "Tree") -> "StringValueNode":
     :return: a StringValueNode instance extracted from the parsing of the tree
     :rtype: StringValueNode
     """
-    token = tree.children[0]
     return StringValueNode(
-        value=token.value, location=lark_to_location_node(token)
+        value=tree.children[0].value, location=lark_to_location_node(tree.meta)
     )
 
 
@@ -165,9 +160,8 @@ def lark_to_boolean_value_node(tree: "Tree") -> "BooleanValueNode":
     :return: a BooleanValueNode instance extracted from the parsing of the tree
     :rtype: BooleanValueNode
     """
-    token = tree.children[0]
     return BooleanValueNode(
-        value=token.value, location=lark_to_location_node(token)
+        value=tree.children[0].value, location=lark_to_location_node(tree.meta)
     )
 
 
@@ -180,7 +174,7 @@ def lark_to_null_value_node(tree: "Tree") -> "NullValueNode":
     :return: a NullValueNode instance extracted from the parsing of the tree
     :rtype: NullValueNode
     """
-    return NullValueNode(location=lark_to_location_node(tree.children[0]))
+    return NullValueNode(location=lark_to_location_node(tree.meta))
 
 
 def lark_to_enum_value_node(tree: "Tree") -> "EnumValueNode":
@@ -192,9 +186,8 @@ def lark_to_enum_value_node(tree: "Tree") -> "EnumValueNode":
     :return: an EnumValueNode instance extracted from the parsing of the tree
     :rtype: EnumValueNode
     """
-    token = tree.children[0]
     return EnumValueNode(
-        value=token.value, location=lark_to_location_node(token)
+        value=tree.children[0].value, location=lark_to_location_node(tree.meta)
     )
 
 
@@ -248,21 +241,6 @@ def lark_to_object_value_node(tree: "Tree") -> "ObjectValueNode":
     )
 
 
-def lark_to_description_node(tree: "Tree") -> "DescriptionNode":
-    """
-    Creates and returns a DescriptionNode instance extracted from the parsing
-    of the tree instance.
-    :param tree: the Tree to parse in order to extract the proper node
-    :type tree: Tree
-    :return: a DescriptionNode instance extracted from the parsing of the tree
-    :rtype: DescriptionNode
-    """
-    token = tree.children[0]
-    return DescriptionNode(
-        value=token.value, location=lark_to_location_node(token)
-    )
-
-
 def lark_to_name_node(tree: "Tree") -> "NameNode":
     """
     Creates and returns a NameNode instance extracted from the parsing of the
@@ -272,8 +250,23 @@ def lark_to_name_node(tree: "Tree") -> "NameNode":
     :return: a NameNode instance extracted from the parsing of the tree
     :rtype: NameNode
     """
-    token = tree.children[0]
-    return NameNode(value=token.value, location=lark_to_location_node(token))
+    return NameNode(
+        value=tree.children[0].value, location=lark_to_location_node(tree.meta)
+    )
+
+
+def lark_to_description_node(tree: "Tree") -> "DescriptionNode":
+    """
+    Creates and returns a DescriptionNode instance extracted from the parsing
+    of the tree instance.
+    :param tree: the Tree to parse in order to extract the proper node
+    :type tree: Tree
+    :return: a DescriptionNode instance extracted from the parsing of the tree
+    :rtype: DescriptionNode
+    """
+    return DescriptionNode(
+        value=tree.children[0].value, location=lark_to_location_node(tree.meta)
+    )
 
 
 def lark_to_named_type_node(tree: "Tree") -> "NamedTypeNode":
@@ -285,9 +278,8 @@ def lark_to_named_type_node(tree: "Tree") -> "NamedTypeNode":
     :return: a NamedTypeNode instance extracted from the parsing of the tree
     :rtype: NamedTypeNode
     """
-    token = tree.children[0].value
     return NamedTypeNode(
-        name=token.value, location=lark_to_location_node(tree.meta)
+        name=tree.children[0].value, location=lark_to_location_node(tree.meta)
     )
 
 
@@ -374,7 +366,7 @@ def lark_to_schema_definition_node(tree: "Tree") -> "SchemaDefinitionNode":
     )
 
     return SchemaDefinitionNode(
-        directives=node_info.get("directives"),
+        directives=node_info.get("directives") or [],
         operation_type_definitions=[
             operation_type_definition.value
             for operation_type_definition in node_info.get(
@@ -407,7 +399,7 @@ def lark_to_scalar_type_definition_node(
     return ScalarTypeDefinitionNode(
         description=node_info.get("description"),
         name=node_info["name"],
-        directives=node_info.get("directives"),
+        directives=node_info.get("directives") or [],
         location=lark_to_location_node(tree.meta),
     )
 
@@ -421,9 +413,8 @@ def lark_to_list_type_node(tree: "Tree") -> "ListTypeNode":
     :return: a ListTypeNode instance extracted from the parsing of the tree
     :rtype: ListTypeNode
     """
-    token = tree.children[0]
     return ListTypeNode(
-        type=token.value, location=lark_to_location_node(tree.meta)
+        type=tree.children[0].value, location=lark_to_location_node(tree.meta)
     )
 
 
@@ -436,9 +427,8 @@ def lark_to_non_null_type_node(tree: "Tree") -> "NonNullTypeNode":
     :return: a NonNullTypeNode instance extracted from the parsing of the tree
     :rtype: NonNullTypeNode
     """
-    token = tree.children[0]
     return NonNullTypeNode(
-        type=token.value, location=lark_to_location_node(tree.meta)
+        type=tree.children[0].value, location=lark_to_location_node(tree.meta)
     )
 
 
@@ -501,8 +491,8 @@ def lark_to_directive_definition_node(
     return DirectiveDefinitionNode(
         description=node_info.get("description"),
         name=node_info["name"],
-        arguments=node_info.get("arguments_definition") or None,
-        locations=node_info.get("directive_locations") or None,
+        arguments=node_info.get("arguments_definition") or [],
+        locations=node_info.get("directive_locations") or [],
         location=lark_to_location_node(tree.meta),
     )
 
@@ -524,10 +514,7 @@ def lark_to_implements_interfaces_node(tree: "Tree") -> List["NamedTypeNode"]:
     )
 
     return [
-        NamedTypeNode(
-            name=named_type.value, location=named_type.value.location
-        )
-        for named_type in node_info.get("named_types") or []
+        named_type.value for named_type in node_info.get("named_types") or []
     ]
 
 
@@ -589,7 +576,7 @@ def lark_to_object_type_definition_node(
     return ObjectTypeDefinitionNode(
         description=node_info.get("description"),
         name=node_info["name"],
-        interfaces=node_info.get("implements_interfaces"),
+        interfaces=node_info.get("implements_interfaces") or [],
         directives=node_info.get("directives") or [],
         fields=node_info.get("fields_definition") or [],
         location=lark_to_location_node(tree.meta),

@@ -78,8 +78,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=1,
                                         column=9,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=1,
+                                        column_end=22,
                                     ),
                                 ),
                                 arguments=[],
@@ -92,7 +92,15 @@ def test_parse_without_exception(sdl_file_path):
                             OperationTypeDefinitionNode(
                                 operation_type="query",
                                 type=NamedTypeNode(
-                                    name="RootQuery",
+                                    name=NameNode(
+                                        value="RootQuery",
+                                        location=Location(
+                                            line=2,
+                                            column=12,
+                                            line_end=3,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=2,
                                         column=12,
@@ -107,7 +115,15 @@ def test_parse_without_exception(sdl_file_path):
                             OperationTypeDefinitionNode(
                                 operation_type="mutation",
                                 type=NamedTypeNode(
-                                    name="RootMutation",
+                                    name=NameNode(
+                                        value="RootMutation",
+                                        location=Location(
+                                            line=3,
+                                            column=15,
+                                            line_end=4,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=3,
                                         column=15,
@@ -122,7 +138,15 @@ def test_parse_without_exception(sdl_file_path):
                             OperationTypeDefinitionNode(
                                 operation_type="subscription",
                                 type=NamedTypeNode(
-                                    name="RootSubscription",
+                                    name=NameNode(
+                                        value="RootSubscription",
+                                        location=Location(
+                                            line=4,
+                                            column=19,
+                                            line_end=5,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=4,
                                         column=19,
@@ -144,13 +168,10 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Date",
                             location=Location(
-                                line=7,
-                                column=8,
-                                line_end=None,
-                                column_end=None,
+                                line=7, column=8, line_end=9, column_end=1
                             ),
                         ),
-                        directives=None,
+                        directives=[],
                         location=Location(
                             line=7, column=1, line_end=9, column_end=1
                         ),
@@ -160,16 +181,21 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Group",
                             location=Location(
-                                line=9,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=9, column=7, line_end=9, column_end=13
                             ),
                         ),
                         directives=[],
                         types=[
                             NamedTypeNode(
-                                name="Foo",
+                                name=NameNode(
+                                    value="Foo",
+                                    location=Location(
+                                        line=9,
+                                        column=15,
+                                        line_end=9,
+                                        column_end=19,
+                                    ),
+                                ),
                                 location=Location(
                                     line=9,
                                     column=15,
@@ -178,7 +204,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name="Bar",
+                                name=NameNode(
+                                    value="Bar",
+                                    location=Location(
+                                        line=9,
+                                        column=21,
+                                        line_end=9,
+                                        column_end=25,
+                                    ),
+                                ),
                                 location=Location(
                                     line=9,
                                     column=21,
@@ -187,7 +221,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name="Baz",
+                                name=NameNode(
+                                    value="Baz",
+                                    location=Location(
+                                        line=9,
+                                        column=27,
+                                        line_end=11,
+                                        column_end=1,
+                                    ),
+                                ),
                                 location=Location(
                                     line=9,
                                     column=27,
@@ -205,10 +247,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Something",
                             location=Location(
-                                line=11,
-                                column=11,
-                                line_end=None,
-                                column_end=None,
+                                line=11, column=11, line_end=11, column_end=21
                             ),
                         ),
                         directives=[],
@@ -220,14 +259,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=12,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=12,
+                                        column_end=13,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Int",
+                                        name=NameNode(
+                                            value="Int",
+                                            location=Location(
+                                                line=12,
+                                                column=16,
+                                                line_end=12,
+                                                column_end=19,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=12,
                                             column=16,
@@ -257,14 +304,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=13,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=13,
+                                        column_end=17,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=13,
+                                                column=20,
+                                                line_end=13,
+                                                column_end=26,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=13,
                                             column=20,
@@ -294,8 +349,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=14,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=14,
+                                        column_end=13,
                                     ),
                                 ),
                                 arguments=[],
@@ -304,7 +359,15 @@ def test_parse_without_exception(sdl_file_path):
                                         type=ListTypeNode(
                                             type=NonNullTypeNode(
                                                 type=NamedTypeNode(
-                                                    name="Date",
+                                                    name=NameNode(
+                                                        value="Date",
+                                                        location=Location(
+                                                            line=14,
+                                                            column=17,
+                                                            line_end=14,
+                                                            column_end=21,
+                                                        ),
+                                                    ),
                                                     location=Location(
                                                         line=14,
                                                         column=17,
@@ -358,10 +421,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="UserInfo",
                             location=Location(
-                                line=17,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=17, column=7, line_end=17, column_end=16
                             ),
                         ),
                         directives=[],
@@ -373,12 +433,20 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=18,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=18,
+                                        column_end=9,
                                     ),
                                 ),
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=18,
+                                            column=11,
+                                            line_end=19,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=18,
                                         column=11,
@@ -402,13 +470,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=19,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=19,
+                                        column_end=16,
                                     ),
                                 ),
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Date",
+                                        name=NameNode(
+                                            value="Date",
+                                            location=Location(
+                                                line=19,
+                                                column=19,
+                                                line_end=19,
+                                                column_end=23,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=19,
                                             column=19,
@@ -439,13 +515,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=20,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=20,
+                                        column_end=15,
                                     ),
                                 ),
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="Boolean",
+                                        name=NameNode(
+                                            value="Boolean",
+                                            location=Location(
+                                                line=20,
+                                                column=17,
+                                                line_end=20,
+                                                column_end=24,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=20,
                                             column=17,
@@ -478,25 +562,19 @@ def test_parse_without_exception(sdl_file_path):
                         description=DescriptionNode(
                             value="\nThis is a docstring for the Test Object Type.\n",
                             location=Location(
-                                line=25,
-                                column=1,
-                                line_end=None,
-                                column_end=None,
+                                line=25, column=1, line_end=28, column_end=1
                             ),
                         ),
                         name=NameNode(
                             value="Test",
                             location=Location(
-                                line=28,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=28, column=6, line_end=28, column_end=11
                             ),
                         ),
                         interfaces=[
                             NamedTypeNode(
-                                name=NamedTypeNode(
-                                    name="Unknown",
+                                name=NameNode(
+                                    value="Unknown",
                                     location=Location(
                                         line=28,
                                         column=22,
@@ -512,8 +590,8 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name=NamedTypeNode(
-                                    name="Empty",
+                                name=NameNode(
+                                    value="Empty",
                                     location=Location(
                                         line=28,
                                         column=32,
@@ -536,8 +614,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=28,
                                         column=39,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=28,
+                                        column_end=52,
                                     ),
                                 ),
                                 arguments=[],
@@ -556,8 +634,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=29,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=32,
+                                        column_end=5,
                                     ),
                                 ),
                                 name=NameNode(
@@ -565,8 +643,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=32,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=32,
+                                        column_end=10,
                                     ),
                                 ),
                                 arguments=[
@@ -577,12 +655,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=32,
                                                 column=11,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=32,
+                                                column_end=16,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="InputObject",
+                                            name=NameNode(
+                                                value="InputObject",
+                                                location=Location(
+                                                    line=32,
+                                                    column=18,
+                                                    line_end=32,
+                                                    column_end=29,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=32,
                                                 column=18,
@@ -602,7 +688,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ],
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=32,
+                                                column=32,
+                                                line_end=32,
+                                                column_end=38,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=32,
                                             column=32,
@@ -624,8 +718,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=32,
                                                 column=41,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=32,
+                                                column_end=51,
                                             ),
                                         ),
                                         arguments=[
@@ -635,8 +729,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=32,
                                                         column=52,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=32,
+                                                        column_end=58,
                                                     ),
                                                 ),
                                                 value=StringValueNode(
@@ -644,8 +738,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=32,
                                                         column=60,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=32,
+                                                        column_end=75,
                                                     ),
                                                 ),
                                                 location=Location(
@@ -678,14 +772,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=33,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=33,
+                                        column_end=17,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Int",
+                                        name=NameNode(
+                                            value="Int",
+                                            location=Location(
+                                                line=33,
+                                                column=20,
+                                                line_end=33,
+                                                column_end=23,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=33,
                                             column=20,
@@ -707,8 +809,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=33,
                                                 column=26,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=33,
+                                                column_end=35,
                                             ),
                                         ),
                                         arguments=[
@@ -718,8 +820,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=34,
                                                         column=9,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=34,
+                                                        column_end=12,
                                                     ),
                                                 ),
                                                 value=ListValueNode(
@@ -729,8 +831,8 @@ def test_parse_without_exception(sdl_file_path):
                                                             location=Location(
                                                                 line=34,
                                                                 column=15,
-                                                                line_end=None,
-                                                                column_end=None,
+                                                                line_end=34,
+                                                                column_end=23,
                                                             ),
                                                         ),
                                                         StringValueNode(
@@ -738,8 +840,8 @@ def test_parse_without_exception(sdl_file_path):
                                                             location=Location(
                                                                 line=34,
                                                                 column=23,
-                                                                line_end=None,
-                                                                column_end=None,
+                                                                line_end=34,
+                                                                column_end=30,
                                                             ),
                                                         ),
                                                     ],
@@ -763,8 +865,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=35,
                                                         column=9,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=35,
+                                                        column_end=12,
                                                     ),
                                                 ),
                                                 value=ObjectValueNode(
@@ -775,8 +877,8 @@ def test_parse_without_exception(sdl_file_path):
                                                                 location=Location(
                                                                     line=35,
                                                                     column=15,
-                                                                    line_end=None,
-                                                                    column_end=None,
+                                                                    line_end=35,
+                                                                    column_end=19,
                                                                 ),
                                                             ),
                                                             value=ListValueNode(
@@ -786,8 +888,8 @@ def test_parse_without_exception(sdl_file_path):
                                                                         location=Location(
                                                                             line=35,
                                                                             column=22,
-                                                                            line_end=None,
-                                                                            column_end=None,
+                                                                            line_end=35,
+                                                                            column_end=25,
                                                                         ),
                                                                     ),
                                                                     IntValueNode(
@@ -795,8 +897,8 @@ def test_parse_without_exception(sdl_file_path):
                                                                         location=Location(
                                                                             line=35,
                                                                             column=25,
-                                                                            line_end=None,
-                                                                            column_end=None,
+                                                                            line_end=35,
+                                                                            column_end=28,
                                                                         ),
                                                                     ),
                                                                     IntValueNode(
@@ -804,8 +906,8 @@ def test_parse_without_exception(sdl_file_path):
                                                                         location=Location(
                                                                             line=35,
                                                                             column=28,
-                                                                            line_end=None,
-                                                                            column_end=None,
+                                                                            line_end=35,
+                                                                            column_end=30,
                                                                         ),
                                                                     ),
                                                                 ],
@@ -829,8 +931,8 @@ def test_parse_without_exception(sdl_file_path):
                                                                 location=Location(
                                                                     line=35,
                                                                     column=33,
-                                                                    line_end=None,
-                                                                    column_end=None,
+                                                                    line_end=35,
+                                                                    column_end=40,
                                                                 ),
                                                             ),
                                                             value=ObjectValueNode(
@@ -841,8 +943,8 @@ def test_parse_without_exception(sdl_file_path):
                                                                             location=Location(
                                                                                 line=35,
                                                                                 column=43,
-                                                                                line_end=None,
-                                                                                column_end=None,
+                                                                                line_end=35,
+                                                                                column_end=48,
                                                                             ),
                                                                         ),
                                                                         value=FloatValueNode(
@@ -850,8 +952,8 @@ def test_parse_without_exception(sdl_file_path):
                                                                             location=Location(
                                                                                 line=35,
                                                                                 column=50,
-                                                                                line_end=None,
-                                                                                column_end=None,
+                                                                                line_end=35,
+                                                                                column_end=54,
                                                                             ),
                                                                         ),
                                                                         location=Location(
@@ -882,8 +984,8 @@ def test_parse_without_exception(sdl_file_path):
                                                                 location=Location(
                                                                     line=35,
                                                                     column=57,
-                                                                    line_end=None,
-                                                                    column_end=None,
+                                                                    line_end=35,
+                                                                    column_end=64,
                                                                 ),
                                                             ),
                                                             value=EnumValueNode(
@@ -891,8 +993,8 @@ def test_parse_without_exception(sdl_file_path):
                                                                 location=Location(
                                                                     line=35,
                                                                     column=66,
-                                                                    line_end=None,
-                                                                    column_end=None,
+                                                                    line_end=35,
+                                                                    column_end=73,
                                                                 ),
                                                             ),
                                                             location=Location(
@@ -940,8 +1042,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=37,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=37,
+                                        column_end=29,
                                     ),
                                 ),
                                 arguments=[
@@ -952,12 +1054,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=37,
                                                 column=30,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=37,
+                                                column_end=34,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="String",
+                                            name=NameNode(
+                                                value="String",
+                                                location=Location(
+                                                    line=37,
+                                                    column=36,
+                                                    line_end=37,
+                                                    column_end=43,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=37,
                                                 column=36,
@@ -970,8 +1080,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=37,
                                                 column=45,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=37,
+                                                column_end=54,
                                             ),
                                         ),
                                         directives=[],
@@ -984,7 +1094,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="ID",
+                                    name=NameNode(
+                                        value="ID",
+                                        location=Location(
+                                            line=37,
+                                            column=57,
+                                            line_end=38,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=37,
                                         column=57,
@@ -1007,13 +1125,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=38,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=38,
+                                        column_end=16,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Date",
+                                    name=NameNode(
+                                        value="Date",
+                                        location=Location(
+                                            line=38,
+                                            column=18,
+                                            line_end=39,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=38,
                                         column=18,
@@ -1047,10 +1173,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Episode",
                             location=Location(
-                                line=1,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=1, column=6, line_end=1, column_end=14
                             ),
                         ),
                         directives=[
@@ -1060,8 +1183,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=1,
                                         column=15,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=1,
+                                        column_end=22,
                                     ),
                                 ),
                                 arguments=[
@@ -1071,8 +1194,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=1,
                                                 column=23,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=1,
+                                                column_end=28,
                                             ),
                                         ),
                                         value=StringValueNode(
@@ -1080,8 +1203,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=1,
                                                 column=30,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=1,
+                                                column_end=43,
                                             ),
                                         ),
                                         location=Location(
@@ -1108,8 +1231,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=2,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=3,
+                                        column_end=5,
                                     ),
                                 ),
                                 directives=[],
@@ -1124,8 +1247,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=3,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=4,
+                                        column_end=5,
                                     ),
                                 ),
                                 directives=[],
@@ -1140,8 +1263,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=4,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=5,
+                                        column_end=5,
                                     ),
                                 ),
                                 directives=[],
@@ -1156,8 +1279,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=5,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=6,
+                                        column_end=5,
                                     ),
                                 ),
                                 directives=[],
@@ -1172,8 +1295,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=6,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=7,
+                                        column_end=5,
                                     ),
                                 ),
                                 directives=[],
@@ -1188,8 +1311,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=7,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=8,
+                                        column_end=1,
                                     ),
                                 ),
                                 directives=[],
@@ -1207,10 +1330,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Character",
                             location=Location(
-                                line=10,
-                                column=11,
-                                line_end=None,
-                                column_end=None,
+                                line=10, column=11, line_end=10, column_end=21
                             ),
                         ),
                         directives=[],
@@ -1222,14 +1342,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=11,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=11,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=11,
+                                                column=9,
+                                                line_end=11,
+                                                column_end=15,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=11,
                                             column=9,
@@ -1259,13 +1387,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=12,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=12,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=12,
+                                            column=11,
+                                            line_end=13,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=12,
                                         column=11,
@@ -1288,14 +1424,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=13,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=13,
+                                        column_end=12,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Character",
+                                        name=NameNode(
+                                            value="Character",
+                                            location=Location(
+                                                line=13,
+                                                column=15,
+                                                line_end=13,
+                                                column_end=24,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=13,
                                             column=15,
@@ -1325,14 +1469,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=14,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=14,
+                                        column_end=14,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Episode",
+                                        name=NameNode(
+                                            value="Episode",
+                                            location=Location(
+                                                line=14,
+                                                column=17,
+                                                line_end=14,
+                                                column_end=24,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=14,
                                             column=17,
@@ -1354,8 +1506,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=14,
                                                 column=27,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=14,
+                                                column_end=34,
                                             ),
                                         ),
                                         arguments=[
@@ -1365,8 +1517,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=14,
                                                         column=35,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=14,
+                                                        column_end=40,
                                                     ),
                                                 ),
                                                 value=EnumValueNode(
@@ -1374,8 +1526,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=14,
                                                         column=42,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=14,
+                                                        column_end=52,
                                                     ),
                                                 ),
                                                 location=Location(
@@ -1411,10 +1563,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Creature",
                             location=Location(
-                                line=17,
-                                column=11,
-                                line_end=None,
-                                column_end=None,
+                                line=17, column=11, line_end=17, column_end=20
                             ),
                         ),
                         directives=[],
@@ -1426,13 +1575,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=18,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=18,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=18,
+                                            column=11,
+                                            line_end=19,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=18,
                                         column=11,
@@ -1455,13 +1612,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=19,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=19,
+                                        column_end=12,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=19,
+                                            column=14,
+                                            line_end=20,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=19,
                                         column=14,
@@ -1487,10 +1652,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Vehicle",
                             location=Location(
-                                line=22,
-                                column=11,
-                                line_end=None,
-                                column_end=None,
+                                line=22, column=11, line_end=22, column_end=19
                             ),
                         ),
                         directives=[],
@@ -1502,14 +1664,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=23,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=23,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=23,
+                                                column=9,
+                                                line_end=23,
+                                                column_end=15,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=23,
                                             column=9,
@@ -1539,13 +1709,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=24,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=24,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=24,
+                                            column=11,
+                                            line_end=25,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=24,
                                         column=11,
@@ -1568,13 +1746,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=25,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=25,
+                                        column_end=10,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Owner",
+                                    name=NameNode(
+                                        value="Owner",
+                                        location=Location(
+                                            line=25,
+                                            column=12,
+                                            line_end=26,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=25,
                                         column=12,
@@ -1600,10 +1786,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Location",
                             location=Location(
-                                line=28,
-                                column=11,
-                                line_end=None,
-                                column_end=None,
+                                line=28, column=11, line_end=28, column_end=20
                             ),
                         ),
                         directives=[],
@@ -1615,14 +1798,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=29,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=29,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=29,
+                                                column=9,
+                                                line_end=29,
+                                                column_end=15,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=29,
                                             column=9,
@@ -1652,13 +1843,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=30,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=30,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=30,
+                                            column=11,
+                                            line_end=31,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=30,
                                         column=11,
@@ -1681,8 +1880,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=31,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=31,
+                                        column_end=16,
                                     ),
                                 ),
                                 arguments=[
@@ -1693,13 +1892,21 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=31,
                                                 column=17,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=31,
+                                                column_end=24,
                                             ),
                                         ),
                                         type=ListTypeNode(
                                             type=NamedTypeNode(
-                                                name="Float",
+                                                name=NameNode(
+                                                    value="Float",
+                                                    location=Location(
+                                                        line=31,
+                                                        column=27,
+                                                        line_end=31,
+                                                        column_end=32,
+                                                    ),
+                                                ),
                                                 location=Location(
                                                     line=31,
                                                     column=27,
@@ -1721,8 +1928,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=31,
                                                         column=37,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=31,
+                                                        column_end=42,
                                                     ),
                                                 ),
                                                 FloatValueNode(
@@ -1730,8 +1937,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=31,
                                                         column=42,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=31,
+                                                        column_end=47,
                                                     ),
                                                 ),
                                                 FloatValueNode(
@@ -1739,8 +1946,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=31,
                                                         column=47,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=31,
+                                                        column_end=50,
                                                     ),
                                                 ),
                                             ],
@@ -1762,7 +1969,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Float",
+                                        name=NameNode(
+                                            value="Float",
+                                            location=Location(
+                                                line=31,
+                                                column=55,
+                                                line_end=31,
+                                                column_end=60,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=31,
                                             column=55,
@@ -1795,16 +2010,13 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Planet",
                             location=Location(
-                                line=34,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=34, column=6, line_end=34, column_end=13
                             ),
                         ),
                         interfaces=[
                             NamedTypeNode(
-                                name=NamedTypeNode(
-                                    name="Location",
+                                name=NameNode(
+                                    value="Location",
                                     location=Location(
                                         line=34,
                                         column=24,
@@ -1829,14 +2041,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=35,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=35,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=35,
+                                                column=9,
+                                                line_end=35,
+                                                column_end=15,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=35,
                                             column=9,
@@ -1866,13 +2086,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=36,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=36,
+                                        column_end=15,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=36,
+                                            column=17,
+                                            line_end=37,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=36,
                                         column=17,
@@ -1898,16 +2126,21 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Owner",
                             location=Location(
-                                line=39,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=39, column=7, line_end=39, column_end=13
                             ),
                         ),
                         directives=[],
                         types=[
                             NamedTypeNode(
-                                name="Organization",
+                                name=NameNode(
+                                    value="Organization",
+                                    location=Location(
+                                        line=39,
+                                        column=15,
+                                        line_end=39,
+                                        column_end=28,
+                                    ),
+                                ),
                                 location=Location(
                                     line=39,
                                     column=15,
@@ -1916,7 +2149,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name="Character",
+                                name=NameNode(
+                                    value="Character",
+                                    location=Location(
+                                        line=39,
+                                        column=30,
+                                        line_end=41,
+                                        column_end=1,
+                                    ),
+                                ),
                                 location=Location(
                                     line=39,
                                     column=30,
@@ -1934,13 +2175,10 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Organization",
                             location=Location(
-                                line=41,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=41, column=6, line_end=41, column_end=19
                             ),
                         ),
-                        interfaces=None,
+                        interfaces=[],
                         directives=[],
                         fields=[
                             FieldDefinitionNode(
@@ -1950,14 +2188,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=42,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=42,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=42,
+                                                column=9,
+                                                line_end=42,
+                                                column_end=15,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=42,
                                             column=9,
@@ -1987,13 +2233,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=43,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=43,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=43,
+                                            column=11,
+                                            line_end=44,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=43,
                                         column=11,
@@ -2016,14 +2270,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=44,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=44,
+                                        column_end=12,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Character",
+                                        name=NameNode(
+                                            value="Character",
+                                            location=Location(
+                                                line=44,
+                                                column=15,
+                                                line_end=44,
+                                                column_end=24,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=44,
                                             column=15,
@@ -2056,16 +2318,13 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Human",
                             location=Location(
-                                line=47,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=47, column=6, line_end=47, column_end=12
                             ),
                         ),
                         interfaces=[
                             NamedTypeNode(
-                                name=NamedTypeNode(
-                                    name="Character",
+                                name=NameNode(
+                                    value="Character",
                                     location=Location(
                                         line=47,
                                         column=23,
@@ -2081,8 +2340,8 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name=NamedTypeNode(
-                                    name="Creature",
+                                name=NameNode(
+                                    value="Creature",
                                     location=Location(
                                         line=47,
                                         column=35,
@@ -2107,14 +2366,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=48,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=48,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=48,
+                                                column=9,
+                                                line_end=48,
+                                                column_end=15,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=48,
                                             column=9,
@@ -2144,13 +2411,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=49,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=49,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=49,
+                                            column=11,
+                                            line_end=50,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=49,
                                         column=11,
@@ -2173,14 +2448,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=50,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=50,
+                                        column_end=12,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Character",
+                                        name=NameNode(
+                                            value="Character",
+                                            location=Location(
+                                                line=50,
+                                                column=15,
+                                                line_end=50,
+                                                column_end=24,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=50,
                                             column=15,
@@ -2210,14 +2493,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=51,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=51,
+                                        column_end=14,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Episode",
+                                        name=NameNode(
+                                            value="Episode",
+                                            location=Location(
+                                                line=51,
+                                                column=17,
+                                                line_end=51,
+                                                column_end=24,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=51,
                                             column=17,
@@ -2247,13 +2538,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=52,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=52,
+                                        column_end=15,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Location",
+                                    name=NameNode(
+                                        value="Location",
+                                        location=Location(
+                                            line=52,
+                                            column=17,
+                                            line_end=53,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=52,
                                         column=17,
@@ -2279,16 +2578,13 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Droid",
                             location=Location(
-                                line=55,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=55, column=6, line_end=55, column_end=12
                             ),
                         ),
                         interfaces=[
                             NamedTypeNode(
-                                name=NamedTypeNode(
-                                    name="Character",
+                                name=NameNode(
+                                    value="Character",
                                     location=Location(
                                         line=55,
                                         column=23,
@@ -2313,14 +2609,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=56,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=56,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=56,
+                                                column=9,
+                                                line_end=56,
+                                                column_end=15,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=56,
                                             column=9,
@@ -2350,13 +2654,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=57,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=57,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=57,
+                                            column=11,
+                                            line_end=58,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=57,
                                         column=11,
@@ -2379,14 +2691,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=58,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=58,
+                                        column_end=12,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Character",
+                                        name=NameNode(
+                                            value="Character",
+                                            location=Location(
+                                                line=58,
+                                                column=15,
+                                                line_end=58,
+                                                column_end=24,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=58,
                                             column=15,
@@ -2408,8 +2728,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=58,
                                                 column=27,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=58,
+                                                column_end=37,
                                             ),
                                         ),
                                         arguments=[
@@ -2419,8 +2739,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=58,
                                                         column=38,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=58,
+                                                        column_end=44,
                                                     ),
                                                 ),
                                                 value=StringValueNode(
@@ -2428,8 +2748,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=58,
                                                         column=46,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=58,
+                                                        column_end=103,
                                                     ),
                                                 ),
                                                 location=Location(
@@ -2462,14 +2782,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=59,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=59,
+                                        column_end=18,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Character",
+                                        name=NameNode(
+                                            value="Character",
+                                            location=Location(
+                                                line=59,
+                                                column=21,
+                                                line_end=59,
+                                                column_end=30,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=59,
                                             column=21,
@@ -2499,14 +2827,22 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=60,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=60,
+                                        column_end=14,
                                     ),
                                 ),
                                 arguments=[],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Episode",
+                                        name=NameNode(
+                                            value="Episode",
+                                            location=Location(
+                                                line=60,
+                                                column=17,
+                                                line_end=60,
+                                                column_end=24,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=60,
                                             column=17,
@@ -2536,13 +2872,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=61,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=61,
+                                        column_end=20,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=61,
+                                            column=22,
+                                            line_end=62,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=61,
                                         column=22,
@@ -2568,13 +2912,10 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Query",
                             location=Location(
-                                line=64,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=64, column=6, line_end=64, column_end=12
                             ),
                         ),
-                        interfaces=None,
+                        interfaces=[],
                         directives=[],
                         fields=[
                             FieldDefinitionNode(
@@ -2584,8 +2925,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=65,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=65,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[
@@ -2596,12 +2937,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=65,
                                                 column=10,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=65,
+                                                column_end=17,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="Episode",
+                                            name=NameNode(
+                                                value="Episode",
+                                                location=Location(
+                                                    line=65,
+                                                    column=19,
+                                                    line_end=65,
+                                                    column_end=26,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=65,
                                                 column=19,
@@ -2620,7 +2969,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Character",
+                                    name=NameNode(
+                                        value="Character",
+                                        location=Location(
+                                            line=65,
+                                            column=29,
+                                            line_end=66,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=65,
                                         column=29,
@@ -2643,8 +3000,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=66,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=66,
+                                        column_end=10,
                                     ),
                                 ),
                                 arguments=[
@@ -2655,13 +3012,21 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=66,
                                                 column=11,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=66,
+                                                column_end=13,
                                             ),
                                         ),
                                         type=NonNullTypeNode(
                                             type=NamedTypeNode(
-                                                name="String",
+                                                name=NameNode(
+                                                    value="String",
+                                                    location=Location(
+                                                        line=66,
+                                                        column=15,
+                                                        line_end=66,
+                                                        column_end=21,
+                                                    ),
+                                                ),
                                                 location=Location(
                                                     line=66,
                                                     column=15,
@@ -2687,7 +3052,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Human",
+                                    name=NameNode(
+                                        value="Human",
+                                        location=Location(
+                                            line=66,
+                                            column=25,
+                                            line_end=67,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=66,
                                         column=25,
@@ -2710,8 +3083,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=67,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=67,
+                                        column_end=10,
                                     ),
                                 ),
                                 arguments=[
@@ -2722,13 +3095,21 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=67,
                                                 column=11,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=67,
+                                                column_end=13,
                                             ),
                                         ),
                                         type=NonNullTypeNode(
                                             type=NamedTypeNode(
-                                                name="String",
+                                                name=NameNode(
+                                                    value="String",
+                                                    location=Location(
+                                                        line=67,
+                                                        column=15,
+                                                        line_end=67,
+                                                        column_end=21,
+                                                    ),
+                                                ),
                                                 location=Location(
                                                     line=67,
                                                     column=15,
@@ -2754,7 +3135,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Droid",
+                                    name=NameNode(
+                                        value="Droid",
+                                        location=Location(
+                                            line=67,
+                                            column=25,
+                                            line_end=68,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=67,
                                         column=25,
@@ -2777,8 +3166,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=68,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=68,
+                                        column_end=15,
                                     ),
                                 ),
                                 arguments=[
@@ -2789,12 +3178,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=68,
                                                 column=16,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=68,
+                                                column_end=22,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="FilterCharacters",
+                                            name=NameNode(
+                                                value="FilterCharacters",
+                                                location=Location(
+                                                    line=68,
+                                                    column=24,
+                                                    line_end=68,
+                                                    column_end=40,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=68,
                                                 column=24,
@@ -2814,7 +3211,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ],
                                 type=ListTypeNode(
                                     type=NamedTypeNode(
-                                        name="Characters",
+                                        name=NameNode(
+                                            value="Characters",
+                                            location=Location(
+                                                line=68,
+                                                column=44,
+                                                line_end=68,
+                                                column_end=54,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=68,
                                             column=44,
@@ -2844,8 +3249,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=69,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=69,
+                                        column_end=11,
                                     ),
                                 ),
                                 arguments=[
@@ -2856,13 +3261,21 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=69,
                                                 column=12,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=69,
+                                                column_end=14,
                                             ),
                                         ),
                                         type=NonNullTypeNode(
                                             type=NamedTypeNode(
-                                                name="String",
+                                                name=NameNode(
+                                                    value="String",
+                                                    location=Location(
+                                                        line=69,
+                                                        column=16,
+                                                        line_end=69,
+                                                        column_end=22,
+                                                    ),
+                                                ),
                                                 location=Location(
                                                     line=69,
                                                     column=16,
@@ -2888,7 +3301,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Planet",
+                                    name=NameNode(
+                                        value="Planet",
+                                        location=Location(
+                                            line=69,
+                                            column=26,
+                                            line_end=70,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=69,
                                         column=26,
@@ -2914,10 +3335,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="FilterCharacters",
                             location=Location(
-                                line=72,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=72, column=7, line_end=72, column_end=24
                             ),
                         ),
                         directives=[],
@@ -2929,12 +3347,20 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=73,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=73,
+                                        column_end=10,
                                     ),
                                 ),
                                 type=NamedTypeNode(
-                                    name="Int",
+                                    name=NameNode(
+                                        value="Int",
+                                        location=Location(
+                                            line=73,
+                                            column=12,
+                                            line_end=74,
+                                            column_end=5,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=73,
                                         column=12,
@@ -2958,12 +3384,20 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=74,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=74,
+                                        column_end=17,
                                     ),
                                 ),
                                 type=NamedTypeNode(
-                                    name="Episode",
+                                    name=NameNode(
+                                        value="Episode",
+                                        location=Location(
+                                            line=74,
+                                            column=19,
+                                            line_end=75,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=74,
                                         column=19,
@@ -2989,22 +3423,16 @@ def test_parse_without_exception(sdl_file_path):
                         description=DescriptionNode(
                             value="\nA custom scalar to represent time in the StarWars universe.\nIt should support nanoseconds and conversion to/from a flick.\n",
                             location=Location(
-                                line=77,
-                                column=1,
-                                line_end=None,
-                                column_end=None,
+                                line=77, column=1, line_end=81, column_end=1
                             ),
                         ),
                         name=NameNode(
                             value="Date",
                             location=Location(
-                                line=81,
-                                column=8,
-                                line_end=None,
-                                column_end=None,
+                                line=81, column=8, line_end=83, column_end=1
                             ),
                         ),
-                        directives=None,
+                        directives=[],
                         location=Location(
                             line=77, column=1, line_end=83, column_end=1
                         ),
@@ -3013,10 +3441,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Human",
                             location=Location(
-                                line=83,
-                                column=13,
-                                line_end=None,
-                                column_end=None,
+                                line=83, column=13, line_end=83, column_end=19
                             ),
                         ),
                         interfaces=[],
@@ -3029,13 +3454,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=84,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=84,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Date",
+                                    name=NameNode(
+                                        value="Date",
+                                        location=Location(
+                                            line=84,
+                                            column=11,
+                                            line_end=84,
+                                            column_end=16,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=84,
                                         column=11,
@@ -3050,8 +3483,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=84,
                                                 column=17,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=84,
+                                                column_end=22,
                                             ),
                                         ),
                                         arguments=[
@@ -3061,8 +3494,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=84,
                                                         column=23,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=84,
+                                                        column_end=26,
                                                     ),
                                                 ),
                                                 value=IntValueNode(
@@ -3070,8 +3503,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=84,
                                                         column=28,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=84,
+                                                        column_end=29,
                                                     ),
                                                 ),
                                                 location=Location(
@@ -3106,10 +3539,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Droid",
                             location=Location(
-                                line=87,
-                                column=13,
-                                line_end=None,
-                                column_end=None,
+                                line=87, column=13, line_end=87, column_end=19
                             ),
                         ),
                         interfaces=[],
@@ -3122,13 +3552,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=88,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=88,
+                                        column_end=13,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Date",
+                                    name=NameNode(
+                                        value="Date",
+                                        location=Location(
+                                            line=88,
+                                            column=15,
+                                            line_end=89,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=88,
                                         column=15,
@@ -3153,10 +3591,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="FilterCharacters",
                             location=Location(
-                                line=91,
-                                column=14,
-                                line_end=None,
-                                column_end=None,
+                                line=91, column=14, line_end=91, column_end=31
                             ),
                         ),
                         directives=[],
@@ -3168,12 +3603,20 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=92,
                                         column=5,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=92,
+                                        column_end=16,
                                     ),
                                 ),
                                 type=NamedTypeNode(
-                                    name="Date",
+                                    name=NameNode(
+                                        value="Date",
+                                        location=Location(
+                                            line=92,
+                                            column=18,
+                                            line_end=93,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=92,
                                         column=18,
@@ -3204,12 +3647,20 @@ def test_parse_without_exception(sdl_file_path):
             DocumentNode(
                 definitions=[
                     SchemaDefinitionNode(
-                        directives=None,
+                        directives=[],
                         operation_type_definitions=[
                             OperationTypeDefinitionNode(
                                 operation_type="query",
                                 type=NamedTypeNode(
-                                    name="QueryType",
+                                    name=NameNode(
+                                        value="QueryType",
+                                        location=Location(
+                                            line=2,
+                                            column=10,
+                                            line_end=3,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=2,
                                         column=10,
@@ -3224,7 +3675,15 @@ def test_parse_without_exception(sdl_file_path):
                             OperationTypeDefinitionNode(
                                 operation_type="mutation",
                                 type=NamedTypeNode(
-                                    name="MutationType",
+                                    name=NameNode(
+                                        value="MutationType",
+                                        location=Location(
+                                            line=3,
+                                            column=13,
+                                            line_end=4,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=3,
                                         column=13,
@@ -3245,25 +3704,19 @@ def test_parse_without_exception(sdl_file_path):
                         description=DescriptionNode(
                             value="\nThis is a description\nof the `Foo` type.\n",
                             location=Location(
-                                line=6,
-                                column=1,
-                                line_end=None,
-                                column_end=None,
+                                line=6, column=1, line_end=10, column_end=1
                             ),
                         ),
                         name=NameNode(
                             value="Foo",
                             location=Location(
-                                line=10,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=10, column=6, line_end=10, column_end=10
                             ),
                         ),
                         interfaces=[
                             NamedTypeNode(
-                                name=NamedTypeNode(
-                                    name="Bar",
+                                name=NameNode(
+                                    value="Bar",
                                     location=Location(
                                         line=10,
                                         column=21,
@@ -3279,8 +3732,8 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name=NamedTypeNode(
-                                    name="Baz",
+                                name=NameNode(
+                                    value="Baz",
                                     location=Location(
                                         line=10,
                                         column=27,
@@ -3304,8 +3757,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=11,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=12,
+                                        column_end=3,
                                     ),
                                 ),
                                 name=NameNode(
@@ -3313,13 +3766,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=12,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=12,
+                                        column_end=6,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=12,
+                                            column=8,
+                                            line_end=13,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=12,
                                         column=8,
@@ -3341,8 +3802,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=13,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=16,
+                                        column_end=3,
                                     ),
                                 ),
                                 name=NameNode(
@@ -3350,8 +3811,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=16,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=16,
+                                        column_end=6,
                                     ),
                                 ),
                                 arguments=[
@@ -3361,8 +3822,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=17,
                                                 column=5,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=20,
+                                                column_end=5,
                                             ),
                                         ),
                                         name=NameNode(
@@ -3370,13 +3831,21 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=20,
                                                 column=5,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=20,
+                                                column_end=13,
                                             ),
                                         ),
                                         type=NonNullTypeNode(
                                             type=NamedTypeNode(
-                                                name="InputType",
+                                                name=NameNode(
+                                                    value="InputType",
+                                                    location=Location(
+                                                        line=20,
+                                                        column=15,
+                                                        line_end=20,
+                                                        column_end=24,
+                                                    ),
+                                                ),
                                                 location=Location(
                                                     line=20,
                                                     column=15,
@@ -3402,7 +3871,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=21,
+                                            column=6,
+                                            line_end=22,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=21,
                                         column=6,
@@ -3424,8 +3901,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=22,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=23,
+                                        column_end=3,
                                     ),
                                 ),
                                 name=NameNode(
@@ -3433,8 +3910,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=23,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=23,
+                                        column_end=8,
                                     ),
                                 ),
                                 arguments=[
@@ -3445,12 +3922,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=23,
                                                 column=9,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=23,
+                                                column_end=17,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="InputType",
+                                            name=NameNode(
+                                                value="InputType",
+                                                location=Location(
+                                                    line=23,
+                                                    column=19,
+                                                    line_end=23,
+                                                    column_end=30,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=23,
                                                 column=19,
@@ -3474,12 +3959,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=23,
                                                 column=30,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=23,
+                                                column_end=35,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="String",
+                                            name=NameNode(
+                                                value="String",
+                                                location=Location(
+                                                    line=23,
+                                                    column=37,
+                                                    line_end=23,
+                                                    column_end=43,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=23,
                                                 column=37,
@@ -3498,7 +3991,15 @@ def test_parse_without_exception(sdl_file_path):
                                     ),
                                 ],
                                 type=NamedTypeNode(
-                                    name="Int",
+                                    name=NameNode(
+                                        value="Int",
+                                        location=Location(
+                                            line=23,
+                                            column=46,
+                                            line_end=24,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=23,
                                         column=46,
@@ -3521,8 +4022,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=24,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=24,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[
@@ -3533,12 +4034,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=24,
                                                 column=8,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=24,
+                                                column_end=16,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="String",
+                                            name=NameNode(
+                                                value="String",
+                                                location=Location(
+                                                    line=24,
+                                                    column=18,
+                                                    line_end=24,
+                                                    column_end=25,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=24,
                                                 column=18,
@@ -3551,8 +4060,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=24,
                                                 column=27,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=24,
+                                                column_end=35,
                                             ),
                                         ),
                                         directives=[],
@@ -3565,7 +4074,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=24,
+                                            column=38,
+                                            line_end=25,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=24,
                                         column=38,
@@ -3588,8 +4105,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=25,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=25,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[
@@ -3600,13 +4117,21 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=25,
                                                 column=8,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=25,
+                                                column_end=16,
                                             ),
                                         ),
                                         type=ListTypeNode(
                                             type=NamedTypeNode(
-                                                name="String",
+                                                name=NameNode(
+                                                    value="String",
+                                                    location=Location(
+                                                        line=25,
+                                                        column=19,
+                                                        line_end=25,
+                                                        column_end=25,
+                                                    ),
+                                                ),
                                                 location=Location(
                                                     line=25,
                                                     column=19,
@@ -3628,8 +4153,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=25,
                                                         column=30,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=25,
+                                                        column_end=40,
                                                     ),
                                                 ),
                                                 StringValueNode(
@@ -3637,8 +4162,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=25,
                                                         column=40,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=25,
+                                                        column_end=48,
                                                     ),
                                                 ),
                                             ],
@@ -3659,7 +4184,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=25,
+                                            column=52,
+                                            line_end=26,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=25,
                                         column=52,
@@ -3682,8 +4215,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=26,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=26,
+                                        column_end=6,
                                     ),
                                 ),
                                 arguments=[
@@ -3694,12 +4227,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=26,
                                                 column=7,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=26,
+                                                column_end=15,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="InputType",
+                                            name=NameNode(
+                                                value="InputType",
+                                                location=Location(
+                                                    line=26,
+                                                    column=17,
+                                                    line_end=26,
+                                                    column_end=27,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=26,
                                                 column=17,
@@ -3715,8 +4256,8 @@ def test_parse_without_exception(sdl_file_path):
                                                         location=Location(
                                                             line=26,
                                                             column=30,
-                                                            line_end=None,
-                                                            column_end=None,
+                                                            line_end=26,
+                                                            column_end=33,
                                                         ),
                                                     ),
                                                     value=StringValueNode(
@@ -3724,8 +4265,8 @@ def test_parse_without_exception(sdl_file_path):
                                                         location=Location(
                                                             line=26,
                                                             column=35,
-                                                            line_end=None,
-                                                            column_end=None,
+                                                            line_end=26,
+                                                            column_end=42,
                                                         ),
                                                     ),
                                                     location=Location(
@@ -3753,7 +4294,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=26,
+                                            column=46,
+                                            line_end=27,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=26,
                                         column=46,
@@ -3776,8 +4325,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=27,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=27,
+                                        column_end=8,
                                     ),
                                 ),
                                 arguments=[
@@ -3788,12 +4337,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=27,
                                                 column=9,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=27,
+                                                column_end=17,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="Int",
+                                            name=NameNode(
+                                                value="Int",
+                                                location=Location(
+                                                    line=27,
+                                                    column=19,
+                                                    line_end=27,
+                                                    column_end=23,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=27,
                                                 column=19,
@@ -3805,8 +4362,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=27,
                                                 column=25,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=27,
+                                                column_end=29,
                                             )
                                         ),
                                         directives=[],
@@ -3819,7 +4376,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=27,
+                                            column=32,
+                                            line_end=28,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=27,
                                         column=32,
@@ -3842,8 +4407,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=28,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=28,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[
@@ -3854,12 +4419,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=28,
                                                 column=10,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=28,
+                                                column_end=18,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="Boolean",
+                                            name=NameNode(
+                                                value="Boolean",
+                                                location=Location(
+                                                    line=28,
+                                                    column=20,
+                                                    line_end=28,
+                                                    column_end=28,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=28,
                                                 column=20,
@@ -3872,8 +4445,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=28,
                                                 column=30,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=28,
+                                                column_end=35,
                                             ),
                                         ),
                                         directives=[],
@@ -3886,7 +4459,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=28,
+                                            column=38,
+                                            line_end=29,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=28,
                                         column=38,
@@ -3912,13 +4493,10 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="AnnotatedObject",
                             location=Location(
-                                line=31,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=31, column=6, line_end=31, column_end=22
                             ),
                         ),
-                        interfaces=None,
+                        interfaces=[],
                         directives=[
                             DirectiveNode(
                                 name=NameNode(
@@ -3926,8 +4504,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=31,
                                         column=23,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=31,
+                                        column_end=31,
                                     ),
                                 ),
                                 arguments=[
@@ -3937,8 +4515,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=31,
                                                 column=32,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=31,
+                                                column_end=35,
                                             ),
                                         ),
                                         value=StringValueNode(
@@ -3946,8 +4524,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=31,
                                                 column=37,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=31,
+                                                column_end=44,
                                             ),
                                         ),
                                         location=Location(
@@ -3974,8 +4552,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=32,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=32,
+                                        column_end=17,
                                     ),
                                 ),
                                 arguments=[
@@ -3986,12 +4564,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=32,
                                                 column=18,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=32,
+                                                column_end=21,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="Type",
+                                            name=NameNode(
+                                                value="Type",
+                                                location=Location(
+                                                    line=32,
+                                                    column=23,
+                                                    line_end=32,
+                                                    column_end=28,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=32,
                                                 column=23,
@@ -4004,8 +4590,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=32,
                                                 column=30,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=32,
+                                                column_end=40,
                                             ),
                                         ),
                                         directives=[
@@ -4015,8 +4601,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=32,
                                                         column=41,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=32,
+                                                        column_end=61,
                                                     ),
                                                 ),
                                                 arguments=[],
@@ -4037,7 +4623,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=32,
+                                            column=64,
+                                            line_end=32,
+                                            column_end=69,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=32,
                                         column=64,
@@ -4052,8 +4646,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=32,
                                                 column=70,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=33,
+                                                column_end=1,
                                             ),
                                         ),
                                         arguments=[],
@@ -4082,13 +4676,10 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="UndefinedType",
                             location=Location(
-                                line=35,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=35, column=6, line_end=37, column_end=1
                             ),
                         ),
-                        interfaces=None,
+                        interfaces=[],
                         directives=[],
                         fields=[],
                         location=Location(
@@ -4099,10 +4690,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Foo",
                             location=Location(
-                                line=37,
-                                column=13,
-                                line_end=None,
-                                column_end=None,
+                                line=37, column=13, line_end=37, column_end=17
                             ),
                         ),
                         interfaces=[],
@@ -4115,8 +4703,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=38,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=38,
+                                        column_end=8,
                                     ),
                                 ),
                                 arguments=[
@@ -4127,13 +4715,21 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=38,
                                                 column=9,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=38,
+                                                column_end=17,
                                             ),
                                         ),
                                         type=ListTypeNode(
                                             type=NamedTypeNode(
-                                                name="String",
+                                                name=NameNode(
+                                                    value="String",
+                                                    location=Location(
+                                                        line=38,
+                                                        column=20,
+                                                        line_end=38,
+                                                        column_end=26,
+                                                    ),
+                                                ),
                                                 location=Location(
                                                     line=38,
                                                     column=20,
@@ -4159,7 +4755,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=38,
+                                            column=30,
+                                            line_end=39,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=38,
                                         column=30,
@@ -4184,10 +4788,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Foo",
                             location=Location(
-                                line=41,
-                                column=13,
-                                line_end=None,
-                                column_end=None,
+                                line=41, column=13, line_end=41, column_end=17
                             ),
                         ),
                         interfaces=[],
@@ -4198,8 +4799,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=41,
                                         column=18,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=43,
+                                        column_end=1,
                                     ),
                                 ),
                                 arguments=[],
@@ -4221,10 +4822,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Bar",
                             location=Location(
-                                line=43,
-                                column=11,
-                                line_end=None,
-                                column_end=None,
+                                line=43, column=11, line_end=43, column_end=15
                             ),
                         ),
                         directives=[],
@@ -4236,13 +4834,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=44,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=44,
+                                        column_end=6,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=44,
+                                            column=8,
+                                            line_end=45,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=44,
                                         column=8,
@@ -4265,8 +4871,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=45,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=45,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[
@@ -4277,12 +4883,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=45,
                                                 column=8,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=45,
+                                                column_end=16,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="String",
+                                            name=NameNode(
+                                                value="String",
+                                                location=Location(
+                                                    line=45,
+                                                    column=18,
+                                                    line_end=45,
+                                                    column_end=25,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=45,
                                                 column=18,
@@ -4295,8 +4909,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=45,
                                                 column=27,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=45,
+                                                column_end=35,
                                             ),
                                         ),
                                         directives=[],
@@ -4309,7 +4923,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="String",
+                                    name=NameNode(
+                                        value="String",
+                                        location=Location(
+                                            line=45,
+                                            column=38,
+                                            line_end=46,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=45,
                                         column=38,
@@ -4335,10 +4957,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="AnnotatedInterface",
                             location=Location(
-                                line=48,
-                                column=11,
-                                line_end=None,
-                                column_end=None,
+                                line=48, column=11, line_end=48, column_end=30
                             ),
                         ),
                         directives=[
@@ -4348,8 +4967,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=48,
                                         column=31,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=48,
+                                        column_end=43,
                                     ),
                                 ),
                                 arguments=[],
@@ -4369,8 +4988,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=49,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=49,
+                                        column_end=17,
                                     ),
                                 ),
                                 arguments=[
@@ -4381,12 +5000,20 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=49,
                                                 column=18,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=49,
+                                                column_end=21,
                                             ),
                                         ),
                                         type=NamedTypeNode(
-                                            name="Type",
+                                            name=NameNode(
+                                                value="Type",
+                                                location=Location(
+                                                    line=49,
+                                                    column=23,
+                                                    line_end=49,
+                                                    column_end=28,
+                                                ),
+                                            ),
                                             location=Location(
                                                 line=49,
                                                 column=23,
@@ -4402,8 +5029,8 @@ def test_parse_without_exception(sdl_file_path):
                                                     location=Location(
                                                         line=49,
                                                         column=29,
-                                                        line_end=None,
-                                                        column_end=None,
+                                                        line_end=49,
+                                                        column_end=49,
                                                     ),
                                                 ),
                                                 arguments=[],
@@ -4424,7 +5051,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=49,
+                                            column=52,
+                                            line_end=49,
+                                            column_end=57,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=49,
                                         column=52,
@@ -4439,8 +5074,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=49,
                                                 column=58,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=50,
+                                                column_end=1,
                                             ),
                                         ),
                                         arguments=[],
@@ -4469,10 +5104,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="UndefinedInterface",
                             location=Location(
-                                line=52,
-                                column=11,
-                                line_end=None,
-                                column_end=None,
+                                line=52, column=11, line_end=54, column_end=1
                             ),
                         ),
                         directives=[],
@@ -4485,10 +5117,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Bar",
                             location=Location(
-                                line=54,
-                                column=18,
-                                line_end=None,
-                                column_end=None,
+                                line=54, column=18, line_end=54, column_end=22
                             ),
                         ),
                         directives=[],
@@ -4500,8 +5129,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=55,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=55,
+                                        column_end=6,
                                     ),
                                 ),
                                 arguments=[
@@ -4512,13 +5141,21 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=55,
                                                 column=7,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=55,
+                                                column_end=15,
                                             ),
                                         ),
                                         type=NonNullTypeNode(
                                             type=NamedTypeNode(
-                                                name="InputType",
+                                                name=NameNode(
+                                                    value="InputType",
+                                                    location=Location(
+                                                        line=55,
+                                                        column=17,
+                                                        line_end=55,
+                                                        column_end=26,
+                                                    ),
+                                                ),
                                                 location=Location(
                                                     line=55,
                                                     column=17,
@@ -4544,7 +5181,15 @@ def test_parse_without_exception(sdl_file_path):
                                     )
                                 ],
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=55,
+                                            column=30,
+                                            line_end=56,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=55,
                                         column=30,
@@ -4569,10 +5214,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Bar",
                             location=Location(
-                                line=58,
-                                column=18,
-                                line_end=None,
-                                column_end=None,
+                                line=58, column=18, line_end=58, column_end=22
                             ),
                         ),
                         directives=[
@@ -4582,8 +5224,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=58,
                                         column=23,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=60,
+                                        column_end=1,
                                     ),
                                 ),
                                 arguments=[],
@@ -4605,16 +5247,21 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Feed",
                             location=Location(
-                                line=60,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=60, column=7, line_end=60, column_end=12
                             ),
                         ),
                         directives=[],
                         types=[
                             NamedTypeNode(
-                                name="Story",
+                                name=NameNode(
+                                    value="Story",
+                                    location=Location(
+                                        line=61,
+                                        column=5,
+                                        line_end=62,
+                                        column_end=3,
+                                    ),
+                                ),
                                 location=Location(
                                     line=61,
                                     column=5,
@@ -4623,7 +5270,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name="Article",
+                                name=NameNode(
+                                    value="Article",
+                                    location=Location(
+                                        line=62,
+                                        column=5,
+                                        line_end=63,
+                                        column_end=3,
+                                    ),
+                                ),
                                 location=Location(
                                     line=62,
                                     column=5,
@@ -4632,7 +5287,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name="Advert",
+                                name=NameNode(
+                                    value="Advert",
+                                    location=Location(
+                                        line=63,
+                                        column=5,
+                                        line_end=65,
+                                        column_end=1,
+                                    ),
+                                ),
                                 location=Location(
                                     line=63,
                                     column=5,
@@ -4650,10 +5313,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="AnnotatedUnion",
                             location=Location(
-                                line=65,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=65, column=7, line_end=65, column_end=22
                             ),
                         ),
                         directives=[
@@ -4663,8 +5323,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=65,
                                         column=23,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=65,
+                                        column_end=31,
                                     ),
                                 ),
                                 arguments=[],
@@ -4678,7 +5338,15 @@ def test_parse_without_exception(sdl_file_path):
                         ],
                         types=[
                             NamedTypeNode(
-                                name="A",
+                                name=NameNode(
+                                    value="A",
+                                    location=Location(
+                                        line=65,
+                                        column=33,
+                                        line_end=65,
+                                        column_end=35,
+                                    ),
+                                ),
                                 location=Location(
                                     line=65,
                                     column=33,
@@ -4687,7 +5355,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name="B",
+                                name=NameNode(
+                                    value="B",
+                                    location=Location(
+                                        line=65,
+                                        column=37,
+                                        line_end=67,
+                                        column_end=1,
+                                    ),
+                                ),
                                 location=Location(
                                     line=65,
                                     column=37,
@@ -4705,10 +5381,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="AnnotatedUnionTwo",
                             location=Location(
-                                line=67,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=67, column=7, line_end=67, column_end=25
                             ),
                         ),
                         directives=[
@@ -4718,8 +5391,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=67,
                                         column=26,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=67,
+                                        column_end=34,
                                     ),
                                 ),
                                 arguments=[],
@@ -4733,7 +5406,15 @@ def test_parse_without_exception(sdl_file_path):
                         ],
                         types=[
                             NamedTypeNode(
-                                name="A",
+                                name=NameNode(
+                                    value="A",
+                                    location=Location(
+                                        line=67,
+                                        column=38,
+                                        line_end=67,
+                                        column_end=40,
+                                    ),
+                                ),
                                 location=Location(
                                     line=67,
                                     column=38,
@@ -4742,7 +5423,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name="B",
+                                name=NameNode(
+                                    value="B",
+                                    location=Location(
+                                        line=67,
+                                        column=42,
+                                        line_end=69,
+                                        column_end=1,
+                                    ),
+                                ),
                                 location=Location(
                                     line=67,
                                     column=42,
@@ -4760,10 +5449,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="UndefinedUnion",
                             location=Location(
-                                line=69,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=69, column=7, line_end=71, column_end=1
                             ),
                         ),
                         directives=[],
@@ -4776,16 +5462,21 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Feed",
                             location=Location(
-                                line=71,
-                                column=14,
-                                line_end=None,
-                                column_end=None,
+                                line=71, column=14, line_end=71, column_end=19
                             ),
                         ),
                         directives=[],
                         types=[
                             NamedTypeNode(
-                                name="Photo",
+                                name=NameNode(
+                                    value="Photo",
+                                    location=Location(
+                                        line=71,
+                                        column=21,
+                                        line_end=71,
+                                        column_end=27,
+                                    ),
+                                ),
                                 location=Location(
                                     line=71,
                                     column=21,
@@ -4794,7 +5485,15 @@ def test_parse_without_exception(sdl_file_path):
                                 ),
                             ),
                             NamedTypeNode(
-                                name="Video",
+                                name=NameNode(
+                                    value="Video",
+                                    location=Location(
+                                        line=71,
+                                        column=29,
+                                        line_end=73,
+                                        column_end=1,
+                                    ),
+                                ),
                                 location=Location(
                                     line=71,
                                     column=29,
@@ -4811,10 +5510,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Feed",
                             location=Location(
-                                line=73,
-                                column=14,
-                                line_end=None,
-                                column_end=None,
+                                line=73, column=14, line_end=73, column_end=19
                             ),
                         ),
                         directives=[
@@ -4824,8 +5520,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=73,
                                         column=20,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=75,
+                                        column_end=1,
                                     ),
                                 ),
                                 arguments=[],
@@ -4847,13 +5543,10 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="CustomScalar",
                             location=Location(
-                                line=75,
-                                column=8,
-                                line_end=None,
-                                column_end=None,
+                                line=75, column=8, line_end=77, column_end=1
                             ),
                         ),
-                        directives=None,
+                        directives=[],
                         location=Location(
                             line=75, column=1, line_end=77, column_end=1
                         ),
@@ -4863,10 +5556,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="AnnotatedScalar",
                             location=Location(
-                                line=77,
-                                column=8,
-                                line_end=None,
-                                column_end=None,
+                                line=77, column=8, line_end=77, column_end=24
                             ),
                         ),
                         directives=[
@@ -4876,8 +5566,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=77,
                                         column=25,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=79,
+                                        column_end=1,
                                     ),
                                 ),
                                 arguments=[],
@@ -4897,10 +5587,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="CustomScalar",
                             location=Location(
-                                line=79,
-                                column=15,
-                                line_end=None,
-                                column_end=None,
+                                line=79, column=15, line_end=79, column_end=28
                             ),
                         ),
                         directives=[
@@ -4910,8 +5597,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=79,
                                         column=29,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=81,
+                                        column_end=1,
                                     ),
                                 ),
                                 arguments=[],
@@ -4932,10 +5619,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="Site",
                             location=Location(
-                                line=81,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=81, column=6, line_end=81, column_end=11
                             ),
                         ),
                         directives=[],
@@ -4946,8 +5630,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=82,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=85,
+                                        column_end=3,
                                     ),
                                 ),
                                 name=EnumValueNode(
@@ -4955,8 +5639,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=85,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=87,
+                                        column_end=3,
                                     ),
                                 ),
                                 directives=[],
@@ -4973,8 +5657,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=87,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=88,
+                                        column_end=3,
                                     ),
                                 ),
                                 name=EnumValueNode(
@@ -4982,8 +5666,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=88,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=90,
+                                        column_end=3,
                                     ),
                                 ),
                                 directives=[],
@@ -5000,8 +5684,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=90,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=91,
+                                        column_end=3,
                                     ),
                                 ),
                                 name=EnumValueNode(
@@ -5009,8 +5693,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=91,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=92,
+                                        column_end=1,
                                     ),
                                 ),
                                 directives=[],
@@ -5031,10 +5715,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="AnnotatedEnum",
                             location=Location(
-                                line=94,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=94, column=6, line_end=94, column_end=20
                             ),
                         ),
                         directives=[
@@ -5044,8 +5725,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=94,
                                         column=21,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=94,
+                                        column_end=28,
                                     ),
                                 ),
                                 arguments=[],
@@ -5065,8 +5746,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=95,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=95,
+                                        column_end=19,
                                     ),
                                 ),
                                 directives=[
@@ -5076,8 +5757,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=95,
                                                 column=20,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=96,
+                                                column_end=3,
                                             ),
                                         ),
                                         arguments=[],
@@ -5103,8 +5784,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=96,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=97,
+                                        column_end=1,
                                     ),
                                 ),
                                 directives=[],
@@ -5125,10 +5806,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="UndefinedEnum",
                             location=Location(
-                                line=99,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=99, column=6, line_end=101, column_end=1
                             ),
                         ),
                         directives=[],
@@ -5143,8 +5821,8 @@ def test_parse_without_exception(sdl_file_path):
                             location=Location(
                                 line=101,
                                 column=13,
-                                line_end=None,
-                                column_end=None,
+                                line_end=101,
+                                column_end=18,
                             ),
                         ),
                         directives=[],
@@ -5156,8 +5834,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=102,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=103,
+                                        column_end=1,
                                     ),
                                 ),
                                 directives=[],
@@ -5179,8 +5857,8 @@ def test_parse_without_exception(sdl_file_path):
                             location=Location(
                                 line=105,
                                 column=13,
-                                line_end=None,
-                                column_end=None,
+                                line_end=105,
+                                column_end=18,
                             ),
                         ),
                         directives=[
@@ -5190,8 +5868,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=105,
                                         column=19,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=107,
+                                        column_end=1,
                                     ),
                                 ),
                                 arguments=[],
@@ -5213,10 +5891,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="InputType",
                             location=Location(
-                                line=107,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=107, column=7, line_end=107, column_end=17
                             ),
                         ),
                         directives=[],
@@ -5228,13 +5903,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=108,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=108,
+                                        column_end=6,
                                     ),
                                 ),
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="String",
+                                        name=NameNode(
+                                            value="String",
+                                            location=Location(
+                                                line=108,
+                                                column=8,
+                                                line_end=108,
+                                                column_end=14,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=108,
                                             column=8,
@@ -5265,12 +5948,20 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=109,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=109,
+                                        column_end=9,
                                     ),
                                 ),
                                 type=NamedTypeNode(
-                                    name="Int",
+                                    name=NameNode(
+                                        value="Int",
+                                        location=Location(
+                                            line=109,
+                                            column=11,
+                                            line_end=109,
+                                            column_end=15,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=109,
                                         column=11,
@@ -5283,8 +5974,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=109,
                                         column=17,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=110,
+                                        column_end=1,
                                     ),
                                 ),
                                 directives=[],
@@ -5305,10 +5996,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="AnnotatedInput",
                             location=Location(
-                                line=112,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=112, column=7, line_end=112, column_end=22
                             ),
                         ),
                         directives=[
@@ -5318,8 +6006,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=112,
                                         column=23,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=112,
+                                        column_end=37,
                                     ),
                                 ),
                                 arguments=[],
@@ -5339,12 +6027,20 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=113,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=113,
+                                        column_end=17,
                                     ),
                                 ),
                                 type=NamedTypeNode(
-                                    name="Type",
+                                    name=NameNode(
+                                        value="Type",
+                                        location=Location(
+                                            line=113,
+                                            column=19,
+                                            line_end=113,
+                                            column_end=24,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=113,
                                         column=19,
@@ -5360,8 +6056,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=113,
                                                 column=25,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=114,
+                                                column_end=1,
                                             ),
                                         ),
                                         arguments=[],
@@ -5390,10 +6086,7 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="UndefinedInput",
                             location=Location(
-                                line=116,
-                                column=7,
-                                line_end=None,
-                                column_end=None,
+                                line=116, column=7, line_end=118, column_end=1
                             ),
                         ),
                         directives=[],
@@ -5408,8 +6101,8 @@ def test_parse_without_exception(sdl_file_path):
                             location=Location(
                                 line=118,
                                 column=14,
-                                line_end=None,
-                                column_end=None,
+                                line_end=118,
+                                column_end=24,
                             ),
                         ),
                         directives=[],
@@ -5421,12 +6114,20 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=119,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=119,
+                                        column_end=8,
                                     ),
                                 ),
                                 type=NamedTypeNode(
-                                    name="Float",
+                                    name=NameNode(
+                                        value="Float",
+                                        location=Location(
+                                            line=119,
+                                            column=10,
+                                            line_end=119,
+                                            column_end=16,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=119,
                                         column=10,
@@ -5439,8 +6140,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=119,
                                         column=18,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=119,
+                                        column_end=25,
                                     ),
                                 ),
                                 directives=[
@@ -5450,8 +6151,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=119,
                                                 column=26,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=120,
+                                                column_end=1,
                                             ),
                                         ),
                                         arguments=[],
@@ -5481,8 +6182,8 @@ def test_parse_without_exception(sdl_file_path):
                             location=Location(
                                 line=122,
                                 column=14,
-                                line_end=None,
-                                column_end=None,
+                                line_end=122,
+                                column_end=24,
                             ),
                         ),
                         directives=[
@@ -5492,8 +6193,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=122,
                                         column=25,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=124,
+                                        column_end=1,
                                     ),
                                 ),
                                 arguments=[],
@@ -5514,10 +6215,7 @@ def test_parse_without_exception(sdl_file_path):
                         description=DescriptionNode(
                             value="\nThis is a description of the `@skip` directive\n",
                             location=Location(
-                                line=124,
-                                column=1,
-                                line_end=None,
-                                column_end=None,
+                                line=124, column=1, line_end=127, column_end=1
                             ),
                         ),
                         name=NameNode(
@@ -5525,8 +6223,8 @@ def test_parse_without_exception(sdl_file_path):
                             location=Location(
                                 line=127,
                                 column=12,
-                                line_end=None,
-                                column_end=None,
+                                line_end=127,
+                                column_end=16,
                             ),
                         ),
                         arguments=[
@@ -5537,13 +6235,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=128,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=128,
+                                        column_end=5,
                                     ),
                                 ),
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="Boolean",
+                                        name=NameNode(
+                                            value="Boolean",
+                                            location=Location(
+                                                line=128,
+                                                column=7,
+                                                line_end=128,
+                                                column_end=14,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=128,
                                             column=7,
@@ -5566,8 +6272,8 @@ def test_parse_without_exception(sdl_file_path):
                                             location=Location(
                                                 line=128,
                                                 column=17,
-                                                line_end=None,
-                                                column_end=None,
+                                                line_end=129,
+                                                column_end=1,
                                             ),
                                         ),
                                         arguments=[],
@@ -5627,8 +6333,8 @@ def test_parse_without_exception(sdl_file_path):
                             location=Location(
                                 line=131,
                                 column=12,
-                                line_end=None,
-                                column_end=None,
+                                line_end=131,
+                                column_end=19,
                             ),
                         ),
                         arguments=[
@@ -5639,13 +6345,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=131,
                                         column=20,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=131,
+                                        column_end=22,
                                     ),
                                 ),
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="Boolean",
+                                        name=NameNode(
+                                            value="Boolean",
+                                            location=Location(
+                                                line=131,
+                                                column=24,
+                                                line_end=131,
+                                                column_end=31,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=131,
                                             column=24,
@@ -5710,8 +6424,8 @@ def test_parse_without_exception(sdl_file_path):
                             location=Location(
                                 line=136,
                                 column=12,
-                                line_end=None,
-                                column_end=None,
+                                line_end=136,
+                                column_end=20,
                             ),
                         ),
                         arguments=[
@@ -5722,13 +6436,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=136,
                                         column=21,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=136,
+                                        column_end=23,
                                     ),
                                 ),
                                 type=NonNullTypeNode(
                                     type=NamedTypeNode(
-                                        name="Boolean",
+                                        name=NameNode(
+                                            value="Boolean",
+                                            location=Location(
+                                                line=136,
+                                                column=25,
+                                                line_end=136,
+                                                column_end=32,
+                                            ),
+                                        ),
                                         location=Location(
                                             line=136,
                                             column=25,
@@ -5794,8 +6516,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=141,
                                         column=16,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=143,
+                                        column_end=1,
                                     ),
                                 ),
                                 arguments=[],
@@ -5820,8 +6542,8 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=143,
                                         column=16,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=143,
+                                        column_end=25,
                                     ),
                                 ),
                                 arguments=[],
@@ -5837,7 +6559,15 @@ def test_parse_without_exception(sdl_file_path):
                             OperationTypeDefinitionNode(
                                 operation_type="subscription",
                                 type=NamedTypeNode(
-                                    name="SubscriptionType",
+                                    name=NameNode(
+                                        value="SubscriptionType",
+                                        location=Location(
+                                            line=144,
+                                            column=17,
+                                            line_end=145,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=144,
                                         column=17,
@@ -5872,13 +6602,10 @@ def test_parse_without_exception(sdl_file_path):
                         name=NameNode(
                             value="TreeEntry",
                             location=Location(
-                                line=1,
-                                column=6,
-                                line_end=None,
-                                column_end=None,
+                                line=1, column=6, line_end=1, column_end=16
                             ),
                         ),
-                        interfaces=None,
+                        interfaces=[],
                         directives=[],
                         fields=[
                             FieldDefinitionNode(
@@ -5888,13 +6615,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=2,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=2,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=2,
+                                            column=11,
+                                            line_end=3,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=2,
                                         column=11,
@@ -5914,13 +6649,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=3,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=3,
+                                        column_end=8,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=3,
+                                            column=10,
+                                            line_end=4,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=3,
                                         column=10,
@@ -5940,13 +6683,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=4,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=4,
+                                        column_end=11,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=4,
+                                            column=13,
+                                            line_end=5,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=4,
                                         column=13,
@@ -5966,13 +6717,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=5,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=5,
+                                        column_end=15,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=5,
+                                            column=17,
+                                            line_end=6,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=5,
                                         column=17,
@@ -5992,13 +6751,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=6,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=6,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=6,
+                                            column=9,
+                                            line_end=7,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=6,
                                         column=9,
@@ -6018,13 +6785,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=7,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=7,
+                                        column_end=12,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=7,
+                                            column=14,
+                                            line_end=8,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=7,
                                         column=14,
@@ -6044,13 +6819,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=8,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=8,
+                                        column_end=12,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=8,
+                                            column=14,
+                                            line_end=9,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=8,
                                         column=14,
@@ -6070,13 +6853,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=9,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=9,
+                                        column_end=13,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=9,
+                                            column=15,
+                                            line_end=10,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=9,
                                         column=15,
@@ -6096,13 +6887,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=10,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=10,
+                                        column_end=8,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=10,
+                                            column=10,
+                                            line_end=11,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=10,
                                         column=10,
@@ -6125,13 +6924,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=11,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=11,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=11,
+                                            column=9,
+                                            line_end=12,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=11,
                                         column=9,
@@ -6154,13 +6961,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=12,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=12,
+                                        column_end=8,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=12,
+                                            column=10,
+                                            line_end=13,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=12,
                                         column=10,
@@ -6183,13 +6998,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=13,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=13,
+                                        column_end=5,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=13,
+                                            column=7,
+                                            line_end=14,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=13,
                                         column=7,
@@ -6212,13 +7035,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=14,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=14,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=14,
+                                            column=11,
+                                            line_end=15,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=14,
                                         column=11,
@@ -6241,13 +7072,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=15,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=15,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=15,
+                                            column=11,
+                                            line_end=16,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=15,
                                         column=11,
@@ -6270,13 +7109,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=16,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=16,
+                                        column_end=8,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=16,
+                                            column=10,
+                                            line_end=17,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=16,
                                         column=10,
@@ -6299,13 +7146,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=17,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=17,
+                                        column_end=11,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=17,
+                                            column=13,
+                                            line_end=18,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=17,
                                         column=13,
@@ -6328,13 +7183,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=18,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=18,
+                                        column_end=15,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=18,
+                                            column=17,
+                                            line_end=19,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=18,
                                         column=17,
@@ -6357,13 +7220,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=19,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=19,
+                                        column_end=8,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=19,
+                                            column=10,
+                                            line_end=20,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=19,
                                         column=10,
@@ -6386,13 +7257,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=20,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=20,
+                                        column_end=22,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=20,
+                                            column=24,
+                                            line_end=21,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=20,
                                         column=24,
@@ -6415,13 +7294,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=21,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=21,
+                                        column_end=18,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=21,
+                                            column=20,
+                                            line_end=22,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=21,
                                         column=20,
@@ -6444,13 +7331,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=22,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=22,
+                                        column_end=18,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=22,
+                                            column=20,
+                                            line_end=23,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=22,
                                         column=20,
@@ -6473,13 +7368,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=23,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=23,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=23,
+                                            column=11,
+                                            line_end=24,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=23,
                                         column=11,
@@ -6502,13 +7405,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=24,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=24,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=24,
+                                            column=11,
+                                            line_end=25,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=24,
                                         column=11,
@@ -6531,13 +7442,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=25,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=25,
+                                        column_end=9,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=25,
+                                            column=11,
+                                            line_end=26,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=25,
                                         column=11,
@@ -6560,13 +7479,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=26,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=26,
+                                        column_end=19,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=26,
+                                            column=21,
+                                            line_end=27,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=26,
                                         column=21,
@@ -6589,13 +7516,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=27,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=27,
+                                        column_end=22,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=27,
+                                            column=24,
+                                            line_end=28,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=27,
                                         column=24,
@@ -6618,13 +7553,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=28,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=28,
+                                        column_end=12,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=28,
+                                            column=14,
+                                            line_end=29,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=28,
                                         column=14,
@@ -6647,13 +7590,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=29,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=29,
+                                        column_end=8,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=29,
+                                            column=10,
+                                            line_end=30,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=29,
                                         column=10,
@@ -6676,13 +7627,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=30,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=30,
+                                        column_end=7,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=30,
+                                            column=9,
+                                            line_end=31,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=30,
                                         column=9,
@@ -6705,13 +7664,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=31,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=31,
+                                        column_end=13,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=31,
+                                            column=15,
+                                            line_end=32,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=31,
                                         column=15,
@@ -6734,13 +7701,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=32,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=32,
+                                        column_end=15,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=32,
+                                            column=17,
+                                            line_end=33,
+                                            column_end=3,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=32,
                                         column=17,
@@ -6763,13 +7738,21 @@ def test_parse_without_exception(sdl_file_path):
                                     location=Location(
                                         line=33,
                                         column=3,
-                                        line_end=None,
-                                        column_end=None,
+                                        line_end=33,
+                                        column_end=25,
                                     ),
                                 ),
                                 arguments=[],
                                 type=NamedTypeNode(
-                                    name="Boolean",
+                                    name=NameNode(
+                                        value="Boolean",
+                                        location=Location(
+                                            line=33,
+                                            column=27,
+                                            line_end=34,
+                                            column_end=1,
+                                        ),
+                                    ),
                                     location=Location(
                                         line=33,
                                         column=27,

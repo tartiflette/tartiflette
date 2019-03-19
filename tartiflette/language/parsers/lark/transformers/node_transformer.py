@@ -91,6 +91,7 @@ class NodeTransformer(Transformer_InPlace):
     Parses a Tree previously cleaned with TokenTransformer and builds a
     DocumentNode instance.
     """
+
     # pylint: disable=too-many-public-methods
 
     def __init__(self):
