@@ -270,9 +270,13 @@ class GraphQLSchema:
         :return: None
         """
         self.inject_introspection()
-        self.bake_types(custom_default_resolver)
-        self.call_onbuild_directives()
-        self.validate()
+        try:
+            self.bake_types(custom_default_resolver)  # Bake types
+            self.call_onbuild_directives()  # Call on_build directive that can modify the schema
+        except Exception:  # Failure here should be collected at validation time. pylint: disable=broad-except
+            # TODO Change this when we'll have a better idea on what to do with the on_build kind of directive.
+            pass
+        self.validate()  # Revalidate.
 
     def validate(self) -> bool:
         """
@@ -313,9 +317,8 @@ class GraphQLSchema:
                     reduced_type = reduce_type(field.gql_type)
                     if str(reduced_type) not in self._gql_types:
                         result.append(
-                            f"field <{field.name}> in GraphQL "
-                            f"type <{type_name}> is invalid, "
-                            f"the given type <{reduced_type}> does not exist!"
+                            f"Field < {type_name}.{field.name} > is Invalid: "
+                            f"the given Type < {reduced_type} > does not exist!"
                         )
             except AttributeError:
                 pass
@@ -332,59 +335,54 @@ class GraphQLSchema:
             for iface_name in ifaces_names:
                 try:
                     iface_type = self._gql_types[iface_name]
+                    if not isinstance(iface_type, GraphQLInterfaceType):
+                        results.append(
+                            f"Type < {gql_type.name} > "
+                            f"implements < {iface_name} > "
+                            f"which is not an interface!"
+                        )
+                        continue
                 except KeyError:
                     results.append(
-                        f"GraphQL type <{gql_type.name}> "
-                        f"implements the <{iface_name}> interface "
+                        f"Type < {gql_type.name} > "
+                        f"implements < {iface_name} > "
                         f"which does not exist!"
                     )
-                if not isinstance(iface_type, GraphQLInterfaceType):
-                    results.append(
-                        f"GraphQL type <{gql_type.name}> "
-                        f"implements the <{iface_name}> interface "
-                        f"which is not an interface!"
-                    )
+                    continue
 
                 for iface_field in iface_type.fields:
                     try:
                         gql_type_field = gql_type.find_field(iface_field.name)
                     except KeyError:
                         results.append(
-                            f"field <{iface_field.name}> is missing "
-                            f"in GraphQL type <{gql_type.name}> "
-                            f"that implements the <{iface_name}> interface."
+                            f"Field < {gql_type.name}.{iface_field.name} > is missing "
+                            f"as defined in the < {iface_name} > Interface."
                         )
-                    if gql_type_field.gql_type != iface_field.gql_type:
-                        results.append(
-                            f"Field <{iface_field.name}> in "
-                            f"GraphQL Type <{gql_type.name}> that "
-                            f"implements the <{iface_name}> "
-                            f"Interface does not follow "
-                            f"the interface Field Type "
-                            f"<{iface_field.gql_type}>."
-                        )
+                    else:
+                        if gql_type_field.gql_type != iface_field.gql_type:
+                            results.append(
+                                f"Field < {gql_type.name}.{iface_field.name} > "
+                                f"should be of Type < {iface_field.gql_type} > "
+                                f"as defined in the < {iface_name} > Interface."
+                            )
         return results
 
     def _validate_schema_root_types_exist(self) -> List[str]:
         # Check "query" which is the only mandatory root type
         results = []
         if self.query_type not in self._gql_types:
-            results.append(
-                f"Schema could not find the root Query Type <{self.query_type}>."
-            )
+            results.append(f"Missing Query Type < {self.query_type} >.")
         if (
             self.mutation_type != "Mutation"
             and self.mutation_type not in self._gql_types
         ):
-            results.append(
-                f"Schema could not find the root Mutation Type <{self.mutation_type}>."
-            )
+            results.append(f"Missing Mutation Type < {self.mutation_type} >.")
         if (
             self.subscription_type != "Subscription"
             and self.subscription_type not in self._gql_types
         ):
             results.append(
-                f"Schema could not find the root Subscription Type <{self.subscription_type}>."
+                f"Missing Subscription Type < {self.subscription_type} >."
             )
         return results
 
@@ -392,7 +390,7 @@ class GraphQLSchema:
         results = []
         for type_name, gql_type in self._gql_types.items():
             if isinstance(gql_type, GraphQLObjectType) and not gql_type.fields:
-                results.append(f"Type <{type_name}> has no fields.")
+                results.append(f"Type < {type_name} > has no fields.")
         return results
 
     def _validate_union_is_acceptable(self) -> List[str]:
@@ -402,7 +400,7 @@ class GraphQLSchema:
                 for contained_type_name in gql_type.gql_types:
                     if contained_type_name == type_name:
                         results.append(
-                            f"Union Type <{type_name}> contains itself."
+                            f"Union Type < {type_name} > contains itself."
                         )
                         # TODO: Are there other restrictions for `Union`s ?
                         # can they contain interfaces ?
@@ -418,9 +416,8 @@ class GraphQLSchema:
                     or gql_type.coerce_input is None
                 ):
                     results.append(
-                        f"Scalar type <{type_name}> "
-                        f"must have a coercion "
-                        f"function for inputs and outputs."
+                        f"Scalar < {type_name} > "
+                        f"is missing an implementation"
                     )
         return results
 
@@ -431,9 +428,9 @@ class GraphQLSchema:
                 for value in gql_type.values:
                     if str(value.value) in self._gql_types:
                         results.append(
-                            f"Enum type <{type_name}> has a "
-                            f"value of <{str(value.value)}> which "
-                            f"is not unique in the GraphQL schema."
+                            f"Enum < {type_name} > has a "
+                            f"value of < {str(value.value)} > which "
+                            f"is a Type"
                         )
         return results
 
@@ -445,7 +442,7 @@ class GraphQLSchema:
         if not rtype in self._input_types:
             results.append(
                 f"{message_prefix} is of type "
-                f"<{rtype}> which is not a Scalar, "
+                f"< {rtype} > which is not a Scalar, "
                 f"an Enum or an InputObject"
             )
         return results
@@ -459,7 +456,7 @@ class GraphQLSchema:
                         results.extend(
                             self._validate_type_is_an_input_types(
                                 arg,
-                                f"Argument <{arg.name}> of Field <{gqltype}.{field.name}>",
+                                f"Argument < {arg.name} > of Field < {gqltype}.{field.name} >",
                             )
                         )
             except AttributeError:
@@ -470,7 +467,7 @@ class GraphQLSchema:
                 results.extend(
                     self._validate_type_is_an_input_types(
                         arg,
-                        f"Argument <{arg.name}> of Directive <{directive.name}>",
+                        f"Argument < {arg.name} > of Directive < {directive.name} >",
                     )
                 )
 
@@ -484,12 +481,15 @@ class GraphQLSchema:
                 for field in gqltype.inputFields:
                     results.extend(
                         self._validate_type_is_an_input_types(
-                            field, f"Field <{typename}.{field.name}>"
+                            field, f"Field < {typename}.{field.name} >"
                         )
                     )
         return results
 
     def inject_introspection(self) -> None:
+        if self.query_type not in self._gql_types:
+            return
+
         self._gql_types[self.query_type].add_field(
             SCHEMA_ROOT_FIELD_DEFINITION(
                 gql_type=GraphQLNonNull("__Schema", schema=self)
