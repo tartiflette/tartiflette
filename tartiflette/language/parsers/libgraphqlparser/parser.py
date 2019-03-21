@@ -30,7 +30,13 @@ const char *graphql_ast_to_json(const struct GraphQLAstNode *node);
 )
 
 # TODO: use importlib.resource in Python 3.7
-_LIBGRAPHQLPARSER_DIR = os.path.dirname(__file__)
+_LIBGRAPHQLPARSER_DIR = os.path.join(
+    os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    ),
+    "parser",
+    "cffi",
+)
 try:
     _LIB = _FFI.dlopen(f"{_LIBGRAPHQLPARSER_DIR}/libgraphqlparser.so")
 except OSError:
