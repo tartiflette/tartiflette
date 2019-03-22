@@ -6,7 +6,7 @@
 
 [Read this blogpost about our motivations](https://medium.com/dailymotion/tartiflette-graphql-api-engine-python-open-source-a200c5bbc477)
 TL; DR
-*We reached the limit of Graphene, and, following the pivot of Graphene to a commercial product, we decided to build our own engine, 100% Open Source, built on top of the SDL and asyncio.*
+*We reached the limits of Graphene, and, following the pivot of Graphene to a commercial product, we decided to build our own engine, 100% Open Source, built on top of the SDL and asyncio.*
 
 ## Status
 
