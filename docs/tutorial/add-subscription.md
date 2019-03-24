@@ -51,14 +51,14 @@ from recipes_manager.data import RECIPES
 async def subscription_cooking_time(
     parent_result, args, ctx, info
 ):
-  recipe = [r for r in RECIPES if r["id"] == int(args["id"])]
+  recipe = next([r for r in RECIPES if r["id"] == int(args["id"])], None)
 
   if not recipe:
     raise Exception(f"The recipe with the id '{args['d']}' doesn't exist.")
 
-  for index in range(0, recipe[0]["cookingTime"]):
+  for index in range(0, recipe["cookingTime"]):
     yield {
-      "remainingTime": recipe[0]["cookingTime"] - index,
+      "remainingTime": recipe["cookingTime"] - index,
       "status": "COOKING"
     }
 
