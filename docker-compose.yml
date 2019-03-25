@@ -1,0 +1,9 @@
+version: "3"
+services:
+  docs:
+    image: dailymotion/tartiflette.io:latest
+    ports:
+      - 3000:3000
+      - 35729:35729
+    volumes:
+      - ./docs:/app/docs

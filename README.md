@@ -6,7 +6,7 @@
 
 [Read this blogpost about our motivations](https://medium.com/dailymotion/tartiflette-graphql-api-engine-python-open-source-a200c5bbc477)
 TL; DR
-We reached the limit of Graphene, we wanted to build something which met certain requirements:
+We reached the limits of Graphene, we wanted to build something which met certain requirements:
 * **Offers a better developer experience** that respects the Python mindset
 * **Uses SDL** _(Schema Definition Language)_
 * Uses **asyncio** as the sole execution engine
@@ -127,6 +127,27 @@ web.run_app(
 
 * [Milestone 1 _(Released)_](/docs/roadmaps/milestone-1.md) 
 * [Milestone 2 - **Work in progress**](/docs/roadmaps/milestone-2.md)
+
+## How to contribute to the documentation?
+
+As you may know, the documentation is hosted on https://tartiflette.io. This _fabulous_ website is built thanks to another amazing tool, [docusaurus](https://docusaurus.io/).
+
+The content of the documentation is hosted in this repository, to be as close as possible to the code. You will find everything you need/want in the folder `/docs`.
+
+### How to run the website locally?
+
+We built a docker image for the documentation _(dailymotion/tartiflette.io on docker hub)_, which allow us to provide you an easy way to launch the documentation locally, without installing a specific version of node.
+
+**prerequisite**:
+- Docker
+- Docker Compose
+- Make
+
+```bash
+make run-docs
+```
+
+Every change you will make in the `/docs` folder will be automatically hot reloaded. :tada:
 
 ## Known issues
 
