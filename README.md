@@ -2,6 +2,18 @@
 
 **Tartiflette** is a GraphQL Server implementation built with **Python 3.6+**.
 
+## Motivation
+
+[Read this blogpost about our motivations](https://medium.com/dailymotion/tartiflette-graphql-api-engine-python-open-source-a200c5bbc477)
+TL; DR
+We reached the limit of Graphene, we wanted to build something which met certain requirements:
+* **Offers a better developer experience** that respects the Python mindset
+* **Uses SDL** _(Schema Definition Language)_
+* Uses **asyncio** as the sole execution engine
+* Be 100% open source
+
+## Status
+
 **The [first milestone](/docs/roadmaps/milestone-1.md) is behind us, we are now [on the road to the milestone 2](/docs/roadmaps/milestone-2.md)**.
 
 **DNA**
