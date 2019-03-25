@@ -64,3 +64,7 @@ set-version:
 ifneq ($(SET_ALPHA_VERSION), 0)
 	bash -c "sed -i \"s@_VERSION[ ]*=[ ]*[\\\"\'][0-9]\+\\.[0-9]\+\\.[0-9]\+[\\\"\'].*@_VERSION = \\\"$(PKG_VERSION)\\\"@\" setup.py"
 endif
+
+.PHONY: run-docs
+run-docs:
+	docker-compose up docs
