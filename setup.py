@@ -1,6 +1,7 @@
-import subprocess
 import os
+import subprocess
 import sys
+
 from setuptools import find_packages, setup
 from setuptools.command.build_ext import build_ext
 from setuptools.command.build_py import build_py
@@ -52,7 +53,7 @@ _TEST_REQUIRE = [
     "pytest-asyncio==0.10.0",
     "pytest-xdist",
     "pylint==2.3.0",
-    "xenon",
+    "xenon==0.5.5",
     "black==18.9b0",
     "isort==4.3.4",
 ]

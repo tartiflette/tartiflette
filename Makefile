@@ -14,7 +14,7 @@ init:
 
 .PHONY: format-import
 format-import:
-	isort -rc tartiflette/. tests/.
+	isort -rc tartiflette/. tests/. setup.py
 
 .PHONY: format
 format: format-import
@@ -22,7 +22,7 @@ format: format-import
 
 .PHONY: check-import
 check-import:
-	isort --check-only -rc tartiflette/. tests/.
+	isort --check-only -rc tartiflette/. tests/. setup.py
 
 .PHONY: check-format
 check-format:
@@ -68,3 +68,18 @@ endif
 .PHONY: run-docs
 run-docs:
 	docker-compose up docs
+
+.PHONY: git-tag
+git-tag:
+ifeq ($(TRAVIS_BRANCH), master)
+	git tag $(PKG_VERSION)
+	@git push -q https://$(GITHUBTOKEN)@github.com/dailymotion/tartiflette.git $(PKG_VERSION)
+endif
+
+.PHONY: get-version
+get-version:
+	@echo $(PKG_VERSION)
+
+.PHONY: get-last-released-changelog-entry
+get-last-released-changelog-entry:
+	cat changelogs/$(PKG_VERSION).md
