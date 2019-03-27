@@ -25,7 +25,7 @@ jobs:
       script: make test-unit
     - stage: quality
       name: Functionnal Tests
-      script: make test-functionnal
+      script: make test-functional
     - stage: quality
       name: Style
       script: make style
