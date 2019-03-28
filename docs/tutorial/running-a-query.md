@@ -36,7 +36,7 @@ query {
     id
     name
     cookingTime
-    ingredientsQuantity {
+    ingredients {
       name
       quantity
       type
@@ -57,7 +57,7 @@ Below, a request to select only one recipe, by its `id`.
     id
     name
     cookingTime
-    ingredientsQuantity {
+    ingredients {
       name
       quantity
       type

@@ -28,7 +28,7 @@ enum IngredientType {
     UNIT
 }
 
-type IngredientQuantity {
+type Ingredient {
     name: String!
     quantity: Float!
     type: IngredientType!
@@ -37,7 +37,7 @@ type IngredientQuantity {
 type Recipe {
   id: Int
   name: String
-  ingredientsQuantity: [IngredientQuantity]
+  ingredients: [Ingredient]
   cookingTime: Int
 }
 ```

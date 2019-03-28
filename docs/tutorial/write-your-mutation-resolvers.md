@@ -37,7 +37,7 @@ import collections
 
 from tartiflette import Resolver
 
-from recipes_manager.data import INGREDIENTS_QUANTITY, RECIPES
+from recipes_manager.data import RECIPES
 
 
 @Resolver("Mutation.updateRecipe")
