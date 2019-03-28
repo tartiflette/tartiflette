@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-- [Next](./changelogs/Next.md)
+- [Next](./changelogs/next.md)
 
 ## [Released]
 
 - [0.6.x]
+  - [0.6.8](./changelogs/0.6.8.md) - 2019-03-27
   - [0.6.7](./changelogs/0.6.7.md) - 2019-03-18
   - [0.6.6](./changelogs/0.6.6.md) - 2019-03-13
   - [0.6.5](./changelogs/0.6.5.md) - 2019-03-12

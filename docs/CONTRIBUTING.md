@@ -58,4 +58,4 @@ Before submitting your pull-request, make sure the following is done.
 ## Changelog
 
 All notable changes to this project will be documented in the [CHANGELOG.md](https://github.com/dailymotion/tartiflette/blob/master/CHANGELOG.md) file.
-In your PR you can add your changes to the [Next.md](https://github.com/dailymotion/tartiflette/blob/master/changelogs/Next.md)
+In your PR you can add your changes to the [next.md](https://github.com/dailymotion/tartiflette/blob/master/changelogs/next.md)
