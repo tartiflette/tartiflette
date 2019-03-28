@@ -96,8 +96,8 @@ We will need some data to execute `query`, `mutation` and `subscription`.
 Fill the file **recipes_manager/data.py** with this data.
 
 ```python
-# Dictionary which contains the ingredients based on the
-# Recipe ID as the key.
+# Dictionnary which contains the ingredients based on the
+# Recipe ID as key.
 INGREDIENTS = {
     1: [
         { "name": "potato", "quantity": 10, "type": "UNIT" },

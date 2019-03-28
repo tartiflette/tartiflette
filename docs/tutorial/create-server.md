@@ -23,15 +23,15 @@ type Query {
 }
 
 enum IngredientType {
-    GRAM
-    LITER
-    UNIT
+  GRAM
+  LITER
+  UNIT
 }
 
 type Ingredient {
-    name: String!
-    quantity: Float!
-    type: IngredientType!
+  name: String!
+  quantity: Float!
+  type: IngredientType!
 }
 
 type Recipe {
