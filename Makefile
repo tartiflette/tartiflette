@@ -73,7 +73,7 @@ run-docs:
 git-tag:
 ifeq ($(TRAVIS_BRANCH), master)
 	git config --local user.name "dm-tartiflette-release-travis"
-    git config --local user.email "dm-tartiflette-release-travis@dailymotion.com"
+	git config --local user.email "dm-tartiflette-release-travis@dailymotion.com"
 	git tag $(PKG_VERSION)
 	@git push -q https://dm-tartiflette-release-travis:$(GITHUBTOKEN)@github.com/dailymotion/tartiflette.git $(PKG_VERSION)
 endif
