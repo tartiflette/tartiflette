@@ -62,5 +62,5 @@ jobs:
             secure: Fyj7hIUpWQbGrxgSB7VD/VtQiioqUEETFsO/XMiSbmnJ0P3uS1bZnhdqOISb/iHF+nZJ0k3aAGxpYihM3a3tWIJSKVeizrz0xzD0ku3khcvDTs77OfhqIPDkm83gf2vc7BNR/qflMIcw/UoQoFoMlp5fpF6elvCppmOWjyaeEUznDAIVG4F/S5WZ55pgljvQ+SyhcoxyapFLkuWjY+07cBXqhZ5ke830ehFYjLqblwyzey/LH5iTnguxmmueSXja+Xg/+URFPp7BQi23D14poQg/tx7zXd+ckd14rqp82hLESbibFcwzapMp9mDADVQErG53Yzjp7hutiFzncOZfWWyg9FzrPnkomtippzFTizGJeafnsRJuowOdaxuQuluLTpcPZlkpYbd/plvdXeh3PQX3+W+hLCOsthfv/EmzrFcrtyT8LKHaZPUIMU9e7JopM3Xm/NQ+Kj/KoW9ljKipOqfg05WqioNWNnecFudv5Pmd3VMjFjzEkDugank4DYl1tAoTYdANZNS6/AOzeABbs+29HXvNm+m9yHZ5deSGIsNZGqnUK708d4foSqwoFqiwvWyM9QsejwXaqF1wAgzJDMzU83J5iYg9BPbfLjKGBVseOEnZrZSalTtNSGjpFi7oN5Akvoz2udYdOLHWMlsOgftgv3mMI/plo277jaRYC/4=
           on:
             branch: master
-          name: ${PACKAGE_VERSION}
-          body: ${RELEASE_BODY}
+          name: "${PACKAGE_VERSION}"
+          body: "${RELEASE_BODY}"
