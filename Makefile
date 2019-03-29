@@ -84,4 +84,4 @@ get-version:
 
 .PHONY: get-last-released-changelog-entry
 get-last-released-changelog-entry:
-	cat changelogs/$(PKG_VERSION).md
+	@cat changelogs/$(PKG_VERSION).md
