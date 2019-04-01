@@ -174,7 +174,7 @@ async def test_tartiflette_execute_scalar_type_advanced(
 
 @pytest.mark.asyncio
 async def test_tartiflette_declare_custom_scalar(clean_registry):
-    from tartiflette.scalar import Scalar
+    from tartiflette import Scalar
 
     sdl = """
         scalar Ntm
