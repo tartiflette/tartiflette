@@ -85,10 +85,10 @@ async def test_issue21_okayquery(
     }
 
     type Query {
-        a(xid: Int): Obj
+        a(xid: %s): Obj
     }
     """
-        % typee
+        % (typee, typee)
     )
 
     results = await ttftt.execute(

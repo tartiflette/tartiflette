@@ -48,7 +48,7 @@ class GraphQLInputObjectType(GraphQLType):
     def inputFields(  # pylint: disable=invalid-name
         self
     ) -> List["GraphQLArgument"]:
-        return self._input_fields
+        return self.input_fields
 
     def bake(
         self,
@@ -59,3 +59,7 @@ class GraphQLInputObjectType(GraphQLType):
 
         for arg in self._fields.values():
             arg.bake(self._schema)
+
+    @property
+    def input_fields(self):
+        return self._input_fields
