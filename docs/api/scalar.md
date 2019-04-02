@@ -5,9 +5,32 @@ sidebar_label: Scalar
 ---
 
 Tartiflette allows you to use your own `scalar` and even redefine the behavior of the built-in ones.
-Your `scalar` will have to declare 2 methods `coerce_input` and `coerce_output` that will be used to translate the inputs, when the `scalar` is used as type for an `argument` (or is inside an `input object`), into something useable in your code and to translate the outputs, when the `scalar` is used as type for a `field`, into something that is serializable. This 2 methods are what we are calling `coercers`.
+Your `scalar` will have to declare 2 methods `coerce_input` and `coerce_output`.
 
-## How to declare a new scalar?
+- **coerce_input(val:Any)->Any**
+- **coerce_output(val:Any)->Any**
+
+This 2 methods are what we call `coercers`.
+
+### coerce_input
+
+This method will be used to translate the resolver inputs.
+
+This method should return something that will be usefull to your resolver.
+
+> called when the `scalar` is used as type for an `argument` (or is inside an `input object`).
+
+### coerce_output
+
+This method will be used to translate resolver outputs.
+
+This method shoud return something that is JSON serializable.
+
+> called when the `scalar` is used as a type for `field`.
+
+## How to declare a new scalar
+
+In this example we will declare a new scalar that will transform "anystring" into "Anystring" and back.
 
 ```graphql
 scalar CapitalizedString
