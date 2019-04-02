@@ -7,6 +7,7 @@ from tartiflette.utils.arguments import (
     argument_coercer,
     surround_with_argument_execution_directives,
 )
+from tartiflette.utils.coercer import CoercerWay, get_coercer
 
 
 class GraphQLArgument:
@@ -101,7 +102,13 @@ class GraphQLArgument:
 
         self.coercer = partial(
             surround_with_argument_execution_directives(
-                argument_coercer, self.directives
+                partial(
+                    argument_coercer,
+                    input_coercer=get_coercer(
+                        self, schema=schema, way=CoercerWay.INPUT
+                    ),
+                ),
+                self.directives,
             ),
             self,
         )

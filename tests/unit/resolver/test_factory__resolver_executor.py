@@ -163,7 +163,7 @@ def test_resolver_factory__resolver_executor_update_coercer(
 ):
 
     with patch(
-        "tartiflette.resolver.factory._get_coercer", return_value="T"
+        "tartiflette.resolver.factory.get_coercer", return_value="T"
     ) as mocked_g_co:
 
         assert _resolver_executor_mock.update_coercer() is None

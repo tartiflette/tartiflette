@@ -23,7 +23,9 @@ def surround_with_argument_execution_directives(
     return func
 
 
-async def argument_coercer(argument_definition, args, ctx, info):
+async def argument_coercer(
+    argument_definition, args, ctx, info, input_coercer=None
+):
     value = UNDEFINED_VALUE
     try:
         value = args[argument_definition.name]
@@ -37,7 +39,11 @@ async def argument_coercer(argument_definition, args, ctx, info):
         return value
 
     try:
-        value = value.value
+        value = (
+            value.value
+            if not input_coercer
+            else input_coercer(value.value, info)
+        )
     except AttributeError:
         pass
 
@@ -68,6 +74,7 @@ async def coerce_arguments(
     ctx: Optional[Dict[str, Any]],
     info: "Info",
 ) -> Dict[str, Any]:
+
     results = await asyncio.gather(
         *[
             argument_definition.coercer(input_args, ctx, info)

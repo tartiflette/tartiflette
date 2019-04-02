@@ -1,159 +1,9 @@
 from functools import partial
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, Optional, Union
 
-from tartiflette.types.exceptions.tartiflette import (
-    InvalidValue,
-    NullError,
-    SkipExecution,
-)
-from tartiflette.types.helpers import has_typename, reduce_type
+from tartiflette.types.exceptions.tartiflette import SkipExecution
 from tartiflette.utils.arguments import coerce_arguments
-
-
-def _built_in_coercer(func: Callable, val: Optional[Any], _: "Info") -> Any:
-    if val is None:
-        return val
-    # Don't pass info, cause this is a builtin python type
-    return func(val)
-
-
-def _object_coercer(
-    raw_type: Optional[str], val: Optional[Any], *_args, **_kwargs
-) -> dict:
-    if val is None:
-        return None
-
-    _set_typename(val, raw_type)
-    return {}
-
-
-def _list_coercer(
-    func: Callable, val: Optional[Any], info: "Info"
-) -> Optional[list]:
-    if val is None:
-        return val
-
-    if isinstance(val, list):
-        return [func(v, info) for v in val]
-    return [func(val, info)]
-
-
-def _not_null_coercer(func: Callable, val: Optional[Any], info: "Info") -> Any:
-    if val is None:
-        raise NullError(val, info)
-    return func(val, info)
-
-
-def _get_type_coercers(field_type: "GraphQLType") -> List[Callable]:
-    coercer_list = []
-    current_type = field_type
-    while hasattr(current_type, "gql_type"):
-        if current_type.is_list:
-            coercer_list.append(_list_coercer)
-        if current_type.is_not_null:
-            coercer_list.append(_not_null_coercer)
-        current_type = current_type.gql_type
-    return coercer_list
-
-
-def _list_and_null_coercer(
-    field_type: Union["GraphQLList", "GraphQLNonNull"], coercer: Callable
-) -> Callable:
-    field_type_coercers = _get_type_coercers(field_type)
-    for field_type_coercer in reversed(field_type_coercers):
-        coercer = partial(field_type_coercer, coercer)
-    return coercer
-
-
-def _shall_return_a_list(field_type: Union[str, "GraphQLType"]) -> bool:
-    try:
-        return (
-            field_type.gql_type.is_list
-            if field_type.is_not_null
-            else field_type.is_list
-        )
-    except AttributeError:
-        pass
-    return False
-
-
-def _enum_coercer(
-    enum_valid_values: List[str],
-    func: Callable,
-    val: Optional[str],
-    info: "Info",
-) -> Optional[str]:
-    if val is None:
-        return val
-
-    if val not in enum_valid_values:
-        raise InvalidValue(val, info)
-    return func(val, info)
-
-
-def _is_an_enum(
-    reduced_type: str, schema: "GraphQLSchema"
-) -> Optional[Callable]:
-    enum = schema.find_enum(reduced_type)
-    if enum:
-        return partial(
-            _enum_coercer,
-            [x.value for x in enum.values],
-            partial(
-                _built_in_coercer, schema.find_scalar("String").coerce_output
-            ),
-        )
-    return None
-
-
-def _is_a_scalar(
-    reduced_type: str, schema: "GraphQLSchema"
-) -> Optional[Callable]:
-    scalar = schema.find_scalar(reduced_type)
-    if scalar:
-        return partial(_built_in_coercer, scalar.coerce_output)
-    return None
-
-
-def _is_union(reduced_type: str, schema: "GraphQLSchema") -> bool:
-    try:
-        return schema.find_type(reduced_type).is_union
-    except (AttributeError, KeyError):
-        pass
-    return False
-
-
-def _get_coercer(field: "GraphQLField") -> Optional[Callable]:
-    if not field.schema:
-        return None
-
-    field_type = field.gql_type
-    reduced_type = reduce_type(field_type)
-    is_union = _is_union(reduced_type, field.schema)
-
-    if reduced_type == "__Type":
-        # preserve None
-        coercer = partial(
-            _built_in_coercer,
-            partial(_object_coercer, reduced_type if not is_union else None),
-        )
-    else:
-        try:
-            coercer = _is_an_enum(reduced_type, field.schema)
-            if not coercer:
-                coercer = _is_a_scalar(reduced_type, field.schema)
-                if not coercer:
-                    # per default you're an object
-                    coercer = partial(
-                        _object_coercer, reduced_type if not is_union else None
-                    )
-        except AttributeError:
-            coercer = partial(
-                _object_coercer, reduced_type if not is_union else None
-            )
-
-    # Manage List and NonNull
-    return _list_and_null_coercer(field_type, coercer)
+from tartiflette.utils.coercer import get_coercer
 
 
 def _surround_with_execution_directives(
@@ -192,20 +42,16 @@ def _execute_introspection_directives(elements: list, ctx, info) -> list:
     return results
 
 
-def _set_typename(result: Any, typename: Optional[str]) -> None:
-    if result is None or typename is None or has_typename(result):
-        return
-
+def _shall_return_a_list(field_type: Union[str, "GraphQLType"]) -> bool:
     try:
-        result["_typename"] = typename
-        return
-    except TypeError:
-        pass
-
-    try:
-        setattr(result, "_typename", typename)
+        return (
+            field_type.gql_type.is_list
+            if field_type.is_not_null
+            else field_type.is_list
+        )
     except AttributeError:
-        pass  # Res is unmutable
+        pass
+    return False
 
 
 class _ResolverExecutor:
@@ -213,7 +59,7 @@ class _ResolverExecutor:
         self._raw_func = func
         self._func = func
         self._schema_field = schema_field
-        self._coercer = _get_coercer(schema_field)
+        self._coercer = get_coercer(schema_field)
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
 
     async def _introspection(self, element: Any, ctx, info) -> Optional[Any]:
@@ -271,7 +117,7 @@ class _ResolverExecutor:
         self._raw_func = func
 
     def update_coercer(self) -> None:
-        self._coercer = _get_coercer(self.schema_field)
+        self._coercer = get_coercer(self._schema_field)
 
     def bake(self, custom_default_resolver: Optional[Callable]) -> None:
         self.update_coercer()
@@ -287,11 +133,11 @@ class _ResolverExecutor:
         self.apply_directives()
 
     @property
-    def schema_field(self) -> None:
+    def schema_field(self) -> "GraphQLField":
         return self._schema_field
 
     @property
-    def shall_produce_list(self) -> None:
+    def shall_produce_list(self) -> bool:
         return self._shall_produce_list
 
     @property
