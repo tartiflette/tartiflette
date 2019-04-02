@@ -191,7 +191,6 @@ def enum_mock():
 @pytest.fixture
 def schema_mock(scalar_mock, enum_mock):
 
-
     schema = Mock()
     field = Mock()
     field.gql_type = "aType"
@@ -232,7 +231,6 @@ def test_resovler_factory__is_an_enum_not():
     from tartiflette.utils.coercer import _is_an_enum
     from tartiflette.utils.coercer import CoercerWay
 
-
     sch = Mock()
     sch.find_enum = Mock(return_value=None)
 
@@ -243,7 +241,6 @@ def test_resolver_factory__is_a_scalar(schema_mock, scalar_mock):
     from tartiflette.utils.coercer import _is_a_scalar
     from tartiflette.utils.coercer import _built_in_coercer
     from tartiflette.utils.coercer import CoercerWay
-
 
     schema_mock.find_enum = Mock(return_value=None)
 
