@@ -11,7 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+- [0.7.x]
+  - [0.7.0](./changelogs/0.7.0.md) - 2019-04-02
 - [0.6.x]
+  - [0.6.10](./changelogs/0.6.10.md) - 2019-03-29
   - [0.6.9](./changelogs/0.6.9.md) - 2019-03-28
   - [0.6.8](./changelogs/0.6.8.md) - 2019-03-27
   - [0.6.7](./changelogs/0.6.7.md) - 2019-03-18
