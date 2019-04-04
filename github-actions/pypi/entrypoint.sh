@@ -14,7 +14,7 @@ check_if_setup_file_exists(){
 }
 
 upload_package(){
-	python setup.py sdist bdist_wheel
+	python setup.py sdist
 	twine upload dist/*
 }
 
