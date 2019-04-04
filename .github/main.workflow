@@ -46,9 +46,12 @@ action "is master" {
 }
 
 action "is ref master" {
-  uses = "actions/bin/filter@master"
+  uses = "./github-actions/shell/"
   needs = ["is master"]
-  args = "ref refs/heads/master"
+  runs = "is_ref"
+  env = {
+    REF_NAME = "refs/heads/master"
+  }
 }
 
 action "publish to pypi" {
