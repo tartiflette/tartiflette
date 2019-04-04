@@ -48,10 +48,10 @@ class BuildPyCmd(build_py):
 
 
 _TEST_REQUIRE = [
-    "pytest==4.1.1",
+    "pytest==4.4.0",
     "pytest-cov==2.6.1",
     "pytest-asyncio==0.10.0",
-    "pytest-xdist==1.27.0",
+    "pytest-xdist==1.28.0",
     "pylint==2.3.0",
     "xenon==0.5.5",
     "black==18.9b0",
@@ -60,7 +60,7 @@ _TEST_REQUIRE = [
 
 _BENCHMARK_REQUIRE = ["pytest-benchmark==3.2.2"]
 
-_VERSION = "0.7.0"
+_VERSION = "0.7.1"
 
 _PACKAGES = find_packages(exclude=["tests*"])
 
