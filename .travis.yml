@@ -1,0 +1,66 @@
+language: python
+dist: xenial
+sudo: true
+python:
+  - "3.6"
+addons:
+  apt:
+    packages:
+      - build-essential
+      - clang
+      - cmake
+      - bison
+      - flex
+
+cache: pip
+install:
+  - make init
+  - make set-version
+  - pip install -e .[test]
+
+jobs:
+  include:
+    - stage: quality
+      name: Unit Tests
+      script: make test-unit
+    - stage: quality
+      name: Functionnal Tests
+      script: make test-functional
+    - stage: quality
+      name: Style
+      script: make style
+    - stage: deploy
+      name: Deploy to PyPi
+      script: skip
+      deploy:
+        - provider: pypi
+          user: dailymotion
+          password:
+            secure: oCtzt6+b8/dY3A4qP/i1kOMT2BXjFZZRWX0owtcXL9nHMlyWFKuAd/6hGlXZP4NJLIa5iO5ovQ+lkP20C6kQDCii361xuFuIX/VWJZxZuzkHh9WUSPgp4LmCicrTK48VPbDm5sjuBbItb38L2sEb9ommD1FJ7jzzuRufLLnUyf1dezp2tONWfwDz6WZfq/BuA4oKMnUiLsHD3Luy/G05v1HZeXyQtd/fQZVLtZZ3SBVGbn3rlwjP7cAwthuKUQ2gK473qQdvH+Bs4zy6QAlBI37oH1B9HOnjbMZ7pWrCbSuBrVyGB+80/PkOGRj4zsFBjoftsoLGUX/QSfm+pdgpYjxVWO2JqabxuZljjvOMzBlFLNhE8TUITwYe+uQBj28JvaB7JiWNf1/hi3sf5ccpZ6R2jLLy6buDWe87Qx5WF0yUARfh+nCSSoZk3yX0KlWXTeAN1O8p3xBY+W4Iza+AnsaS9frOOoRbXF817n6KpcRZG11Vl0bxFzKDnhoH5Pdk+Bu61xzSInEkshfZAOHNd7j5Olqaof4vn7Wd/Bqw7OeMBM6PDaHCmqKlW5n01Zm6vNuBkdX83+dEoPUntdaHr5/7DEHb+9ugirbVox9BaY/ua2IWWWS3jLe8MLQasNXmZRNdEBvEnlIMlWi+WGSzpBpcp7+Nf4/odU1aMdjAUQQ=
+          on:
+            branch: master
+        - provider: pypi
+          server: https://test.pypi.org/legacy/
+          user: dailymotion
+          password:
+            secure: oCtzt6+b8/dY3A4qP/i1kOMT2BXjFZZRWX0owtcXL9nHMlyWFKuAd/6hGlXZP4NJLIa5iO5ovQ+lkP20C6kQDCii361xuFuIX/VWJZxZuzkHh9WUSPgp4LmCicrTK48VPbDm5sjuBbItb38L2sEb9ommD1FJ7jzzuRufLLnUyf1dezp2tONWfwDz6WZfq/BuA4oKMnUiLsHD3Luy/G05v1HZeXyQtd/fQZVLtZZ3SBVGbn3rlwjP7cAwthuKUQ2gK473qQdvH+Bs4zy6QAlBI37oH1B9HOnjbMZ7pWrCbSuBrVyGB+80/PkOGRj4zsFBjoftsoLGUX/QSfm+pdgpYjxVWO2JqabxuZljjvOMzBlFLNhE8TUITwYe+uQBj28JvaB7JiWNf1/hi3sf5ccpZ6R2jLLy6buDWe87Qx5WF0yUARfh+nCSSoZk3yX0KlWXTeAN1O8p3xBY+W4Iza+AnsaS9frOOoRbXF817n6KpcRZG11Vl0bxFzKDnhoH5Pdk+Bu61xzSInEkshfZAOHNd7j5Olqaof4vn7Wd/Bqw7OeMBM6PDaHCmqKlW5n01Zm6vNuBkdX83+dEoPUntdaHr5/7DEHb+9ugirbVox9BaY/ua2IWWWS3jLe8MLQasNXmZRNdEBvEnlIMlWi+WGSzpBpcp7+Nf4/odU1aMdjAUQQ=
+          skip_cleanup: true
+          on:
+            all_branches: true
+            condition: $TRAVIS_BRANCH != master
+    - stage: release-github
+      if: type != pull_request AND branch = master
+      script: skip
+      before_deploy:
+        - make git-tag
+        - RELEASE_BODY=$(make get-last-released-changelog-entry)
+        - PACKAGE_VERSION=$(make get-version)
+      deploy:
+        - provider: releases
+          skip_cleanup: true
+          api_key:
+            secure: Fyj7hIUpWQbGrxgSB7VD/VtQiioqUEETFsO/XMiSbmnJ0P3uS1bZnhdqOISb/iHF+nZJ0k3aAGxpYihM3a3tWIJSKVeizrz0xzD0ku3khcvDTs77OfhqIPDkm83gf2vc7BNR/qflMIcw/UoQoFoMlp5fpF6elvCppmOWjyaeEUznDAIVG4F/S5WZ55pgljvQ+SyhcoxyapFLkuWjY+07cBXqhZ5ke830ehFYjLqblwyzey/LH5iTnguxmmueSXja+Xg/+URFPp7BQi23D14poQg/tx7zXd+ckd14rqp82hLESbibFcwzapMp9mDADVQErG53Yzjp7hutiFzncOZfWWyg9FzrPnkomtippzFTizGJeafnsRJuowOdaxuQuluLTpcPZlkpYbd/plvdXeh3PQX3+W+hLCOsthfv/EmzrFcrtyT8LKHaZPUIMU9e7JopM3Xm/NQ+Kj/KoW9ljKipOqfg05WqioNWNnecFudv5Pmd3VMjFjzEkDugank4DYl1tAoTYdANZNS6/AOzeABbs+29HXvNm+m9yHZ5deSGIsNZGqnUK708d4foSqwoFqiwvWyM9QsejwXaqF1wAgzJDMzU83J5iYg9BPbfLjKGBVseOEnZrZSalTtNSGjpFi7oN5Akvoz2udYdOLHWMlsOgftgv3mMI/plo277jaRYC/4=
+          on:
+            branch: master
+          name: "${PACKAGE_VERSION}"
+          body: "${RELEASE_BODY}"
