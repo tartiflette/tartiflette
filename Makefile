@@ -1,4 +1,11 @@
+SET_ALPHA_VERSION = 0
 PKG_VERSION := $(shell cat setup.py | grep "_VERSION =" | egrep -o "([0-9]+\\.[0-9]+\\.[0-9]+)")
+ifneq ($(and $(TRAVIS_BRANCH),$(TRAVIS_BUILD_NUMBER)),)
+ifneq ($(TRAVIS_BRANCH), master)
+PKG_VERSION := $(shell echo | awk -v pkg_version="$(PKG_VERSION)" -v travis_build_number="$(TRAVIS_BUILD_NUMBER)" '{print pkg_version "a" travis_build_number}')
+SET_ALPHA_VERSION = 1
+endif
+endif
 
 .PHONY: init
 init:
@@ -52,13 +59,32 @@ clean:
 	find . -name '*.pyo' -exec rm -fv {} +
 	find . -name '__pycache__' -exec rm -frv {} +
 
+.PHONY: set-version
+set-version:
+ifneq ($(SET_ALPHA_VERSION), 0)
+	bash -c "sed -i \"s@_VERSION[ ]*=[ ]*[\\\"\'][0-9]\+\\.[0-9]\+\\.[0-9]\+[\\\"\'].*@_VERSION = \\\"$(PKG_VERSION)\\\"@\" setup.py"
+endif
+
 .PHONY: run-docs
 run-docs:
 	docker-compose up docs
 
+.PHONY: git-tag
+git-tag:
+ifeq ($(TRAVIS_BRANCH), master)
+	git config --local user.name "dm-tartiflette-release-travis"
+	git config --local user.email "dm-tartiflette-release-travis@dailymotion.com"
+	git tag $(PKG_VERSION)
+	@git push -q https://dm-tartiflette-release-travis:$(GITHUBTOKEN)@github.com/dailymotion/tartiflette.git $(PKG_VERSION)
+endif
+
 .PHONY: get-version
 get-version:
 	@echo $(PKG_VERSION)
+
+.PHONY: get-last-released-changelog-entry
+get-last-released-changelog-entry:
+	@cat changelogs/$(PKG_VERSION).md
 
 .PHONY: github-action-version-and-changelog
 github-action-version-and-changelog:
