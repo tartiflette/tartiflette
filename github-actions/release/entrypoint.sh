@@ -33,7 +33,7 @@ echo "---------------------------"
 
 if [ -f $_PATH_CHANGELOG ]; then
     echo "Release with changelog"
-    desc=$(cat _PATH_CHANGELOG)
+    desc=$(cat $_PATH_CHANGELOG)
     github-release release \
         --user $USERNAME \
         --repo $REPOSITORY \
