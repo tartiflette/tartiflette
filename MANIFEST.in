@@ -7,8 +7,6 @@ recursive-include libgraphqlparser/ *.ypp
 recursive-include libgraphqlparser/ *.hpp
 recursive-include libgraphqlparser/ *.sh
 recursive-include libgraphqlparser/ *.md
-recursive-include tartiflette/parser/cffi *.so
-recursive-include tartiflette/parser/cffi *.dylib
 recursive-include tartiflette/schema/builtins *.sdl
 recursive-include libgraphqlparser/ast *.ast
 recursive-include libgraphqlparser/ast *.py
