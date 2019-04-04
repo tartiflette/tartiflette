@@ -9,8 +9,7 @@ LABEL "com.github.actions.description"="Push package to pypi server."
 LABEL "com.github.actions.icon"="upload"
 LABEL "com.github.actions.color"="green"
 
-RUN apt-get update
-RUN apt-get install -y jq
+RUN apt-get update && apt-get install -y cmake bison flex git jq
 
 ENV PYENV_ROOT /root/.pyenv
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
