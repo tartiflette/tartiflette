@@ -141,7 +141,7 @@ def _input_object_coercer(
 ):
     coerced = {}
     for field_name, coercer in input_field_coercers.items():
-        coerced[field_name] = coercer(values[field_name], info)
+        coerced[field_name] = coercer(values.get(field_name), info)
     return coerced
 
 
