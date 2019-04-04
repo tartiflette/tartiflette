@@ -3,12 +3,6 @@ workflow "build and release" {
   resolves = ["release"]
 }
 
-action "display github event" {
-  uses = "./github-actions/shell/"
-  runs = "cat"
-  args = "/github/workflow/event.json"
-}
-
 action "build docker image" {
   uses = "actions/docker/cli@master"
   args = "build -t tartiflette ."
@@ -40,7 +34,7 @@ action "style" {
 
 action "set version and changelog" {
   uses = "./github-actions/shell/"
-  needs = ["unit test", "functional test", "style", "build artifact", "display github event"]
+  needs = ["unit test", "functional test", "style", "build artifact"]
   runs = "make"
   args = "github-action-version-and-changelog"
 }
@@ -51,10 +45,16 @@ action "is master" {
   args = "branch master"
 }
 
+action "is ref master" {
+  uses = "actions/bin/filter@master"
+  needs = ["is master"]
+  args = "ref refs/heads/master"
+}
+
 action "publish to pypi" {
   uses = "./github-actions/pypi/"
   secrets = ["TWINE_PASSWORD", "TWINE_USERNAME"]
-  needs = ["is master"]
+  needs = ["is ref master"]
 }
 
 action "release" {
