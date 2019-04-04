@@ -1,10 +1,9 @@
 SET_ALPHA_VERSION = 0
 PKG_VERSION := $(shell cat setup.py | grep "_VERSION =" | egrep -o "([0-9]+\\.[0-9]+\\.[0-9]+)")
-ifneq ($(and $(TRAVIS_BRANCH),$(TRAVIS_BUILD_NUMBER)),)
-ifneq ($(TRAVIS_BRANCH), master)
-PKG_VERSION := $(shell echo | awk -v pkg_version="$(PKG_VERSION)" -v travis_build_number="$(TRAVIS_BUILD_NUMBER)" '{print pkg_version "a" travis_build_number}')
+
+ifneq ($(and $(GITHUB_WORKFLOW),$(GITHUB_WORKFLOW)),)
+PKG_VERSION := $(shell echo | awk -v pkg_version="$(PKG_VERSION)" -v build_number="$(shell date +\"%s\")" '{print pkg_version "a" build_number}')
 SET_ALPHA_VERSION = 1
-endif
 endif
 
 .PHONY: init
@@ -69,15 +68,6 @@ endif
 run-docs:
 	docker-compose up docs
 
-.PHONY: git-tag
-git-tag:
-ifeq ($(TRAVIS_BRANCH), master)
-	git config --local user.name "dm-tartiflette-release-travis"
-	git config --local user.email "dm-tartiflette-release-travis@dailymotion.com"
-	git tag $(PKG_VERSION)
-	@git push -q https://dm-tartiflette-release-travis:$(GITHUBTOKEN)@github.com/dailymotion/tartiflette.git $(PKG_VERSION)
-endif
-
 .PHONY: get-version
 get-version:
 	@echo $(PKG_VERSION)
@@ -91,7 +81,3 @@ github-action-version-and-changelog:
 	echo $(PKG_VERSION) > $(HOME)/name
 	echo $(PKG_VERSION) > $(HOME)/tag
 	@cp changelogs/$(PKG_VERSION).md $(HOME)/changelog
-
-.PHONY: build-artifact
-build-artifact: init
-	pip install -e .[test]
