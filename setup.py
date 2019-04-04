@@ -48,7 +48,7 @@ class BuildPyCmd(build_py):
 
 
 _TEST_REQUIRE = [
-    "pytest==4.1.1",
+    "pytest==4.4.0",
     "pytest-cov==2.6.1",
     "pytest-asyncio==0.10.0",
     "pytest-xdist==1.27.0",
