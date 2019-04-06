@@ -43,7 +43,7 @@ from typing import Any, Callable, Dict, Optional
 
 import time
 
-from tartiflette.directive import Directive
+from tartiflette import Directive
 from tartiflette.directive import CommonDirective
 
 _RATE_LIMIT_RULES = {}

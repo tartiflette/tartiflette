@@ -2,8 +2,8 @@ import asyncio
 
 import pytest
 
-from tartiflette import Engine, Subscription
-from tartiflette.directive import CommonDirective, Directive
+from tartiflette import Directive, Engine, Subscription
+from tartiflette.directive import CommonDirective
 from tartiflette.types.exceptions.tartiflette import MultipleException
 
 

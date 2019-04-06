@@ -97,12 +97,31 @@ engine = tartiflette.Engine(
 
 ### Parameter: `error_coercer`
 
-Override the default coercer when an exception is raised.
+The main objective of the `error_coercer` is to provide you a way to extend the behavior when an exception is raised into tartiflette.
+
+For instance:
+* Add a log entry when a third-party exceptions is raised _(e.g pymsql, redis)_.
+* Hide technical message's exception for production environment _(don't expose your internal stack from outside)_
+
+`error_coercer` SHOULDN'T be used for custom functional exception, for this common use-case, please take a look of the [`TartifletteError` and its documentation's page](/docs/api/error-handling/).
 
 ```python
-def my_error_coercer(exception) -> dict:
-    do_ing_some_thin_gs = 42
-    return a_value
+import logging
+
+
+class CustomException(Exception):
+    def __init__(self, type_name, message):
+        self.type = type_name
+        self.message = message
+
+
+def my_error_coercer(exception, error) -> dict:
+    if isinstance(exception, CustomException):
+        logging.error("Unable to reach the Storage host.")
+        error["extensions"]["type"] = exception.type
+
+    return error
+
 
 e = Engine(
     "my_sdl.graphql",

@@ -1,7 +1,7 @@
 import pytest
 
-from tartiflette.directive import CommonDirective, Directive
-from tartiflette.engine import Engine
+from tartiflette import Directive, Engine
+from tartiflette.directive import CommonDirective
 
 _SDL = """
 directive @lol on FIELD_DEFINITION

@@ -36,7 +36,8 @@ Tartiflette gets most of its extensibility by Directives. A directive will allow
 ```python
 from typing import Any, Callable, Dict, Optional
 
-from tartiflette.directive import Directive, CommonDirective
+from tartiflette import Directive
+from tartiflette.directive import CommonDirective
 
 
 @Directive("rateLimiting")

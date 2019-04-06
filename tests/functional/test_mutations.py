@@ -2,8 +2,7 @@ from collections import namedtuple
 
 import pytest
 
-from tartiflette import Resolver
-from tartiflette.engine import Engine
+from tartiflette import Engine, Resolver
 
 
 @pytest.mark.asyncio

@@ -26,7 +26,7 @@ The idea of the following code is to create a new directive called "@nonIntrospe
 ```python
 from typing import Any, Callable, Dict, Optional
 
-from tartiflette.directive import Directive
+from tartiflette import Directive
 from tartiflette.directive import CommonDirective
 
 
