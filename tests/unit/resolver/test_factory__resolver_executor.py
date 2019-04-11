@@ -90,9 +90,7 @@ async def test_resolver_factory__resolver_executor___call__(
         new_callable=AsyncMock,
         return_value={"AB": "M2B"},
     ) as coerce_arguments_mock:
-        r, c = await _resolver_executor_mock(
-            p_r, arg_mock, req_ctx, info, []
-        )
+        r, c = await _resolver_executor_mock(p_r, arg_mock, req_ctx, info, [])
         coerce_arguments_mock.assert_called_once_with(
             {}, arg_mock, req_ctx, info
         )
@@ -158,7 +156,7 @@ def test_resolver_factory__resolver_executor_update_bake(
     _resolver_executor_mock.update_coercer = Mock()
 
     with patch(
-        "tartiflette.resolver.factory._surround_with_execution_directives",
+        "tartiflette.resolver.factory._surround_with_execution_directives"
     ) as surround_with_execution_directives_mock:
         assert _resolver_executor_mock.bake(None) is None
         _resolver_executor_mock.update_coercer.assert_called_once()

@@ -282,12 +282,4 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_skip_include")
     ],
 )
 async def test_skip_include(query, expected):
-    result = await _TTFTT_ENGINE.execute(query)
-    # print()
-    # print()
-    # print(expected)
-    # print()
-    # print(result)
-    # print()
-    # print()
-    assert result == expected
+    assert await _TTFTT_ENGINE.execute(query) == expected

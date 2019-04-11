@@ -216,7 +216,7 @@ def test_resolverexecutor_bake(
         wraps=default_subscription_resolver,
     ) as default_subscription_resolver_mock:
         with patch(
-            "tartiflette.resolver.factory._surround_with_execution_directives",
+            "tartiflette.resolver.factory._surround_with_execution_directives"
         ) as surround_with_execution_directives_mock:
             resolver_executor = _ResolverExecutor(
                 default_resolver, schema_field
