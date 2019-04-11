@@ -40,6 +40,7 @@ class NodeField(Node):
         self.alias = alias or self.name
         self.subscribe = subscribe
         self.is_execution_stopped = False
+        self.execution_directives = []
 
     @property
     def cant_be_null(self) -> bool:
@@ -56,7 +57,7 @@ class NodeField(Node):
     def add_directive(
         self, directive: Dict[str, Union["Directive", Dict[str, Any]]]
     ):
-        self.field_executor.add_directive(directive)
+        self.execution_directives.append(directive)
 
     def bubble_error(self) -> None:
         if self.cant_be_null is False:
@@ -172,6 +173,7 @@ class NodeField(Node):
                     location=self.location,
                     execution_ctx=execution_ctx,
                 ),
+                execution_directives=self.execution_directives,
             )
         except SkipExecution:
             self.is_execution_stopped = True

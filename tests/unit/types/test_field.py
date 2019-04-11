@@ -16,7 +16,7 @@ def test_graphql_field_init():
     assert field.name == "Name"
     assert field.gql_type == "Test"
     assert field.arguments == OrderedDict([("test", 42), ("another", 24)])
-    assert field.resolver._func is default_resolver
+    assert field.resolver._directivated_func is default_resolver
     assert field.description == "description"
 
 

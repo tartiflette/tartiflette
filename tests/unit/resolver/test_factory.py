@@ -208,35 +208,42 @@ def test_resolverexecutor_bake(
     )
 
     schema_field = Mock(schema=None)
+    schema_field.directives = Mock()
     schema_field.subscribe = Mock() if is_subscription else None
 
     with patch(
         "tartiflette.resolver.factory.default_subscription_resolver",
         wraps=default_subscription_resolver,
     ) as default_subscription_resolver_mock:
-        resolver_executor = _ResolverExecutor(default_resolver, schema_field)
-        resolver_executor.update_coercer = Mock()
-        resolver_executor.update_func = Mock(
-            wraps=resolver_executor.update_func
-        )
-        resolver_executor.apply_directives = Mock()
-
-        resolver_executor.bake(custom_default_resolver)
-
-        resolver_executor.update_coercer.assert_called_once()
-
-        if update_func_called:
-            resolver_executor.update_func.assert_called_once_with(
-                custom_default_resolver
+        with patch(
+            "tartiflette.resolver.factory._surround_with_execution_directives"
+        ) as surround_with_execution_directives_mock:
+            resolver_executor = _ResolverExecutor(
+                default_resolver, schema_field
             )
-        else:
-            resolver_executor.update_func.assert_not_called()
-
-        if default_subscription_resolver_called:
-            default_subscription_resolver_mock.assert_called_once_with(
-                default_resolver
+            resolver_executor.update_coercer = Mock()
+            resolver_executor.update_func = Mock(
+                wraps=resolver_executor.update_func
             )
-        else:
-            default_subscription_resolver_mock.assert_not_called()
 
-        resolver_executor.apply_directives.assert_called_once()
+            resolver_executor.bake(custom_default_resolver)
+
+            resolver_executor.update_coercer.assert_called_once()
+
+            if update_func_called:
+                resolver_executor.update_func.assert_called_once_with(
+                    custom_default_resolver
+                )
+            else:
+                resolver_executor.update_func.assert_not_called()
+
+            if default_subscription_resolver_called:
+                default_subscription_resolver_mock.assert_called_once_with(
+                    default_resolver
+                )
+            else:
+                default_subscription_resolver_mock.assert_not_called()
+
+            surround_with_execution_directives_mock.assert_called_once_with(
+                resolver_executor._raw_func, schema_field.directives
+            )

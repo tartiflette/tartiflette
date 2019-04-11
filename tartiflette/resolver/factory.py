@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.types.exceptions.tartiflette import SkipExecution
 from tartiflette.utils.arguments import coerce_arguments
@@ -57,7 +57,7 @@ def _shall_return_a_list(field_type: Union[str, "GraphQLType"]) -> bool:
 class _ResolverExecutor:
     def __init__(self, func: Callable, schema_field: "GraphQLField") -> None:
         self._raw_func = func
-        self._func = func
+        self._directivated_func = func
         self._schema_field = schema_field
         self._coercer = get_coercer(schema_field)
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
@@ -79,9 +79,14 @@ class _ResolverExecutor:
         args: Dict[str, Any],
         ctx: Optional[Dict[str, Any]],
         info: "Info",
+        execution_directives: Optional[List[Dict[str, Any]]],
     ) -> (Any, Any):
         try:
-            result = await self._func(
+            resolver = _surround_with_execution_directives(
+                self._directivated_func, execution_directives
+            )
+
+            result = await resolver(
                 parent_result,
                 await coerce_arguments(
                     self._schema_field.arguments, args, ctx, info
@@ -97,21 +102,6 @@ class _ResolverExecutor:
             raise e
         except Exception as e:  # pylint: disable=broad-except
             return e, None
-
-    def apply_directives(self) -> None:
-        try:
-            self._func = _surround_with_execution_directives(
-                self._raw_func, self._schema_field.directives
-            )
-        except AttributeError:
-            self._func = self._raw_func
-
-    def add_directive(
-        self, directive: Dict[str, Union["Directive", Dict[str, Any]]]
-    ) -> None:
-        self._func = _surround_with_execution_directives(
-            self._func, [directive]
-        )
 
     def update_func(self, func: Callable) -> None:
         self._raw_func = func
@@ -130,7 +120,9 @@ class _ResolverExecutor:
         if self._schema_field.subscribe and self._raw_func is default_resolver:
             self._raw_func = default_subscription_resolver(self._raw_func)
 
-        self.apply_directives()
+        self._directivated_func = _surround_with_execution_directives(
+            self._raw_func, self._schema_field.directives
+        )
 
     @property
     def schema_field(self) -> "GraphQLField":
