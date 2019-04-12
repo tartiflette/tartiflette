@@ -3,7 +3,12 @@ from unittest.mock import Mock
 import pytest
 
 from tartiflette.executors.types import ExecutionContext
-from tartiflette.types.exceptions.tartiflette import GraphQLError
+from tartiflette.parser.nodes.field import _add_errors_to_execution_context
+from tartiflette.types.exceptions.tartiflette import (
+    GraphQLError,
+    MultipleException,
+)
+from tartiflette.types.location import Location
 
 
 def test_parser_node_nodefield():
@@ -437,3 +442,42 @@ async def test_parser_node_nodefield__call__custom_exception():
         "msg": "error",
         "type": "bad_request",
     }
+
+
+@pytest.mark.parametrize(
+    "raw_exception,expected_messages,expected_original_errors",
+    [
+        (GraphQLError("AGraphQLError"), ["AGraphQLError"], [type(None)]),
+        (TypeError("ATypeError"), ["ATypeError"], [TypeError]),
+        (
+            MultipleException(
+                exceptions=[
+                    GraphQLError("AGraphQLError"),
+                    TypeError("ATypeError"),
+                ]
+            ),
+            ["AGraphQLError", "ATypeError"],
+            [type(None), TypeError],
+        ),
+    ],
+)
+def test_add_errors_to_execution_context(
+    raw_exception, expected_messages, expected_original_errors
+):
+    execution_context = ExecutionContext()
+
+    location = Location(line=1, column=1)
+    path = ["error", "path"]
+
+    _add_errors_to_execution_context(
+        execution_context, raw_exception, path, location
+    )
+
+    assert len(execution_context.errors) == len(expected_messages)
+
+    for error, expected_message, expected_original_error in zip(
+        execution_context.errors, expected_messages, expected_original_errors
+    ):
+        assert isinstance(error, GraphQLError)
+        assert error.message == expected_message
+        assert type(error.original_error) is expected_original_error

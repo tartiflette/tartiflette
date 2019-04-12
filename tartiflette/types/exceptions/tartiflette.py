@@ -13,6 +13,7 @@ class GraphQLError(Exception):
         user_message: str = None,
         more_info: str = "",
         extensions: Optional[dict] = None,
+        original_error: Optional[Exception] = None,
     ) -> None:
         super().__init__(message)
         self.message = message  # Developer message by default
@@ -21,6 +22,7 @@ class GraphQLError(Exception):
         self.path = path or None
         self.locations = locations or []
         self.extensions = extensions or {}
+        self.original_error = original_error
 
     def coerce_value(
         self,

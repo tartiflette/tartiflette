@@ -125,8 +125,10 @@ class Engine:
             )
         except GraphQLError as e:
             errors = [e]
-        except Exception:  # pylint: disable=broad-except
-            errors = [GraphQLError("Server encountered an error.")]
+        except Exception as e:  # pylint: disable=broad-except
+            errors = [
+                GraphQLError("Server encountered an error.", original_error=e)
+            ]
 
         if errors:
             return (
