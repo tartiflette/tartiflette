@@ -218,7 +218,9 @@ def _add_errors_to_execution_context(
             if callable(exception.coerce_value):
                 gql_error = exception
         except (TypeError, AttributeError):
-            gql_error = GraphQLError(str(exception), path, [location])
+            gql_error = GraphQLError(
+                str(exception), path, [location], original_error=exception
+            )
 
         gql_error.coerce_value = partial(
             gql_error.coerce_value, path=path, locations=[location]
