@@ -17,6 +17,7 @@ from tartiflette.types.exceptions.tartiflette import (
     UnusedFragment,
 )
 from tartiflette.types.location import Location
+from tartiflette.utils.arguments import UNDEFINED_VALUE
 
 
 @pytest.fixture
@@ -681,12 +682,12 @@ def test_parser_visitor__validate_vars_existing_okay_var_no_dfv_but_nullable(
     a_visitor._internal_ctx.node.var_name = "LOL"
     a_visitor._internal_ctx.node.var_type = str
     a_visitor._internal_ctx.node.is_nullable = True
-    a_visitor._internal_ctx.node.default_value = None
+    a_visitor._internal_ctx.node.default_value = UNDEFINED_VALUE
     a_visitor._validate_type = Mock()
 
     a_visitor._validates_vars()
 
-    assert a_visitor._vars == {"LOL": None}
+    assert a_visitor._vars == {"LOL": UNDEFINED_VALUE}
 
 
 def test_parser_visitor__validate_vars_existing_okay_var_no_dfv_non_nullable(

@@ -46,6 +46,7 @@ from tartiflette.types.exceptions.tartiflette import (
     UnusedFragment,
 )
 from tartiflette.types.helpers import reduce_type
+from tartiflette.utils.arguments import UNDEFINED_VALUE
 
 
 class FragmentData:
@@ -262,6 +263,9 @@ class TartifletteVisitor(Visitor):
         self._internal_ctx.directive = None
 
     def _add_argument_to_parent(self):
+        if self._internal_ctx.argument.value is UNDEFINED_VALUE:
+            return
+
         if not self._internal_ctx.directive:
             self._internal_ctx.node.arguments[
                 self._internal_ctx.argument.name
@@ -479,12 +483,14 @@ class TartifletteVisitor(Visitor):
         name = self._internal_ctx.node.var_name
         if name not in self._vars:
             default_values = self._internal_ctx.node.default_value
-            if not default_values and not self._internal_ctx.node.is_nullable:
+            if (
+                default_values is None or default_values is UNDEFINED_VALUE
+            ) and not self._internal_ctx.node.is_nullable:
                 self._add_exception(UnknownVariableException(name))
-                return None
+                return
 
             self._vars[name] = default_values
-            return None
+            return
 
         a_type = self._internal_ctx.node.var_type
         a_value = self._vars[name]
@@ -498,14 +504,14 @@ class TartifletteVisitor(Visitor):
                         locations=[self._internal_ctx.node.location],
                     )
                 )
-                return None
+                return
 
             for val in a_value:
                 self._validate_type(name, val, a_type)
-            return None
+            return
 
         self._validate_type(name, a_value, a_type)
-        return None
+        return
 
     def _on_variable_definition_out(self, *_args, **_kwargs) -> None:
         self._validates_vars()
