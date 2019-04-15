@@ -139,6 +139,9 @@ class CoercerWay:
 def _input_object_coercer(
     input_field_coercers: Dict[str, "GraphQLArgument"], values, info
 ):
+    if values is None:
+        return None
+
     coerced = {}
     for field_name, coercer in input_field_coercers.items():
         coerced[field_name] = coercer(values.get(field_name), info)

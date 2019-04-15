@@ -47,6 +47,9 @@ async def argument_coercer(
     except AttributeError:
         pass
 
+    if value is None:
+        return None
+
     schema_type = argument_definition.schema.find_type(
         reduce_type(argument_definition.gql_type)
     )
@@ -74,7 +77,6 @@ async def coerce_arguments(
     ctx: Optional[Dict[str, Any]],
     info: "Info",
 ) -> Dict[str, Any]:
-
     results = await asyncio.gather(
         *[
             argument_definition.coercer(input_args, ctx, info)
