@@ -116,7 +116,7 @@ class SchemaRegistry:
         # Convert SDL files into big schema and parse it
         for filepath in sdl_files_list:
             with open(filepath, "r") as sdl_file:
-                full_sdl += " " + sdl_file.read().replace("\n", " ")
+                full_sdl += "\n" + sdl_file.read()
 
         SchemaRegistry._schemas[schema_name]["sdl"] = full_sdl
 
