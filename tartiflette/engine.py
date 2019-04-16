@@ -121,7 +121,9 @@ class Engine:
     def _parse_query_to_operations(self, query, variables):
         try:
             operations, errors = self._parser.parse_and_tartify(
-                self._schema, query, variables=variables
+                self._schema,
+                query,
+                variables=dict(variables) if variables else variables,
             )
         except GraphQLError as e:
             errors = [e]
