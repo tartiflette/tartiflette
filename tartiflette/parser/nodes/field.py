@@ -13,6 +13,7 @@ from tartiflette.types.exceptions.tartiflette import (
 from tartiflette.types.helpers import get_typename
 from tartiflette.types.location import Location
 from tartiflette.utils.arguments import coerce_arguments
+from tartiflette.utils.errors import is_coercible_exception
 
 from .node import Node
 
@@ -214,13 +215,13 @@ def _add_errors_to_execution_context(
     )
 
     for exception in exceptions:
-        try:
-            if callable(exception.coerce_value):
-                gql_error = exception
-        except (TypeError, AttributeError):
-            gql_error = GraphQLError(
+        gql_error = (
+            exception
+            if is_coercible_exception(exception)
+            else GraphQLError(
                 str(exception), path, [location], original_error=exception
             )
+        )
 
         gql_error.coerce_value = partial(
             gql_error.coerce_value, path=path, locations=[location]
