@@ -1,7 +1,9 @@
 SET_ALPHA_VERSION = 0
 PKG_VERSION := $(shell cat setup.py | grep "_VERSION =" | egrep -o "([0-9]+\\.[0-9]+\\.[0-9]+)")
 
-ifneq ($(and $(GITHUB_WORKFLOW),$(GITHUB_WORKFLOW)),)
+REF := $(shell cat /github/workflow/event.json | jq ".ref")
+
+ifneq ($(REF),"refs/heads/master")
 PKG_VERSION := $(shell echo | awk -v pkg_version="$(PKG_VERSION)" -v build_number="$(shell date +\"%s\")" '{print pkg_version "a" build_number}')
 SET_ALPHA_VERSION = 1
 endif
