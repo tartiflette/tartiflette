@@ -10,6 +10,7 @@ from tartiflette.resolver.factory import default_error_coercer
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import GraphQLError
+from tartiflette.utils.errors import to_graphql_error
 
 
 def _import_modules(modules):
@@ -129,7 +130,7 @@ class Engine:
             errors = [e]
         except Exception as e:  # pylint: disable=broad-except
             errors = [
-                GraphQLError("Server encountered an error.", original_error=e)
+                to_graphql_error(e, message="Server encountered an error.")
             ]
 
         if errors:
