@@ -2,6 +2,6 @@
 
 ## Added
 
-## Changed
+## Changed
 
 ## Fixed
