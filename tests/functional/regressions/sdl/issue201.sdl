@@ -1,0 +1,11 @@
+
+# Another comment
+type Lol {
+    Id: Int! # This is a comment
+    Di: Float! # This is another comment
+# A Comment
+}
+# comment
+type Query {
+    alol: Lol
+}
