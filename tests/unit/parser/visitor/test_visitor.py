@@ -582,12 +582,12 @@ def test_parser_visitor__on_variable_definition_in(a_visitor, an_element):
 
 
 def test_parser_visitor__validate_type(a_visitor, an_element):
-    a_visitor._validate_type("ninja", "a", str)
+    a_visitor._validate_type("ninja", "a", str, False)
 
     assert a_visitor.exceptions == []
     assert a_visitor.continue_child == 1
 
-    a_visitor._validate_type("ntm", "a", int)
+    a_visitor._validate_type("ntm", "a", int, False)
     assert a_visitor.exceptions is not None
     assert isinstance(a_visitor.exceptions[0], GraphQLError)
     assert a_visitor.continue_child == 0
@@ -596,7 +596,7 @@ def test_parser_visitor__validate_type(a_visitor, an_element):
 def test_parser_visitor__validate_type_invalid_type_dont_care(
     a_visitor, an_element
 ):
-    a_visitor._validate_type("ninja", "a", None)
+    a_visitor._validate_type("ninja", "a", None, False)
 
     assert a_visitor.exceptions == []
     assert a_visitor.continue_child == 1
@@ -609,6 +609,7 @@ def test_parser_visitor__validate_vars_existing_okay_var(
     a_visitor._internal_ctx.node.var_name = "LOL"
     a_visitor._internal_ctx.node.var_type = str
     a_visitor._internal_ctx.node.is_list = False
+    a_visitor._internal_ctx.node.is_nullable = False
 
     a_visitor._vars = {"LOL": "a_value"}
 
@@ -617,7 +618,7 @@ def test_parser_visitor__validate_vars_existing_okay_var(
     a_visitor._validates_vars()
 
     assert a_visitor._validate_type.call_args_list == [
-        (("LOL", "a_value", str),)
+        (("LOL", "a_value", str, False),)
     ]
 
 
@@ -628,6 +629,7 @@ def test_parser_visitor__validate_vars_existing_okay_var_is_list(
     a_visitor._internal_ctx.node.var_name = "LOL"
     a_visitor._internal_ctx.node.var_type = str
     a_visitor._internal_ctx.node.is_list = True
+    a_visitor._internal_ctx.node.is_nullable = True
 
     a_visitor._vars = {"LOL": ["a_value_1", "a_value_2"]}
 
@@ -636,8 +638,8 @@ def test_parser_visitor__validate_vars_existing_okay_var_is_list(
     a_visitor._validates_vars()
 
     assert a_visitor._validate_type.call_args_list == [
-        (("LOL", "a_value_1", str),),
-        (("LOL", "a_value_2", str),),
+        (("LOL", "a_value_1", str, True),),
+        (("LOL", "a_value_2", str, True),),
     ]
 
 

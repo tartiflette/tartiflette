@@ -11,6 +11,7 @@ from tartiflette.parser.cffi import (
     _VisitorElementFragmentDefinition,
     _VisitorElementInlineFragment,
     _VisitorElementIntValue,
+    _VisitorElementNullValue,
     _VisitorElementOperationDefinition,
     _VisitorElementSelectionSet,
     _VisitorElementStringValue,
@@ -77,6 +78,7 @@ class TartifletteVisitor(Visitor):
                 "StringValue": self._on_value_in,
                 "BooleanValue": self._on_value_in,
                 "FloatValue": self._on_value_in,
+                "NullValue": self._on_value_in,
                 "EnumValue": self._on_value_in,
                 "NamedType": self._on_named_type_in,
                 "ListType": self._on_list_type_in,
@@ -284,6 +286,7 @@ class TartifletteVisitor(Visitor):
             _VisitorElementFloatValue,
             _VisitorElementBooleanValue,
             _VisitorElementEnumValue,
+            _VisitorElementNullValue,
         ],
         *_args,
         **_kwargs,
@@ -462,7 +465,12 @@ class TartifletteVisitor(Visitor):
         node.set_parent(self._internal_ctx.node)
         self._internal_ctx.node = node
 
-    def _validate_type(self, varname: str, a_value: Any, a_type: Any) -> None:
+    def _validate_type(
+        self, varname: str, a_value: Any, a_type: Any, is_nullable: bool
+    ) -> None:
+        if is_nullable and a_value is None:
+            return
+
         try:
             if not isinstance(a_value, a_type):
                 self._add_exception(
@@ -493,6 +501,7 @@ class TartifletteVisitor(Visitor):
             return
 
         a_type = self._internal_ctx.node.var_type
+        is_nullable = self._internal_ctx.node.is_nullable
         a_value = self._vars[name]
 
         if self._internal_ctx.node.is_list:
@@ -507,10 +516,10 @@ class TartifletteVisitor(Visitor):
                 return
 
             for val in a_value:
-                self._validate_type(name, val, a_type)
+                self._validate_type(name, val, a_type, is_nullable)
             return
 
-        self._validate_type(name, a_value, a_type)
+        self._validate_type(name, a_value, a_type, is_nullable)
         return
 
     def _on_variable_definition_out(self, *_args, **_kwargs) -> None:
