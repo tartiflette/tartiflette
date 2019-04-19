@@ -458,6 +458,17 @@ class _VisitorElementEnumValue(_VisitorElement):
         )
 
 
+class _VisitorElementNullValue(_VisitorElement):
+    def __init__(
+        self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
+    ) -> None:
+        super().__init__(lib, ffi, "NullValue", internal_element)
+
+    @staticmethod
+    def get_value() -> None:
+        return None
+
+
 class _VisitorElementFragmentDefinition(_VisitorElement):
     def __init__(
         self, lib: "FFILibrary", ffi: "FFI", internal_element: "CData"
@@ -546,6 +557,7 @@ _LIBGRAPHQL_TYPE_TO_CLASS = {
     "FloatValue": _VisitorElementFloatValue,
     "BooleanValue": _VisitorElementBooleanValue,
     "EnumValue": _VisitorElementEnumValue,
+    "NullValue": _VisitorElementNullValue,
     "FragmentDefinition": _VisitorElementFragmentDefinition,
     "OperationDefinition": _VisitorElementOperationDefinition,
     "Field": _VisitorElementField,
