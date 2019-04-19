@@ -2,8 +2,8 @@ from collections import namedtuple
 
 import pytest
 
+from tartiflette import Resolver
 from tartiflette.executors.types import Info
-from tartiflette.resolver import Resolver
 
 GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 

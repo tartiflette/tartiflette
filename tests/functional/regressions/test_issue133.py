@@ -5,8 +5,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette import Engine, Resolver
-from tartiflette.directive import CommonDirective, Directive
+from tartiflette import Directive, Engine, Resolver
+from tartiflette.directive import CommonDirective
 from tartiflette.utils.arguments import UNDEFINED_VALUE
 
 logger = logging.getLogger(__name__)

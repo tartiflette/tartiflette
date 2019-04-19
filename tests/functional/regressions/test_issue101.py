@@ -1,7 +1,7 @@
 import pytest
 
-from tartiflette import Engine
-from tartiflette.directive import CommonDirective, Directive
+from tartiflette import Directive, Engine
+from tartiflette.directive import CommonDirective
 
 
 @Directive("testdire", schema_name="test_issue101")

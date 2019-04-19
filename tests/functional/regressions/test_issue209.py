@@ -1,7 +1,7 @@
 import pytest
 
-from tartiflette import Engine, Resolver
-from tartiflette.directive import CommonDirective, Directive
+from tartiflette import Directive, Engine, Resolver
+from tartiflette.directive import CommonDirective
 
 
 class LimitReachedException(Exception):

@@ -1,7 +1,6 @@
 import pytest
 
-from tartiflette.engine import Engine
-from tartiflette.resolver import Resolver
+from tartiflette import Engine, Resolver
 
 
 @Resolver("Query.viewer", schema_name="test_issue82")

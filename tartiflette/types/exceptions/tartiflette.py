@@ -4,7 +4,7 @@ from tartiflette.executors.types import Info
 from tartiflette.types.location import Location
 
 
-class GraphQLError(Exception):
+class TartifletteError(Exception):
     def __init__(
         self,
         message: str,
@@ -50,6 +50,10 @@ class GraphQLError(Exception):
         if self.extensions:
             errors["extensions"] = dict(self.extensions)
         return errors
+
+
+class GraphQLError(TartifletteError):
+    pass
 
 
 class MultipleException(Exception):

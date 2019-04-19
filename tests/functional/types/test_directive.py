@@ -1,8 +1,7 @@
 import pytest
 
-from tartiflette import Resolver
-from tartiflette.directive import CommonDirective, Directive
-from tartiflette.engine import Engine
+from tartiflette import Directive, Engine, Resolver
+from tartiflette.directive import CommonDirective
 
 
 @pytest.mark.asyncio

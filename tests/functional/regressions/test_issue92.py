@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette.engine import Engine
+from tartiflette import Engine
 
 _TTFTT_ENGINE = Engine(
     """
