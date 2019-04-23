@@ -54,12 +54,15 @@ async def argument_coercer(
         reduce_type(argument_definition.gql_type)
     )
 
-    if not isinstance(schema_type, GraphQLInputObjectType):
+    if (
+        not isinstance(schema_type, GraphQLInputObjectType)
+        or argument_definition.is_list_type
+    ):
         return value
 
     if (
         not isinstance(argument_definition.gql_type, str)
-        and argument_definition.gql_type.is_list
+        and argument_definition.is_list_type
     ):
         return await asyncio.gather(
             *[

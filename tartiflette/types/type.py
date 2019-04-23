@@ -77,3 +77,7 @@ class GraphQLType:
         _custom_default_resolver: Optional[Callable],
     ) -> None:
         self._schema = schema
+
+    @property
+    def contains_a_list(self) -> bool:
+        return False

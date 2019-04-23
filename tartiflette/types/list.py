@@ -51,3 +51,7 @@ class GraphQLList(GraphQLType):
     @property
     def kind(self) -> str:
         return "LIST"
+
+    @property
+    def contains_a_list(self) -> bool:
+        return True

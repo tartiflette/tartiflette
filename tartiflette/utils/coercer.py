@@ -46,6 +46,7 @@ def _list_coercer(
 
     if isinstance(val, list):
         return [func(v, info) for v in val]
+
     return [func(val, info)]
 
 
@@ -143,6 +144,7 @@ def _input_object_coercer(
         return None
 
     coerced = {}
+
     for field_name, coercer in input_field_coercers.items():
         coerced[field_name] = coercer(values.get(field_name), info)
     return coerced

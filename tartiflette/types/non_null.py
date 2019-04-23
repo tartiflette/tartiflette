@@ -47,3 +47,11 @@ class GraphQLNonNull(GraphQLType):
     @property
     def kind(self) -> str:
         return "NON_NULL"
+
+    @property
+    def contains_a_list(self) -> bool:
+        try:
+            return self.gql_type.contains_a_list
+        except AttributeError:
+            pass
+        return False
