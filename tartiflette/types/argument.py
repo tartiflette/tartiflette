@@ -112,3 +112,9 @@ class GraphQLArgument:
             ),
             self,
         )
+
+    @property
+    def is_list_type(self) -> bool:
+        if not isinstance(self.gql_type, str):
+            return self.gql_type.is_list or self.gql_type.contains_a_list
+        return False
