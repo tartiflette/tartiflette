@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, List, Optional, Set
 
 from tartiflette.types.type import GraphQLType
 
@@ -23,6 +23,7 @@ class GraphQLUnionType(GraphQLType):
         super().__init__(name=name, description=description, schema=schema)
         self.gql_types = gql_types
         self._possible_types = []
+        self._possible_types_set: Set[str] = set()
 
     def __repr__(self) -> str:
         return "{}(name={!r}, gql_types={!r}, description={!r})".format(
@@ -34,6 +35,16 @@ class GraphQLUnionType(GraphQLType):
 
     def __eq__(self, other: Any) -> bool:
         return super().__eq__(other) and self.gql_types == other.gql_types
+
+    def is_possible_types(self, gql_type: "GraphQLType") -> bool:
+        """
+        Determines if a GraphQLType is a possible types for the union.
+        :param gql_type: the GraphQLType to check
+        :type gql_type: GraphQLType
+        :return: whether or not the GraphQLType is a possible type
+        :rtype: bool
+        """
+        return gql_type.name in self._possible_types_set
 
     # Introspection Attribute
     @property
@@ -57,6 +68,7 @@ class GraphQLUnionType(GraphQLType):
         custom_default_resolver: Optional[Callable],
     ) -> None:
         super().bake(schema, custom_default_resolver)
-        self._possible_types = [
-            self._schema.find_type(x) for x in self.gql_types
-        ]
+        for gql_type_name in self.gql_types:
+            schema_type = schema.find_type(gql_type_name)
+            self._possible_types.append(schema_type)
+            self._possible_types_set.add(gql_type_name)

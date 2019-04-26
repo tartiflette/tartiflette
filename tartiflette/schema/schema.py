@@ -526,3 +526,12 @@ class GraphQLSchema:
                 raise MissingImplementation(
                     "directive `{}` is missing an implementation".format(name)
                 )
+
+    def __hash__(self):
+        """
+        Hash the name of the schema as a unique representation of a
+        GraphQLSchema.
+        :return: hash of the schema name
+        :rtype: int
+        """
+        return hash(self.name)
