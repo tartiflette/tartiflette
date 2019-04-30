@@ -6,7 +6,10 @@ from tartiflette.executors.basic import (
     subscribe as basic_subscribe,
 )
 from tartiflette.parser import TartifletteRequestParser
-from tartiflette.resolver.factory import default_error_coercer
+from tartiflette.resolver.factory import (
+    default_error_coercer,
+    error_coercer_factory,
+)
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import GraphQLError
@@ -40,7 +43,7 @@ class Engine:
 
         Keyword Arguments:
             schema_name {str} -- The name of the SDL (default: {"default"})
-            error_coercer {Callable[[Exception], dict]} -- An optional callable in charge of transforming an Exception into an error dict (default: {default_error_coercer})
+            error_coercer {Callable[[Exception, dict], dict]} -- An optional callable in charge of transforming a couple Exception/error into an error dict (default: {default_error_coercer})
             custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
             exclude_builtins_scalars {Optional[List[str]]} -- An optional list of string containing the names of the builtin scalar you don't want to be automatically included, usually it's Date, DateTime or Time scalars (default: {None})
             modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
@@ -51,7 +54,7 @@ class Engine:
 
         self._modules = _import_modules(modules)
 
-        self._error_coercer = error_coercer
+        self._error_coercer = error_coercer_factory(error_coercer)
         self._parser = TartifletteRequestParser()
         SchemaRegistry.register_sdl(schema_name, sdl, exclude_builtins_scalars)
         self._schema = SchemaBakery.bake(
