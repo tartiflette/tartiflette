@@ -1,19 +1,9 @@
-from functools import partial
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.types.exceptions.tartiflette import SkipExecution
+from tartiflette.types.helpers import surround_with_directive
 from tartiflette.utils.arguments import coerce_arguments
 from tartiflette.utils.coercer import get_coercer
-
-
-def _surround_with_execution_directives(
-    func: Callable, directives: list
-) -> Callable:
-    for directive in reversed(directives):
-        func = partial(
-            directive["callables"].on_field_execution, directive["args"], func
-        )
-    return func
 
 
 def _introspection_directive_endpoint(element: Any) -> Any:
@@ -21,12 +11,9 @@ def _introspection_directive_endpoint(element: Any) -> Any:
 
 
 def _introspection_directives(directives: list) -> Callable:
-    func = _introspection_directive_endpoint
-    for directive in reversed(directives):
-        func = partial(
-            directive["callables"].on_introspection, directive["args"], func
-        )
-    return func
+    return surround_with_directive(
+        _introspection_directive_endpoint, directives, "on_introspection"
+    )
 
 
 def _execute_introspection_directives(elements: list, ctx, info) -> list:
@@ -61,6 +48,7 @@ class _ResolverExecutor:
         self._schema_field = schema_field
         self._coercer = get_coercer(schema_field)
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
+        self._is_enum = False
 
     async def _introspection(self, element: Any, ctx, info) -> Optional[Any]:
         if isinstance(element, list):
@@ -82,8 +70,10 @@ class _ResolverExecutor:
         execution_directives: Optional[List[Dict[str, Any]]],
     ) -> (Any, Any):
         try:
-            resolver = _surround_with_execution_directives(
-                self._directivated_func, execution_directives
+            resolver = surround_with_directive(
+                self._directivated_func,
+                execution_directives,
+                "on_field_execution",
             )
 
             result = await resolver(
@@ -97,7 +87,8 @@ class _ResolverExecutor:
 
             if info.execution_ctx.is_introspection:
                 result = await self._introspection(result, ctx, info)
-            return result, self._coercer(result, info)
+
+            return result, await self._coercer(result, info)
         except SkipExecution as e:
             raise e
         except Exception as e:  # pylint: disable=broad-except
@@ -120,8 +111,8 @@ class _ResolverExecutor:
         if self._schema_field.subscribe and self._raw_func is default_resolver:
             self._raw_func = default_subscription_resolver(self._raw_func)
 
-        self._directivated_func = _surround_with_execution_directives(
-            self._raw_func, self._schema_field.directives
+        self._directivated_func = surround_with_directive(
+            self._raw_func, self._schema_field.directives, "on_field_execution"
         )
 
     @property

@@ -1,6 +1,7 @@
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.resolver import ResolverExecutorFactory
+from tartiflette.types.enum import GraphQLEnumType
 from tartiflette.types.helpers import get_directive_implem_list, reduce_type
 from tartiflette.types.type import GraphQLType
 
@@ -40,6 +41,9 @@ class GraphQLField:
         self.isDeprecated = False  # pylint: disable=invalid-name
         self._directives_implementations = None
         self._is_leaf = False
+        self._is_enum = False
+        self._reduced_type = None
+        self._reduced_type_name = None
 
     @property
     def directives(self) -> List[Dict[str, Any]]:
@@ -101,16 +105,23 @@ class GraphQLField:
     def is_leaf(self) -> bool:
         return self._is_leaf
 
+    @property
+    def is_enum(self) -> bool:
+        return self._is_enum
+
+    @property
+    def reduced_type(self) -> "GraphQLType":
+        return self._reduced_type
+
     def _compute_is_leaf(self) -> bool:
-        rtype = reduce_type(self.gql_type)
         try:
-            if self._schema.find_scalar(rtype):
+            if self._schema.find_scalar(self._reduced_type_name):
                 return True
         except KeyError:
             pass
 
         try:
-            if self._schema.find_enum(rtype):
+            if self._schema.find_enum(self._reduced_type_name):
                 return True
         except KeyError:
             pass
@@ -124,13 +135,17 @@ class GraphQLField:
         custom_default_resolver: Optional[Callable],
     ) -> None:
         self._schema = schema
+        self._reduced_type_name = reduce_type(self.gql_type)
+        self._reduced_type = self._schema.find_type(self._reduced_type_name)
         self._directives_implementations = get_directive_implem_list(
             self._directives, self._schema
         )
-        self.resolver.bake(custom_default_resolver)
         self.parent_type = parent_type
 
         self._is_leaf = self._compute_is_leaf()
+        self._is_enum = isinstance(self._reduced_type, GraphQLEnumType)
 
         for arg in self.arguments.values():
             arg.bake(self._schema)
+
+        self.resolver.bake(custom_default_resolver)

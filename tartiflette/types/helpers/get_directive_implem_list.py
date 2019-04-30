@@ -1,27 +1,24 @@
 from typing import Any, Dict, List, Optional
 
+from tartiflette.types.helpers.transform_directive import transform_directive
+
 
 def get_directive_implem_list(
     directives: Dict[str, Optional[dict]], schema: "GraphQLSchema"
 ) -> List[Dict[str, Any]]:
     try:
-        computed_directives = {}
-        for directive_name, directive_args in directives.items():
-            directive = schema.find_directive(directive_name)
-            computed_directives[directive_name] = {
-                "callables": directive.implementation,
-                "args": {
-                    arg_name: directive.arguments[arg_name].default_value
-                    for arg_name in directive.arguments
-                },
-            }
+        computed_directives = []
+        for directive_definition in directives:
 
-            if directive_args is not None:
-                computed_directives[directive_name]["args"].update(
-                    directive_args
-                )
+            directive = schema.find_directive(directive_definition["name"])
+            directive_dict = transform_directive(directive)
 
-        return list(computed_directives.values())
+            if directive_definition["args"] is not None:
+                directive_dict["args"].update(directive_definition["args"])
+
+            computed_directives.append(directive_dict)
+
+        return computed_directives
     except (AttributeError, KeyError, TypeError):
         pass
     return []

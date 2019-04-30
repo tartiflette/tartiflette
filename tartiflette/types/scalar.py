@@ -21,10 +21,13 @@ class GraphQLScalarType(GraphQLType):
         coerce_input: Optional[callable] = None,
         description: Optional[str] = None,
         schema: Optional["GraphQLSchema"] = None,
+        directives: Optional["GraphQLSchema"] = None,
     ) -> None:
         super().__init__(name=name, description=description, schema=schema)
         self.coerce_output = coerce_output
         self.coerce_input = coerce_input
+        self._directives = directives
+        self._directives_implem = {}
 
     def __repr__(self) -> str:
         return "{}(name={!r}, description={!r})".format(

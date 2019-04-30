@@ -46,7 +46,7 @@ from tartiflette.types.exceptions.tartiflette import (
     UnknownVariableException,
     UnusedFragment,
 )
-from tartiflette.types.helpers import reduce_type
+from tartiflette.types.helpers import reduce_type, transform_directive
 from tartiflette.utils.arguments import UNDEFINED_VALUE
 
 
@@ -254,13 +254,13 @@ class TartifletteVisitor(Visitor):
         )
         if destination:
             destination.add_directive(
-                {
-                    "callables": directive.implementation,
-                    "args": {
+                transform_directive(
+                    directive,
+                    args={
                         x.name: x.value
                         for x in self._internal_ctx.directive.arguments.values()
                     },
-                }
+                )
             )
         self._internal_ctx.directive = None
 

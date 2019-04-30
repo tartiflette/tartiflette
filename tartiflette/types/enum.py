@@ -80,6 +80,7 @@ class GraphQLEnumType(GraphQLType):
             schema=schema,
         )
         self.values = values
+        self.directive_value_map = {}
 
     def __repr__(self) -> str:
         return "{}(name={!r}, values={!r}, description={!r})".format(
@@ -107,5 +108,6 @@ class GraphQLEnumType(GraphQLType):
         custom_default_resolver: Optional[Callable],
     ) -> None:
         super().bake(schema, custom_default_resolver)
+
         for value in self.values:
             value.bake(schema)

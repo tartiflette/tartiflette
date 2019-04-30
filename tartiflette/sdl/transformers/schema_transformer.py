@@ -540,11 +540,14 @@ class SchemaTransformer(Transformer_InPlace):
     def directives(self, tree: Tree) -> SchemaNode:
         return SchemaNode(
             "directives",
-            {
-                child.value[0]: child.value[1]  # name, value = child.value
+            [
+                {
+                    "name": child.value[0],
+                    "args": child.value[1],
+                }  # name, value = child.value
                 for child in tree.children
                 if child.type == "directive"
-            },
+            ],
         )
 
     def directive(self, tree: Tree) -> SchemaNode:

@@ -1,12 +1,12 @@
 from functools import partial
 from typing import Any, Dict, List, Optional, Union
 
-from tartiflette.types.helpers import get_directive_implem_list
-from tartiflette.types.type import GraphQLType
-from tartiflette.utils.arguments import (
-    argument_coercer,
-    surround_with_argument_execution_directives,
+from tartiflette.types.helpers import (
+    get_directive_implem_list,
+    surround_with_directive,
 )
+from tartiflette.types.type import GraphQLType
+from tartiflette.utils.arguments import argument_coercer
 from tartiflette.utils.coercer import CoercerWay, get_coercer
 
 
@@ -101,7 +101,7 @@ class GraphQLArgument:
             self._type["kind"] = self._schema.find_type(self.gql_type).kind
 
         self.coercer = partial(
-            surround_with_argument_execution_directives(
+            surround_with_directive(
                 partial(
                     argument_coercer,
                     input_coercer=get_coercer(
@@ -109,6 +109,7 @@ class GraphQLArgument:
                     ),
                 ),
                 self.directives,
+                "on_argument_execution",
             ),
             self,
         )
