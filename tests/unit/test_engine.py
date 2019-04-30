@@ -66,8 +66,7 @@ async def test_engine_execute_parse_error(clean_registry):
 async def test_engine_execute_custom_error_coercer(clean_registry):
     from tartiflette.engine import Engine
 
-    def custom_error_coercer(exception):
-        error = default_error_coercer(exception)
+    def custom_error_coercer(exception, error):
         error["message"] = error["message"] + "Custom"
         return error
 

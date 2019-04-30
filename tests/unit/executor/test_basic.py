@@ -6,7 +6,10 @@ from unittest.mock import Mock, patch
 import pytest
 
 from tartiflette.executors.basic import get_operation
-from tartiflette.resolver.factory import default_error_coercer
+from tartiflette.resolver.factory import (
+    default_error_coercer,
+    error_coercer_factory,
+)
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLError,
     UnknownAnonymousdOperation,
@@ -141,7 +144,7 @@ async def test_executor_basic_execute(errors, expected, monkeypatch):
         {None: operation_mock},
         request_ctx={},
         initial_value=None,
-        error_coercer=default_error_coercer,
+        error_coercer=error_coercer_factory(default_error_coercer),
         operation_name=None,
     )
 
@@ -157,8 +160,9 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
     async def my_execute(_, exec_ctx, *__, **___):
         exec_ctx.add_error(GraphQLError("My error"))
 
-    def custom_error_coercer(exception):
-        return {"message": "Error from custom_error_coercer"}
+    def custom_error_coercer(exception, error):
+        error["extensions"] = {"code": "custom_error"}
+        return error
 
     monkeypatch.setattr(basic, "_execute", my_execute)
 
@@ -173,13 +177,20 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
         {None: operation_mock},
         request_ctx={},
         initial_value=None,
-        error_coercer=custom_error_coercer,
+        error_coercer=error_coercer_factory(custom_error_coercer),
         operation_name=None,
     )
 
     assert a == {
         "data": None,
-        "errors": [{"message": "Error from custom_error_coercer"}],
+        "errors": [
+            {
+                "extensions": {"code": "custom_error"},
+                "locations": [],
+                "message": "My error",
+                "path": None,
+            }
+        ],
     }
 
     monkeypatch.undo()

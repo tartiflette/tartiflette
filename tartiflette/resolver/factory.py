@@ -181,8 +181,17 @@ async def default_resolver(
     return None
 
 
-def default_error_coercer(exception: Exception) -> dict:
-    return exception.coerce_value()
+def default_error_coercer(exception: Exception, error: dict) -> dict:
+    # pylint: disable=unused-argument
+    return error
+
+
+def error_coercer_factory(error_coercer: Callable) -> dict:
+    def func_wrapper(exception: Exception) -> dict:
+        error = exception.coerce_value()
+        return error_coercer(exception, error)
+
+    return func_wrapper
 
 
 class ResolverExecutorFactory:
