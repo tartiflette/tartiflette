@@ -42,3 +42,11 @@ class NameNode(Node):
         :rtype: str
         """
         return "NameNode(value=%r, location=%r)" % (self.value, self.location)
+
+    def __str__(self) -> str:
+        """
+        TODO:
+        :return: TODO:
+        :rtype: TODO:
+        """
+        return f"{self.value}"

@@ -49,6 +49,14 @@ class ListTypeNode(TypeNode):
             self.location,
         )
 
+    def __str__(self) -> str:
+        """
+        TODO:
+        :return: TODO:
+        :rtype: TODO:
+        """
+        return f"[{self.type}]"
+
 
 class NonNullTypeNode(TypeNode):
     """
@@ -95,3 +103,11 @@ class NonNullTypeNode(TypeNode):
             self.type,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        TODO:
+        :return: TODO:
+        :rtype: TODO:
+        """
+        return f"{self.type}!"

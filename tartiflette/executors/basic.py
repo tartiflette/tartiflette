@@ -62,6 +62,25 @@ def get_operation(operations, operation_name):
         return operations[list(operations.keys())[0]], None
 
 
+async def execute_operation(
+    execution_context: "ExecutionContext",
+    operation: "ExecutableOperationNode",
+    root_value: Optional[Any],
+    error_coercer: Callable[[Exception], dict],
+) -> Dict[str, Any]:
+    op_type = execution_context.schema.get_operation_type(
+        operation.type.capitalize()
+    )
+    return await execute_fields(
+        list(operation.fields[op_type].values()),
+        execution_context,
+        execution_context.context,
+        initial_value=root_value,
+        error_coercer=error_coercer,
+        allow_parallelization=operation.allow_parallelization,
+    )
+
+
 async def execute(
     operations: Dict[Optional[str], List["NodeOperationDefinition"]],
     operation_name: Optional[str],

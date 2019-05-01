@@ -80,6 +80,9 @@ class GraphQLEnumType(GraphQLType):
             schema=schema,
         )
         self.values = values
+        self._name_lookup: Dict[str, str] = {
+            enum.name: enum.value for enum in values
+        }
 
     def __repr__(self) -> str:
         return "{}(name={!r}, values={!r}, description={!r})".format(
@@ -100,6 +103,16 @@ class GraphQLEnumType(GraphQLType):
         self
     ) -> List[GraphQLEnumValue]:
         return self.values
+
+    def get_value(self, name: str) -> str:
+        """
+        TODO:
+        :param name: TODO:
+        :type name: TODO:
+        :return: TODO:
+        :rtype: TODO:
+        """
+        return self._name_lookup[name]
 
     def bake(
         self,

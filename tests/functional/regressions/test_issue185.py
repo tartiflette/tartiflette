@@ -43,6 +43,10 @@ class CapitalizedString:
     def coerce_input(val: str) -> str:
         return val.capitalize()
 
+    @staticmethod
+    def parse_literal(ast: "Node") -> str:
+        return ast.value
+
 
 @Resolver("Query.person", schema_name="test_issue185")
 async def the_query_person_resolver(_parent_results, args, _ctx, _info):

@@ -17,14 +17,12 @@ class GraphQLScalarType(GraphQLType):
     def __init__(
         self,
         name: str,
-        coerce_output: Optional[callable] = None,
-        coerce_input: Optional[callable] = None,
         description: Optional[str] = None,
         schema: Optional["GraphQLSchema"] = None,
     ) -> None:
         super().__init__(name=name, description=description, schema=schema)
-        self.coerce_output = coerce_output
-        self.coerce_input = coerce_input
+        self.coerce_output = None
+        self.coerce_input = None
 
     def __repr__(self) -> str:
         return "{}(name={!r}, description={!r})".format(

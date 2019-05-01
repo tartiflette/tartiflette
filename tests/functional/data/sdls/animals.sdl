@@ -16,6 +16,7 @@ type Dog implements Pet {
   doesKnowCommand(dogCommand: DogCommand!): Boolean!
   isHousetrained(atOtherHomes: Boolean): Boolean!
   owner: Human
+  friends: [CatOrDog!]!
 }
 
 type Alien implements Sentient {
@@ -47,6 +48,7 @@ type Query {
   dog: Dog
   cat: Cat
   human(id: Int!) : Human
+  catOrDog(id: Int!): CatOrDog!
 }
 
 type Mutation {

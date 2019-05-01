@@ -45,3 +45,11 @@ class NamedTypeNode(TypeNode):
             self.name,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        TODO:
+        :return: TODO:
+        :rtype: TODO:
+        """
+        return f"{self.name}"

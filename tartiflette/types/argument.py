@@ -113,6 +113,18 @@ class GraphQLArgument:
             self,
         )
 
+    def get_gql_type(self) -> "GraphQLType":
+        """
+        TODO:
+        :return: TODO:
+        :rtype: TODO:
+        """
+        return (
+            self.gql_type
+            if isinstance(self.gql_type, GraphQLType)
+            else self._schema.find_type(self.gql_type)
+        )
+
     @property
     def is_list_type(self) -> bool:
         if not isinstance(self.gql_type, str):

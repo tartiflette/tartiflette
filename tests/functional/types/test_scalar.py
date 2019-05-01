@@ -205,6 +205,10 @@ async def test_tartiflette_declare_custom_scalar(clean_registry):
         def coerce_input(val):
             return val
 
+        @staticmethod
+        def parse_literal(ast: "Node") -> str:
+            return ast.value
+
     ttftt = Engine(sdl)
 
     result = await ttftt.execute(

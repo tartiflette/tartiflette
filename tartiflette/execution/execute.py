@@ -119,9 +119,20 @@ def collect_fields(
             field_type = schema.find_type(reduce_type(graphql_field.gql_type))
 
             # Adds an `ExecutableFieldNode` once
-            field_key = f"{field_type_condition}.{response_field}"
-            fields.setdefault(
-                field_key,
+            # field_key = f"{field_type_condition}.{response_field}"
+            # fields.setdefault(
+            #     field_key,
+            #     ExecutableFieldNode(
+            #         name=response_field,
+            #         schema=schema,
+            #         resolver=graphql_field.resolver,
+            #         path=field_path,
+            #         type_condition=field_type_condition,
+            #         directives=field_directives,
+            #     ),
+            # )
+            fields.setdefault(field_type_condition, {}).setdefault(
+                response_field,
                 ExecutableFieldNode(
                     name=response_field,
                     schema=schema,
@@ -134,7 +145,9 @@ def collect_fields(
 
             # Adds `FieldNode` to `ExecutableFieldNode` to have all locations
             # and definitions into `Info` resolver object
-            fields[field_key].definitions.append(selection)
+            fields[field_type_condition][response_field].definitions.append(
+                selection
+            )
 
             # Collects selection set fields
             if selection.selection_set:
@@ -143,7 +156,7 @@ def collect_fields(
                     fragment_definitions,
                     field_type,
                     selection.selection_set,
-                    fields=fields[field_key].fields,
+                    fields=fields[field_type_condition][response_field].fields,
                     path=field_path,
                 )
         elif isinstance(selection, InlineFragmentNode):
@@ -237,7 +250,6 @@ def operation_definition_to_executable_operation(
             else None
         ),
         operation_type=operation_definition.operation_type,
-        variable_definitions=operation_definition.variable_definitions,
         fields=collect_fields(
             schema,
             fragment_definitions,

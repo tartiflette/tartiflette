@@ -17,12 +17,18 @@ class TartifletteError(Exception):
     ) -> None:
         super().__init__(message)
         self.message = message  # Developer message by default
-        self.user_message = user_message or message
+        self.user_message = user_message
         self.more_info = more_info
         self.path = path or None
         self.locations = locations or []
         self.extensions = extensions or {}
         self.original_error = original_error
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(message=%r, locations=%r)" % (
+            self.message,
+            self.locations,
+        )
 
     def coerce_value(
         self,

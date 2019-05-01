@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 
 class Location:
@@ -60,3 +60,11 @@ class Location:
             self.line_end,
             self.column_end,
         )
+
+    def collect_value(self) -> Dict[str, int]:
+        """
+        TODO:
+        :return: TODO:
+        :rtype: TODO:
+        """
+        return {"line": self.line, "column": self.column}

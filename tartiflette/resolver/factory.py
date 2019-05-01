@@ -2,7 +2,7 @@ from functools import partial
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.types.exceptions.tartiflette import SkipExecution
-from tartiflette.utils.arguments import coerce_arguments
+from tartiflette.utils.arguments import coerce_arguments, get_argument_values
 from tartiflette.utils.coercer import get_coercer
 
 
@@ -75,6 +75,7 @@ class _ResolverExecutor:
 
     async def __call__(
         self,
+        execution_context: "ExecutionContext",
         parent_result: Optional[Any],
         args: Dict[str, Any],
         ctx: Optional[Dict[str, Any]],
@@ -82,18 +83,33 @@ class _ResolverExecutor:
         execution_directives: Optional[List[Dict[str, Any]]],
     ) -> (Any, Any):
         try:
-            resolver = _surround_with_execution_directives(
-                self._directivated_func, execution_directives
-            )
+            try:
+                computed_directives = {}
+                for directive_node in execution_directives:
+                    directive_name = directive_node.name.value
+                    directive = execution_context.schema.find_directive(
+                        directive_name
+                    )
 
-            result = await resolver(
-                parent_result,
-                await coerce_arguments(
-                    self._schema_field.arguments, args, ctx, info
-                ),
-                ctx,
-                info,
-            )
+                    computed_directives[directive_name] = {
+                        "callables": directive.implementation,
+                        "args": get_argument_values(
+                            directive,
+                            directive_node,
+                            execution_context.variable_values,
+                        ),
+                    }
+
+                computed_directives = list(computed_directives.values())
+            except Exception:
+                pass
+
+            # resolver = _surround_with_execution_directives(
+            #     self._directivated_func, execution_directives
+            # )
+            resolver = self._directivated_func
+
+            result = await resolver(parent_result, args, ctx, info)
 
             if info.execution_ctx.is_introspection:
                 result = await self._introspection(result, ctx, info)
