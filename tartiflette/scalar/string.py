@@ -1,7 +1,7 @@
 from typing import Any, Union
 
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import StringValueNode
-from tartiflette.utils.value_from_ast import UndefinedValue
 
 
 class ScalarString:
@@ -18,7 +18,7 @@ class ScalarString:
         return val
 
     @staticmethod
-    def parse_literal(ast: "Node") -> Union[str, "UndefinedValue"]:
+    def parse_literal(ast: "Node") -> Union[str, "UNDEFINED_VALUE"]:
         return (
-            ast.value if isinstance(ast, StringValueNode) else UndefinedValue
+            ast.value if isinstance(ast, StringValueNode) else UNDEFINED_VALUE
         )

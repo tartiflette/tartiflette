@@ -5,6 +5,7 @@ async def _query_human_resolver(*_args, **__kwargs):
     return {"name": "Hooman"}
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 @pytest.mark.ttftt_engine(resolvers={"Query.human": _query_human_resolver})
 @pytest.mark.parametrize(

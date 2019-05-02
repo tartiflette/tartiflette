@@ -131,15 +131,14 @@ async def test_full_query_with_alias(engine):
     } == result
 
 
-BookLight = namedtuple("BookLight", ("title", "price"))
-
-data_store = [BookLight(title="The Jungle Book", price=14.99)]
+data_store = [{"title": "The Jungle Book", "price": 14.99}]
 
 
 async def add_book_resolver(_, args, *__):
-    added_book = BookLight(
-        title=args["input"]["title"], price=args["input"]["price"]
-    )
+    added_book = {
+        "title": args["input"]["title"],
+        "price": args["input"]["price"],
+    }
     data_store.append(added_book)
     return {
         "clientMutationId": args["input"].get("clientMutationId"),
@@ -170,7 +169,11 @@ async def test_full_mutation_execute_alias(engine):
         }
         """,
         variables={
-            "input": {"clientMutationId": 1, "title": "My Book", "price": 9.99}
+            "input": {
+                "clientMutationId": "1",
+                "title": "My Book",
+                "price": 9.99,
+            }
         },
         operation_name="AddBook",
     )

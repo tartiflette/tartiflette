@@ -38,6 +38,7 @@ _TTFTT_ENGINE = Engine(
 )
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_issue76_raw():
     query = """
@@ -85,6 +86,7 @@ async def test_issue76_raw():
     }
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_issue76_fragment():
     query = """
@@ -144,6 +146,7 @@ async def test_issue76_fragment():
     }
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_issue76_another_order():
     query = """

@@ -273,7 +273,7 @@ async def _resolver(*args, **kwargs):
                     "dog": {
                         "owner": {"name": "owen"},
                         "name": "a",
-                        "nickname": "n",
+                        "barkVolume": 25,
                     }
                 }
             },

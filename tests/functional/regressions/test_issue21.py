@@ -112,15 +112,10 @@ async def test_issue21_okayquery(
                 "data": None,
                 "errors": [
                     {
-                        "message": "< xid > is not known",
-                        "locations": [],
+                        "locations": [{"column": 23, "line": 2}],
+                        "message": "Variable < $xid > of required type < Int! > was not provided.",
                         "path": None,
-                    },
-                    {
-                        "message": "< xid > is not known",
-                        "locations": [],
-                        "path": None,
-                    },
+                    }
                 ],
             },
             {},
@@ -135,8 +130,8 @@ async def test_issue21_okayquery(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Given value for < xid > is not type < <class 'int'> >",
                         "locations": [{"column": 23, "line": 2}],
+                        "message": "Variable < $xid > got invalid value < RE >; Expected type < Int >; Int cannot represent non-integer value: < RE >",
                         "path": None,
                     }
                 ],
@@ -153,10 +148,21 @@ async def test_issue21_okayquery(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Expecting List for < xid > values",
                         "locations": [{"column": 23, "line": 2}],
+                        "message": "Variable < $xid > got invalid value < RE "
+                        ">; Expected type < Int > at value[0]; "
+                        "Int cannot represent non-integer value: "
+                        "< R >",
                         "path": None,
-                    }
+                    },
+                    {
+                        "locations": [{"column": 23, "line": 2}],
+                        "message": "Variable < $xid > got invalid value < RE "
+                        ">; Expected type < Int > at value[1]; "
+                        "Int cannot represent non-integer value: "
+                        "< E >",
+                        "path": None,
+                    },
                 ],
             },
             {"xid": "RE"},
@@ -171,8 +177,8 @@ async def test_issue21_okayquery(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Given value for < xid > is not type < <class 'int'> >",
                         "locations": [{"column": 23, "line": 2}],
+                        "message": "Variable < $xid > got invalid value < ['RE'] >; Expected type < Int > at value[0]; Int cannot represent non-integer value: < RE >",
                         "path": None,
                     }
                 ],

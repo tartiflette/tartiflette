@@ -1,7 +1,7 @@
 from typing import Any, Union
 
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import IntValueNode
-from tartiflette.utils.value_from_ast import UndefinedValue
 
 _MAX_INT = 2_147_483_647
 _MIN_INT = -2_147_483_648
@@ -27,9 +27,9 @@ class ScalarInt:
         return val
 
     @staticmethod
-    def parse_literal(ast: "Node") -> Union[int, "UndefinedValue"]:
+    def parse_literal(ast: "Node") -> Union[int, "UNDEFINED_VALUE"]:
         if not isinstance(ast, IntValueNode):
-            return UndefinedValue
+            return UNDEFINED_VALUE
 
         try:
             value = int(ast.value)
@@ -37,4 +37,4 @@ class ScalarInt:
                 return value
         except Exception:
             pass
-        return UndefinedValue
+        return UNDEFINED_VALUE

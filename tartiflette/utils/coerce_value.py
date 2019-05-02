@@ -1,6 +1,7 @@
 from collections import Iterable, Mapping
 from typing import Any, List, Optional, Union
 
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.types.exceptions import GraphQLError
 from tartiflette.types.helpers.definition import (
     is_enum_type,
@@ -9,7 +10,7 @@ from tartiflette.types.helpers.definition import (
     is_non_null_type,
     is_scalar_type,
 )
-from tartiflette.utils.value_from_ast import UndefinedValue, is_invalid
+from tartiflette.utils.values import is_invalid_value
 
 
 class CoercionResult:
@@ -30,7 +31,7 @@ class CoercionResult:
         :type value: TODO:
         :type errors: TODO:
         """
-        # TODO: if errors `value` shouldn't it be "UndefinedValue" instead?
+        # TODO: if errors `value` shouldn't it be "UNDEFINED_VALUE" instead?
         self.value = value if not errors else None
         self.errors = errors
 
@@ -163,7 +164,7 @@ def coerce_value(
     if is_scalar_type(schema_type):
         try:
             coerced_value = schema_type.coerce_input(value)
-            if is_invalid(coerced_value):
+            if is_invalid_value(coerced_value):
                 return CoercionResult(
                     errors=[
                         coercion_error(
@@ -202,7 +203,7 @@ def coerce_value(
     if is_list_type(schema_type):
         item_type = schema_type.ofType
 
-        if isinstance(value, Iterable):
+        if isinstance(value, Iterable):  # TODO: str are iterable so?...
             errors = []
             coerced_values = []
             for index, item_value in enumerate(value):
@@ -242,13 +243,13 @@ def coerce_value(
             try:
                 field_value = value[field_name]
             except KeyError:
-                field_value = UndefinedValue
+                field_value = UNDEFINED_VALUE
 
-            if is_invalid(field_value):
-                # TODO: at schema build we should use UndefinedValue for
+            if is_invalid_value(field_value):
+                # TODO: at schema build we should use UNDEFINED_VALUE for
                 # `default_value` attribute of a field to know if a field has
                 # a defined default value (since default value could be `None`)
-                # once done, we should check for `UndefinedValue` here.
+                # once done, we should check for `UNDEFINED_VALUE` here.
                 if field.default_value is not None:
                     coerced_values[field_name] = field.default_value
                 # TODO: check if `gql_type` is the correct attr to call here

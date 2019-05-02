@@ -1,0 +1,4 @@
+INVALID_VALUE = object()
+UNDEFINED_VALUE = object()
+
+__all__ = ["INVALID_VALUE", "UNDEFINED_VALUE"]

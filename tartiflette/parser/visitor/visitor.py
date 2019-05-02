@@ -265,7 +265,10 @@ class TartifletteVisitor(Visitor):
         self._internal_ctx.directive = None
 
     def _add_argument_to_parent(self):
-        if self._internal_ctx.argument.value is UNDEFINED_VALUE:
+        if (
+            not self._internal_ctx.argument
+            or self._internal_ctx.argument.value is UNDEFINED_VALUE
+        ):
             return
 
         if not self._internal_ctx.directive:
@@ -297,7 +300,10 @@ class TartifletteVisitor(Visitor):
             )
             return
 
-        if hasattr(self._internal_ctx.node, "default_value"):
+        if (
+            hasattr(self._internal_ctx.node, "default_value")
+            and not self._internal_ctx.current_object_value
+        ):
             self._internal_ctx.node.default_value = element.get_value()
             return
 
@@ -326,6 +332,11 @@ class TartifletteVisitor(Visitor):
     def _on_object_or_list_value_out(
         self, _: _VisitorElement, *_args, **_kwargs
     ):
+        if hasattr(self._internal_ctx.node, "default_value"):
+            self._internal_ctx.node.default_value = (
+                self._internal_ctx.current_object_value
+            )
+
         self._internal_ctx.current_object_value = (
             self._internal_ctx.current_object_value.parent
         )
@@ -473,14 +484,17 @@ class TartifletteVisitor(Visitor):
 
         try:
             if not isinstance(a_value, a_type):
-                self._add_exception(
-                    InvalidType(
-                        "Given value for < %s > is not type < %s >"
-                        % (varname, a_type),
-                        path=self._internal_ctx.field_path[:],
-                        locations=[self._internal_ctx.node.location],
+                try:
+                    a_type(a_value)
+                except Exception:
+                    self._add_exception(
+                        InvalidType(
+                            "Given value for < %s > is not type < %s >"
+                            % (varname, a_type),
+                            path=self._internal_ctx.field_path[:],
+                            locations=[self._internal_ctx.node.location],
+                        )
                     )
-                )
         except TypeError:
             # TODO remove this, and handle the case it's an InputValue
             # (look at registered input values and compare fields)
@@ -504,7 +518,7 @@ class TartifletteVisitor(Visitor):
         is_nullable = self._internal_ctx.node.is_nullable
         a_value = self._vars[name]
 
-        if self._internal_ctx.node.is_list:
+        if a_value is not None and self._internal_ctx.node.is_list:
             if not isinstance(a_value, list):
                 self._add_exception(
                     InvalidType(

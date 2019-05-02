@@ -1,8 +1,13 @@
 from importlib import import_module, invalidate_caches
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
+from tartiflette.execution import (
+    build_execution_context,
+    parse_query_to_executable_operations,
+)
 from tartiflette.executors.basic import (
     execute as basic_execute,
+    execute_operation,
     subscribe as basic_subscribe,
 )
 from tartiflette.parser import TartifletteRequestParser
@@ -75,16 +80,43 @@ class Engine:
         :param initial_value: an initial value corresponding to the root type being executed
         :return: a GraphQL response (as dict)
         """
-        operations, errors = self._parse_query_to_operations(query, variables)
+        # print()
+        try:
+            executable_operations, errors = parse_query_to_executable_operations(
+                self._schema, query
+            )
+        except GraphQLError as e:
+            errors = [e]
+        except Exception as e:  # pylint: disable=broad-except
+            errors = [
+                to_graphql_error(e, message="Server encountered an error.")
+            ]
 
         if errors:
-            return errors
+            return {
+                "data": None,
+                "errors": [self._error_coercer(err) for err in errors],
+            }
 
-        return await basic_execute(
-            operations,
+        execution_context, errors = build_execution_context(
+            self._schema,
             operation_name,
-            request_ctx=context,
-            initial_value=initial_value,
+            executable_operations,
+            context,
+            initial_value,
+            variables,
+        )
+
+        if errors:
+            return {
+                "data": None,
+                "errors": [self._error_coercer(err) for err in errors],
+            }
+
+        return await execute_operation(
+            execution_context=execution_context,
+            operation=execution_context.operation,
+            root_value=initial_value,
             error_coercer=self._error_coercer,
         )
 
@@ -105,19 +137,42 @@ class Engine:
         :param initial_value: an initial value corresponding to the root type being executed
         :return: a GraphQL response (as dict)
         """
-        operations, errors = self._parse_query_to_operations(query, variables)
+        try:
+            executable_operations, errors = parse_query_to_executable_operations(
+                self._schema, query
+            )
+        except GraphQLError as e:
+            errors = [e]
+        except Exception as e:  # pylint: disable=broad-except
+            errors = [
+                to_graphql_error(e, message="Server encountered an error.")
+            ]
 
         if errors:
             yield errors
         else:
-            async for result in basic_subscribe(  # pylint: disable=not-an-iterable
-                operations,
+            execution_context, errors = build_execution_context(
+                self._schema,
                 operation_name,
-                request_ctx=context,
-                initial_value=initial_value,
-                error_coercer=self._error_coercer,
-            ):
-                yield result
+                executable_operations,
+                context,
+                initial_value,
+                variables,
+            )
+
+            if errors:
+                yield {
+                    "data": None,
+                    "errors": [self._error_coercer(err) for err in errors],
+                }
+            else:
+                async for result in basic_subscribe(  # pylint: disable=not-an-iterable
+                    execution_context,
+                    execution_context.operation,
+                    root_value=initial_value,
+                    error_coercer=self._error_coercer,
+                ):
+                    yield result
 
     def _parse_query_to_operations(self, query, variables):
         try:

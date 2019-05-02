@@ -43,6 +43,7 @@ _TTFTT_ENGINE = Engine(
 )
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query,errors",

@@ -45,7 +45,7 @@ class CapitalizedString:
 
     @staticmethod
     def parse_literal(ast: "Node") -> str:
-        return ast.value
+        return ast.value.capitalize()
 
 
 @Resolver("Query.person", schema_name="test_issue185")

@@ -1,7 +1,7 @@
 from typing import Any, Union
 
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import BooleanValueNode
-from tartiflette.utils.value_from_ast import UndefinedValue
 
 
 class ScalarBoolean:
@@ -18,7 +18,7 @@ class ScalarBoolean:
         return val
 
     @staticmethod
-    def parse_literal(ast: "Node") -> Union[bool, "UndefinedValue"]:
+    def parse_literal(ast: "Node") -> Union[bool, "UNDEFINED_VALUE"]:
         return (
-            ast.value if isinstance(ast, BooleanValueNode) else UndefinedValue
+            ast.value if isinstance(ast, BooleanValueNode) else UNDEFINED_VALUE
         )

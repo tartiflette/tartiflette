@@ -1,13 +1,12 @@
 import logging
 
 from typing import Any, Callable, Dict, Optional
-from unittest.mock import Mock
 
 import pytest
 
 from tartiflette import Directive, Engine, Resolver
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.directive import CommonDirective
-from tartiflette.utils.arguments import UNDEFINED_VALUE
 
 logger = logging.getLogger(__name__)
 

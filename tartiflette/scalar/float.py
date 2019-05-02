@@ -1,8 +1,8 @@
 from math import isfinite
 from typing import Any, Union
 
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import FloatValueNode, IntValueNode
-from tartiflette.utils.value_from_ast import UndefinedValue
 
 
 class ScalarFloat:
@@ -22,12 +22,12 @@ class ScalarFloat:
         return float(val)
 
     @staticmethod
-    def parse_literal(ast: "Node") -> Union[float, "UndefinedValue"]:
+    def parse_literal(ast: "Node") -> Union[float, "UNDEFINED_VALUE"]:
         if not isinstance(ast, (FloatValueNode, IntValueNode)):
-            return UndefinedValue
+            return UNDEFINED_VALUE
 
         try:
             return float(ast.value)
         except Exception:
             pass
-        return UndefinedValue
+        return UNDEFINED_VALUE

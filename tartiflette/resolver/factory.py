@@ -2,7 +2,7 @@ from functools import partial
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.types.exceptions.tartiflette import SkipExecution
-from tartiflette.utils.arguments import coerce_arguments, get_argument_values
+from tartiflette.utils.arguments import coerce_arguments
 from tartiflette.utils.coercer import get_coercer
 
 
@@ -77,39 +77,55 @@ class _ResolverExecutor:
         self,
         execution_context: "ExecutionContext",
         parent_result: Optional[Any],
-        args: Dict[str, Any],
+        # args: Dict[str, Any],
         ctx: Optional[Dict[str, Any]],
         info: "Info",
         execution_directives: Optional[List[Dict[str, Any]]],
+        field_nodes: List["FieldNode"],
     ) -> (Any, Any):
+        from tartiflette.execution import get_argument_values
+
         try:
+            computed_directives = []
             try:
-                computed_directives = {}
                 for directive_node in execution_directives:
                     directive_name = directive_node.name.value
                     directive = execution_context.schema.find_directive(
                         directive_name
                     )
 
-                    computed_directives[directive_name] = {
-                        "callables": directive.implementation,
-                        "args": get_argument_values(
-                            directive,
-                            directive_node,
-                            execution_context.variable_values,
-                        ),
-                    }
-
-                computed_directives = list(computed_directives.values())
+                    computed_directives.append(
+                        {
+                            "callables": directive.implementation,
+                            "args": get_argument_values(
+                                directive.arguments,
+                                directive_node,
+                                execution_context.variable_values,
+                            ),
+                        }
+                    )
             except Exception:
                 pass
 
-            # resolver = _surround_with_execution_directives(
-            #     self._directivated_func, execution_directives
-            # )
-            resolver = self._directivated_func
+            resolver = _surround_with_execution_directives(
+                self._directivated_func, computed_directives
+            )
 
-            result = await resolver(parent_result, args, ctx, info)
+            result = await resolver(
+                parent_result,
+                await coerce_arguments(
+                    self._schema_field.arguments,
+                    get_argument_values(
+                        self.schema_field.arguments,
+                        field_nodes[0],
+                        execution_context.variable_values,
+                    ),
+                    ctx,
+                    info,
+                ),
+                ctx,
+                info,
+            )
 
             if info.execution_ctx.is_introspection:
                 result = await self._introspection(result, ctx, info)

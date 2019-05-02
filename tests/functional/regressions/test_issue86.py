@@ -5,6 +5,7 @@ async def resolver_query_viewer(*_, **__):
     return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 @pytest.mark.ttftt_engine(resolvers={"Query.dog": resolver_query_viewer})
 @pytest.mark.parametrize(

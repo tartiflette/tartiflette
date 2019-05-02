@@ -47,7 +47,7 @@ type Ingredient {
     aListOfNumber: [Int]
 }
 
-input PathRecipeInput {
+input PatchRecipeInput {
     id: Int
     name: String
     cookingTime: Int
@@ -73,7 +73,7 @@ type Mutation {
   updateRecipe(input: RecipeInput): Recipe
   deleteRecipe(input: ABigInputObject): ABigObject
   createRecipe(input: CreateRecipeInput): Recipe
-  patchRecipe(input: PathRecipeInput): ListObjectWithObject
+  patchRecipe(input: PatchRecipeInput): ListObjectWithObject
 }
 
 type Query {
@@ -182,15 +182,23 @@ _ENGINE = Engine(_SDL, schema_name="test_issue127")
             mutation {
                 patchRecipe(
                     input: {
-                        id: 5
-                        name: "THE REcipe"
+                        id: 5,
+                        name: "THE REcipe",
                         cookingTime: 86,
                         ingredients: [
                             {
-                                id: 6, name: "A Salad", type: "HEALTHY", quality: "SOSO", aListOfNumber: [5,63,98]
+                                id: 6,
+                                name: "A Salad",
+                                type: "HEALTHY",
+                                quality: SOSO,
+                                aListOfNumber: [5, 63, 98]
                             },
                             {
-                                id: 9, name: "A Tea", type: "GREASY", quality: "NOT_GOOD", aListOfNumber: [121,987,9632]
+                                id: 9,
+                                name: "A Tea",
+                                type: "GREASY",
+                                quality: NOT_GOOD,
+                                aListOfNumber: [121, 987, 9632]
                             }
                         ]
                     }

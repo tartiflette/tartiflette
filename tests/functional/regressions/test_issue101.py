@@ -39,6 +39,7 @@ type Query {
 _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query,errors",

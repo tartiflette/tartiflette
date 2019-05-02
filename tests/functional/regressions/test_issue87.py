@@ -1,6 +1,7 @@
 import pytest
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 @pytest.mark.ttftt_engine
 @pytest.mark.parametrize(

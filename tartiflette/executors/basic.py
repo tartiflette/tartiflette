@@ -107,31 +107,27 @@ async def execute(
 
 
 async def subscribe(
-    operations: Dict[Optional[str], List["NodeOperationDefinition"]],
-    operation_name: Optional[str],
-    request_ctx: Optional[Dict[str, Any]],
-    initial_value: Optional[Any],
+    execution_context: "ExecutionContext",
+    operation: "ExecutableOperationNode",
+    root_value: Optional[Any],
     error_coercer: Callable[[Exception], dict],
 ) -> AsyncIterable[Dict[str, Any]]:
     # pylint: disable=too-many-locals
-    execution_ctx = ExecutionContext()
+    op_type = execution_context.schema.get_operation_type(
+        operation.type.capitalize()
+    )
 
-    operation, errors = get_operation(operations, operation_name)
-
-    if errors:
-        yield {"data": None, "errors": [error_coercer(err) for err in errors]}
-
-    root_nodes = operation.children
+    root_nodes = list(operation.fields[op_type].values())
 
     source_event_stream = await root_nodes[0].create_source_event_stream(
-        execution_ctx, request_ctx, parent_result=initial_value
+        execution_context, execution_context.context, parent_result=root_value
     )
 
     async for message in source_event_stream:
         yield await execute_fields(
             root_nodes,
-            execution_ctx,
-            request_ctx,
+            execution_context,
+            execution_context.context,
             initial_value=message,
             error_coercer=error_coercer,
             allow_parallelization=operation.allow_parallelization,

@@ -1,6 +1,7 @@
 import pytest
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query,expected",

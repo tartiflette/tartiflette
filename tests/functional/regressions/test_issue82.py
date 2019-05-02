@@ -22,6 +22,7 @@ _TTFTT_ENGINE = Engine(
 )
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_issue82():
     query = """

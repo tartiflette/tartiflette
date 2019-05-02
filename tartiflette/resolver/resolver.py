@@ -45,6 +45,7 @@ class Resolver:
         try:
             field = schema.get_field_by_name(self._name)
             field.resolver.update_func(self._implementation)
+            field.raw_resolver = self._implementation
         except KeyError:
             raise UnknownFieldDefinition(
                 "Unknown Field Definition %s" % self._name

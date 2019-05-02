@@ -1,6 +1,7 @@
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.resolver import ResolverExecutorFactory
+from tartiflette.resolver.factory import default_resolver
 from tartiflette.types.helpers import get_directive_implem_list, reduce_type
 from tartiflette.types.type import GraphQLType
 
@@ -33,6 +34,7 @@ class GraphQLField:
         self.resolver = ResolverExecutorFactory.get_resolver_executor(
             resolver, self
         )
+        self.raw_resolver = resolver or default_resolver
         self.subscribe = None
         self.parent_type = None
 
