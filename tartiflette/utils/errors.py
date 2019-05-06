@@ -18,7 +18,7 @@ def is_coercible_exception(exception: Exception) -> bool:
 
 def to_graphql_error(
     exception: Exception, message: Optional[str] = None
-) -> Exception:
+) -> Union["GraphQLError", Exception]:
     """
     TODO:
     :param exception: TODO:

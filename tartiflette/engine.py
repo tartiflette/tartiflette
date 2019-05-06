@@ -3,19 +3,14 @@ from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
 from tartiflette.execution import (
     build_execution_context,
-    parse_query_to_executable_operations,
+    build_response,
+    parse_and_validate_query,
 )
-from tartiflette.executors.basic import (
-    execute as basic_execute,
-    execute_operation,
-    subscribe as basic_subscribe,
-)
+from tartiflette.execution.execute import execute_operation, run_subscription
 from tartiflette.parser import TartifletteRequestParser
 from tartiflette.resolver.factory import default_error_coercer
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry
-from tartiflette.types.exceptions.tartiflette import GraphQLError
-from tartiflette.utils.errors import to_graphql_error
 
 
 def _import_modules(modules):
@@ -80,44 +75,28 @@ class Engine:
         :param initial_value: an initial value corresponding to the root type being executed
         :return: a GraphQL response (as dict)
         """
-        # print()
-        try:
-            executable_operations, errors = parse_query_to_executable_operations(
-                self._schema, query
-            )
-        except GraphQLError as e:
-            errors = [e]
-        except Exception as e:  # pylint: disable=broad-except
-            errors = [
-                to_graphql_error(e, message="Server encountered an error.")
-            ]
-
+        document, errors = parse_and_validate_query(query)
         if errors:
-            return {
-                "data": None,
-                "errors": [self._error_coercer(err) for err in errors],
-            }
+            return build_response(
+                errors=errors, error_coercer=self._error_coercer
+            )
 
         execution_context, errors = build_execution_context(
             self._schema,
-            operation_name,
-            executable_operations,
-            context,
+            document,
             initial_value,
+            context,
             variables,
+            operation_name,
         )
 
         if errors:
-            return {
-                "data": None,
-                "errors": [self._error_coercer(err) for err in errors],
-            }
+            return build_response(
+                errors=errors, error_coercer=self._error_coercer
+            )
 
         return await execute_operation(
-            execution_context=execution_context,
-            operation=execution_context.operation,
-            root_value=initial_value,
-            error_coercer=self._error_coercer,
+            execution_context, error_coercer=self._error_coercer
         )
 
     async def subscribe(
@@ -137,63 +116,29 @@ class Engine:
         :param initial_value: an initial value corresponding to the root type being executed
         :return: a GraphQL response (as dict)
         """
-        try:
-            executable_operations, errors = parse_query_to_executable_operations(
-                self._schema, query
+        document, errors = parse_and_validate_query(query)
+        if errors:
+            yield build_response(
+                errors=errors, error_coercer=self._error_coercer
             )
-        except GraphQLError as e:
-            errors = [e]
-        except Exception as e:  # pylint: disable=broad-except
-            errors = [
-                to_graphql_error(e, message="Server encountered an error.")
-            ]
+            return
+
+        execution_context, errors = build_execution_context(
+            self._schema,
+            document,
+            initial_value,
+            context,
+            variables,
+            operation_name,
+        )
 
         if errors:
-            yield errors
-        else:
-            execution_context, errors = build_execution_context(
-                self._schema,
-                operation_name,
-                executable_operations,
-                context,
-                initial_value,
-                variables,
+            yield build_response(
+                errors=errors, error_coercer=self._error_coercer
             )
+            return
 
-            if errors:
-                yield {
-                    "data": None,
-                    "errors": [self._error_coercer(err) for err in errors],
-                }
-            else:
-                async for result in basic_subscribe(  # pylint: disable=not-an-iterable
-                    execution_context,
-                    execution_context.operation,
-                    root_value=initial_value,
-                    error_coercer=self._error_coercer,
-                ):
-                    yield result
-
-    def _parse_query_to_operations(self, query, variables):
-        try:
-            operations, errors = self._parser.parse_and_tartify(
-                self._schema,
-                query,
-                variables=dict(variables) if variables else variables,
-            )
-        except GraphQLError as e:
-            errors = [e]
-        except Exception as e:  # pylint: disable=broad-except
-            errors = [
-                to_graphql_error(e, message="Server encountered an error.")
-            ]
-
-        if errors:
-            return (
-                None,
-                {
-                    "data": None,
-                    "errors": [self._error_coercer(err) for err in errors],
-                },
-            )
-        return operations, None
+        async for result in run_subscription(
+            execution_context, error_coercer=self._error_coercer
+        ):
+            yield result

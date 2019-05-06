@@ -1,12 +1,5 @@
 from typing import Any, Dict
 
-from tartiflette.execution.execute import (
-    execute_fields,
-    execute_fields_serially,
-)
-
-__all__ = ["ExecutableOperationNode"]
-
 
 class ExecutableOperationNode:
     """
@@ -49,26 +42,4 @@ class ExecutableOperationNode:
             "ExecutableOperationNode(name=%r, operation_type=%r, fields=%r, "
             "definition=%r)"
             % (self.name, self.type, self.fields, self.definition)
-        )
-
-    async def __call__(
-        self, execution_context: "ExecutionContext"
-    ) -> Dict[str, Any]:
-        """
-        TODO:
-        :param execution_context: TODO:
-        :type execution_context: TODO:
-        :return: TODO:
-        :rtype: TODO:
-        """
-        operation_type_name = execution_context.schema.get_operation_type(
-            self.type.capitalize()
-        )
-
-        return await (
-            execute_fields(execution_context, self.fields, operation_type_name)
-            if self.allow_parallelization
-            else execute_fields_serially(
-                execution_context, self.fields, operation_type_name
-            )
         )

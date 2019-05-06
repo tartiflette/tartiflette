@@ -233,3 +233,7 @@ class UnknownGraphQLType(GraphQLError):
 
 class SkipExecution(Exception):
     pass
+
+
+class SkipCollection(Exception):
+    pass

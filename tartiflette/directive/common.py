@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Union
 
 
 class OnBuildDirective:
@@ -18,9 +18,21 @@ class OnExecutionDirective:
     """
     Base directive class for `on_***_execution` hooks. Available hooks for
     the moment are:
+    * on_field_collection
     * on_field_execution
     * on_argument_execution
     """
+
+    @staticmethod
+    async def on_field_collection(
+        directive_args: Dict[str, Any],
+        next: Callable,
+        selection: Union[
+            "FieldNode", "FragmentSpreadNode", "InlineFragmentNode"
+        ],
+    ) -> Any:
+        # pylint: disable=unused-argument
+        return await next(selection)
 
     @staticmethod
     async def on_field_execution(

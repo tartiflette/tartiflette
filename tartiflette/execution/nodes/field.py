@@ -13,8 +13,6 @@ from tartiflette.types.helpers import get_typename
 from tartiflette.utils.arguments import coerce_arguments
 from tartiflette.utils.errors import is_coercible_exception
 
-__all__ = ["ExecutableFieldNode"]
-
 
 class ExecutableFieldNode:
     """
@@ -182,9 +180,8 @@ class ExecutableFieldNode:
 
     async def create_source_event_stream(
         self,
-        execution_ctx: "ExecutionContext",
-        request_ctx: Optional[Dict[str, Any]],
-        parent_result: Optional[Any] = None,
+        execution_context: "ExecutionContext",
+        initial_value: Optional[Any],
     ):
         if not self.subscribe:
             raise GraphQLError(
@@ -198,23 +195,24 @@ class ExecutableFieldNode:
             schema=self.schema,
             path=self.path,
             location=self.location,
-            execution_ctx=execution_ctx,
+            execution_ctx=execution_context,
         )
+
         from tartiflette.execution import get_argument_values
 
         return self.subscribe(
-            parent_result,
+            initial_value,
             await coerce_arguments(
                 self.field_executor.schema_field.arguments,
                 get_argument_values(
                     self.field_executor.schema_field.arguments,
                     self.definitions[0],
-                    execution_ctx.variable_values,
+                    execution_context.variable_values,
                 ),
-                request_ctx,
+                execution_context.context,
                 info,
             ),
-            request_ctx,
+            execution_context.context,
             info,
         )
 

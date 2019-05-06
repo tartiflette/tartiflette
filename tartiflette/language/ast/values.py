@@ -360,6 +360,14 @@ class ObjectFieldNode(Node):
             self.location,
         )
 
+    def __str__(self) -> str:
+        """
+        TODO:
+        :return: TODO:
+        :rtype: TODO:
+        """
+        return f"{self.name}: {self.value}"
+
 
 class ObjectValueNode(ValueNode):
     """
@@ -407,3 +415,11 @@ class ObjectValueNode(ValueNode):
             self.fields,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        TODO:
+        :return: TODO:
+        :rtype: TODO:
+        """
+        return f"{self.fields}"

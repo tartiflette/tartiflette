@@ -114,11 +114,14 @@ class SchemaTransformer(Transformer_InPlace):
         # TODO: Add directives
         description = None
         name = None
+        directives = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
                 name = child.value
+            elif child.type == "directives":
+                directives = child.value
             elif child.type == "discard" or child.type == "SCALAR":
                 pass
             else:
@@ -128,7 +131,10 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         scalar = GraphQLScalarType(
-            name=name, description=description, schema=self._schema
+            name=name,
+            description=description,
+            directives=directives,
+            schema=self._schema,
         )
         self._schema.add_custom_scalar_definition(scalar)
         return scalar

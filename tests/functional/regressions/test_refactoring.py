@@ -388,9 +388,7 @@ _EXPECTED = {
         ),
     ],
 )
-async def test_refactoring_execution(
-    engine, operation_name, query, variables, expected
-):
+async def test_refactoring(engine, operation_name, query, variables, expected):
     assert (
         await engine.execute(
             query, operation_name=operation_name, variables=variables
