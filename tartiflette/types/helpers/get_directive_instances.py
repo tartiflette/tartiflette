@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional
 from tartiflette.types.helpers.transform_directive import transform_directive
 
 
-def get_directive_implem_list(
+def get_directive_instances(
     directives: Dict[str, Optional[dict]], schema: "GraphQLSchema"
 ) -> List[Dict[str, Any]]:
     try:

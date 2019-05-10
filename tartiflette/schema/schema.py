@@ -273,10 +273,10 @@ class GraphQLSchema:
         try:
             self.bake_types(custom_default_resolver)  # Bake types
             self.call_onbuild_directives()  # Call on_build directive that can modify the schema
-        except Exception as e:  # Failure here should be collected at validation time. pylint: disable=broad-except
-            print(e)
-            # TODO Change this when we'll have a better idea on what to do with the on_build kind of directive.
+        except Exception:  # Failure here should be collected at validation time. pylint: disable=broad-except
             pass
+            # TODO Change this when we'll have a better idea on what to do with the on_build kind of directive.
+
         self.validate()  # Revalidate.
 
     def validate(self) -> bool:

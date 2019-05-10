@@ -1,8 +1,8 @@
 from typing import Any, Dict, List, Optional, Union
 
 from tartiflette.types.helpers import (
-    get_directive_implem_list,
-    surround_with_directive,
+    get_directive_instances,
+    wraps_with_directives,
 )
 from tartiflette.types.type import GraphQLType
 from tartiflette.utils.coercer_way import CoercerWay
@@ -58,23 +58,23 @@ class GraphQLEnumValue:
 
     def bake(self, schema: "GraphQLSchema") -> None:
         self._schema = schema
+        directives_definition = get_directive_instances(
+            self._directives, self._schema
+        )
         self._directives_implementations = {
-            CoercerWay.OUTPUT: surround_with_directive(
-                None,
-                get_directive_implem_list(self._directives, self._schema),
-                "on_pre_output_coercion",
+            CoercerWay.OUTPUT: wraps_with_directives(
+                directives_definition=directives_definition,
+                directive_hook="on_pre_output_coercion",
             ),
-            CoercerWay.INPUT: surround_with_directive(
-                None,
-                get_directive_implem_list(self._directives, self._schema),
-                "on_post_input_coercion",
+            CoercerWay.INPUT: wraps_with_directives(
+                directives_definition=directives_definition,
+                directive_hook="on_post_input_coercion",
             ),
         }
 
-        self._introspection_directives = surround_with_directive(
-            None,
-            get_directive_implem_list(self._directives, self._schema),
-            "on_introspection",
+        self._introspection_directives = wraps_with_directives(
+            directives_definition=directives_definition,
+            directive_hook="on_introspection",
         )
 
 
@@ -135,23 +135,23 @@ class GraphQLEnumType(GraphQLType):
 
     def bake(self, schema: "GraphQLSchema") -> None:
         super().bake(schema)
+        directives_definition = get_directive_instances(
+            self._directives, self._schema
+        )
         self._directives_implementations = {
-            CoercerWay.OUTPUT: surround_with_directive(
-                None,
-                get_directive_implem_list(self._directives, self._schema),
-                "on_pre_output_coercion",
+            CoercerWay.OUTPUT: wraps_with_directives(
+                directives_definition=directives_definition,
+                directive_hook="on_pre_output_coercion",
             ),
-            CoercerWay.INPUT: surround_with_directive(
-                None,
-                get_directive_implem_list(self._directives, self._schema),
-                "on_post_input_coercion",
+            CoercerWay.INPUT: wraps_with_directives(
+                directives_definition=directives_definition,
+                directive_hook="on_post_input_coercion",
             ),
         }
 
-        self._introspection_directives = surround_with_directive(
-            None,
-            get_directive_implem_list(self._directives, self._schema),
-            "on_introspection",
+        self._introspection_directives = wraps_with_directives(
+            directives_definition=directives_definition,
+            directive_hook="on_introspection",
         )
 
         for value in self.values:

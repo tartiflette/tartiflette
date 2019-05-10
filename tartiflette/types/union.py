@@ -1,8 +1,8 @@
 from typing import Any, Dict, List, Optional
 
 from tartiflette.types.helpers import (
-    get_directive_implem_list,
-    surround_with_directive,
+    get_directive_instances,
+    wraps_with_directives,
 )
 from tartiflette.types.type import GraphQLType
 
@@ -64,8 +64,9 @@ class GraphQLUnionType(GraphQLType):
             self._schema.find_type(x) for x in self.gql_types
         ]
 
-        self._introspection_directives = surround_with_directive(
-            None,
-            get_directive_implem_list(self._directives, self._schema),
-            "on_introspection",
+        self._introspection_directives = wraps_with_directives(
+            directives_definition=get_directive_instances(
+                self._directives, self._schema
+            ),
+            directive_hook="on_introspection",
         )

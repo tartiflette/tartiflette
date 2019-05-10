@@ -3,9 +3,9 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from tartiflette.resolver import ResolverExecutorFactory
 from tartiflette.types.enum import GraphQLEnumType
 from tartiflette.types.helpers import (
-    get_directive_implem_list,
+    get_directive_instances,
     reduce_type,
-    surround_with_directive,
+    wraps_with_directives,
 )
 from tartiflette.types.type import GraphQLType
 
@@ -146,11 +146,12 @@ class GraphQLField:
         self._schema = schema
         self._reduced_type_name = reduce_type(self.gql_type)
         self._reduced_type = self._schema.find_type(self._reduced_type_name)
-        self._directives_implementations = get_directive_implem_list(
+        self._directives_implementations = get_directive_instances(
             self._directives, self._schema
         )
-        self._introspection_directives = surround_with_directive(
-            None, self._directives_implementations, "on_introspection"
+        self._introspection_directives = wraps_with_directives(
+            directives_definition=self._directives_implementations,
+            directive_hook="on_introspection",
         )
         self.parent_type = parent_type
 

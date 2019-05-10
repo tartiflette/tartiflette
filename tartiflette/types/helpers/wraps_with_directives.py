@@ -6,15 +6,17 @@ async def _default_directive_endpoint(val, *_args, **_kwargs):
     return val
 
 
-def surround_with_directive(
-    func: Callable, directives: List[Dict[str, Any]], directive_func: str
+def wraps_with_directives(
+    directives_definition: List[Dict[str, Any]],
+    directive_hook: str,
+    func: Callable = None,
 ) -> Callable:
 
     if not func:
         func = _default_directive_endpoint
 
-    for directive in reversed(directives):
+    for directive in reversed(directives_definition):
         func = partial(
-            directive["callables"][directive_func], directive["args"], func
+            directive["callables"][directive_hook], directive["args"], func
         )
     return func

@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.types.exceptions.tartiflette import SkipExecution
-from tartiflette.types.helpers import surround_with_directive
+from tartiflette.types.helpers import wraps_with_directives
 from tartiflette.utils.arguments import coerce_arguments
 from tartiflette.utils.coercer import get_coercer
 
@@ -11,7 +11,9 @@ async def _execute_introspection_directives(elements: list, ctx, info) -> list:
     for element in elements:
         try:
             if element.introspection_directives:
-                result = await element.introspection_directives(element, ctx, info)
+                result = await element.introspection_directives(
+                    element, ctx, info
+                )
                 if result:
                     results.append(result)
             else:
@@ -46,7 +48,9 @@ class _ResolverExecutor:
         if isinstance(element, list):
             return await _execute_introspection_directives(element, ctx, info)
 
-        elements = await _execute_introspection_directives([element], ctx, info)
+        elements = await _execute_introspection_directives(
+            [element], ctx, info
+        )
         try:
             return elements[0]
         except IndexError:
@@ -62,10 +66,10 @@ class _ResolverExecutor:
         execution_directives: Optional[List[Dict[str, Any]]],
     ) -> (Any, Any):
         try:
-            resolver = surround_with_directive(
-                self._directivated_func,
-                execution_directives,
-                "on_field_execution",
+            resolver = wraps_with_directives(
+                directives_definition=execution_directives,
+                directive_hook="on_field_execution",
+                func=self._directivated_func,
             )
 
             result = await resolver(
@@ -103,8 +107,10 @@ class _ResolverExecutor:
         if self._schema_field.subscribe and self._raw_func is default_resolver:
             self._raw_func = default_subscription_resolver(self._raw_func)
 
-        self._directivated_func = surround_with_directive(
-            self._raw_func, self._schema_field.directives, "on_field_execution"
+        self._directivated_func = wraps_with_directives(
+            directives_definition=self._schema_field.directives,
+            directive_hook="on_field_execution",
+            func=self._raw_func,
         )
 
     @property

@@ -2,8 +2,8 @@ from functools import partial
 from typing import Any, Dict, List, Optional, Union
 
 from tartiflette.types.helpers import (
-    get_directive_implem_list,
-    surround_with_directive,
+    get_directive_instances,
+    wraps_with_directives,
 )
 from tartiflette.types.type import GraphQLType
 from tartiflette.utils.arguments import argument_coercer
@@ -96,12 +96,13 @@ class GraphQLArgument:
 
     def bake(self, schema: "GraphQLSchema") -> None:
         self._schema = schema
-        self._directives_implementations = get_directive_implem_list(
+        self._directives_implementations = get_directive_instances(
             self._directives, self._schema
         )
 
-        self._introspection_directives = surround_with_directive(
-            None, self._directives_implementations, "on_introspection"
+        self._introspection_directives = wraps_with_directives(
+            directives_definition=self._directives_implementations,
+            directive_hook="on_introspection",
         )
 
         if isinstance(self.gql_type, GraphQLType):
@@ -111,15 +112,15 @@ class GraphQLArgument:
             self._type["kind"] = self._schema.find_type(self.gql_type).kind
 
         self.coercer = partial(
-            surround_with_directive(
-                partial(
+            wraps_with_directives(
+                directives_definition=self.directives,
+                directive_hook="on_argument_execution",
+                func=partial(
                     argument_coercer,
                     input_coercer=get_coercer(
                         self, schema=schema, way=CoercerWay.INPUT
                     ),
                 ),
-                self.directives,
-                "on_argument_execution",
             ),
             self,
         )

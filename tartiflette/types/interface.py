@@ -2,8 +2,8 @@ from typing import Any, Dict, List, Optional
 
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.helpers import (
-    get_directive_implem_list,
-    surround_with_directive,
+    get_directive_instances,
+    wraps_with_directives,
 )
 from tartiflette.types.type import GraphQLType
 
@@ -62,10 +62,11 @@ class GraphQLInterfaceType(GraphQLType):
     def bake(self, schema):
         super().bake(schema)
 
-        self._introspection_directives = surround_with_directive(
-            None,
-            get_directive_implem_list(self._directives, self._schema),
-            "on_introspection",
+        self._introspection_directives = wraps_with_directives(
+            directives_definition=get_directive_instances(
+                self._directives, self._schema
+            ),
+            directive_hook="on_introspection",
         )
 
     def bake_fields(self, custom_default_resolver):
