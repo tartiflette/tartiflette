@@ -40,6 +40,7 @@ class GraphQLArgument:
 
         # Introspection Attribute
         self._directives_implementations = None
+        self._introspection_directives = None
 
     def __repr__(self) -> str:
         return (
@@ -80,6 +81,10 @@ class GraphQLArgument:
         return self._directives_implementations
 
     @property
+    def introspection_directives(self):
+        return self._introspection_directives
+
+    @property
     def is_required(self) -> bool:
         if not isinstance(self.gql_type, GraphQLType):
             return False
@@ -93,6 +98,10 @@ class GraphQLArgument:
         self._schema = schema
         self._directives_implementations = get_directive_implem_list(
             self._directives, self._schema
+        )
+
+        self._introspection_directives = surround_with_directive(
+            None, self._directives_implementations, "on_introspection"
         )
 
         if isinstance(self.gql_type, GraphQLType):

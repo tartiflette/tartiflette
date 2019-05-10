@@ -1,5 +1,9 @@
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
+from tartiflette.types.helpers import (
+    get_directive_implem_list,
+    surround_with_directive,
+)
 from tartiflette.types.type import GraphQLType
 
 
@@ -19,10 +23,12 @@ class GraphQLUnionType(GraphQLType):
         gql_types: List[GraphQLType],
         description: Optional[str] = None,
         schema: Optional["GraphQLSchema"] = None,
+        directives: Optional[List[Dict[Any, Any]]] = None,
     ) -> None:
         super().__init__(name=name, description=description, schema=schema)
         self.gql_types = gql_types
         self._possible_types = []
+        self._directives = directives
 
     def __repr__(self) -> str:
         return "{}(name={!r}, gql_types={!r}, description={!r})".format(
@@ -57,3 +63,9 @@ class GraphQLUnionType(GraphQLType):
         self._possible_types = [
             self._schema.find_type(x) for x in self.gql_types
         ]
+
+        self._introspection_directives = surround_with_directive(
+            None,
+            get_directive_implem_list(self._directives, self._schema),
+            "on_introspection",
+        )

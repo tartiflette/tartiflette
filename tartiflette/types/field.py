@@ -2,7 +2,11 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.resolver import ResolverExecutorFactory
 from tartiflette.types.enum import GraphQLEnumType
-from tartiflette.types.helpers import get_directive_implem_list, reduce_type
+from tartiflette.types.helpers import (
+    get_directive_implem_list,
+    reduce_type,
+    surround_with_directive,
+)
 from tartiflette.types.type import GraphQLType
 
 
@@ -44,10 +48,15 @@ class GraphQLField:
         self._is_enum = False
         self._reduced_type = None
         self._reduced_type_name = None
+        self._introspection_directives = None
 
     @property
     def directives(self) -> List[Dict[str, Any]]:
         return self._directives_implementations
+
+    @property
+    def introspection_directives(self):
+        return self._introspection_directives
 
     def __repr__(self) -> str:
         return (
@@ -139,6 +148,9 @@ class GraphQLField:
         self._reduced_type = self._schema.find_type(self._reduced_type_name)
         self._directives_implementations = get_directive_implem_list(
             self._directives, self._schema
+        )
+        self._introspection_directives = surround_with_directive(
+            None, self._directives_implementations, "on_introspection"
         )
         self.parent_type = parent_type
 

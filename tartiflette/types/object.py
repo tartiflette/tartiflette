@@ -92,6 +92,12 @@ class GraphQLObjectType(GraphQLType):
             )
         }
 
+        self._introspection_directives = surround_with_directive(
+            None,
+            get_directive_implem_list(self._directives, self._schema),
+            "on_introspection",
+        )
+
     def bake_fields(self, custom_default_resolver):
         for field in self._fields.values():
             try:

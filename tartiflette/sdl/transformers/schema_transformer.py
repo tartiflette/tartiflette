@@ -140,10 +140,10 @@ class SchemaTransformer(Transformer_InPlace):
         return scalar
 
     def union_type_definition(self, tree: Tree) -> GraphQLUnionType:
-        # TODO: Add directives
         description = None
         name = None
         members = None
+        directives = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
@@ -151,6 +151,8 @@ class SchemaTransformer(Transformer_InPlace):
                 name = child.value
             elif child.type == "union_members":
                 members = child.value
+            elif child.type == "directives":
+                directives = child.value
             elif child.type == "discard" or child.type == "UNION":
                 pass
             else:
@@ -164,6 +166,7 @@ class SchemaTransformer(Transformer_InPlace):
             gql_types=members,
             description=description,
             schema=self._schema,
+            directives=directives,
         )
 
     def union_member_types(self, tree: Tree) -> SchemaNode:
@@ -231,10 +234,10 @@ class SchemaTransformer(Transformer_InPlace):
         return GraphQLEnumValue(value, description, directives=directives)
 
     def interface_type_definition(self, tree: Tree) -> GraphQLInterfaceType:
-        # TODO: Add directives
         description = None
         name = None
         fields = None
+        directives = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
@@ -242,6 +245,8 @@ class SchemaTransformer(Transformer_InPlace):
                 name = child.value
             elif child.type == "fields":
                 fields = child.value
+            elif child.type == "directives":
+                directives = child.value
             elif child.type == "discard" or child.type == "INTERFACE":
                 pass
             else:
@@ -255,6 +260,7 @@ class SchemaTransformer(Transformer_InPlace):
             fields=fields,
             description=description,
             schema=self._schema,
+            directives=directives,
         )
 
     def object_type_definition(self, tree: Tree) -> GraphQLObjectType:

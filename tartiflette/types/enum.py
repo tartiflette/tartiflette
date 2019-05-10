@@ -25,6 +25,7 @@ class GraphQLEnumValue:
         self._directives = directives
         self._schema = None
         self._directives_implementations = None
+        self._introspection_directives = None
 
         # Introspection Attribute
         self.isDeprecated = False  # pylint: disable=invalid-name
@@ -51,6 +52,10 @@ class GraphQLEnumValue:
     def directives(self) -> List[Dict[str, Any]]:
         return self._directives_implementations
 
+    @property
+    def introspection_directives(self):
+        return self._introspection_directives
+
     def bake(self, schema: "GraphQLSchema") -> None:
         self._schema = schema
         self._directives_implementations = {
@@ -65,6 +70,12 @@ class GraphQLEnumValue:
                 "on_post_input_coercion",
             ),
         }
+
+        self._introspection_directives = surround_with_directive(
+            None,
+            get_directive_implem_list(self._directives, self._schema),
+            "on_introspection",
+        )
 
 
 class GraphQLEnumType(GraphQLType):
@@ -136,6 +147,12 @@ class GraphQLEnumType(GraphQLType):
                 "on_post_input_coercion",
             ),
         }
+
+        self._introspection_directives = surround_with_directive(
+            None,
+            get_directive_implem_list(self._directives, self._schema),
+            "on_introspection",
+        )
 
         for value in self.values:
             value.bake(schema)

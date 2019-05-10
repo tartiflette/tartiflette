@@ -13,12 +13,11 @@ class GraphQLType:
     ) -> None:
         self.name = name
         self.description = description
-        # self.sdl_info  # TODO: Is it useful to store the SDL source AST Node ?
         self._is_list = is_list
         self._is_not_null = is_not_null
         self._is_enum_value = is_enum_value
         self._schema = schema
-        # TODO get rid of this and use a schema registry somewhere
+        self._introspection_directives = None
 
     @property
     def is_list(self) -> bool:
@@ -77,3 +76,7 @@ class GraphQLType:
     @property
     def contains_a_list(self) -> bool:
         return False
+
+    @property
+    def introspection_directives(self):
+        return self._introspection_directives

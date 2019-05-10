@@ -69,6 +69,12 @@ class GraphQLInputObjectType(GraphQLType):
             )
         }
 
+        self._introspection_directives = surround_with_directive(
+            None,
+            get_directive_implem_list(self._directives, self._schema),
+            "on_introspection",
+        )
+
         for arg in self._fields.values():
             arg.bake(self._schema)
 

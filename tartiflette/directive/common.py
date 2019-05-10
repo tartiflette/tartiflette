@@ -115,7 +115,7 @@ class OnIntrospectionDirective:
     """
 
     @staticmethod
-    def on_introspection(
+    async def on_introspection(
         directive_args: Dict[str, Any],
         next_directive: Callable,
         introspected_element: Any,
@@ -133,7 +133,7 @@ class OnIntrospectionDirective:
         :return: Any
         """
         # pylint: disable=unused-argument
-        return next_directive(introspected_element, ctx, info)
+        return await next_directive(introspected_element, ctx, info)
 
 
 class CommonDirective(

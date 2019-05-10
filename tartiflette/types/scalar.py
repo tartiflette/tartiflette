@@ -66,6 +66,12 @@ class GraphQLScalarType(GraphQLType):
             ),
         }
 
+        self._introspection_directives = surround_with_directive(
+            None,
+            get_directive_implem_list(self._directives, self._schema),
+            "on_introspection",
+        )
+
     @property
     def directives(self):
         return self._directives_implementations

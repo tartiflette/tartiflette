@@ -1,6 +1,10 @@
 from typing import Any, Dict, List, Optional
 
 from tartiflette.types.field import GraphQLField
+from tartiflette.types.helpers import (
+    get_directive_implem_list,
+    surround_with_directive,
+)
 from tartiflette.types.type import GraphQLType
 
 
@@ -22,10 +26,12 @@ class GraphQLInterfaceType(GraphQLType):
         fields: Dict[str, GraphQLField],
         description: Optional[str] = None,
         schema: Optional["GraphQLSchema"] = None,
+        directives=None,
     ) -> None:
         super().__init__(name=name, description=description, schema=schema)
         self._fields = fields
         self._possible_types = []
+        self._directives = directives
 
     def __repr__(self) -> str:
         return "{}(name={!r}, fields={!r}, description={!r})".format(
@@ -52,6 +58,15 @@ class GraphQLInterfaceType(GraphQLType):
         except (AttributeError, TypeError):
             pass
         return []
+
+    def bake(self, schema):
+        super().bake(schema)
+
+        self._introspection_directives = surround_with_directive(
+            None,
+            get_directive_implem_list(self._directives, self._schema),
+            "on_introspection",
+        )
 
     def bake_fields(self, custom_default_resolver):
         for field in self._fields.values():

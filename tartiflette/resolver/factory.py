@@ -6,24 +6,16 @@ from tartiflette.utils.arguments import coerce_arguments
 from tartiflette.utils.coercer import get_coercer
 
 
-def _introspection_directive_endpoint(element: Any) -> Any:
-    return element
-
-
-def _introspection_directives(directives: list) -> Callable:
-    return surround_with_directive(
-        _introspection_directive_endpoint, directives, "on_introspection"
-    )
-
-
-def _execute_introspection_directives(elements: list, ctx, info) -> list:
+async def _execute_introspection_directives(elements: list, ctx, info) -> list:
     results = []
     for element in elements:
         try:
-            directives = _introspection_directives(element.directives)
-            result = directives(element, ctx, info)
-            if result:
-                results.append(result)
+            if element.introspection_directives:
+                result = await element.introspection_directives(element, ctx, info)
+                if result:
+                    results.append(result)
+            else:
+                results.append(element)
         except (AttributeError, TypeError):
             results.append(element)
     return results
@@ -52,9 +44,9 @@ class _ResolverExecutor:
 
     async def _introspection(self, element: Any, ctx, info) -> Optional[Any]:
         if isinstance(element, list):
-            return _execute_introspection_directives(element, ctx, info)
+            return await _execute_introspection_directives(element, ctx, info)
 
-        elements = _execute_introspection_directives([element], ctx, info)
+        elements = await _execute_introspection_directives([element], ctx, info)
         try:
             return elements[0]
         except IndexError:
