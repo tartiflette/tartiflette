@@ -363,14 +363,8 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_oh_god")
                             "barkVolume": 10,
                             "doesKnowCommand": True,
                             "friends": [
-                                {
-                                    "id": 1,
-                                    "name": "Dog+Dog.name"
-                                },
-                                {
-                                    "id": 2,
-                                    "name": "Cat+Cat.name"
-                                }
+                                {"id": 1, "name": "Dog+Dog.name"},
+                                {"id": 2, "name": "Cat+Cat.name"},
                             ],
                             "id": 1,
                             "name": "Dog+Dog.name",
@@ -378,8 +372,8 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_oh_god")
                             "owner": {
                                 "__typename": "Human",
                                 "id": 1,
-                                "name": "Hooman+Human.name"
-                            }
+                                "name": "Hooman+Human.name",
+                            },
                         }
                     ]
                 }
@@ -414,7 +408,7 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_oh_god")
             """
             query PetQuery {
               pets {
-                ... on Cat {
+                ... on Cat @skip(if: true) {
                   id
                   name @concatenate(with: "suffixWayTooLongToBeAValidOne")
                 }
@@ -432,14 +426,14 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_oh_god")
                     {
                         "locations": [],
                         "message": "Value of argument < with > is too long.",
-                        "path": None
+                        "path": None,
                     },
                     {
                         "locations": [],
                         "message": "Value of argument < with > is too long.",
-                        "path": None
-                    }
-                ]
+                        "path": None,
+                    },
+                ],
             },
         ),
     ],

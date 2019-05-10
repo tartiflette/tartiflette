@@ -59,14 +59,16 @@ async def execute_operation(
         )
     )
 
-    operation_executable_map_fields, errors = await collect_executables(
+    operation_executable_map_fields = await collect_executables(
         execution_context,
         operation_type,
         execution_context.operation.selection_set,
     )
 
-    if errors:
-        return build_response(errors=errors, error_coercer=error_coercer)
+    if execution_context.errors:
+        return build_response(
+            errors=execution_context.errors, error_coercer=error_coercer
+        )
 
     if not operation_executable_map_fields:
         return build_response(error_coercer=error_coercer)

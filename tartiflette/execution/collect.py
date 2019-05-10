@@ -74,34 +74,36 @@ async def _collect_directive(selection):
 async def _should_include_node(
     execution_context: "ExecutionContext",
     selection: Union["FieldNode", "FragmentSpreadNode", "InlineFragmentNode"],
-) -> Tuple[bool, Optional["MultipleException"]]:
+    path: Optional[List[str]],
+) -> bool:
     from tartiflette.execution import get_argument_values
     from tartiflette.types.exceptions.tartiflette import SkipCollection
 
     if not selection.directives:
-        return True, None
+        return True
 
+    callable_directives = []
+    for directive_node in selection.directives:
+        directive_definition = execution_context.schema.find_directive(
+            directive_node.name.value
+        )
 
-    try:
-        callable_directives = []
-        for directive_node in selection.directives:
-            directive_definition = execution_context.schema.find_directive(
-                directive_node.name.value
+        func = (
+            "on_field_collection"
+            if isinstance(selection, FieldNode)
+            else (
+                "on_fragment_spread_collection"
+                if isinstance(selection, FragmentSpreadNode)
+                else "on_inline_fragment_collection"
             )
+        )
 
-            func = (
-                "on_field_collection"
-                if isinstance(selection, FieldNode)
-                else (
-                    "on_fragment_spread_collection"
-                    if isinstance(selection, FragmentSpreadNode)
-                    else "on_inline_fragment_collection"
-                )
-            )
-
+        try:
             callable_directives.append(
                 {
-                    "callable": getattr(directive_definition.implementation, func),
+                    "callable": getattr(
+                        directive_definition.implementation, func
+                    ),
                     "args": await coerce_arguments(
                         directive_definition.arguments,
                         get_argument_values(
@@ -111,19 +113,27 @@ async def _should_include_node(
                         ),
                         execution_context.context,
                         None,  # TODO: should be a "Info" instance
-                    )
+                    ),
                 }
             )
-    except MultipleException as e:
-        return False, e.exceptions
+        except Exception as e:
+            execution_context.add_error(
+                e, path=path, locations=[directive_node.location]
+            )
+            return False
 
     try:
         await _surround_with_collection_directives(
             _collect_directive, callable_directives
         )(selection)
     except SkipCollection:
-        return False, None
-    return True, None
+        return False
+    except Exception as e:
+        execution_context.add_error(
+            e, path=path, locations=[selection.location]
+        )
+        return False
+    return True
 
 
 async def collect_executables(
@@ -147,15 +157,10 @@ async def collect_executables(
         visited_fragments: Set[str] = set()
 
     for selection in selection_set.selections:
-        selection_path: List[str] = path if path is not None else []
-
-        should_include_node, include_errors = await _should_include_node(execution_context, selection)
-
-        if include_errors:
-            errors.extend(include_errors)
-
-        if not should_include_node:
+        if not await _should_include_node(execution_context, selection, path):
             continue
+
+        selection_path: List[str] = path if path is not None else []
 
         if isinstance(selection, FieldNode):
             response_key: str = (
@@ -261,4 +266,4 @@ async def collect_executables(
                 parent=parent,
             )
 
-    return fields, errors
+    return fields

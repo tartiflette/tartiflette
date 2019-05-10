@@ -174,14 +174,8 @@ _EXPECTED = {
                             "barkVolume": 10,
                             "doesKnowCommand": True,
                             "friends": [
-                                {
-                                    "id": 1,
-                                    "name": "Dog+Dog.name"
-                                },
-                                {
-                                    "id": 2,
-                                    "name": "Cat+Cat.name"
-                                }
+                                {"id": 1, "name": "Dog+Dog.name"},
+                                {"id": 2, "name": "Cat+Cat.name"},
                             ],
                             "id": 1,
                             "name": "Dog+Dog.name",
@@ -189,8 +183,8 @@ _EXPECTED = {
                             "owner": {
                                 "__typename": "Human",
                                 "id": 1,
-                                "name": "Hooman+Human.name"
-                            }
+                                "name": "Hooman+Human.name",
+                            },
                         }
                     ]
                 }

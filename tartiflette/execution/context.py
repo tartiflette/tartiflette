@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Optional, Tuple
+from functools import partial
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from tartiflette.execution.values import get_variable_values
 from tartiflette.language.ast import (
@@ -6,6 +7,8 @@ from tartiflette.language.ast import (
     OperationDefinitionNode,
 )
 from tartiflette.types.exceptions import GraphQLError
+from tartiflette.types.exceptions.tartiflette import MultipleException
+from tartiflette.utils.errors import is_coercible_exception
 
 __all__ = ["build_execution_context"]
 
@@ -44,20 +47,37 @@ class ExecutionContext:
         self.context = context
         self.root_value = root_value
         self.variable_values = variable_values
-        self.errors = []
+        self.errors: List["GraphQLError"] = []
 
         # TODO: retrocompatibility
         self.is_introspection: bool = False
 
-    def add_error(self, error: Exception) -> None:
-        """
-        TODO:
-        :param error: TODO:
-        :type error: TODO:
-        :return: TODO:
-        :rtype: TODO:
-        """
-        self.errors.append(error)
+    def add_error(
+        self,
+        raw_exception: Union["GraphQLError", "MultipleException", Exception],
+        path: Optional[List[str]] = None,
+        locations: Optional[List["Location"]] = None,
+    ) -> None:
+        exceptions = (
+            raw_exception.exceptions
+            if isinstance(raw_exception, MultipleException)
+            else [raw_exception]
+        )
+
+        for exception in exceptions:
+            graphql_error = (
+                exception
+                if is_coercible_exception(exception)
+                else GraphQLError(
+                    str(exception), path, locations, original_error=exception
+                )
+            )
+
+            graphql_error.coerce_value = partial(
+                graphql_error.coerce_value, path=path, locations=locations
+            )
+
+            self.errors.append(graphql_error)
 
 
 def build_execution_context(

@@ -258,41 +258,14 @@ class ExecutableFieldNode:
             ):
                 self.parent.bubble_error()
 
-            _add_errors_to_execution_context(
-                execution_ctx,
+            execution_ctx.add_error(
                 raw,
-                self.path,
-                [definition.location for definition in self.definitions],
+                path=self.path,
+                locations=[
+                    definition.location for definition in self.definitions
+                ],
             )
         elif self.fields and raw is not None:
             await self._execute_children(
                 execution_ctx, request_ctx, result=raw, coerced=coerced
             )
-
-
-def _add_errors_to_execution_context(
-    execution_context: "ExecutionContext",
-    raw_exception: Union[Exception, "MultipleException"],
-    path: Union[str, List[str]],
-    locations: List["Location"],
-) -> None:
-    exceptions = (
-        raw_exception.exceptions
-        if isinstance(raw_exception, MultipleException)
-        else [raw_exception]
-    )
-
-    for exception in exceptions:
-        gql_error = (
-            exception
-            if is_coercible_exception(exception)
-            else GraphQLError(
-                str(exception), path, locations, original_error=exception
-            )
-        )
-
-        gql_error.coerce_value = partial(
-            gql_error.coerce_value, path=path, locations=locations
-        )
-
-        execution_context.add_error(gql_error)
