@@ -88,7 +88,7 @@ class _ResolverExecutor:
             if info.execution_ctx.is_introspection:
                 result = await self._introspection(result, ctx, info)
 
-            return result, await self._coercer(result, info)
+            return result, await self._coercer(result, ctx, info)
         except SkipExecution as e:
             raise e
         except Exception as e:  # pylint: disable=broad-except

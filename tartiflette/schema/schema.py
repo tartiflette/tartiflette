@@ -512,11 +512,19 @@ class GraphQLSchema:
     def bake_types(
         self, custom_default_resolver: Optional[Callable] = None
     ) -> None:
+        for gql_type in self._custom_scalars.values():
+            gql_type.bake(self)
+
         for gql_type in self._gql_types.values():
-            gql_type.bake(self, custom_default_resolver)
+            if not isinstance(gql_type, GraphQLScalarType):  # Are baked first
+                gql_type.bake(self)
 
         for directive in self._directives.values():
             directive.bake(self)
+
+        for gql_type in self._gql_types.values():
+            if isinstance(gql_type, (GraphQLObjectType, GraphQLInterfaceType)):
+                gql_type.bake_fields(custom_default_resolver)
 
     def call_onbuild_directives(self) -> None:
         for name, directive in self._directives.items():

@@ -1,7 +1,12 @@
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from tartiflette.types.field import GraphQLField
+from tartiflette.types.helpers import (
+    get_directive_implem_list,
+    surround_with_directive,
+)
 from tartiflette.types.type import GraphQLType
+from tartiflette.utils.coercer_way import CoercerWay
 
 
 class GraphQLObjectType(GraphQLType):
@@ -20,12 +25,15 @@ class GraphQLObjectType(GraphQLType):
         interfaces: Optional[List[str]] = None,
         description: Optional[str] = None,
         schema: Optional["GraphQLSchema"] = None,
+        directives: Optional[Dict[str, Union[str, Dict[str, Any]]]] = None,
     ) -> None:
         super().__init__(name=name, description=description, schema=schema)
         self._fields = fields
         # TODO: specify what is in the List.
         self.interfaces_names = interfaces or []
         self._interfaces = None
+        self._directives = directives
+        self._directives_implementations = {}
 
     def __repr__(self) -> str:
         return (
@@ -68,22 +76,26 @@ class GraphQLObjectType(GraphQLType):
             pass
         return []
 
-    def bake(
-        self,
-        schema: "GraphQLSchema",
-        custom_default_resolver: Optional[Callable],
-    ) -> None:
-        super().bake(schema, custom_default_resolver)
-
+    def bake(self, schema: "GraphQLSchema") -> None:
+        super().bake(schema)
         self._interfaces = []
         for interface_name in self.interfaces_names:
             interface = self._schema.find_type(interface_name)
             self._interfaces.append(interface)
             interface.possibleTypes.append(self)
 
-        for field in list(self._fields.values()):
+        self._directives_implementations = {
+            CoercerWay.OUTPUT: surround_with_directive(
+                None,
+                get_directive_implem_list(self._directives, self._schema),
+                "on_pre_output_coercion",
+            )
+        }
+
+    def bake_fields(self, custom_default_resolver):
+        for field in self._fields.values():
             try:
-                field.bake(schema, self, custom_default_resolver)
+                field.bake(self._schema, self, custom_default_resolver)
             except AttributeError:
                 pass
 
@@ -91,3 +103,7 @@ class GraphQLObjectType(GraphQLType):
     @property
     def interfaces(self) -> List[GraphQLType]:
         return self._interfaces or []
+
+    @property
+    def directives(self):
+        return self._directives_implementations

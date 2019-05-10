@@ -114,11 +114,14 @@ class SchemaTransformer(Transformer_InPlace):
         # TODO: Add directives
         description = None
         name = None
+        directives = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
                 name = child.value
+            elif child.type == "directives":
+                directives = child.value
             elif child.type == "discard" or child.type == "SCALAR":
                 pass
             else:
@@ -128,7 +131,10 @@ class SchemaTransformer(Transformer_InPlace):
                     )
                 )
         scalar = GraphQLScalarType(
-            name=name, description=description, schema=self._schema
+            name=name,
+            description=description,
+            schema=self._schema,
+            directives=directives,
         )
         self._schema.add_custom_scalar_definition(scalar)
         return scalar
@@ -170,11 +176,14 @@ class SchemaTransformer(Transformer_InPlace):
         description = None
         name = None
         values = None
+        directives = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
                 name = child.value
+            elif child.type == "directives":
+                directives = child.value
             elif child.type == "enum_values":
                 values = child.value
             elif child.type == "discard" or child.type == "ENUM":
@@ -191,6 +200,7 @@ class SchemaTransformer(Transformer_InPlace):
             values=values,
             description=description,
             schema=self._schema,
+            directives=directives,
         )
         self._schema.add_enum_definition(enum_type)
         return enum_type
@@ -248,11 +258,11 @@ class SchemaTransformer(Transformer_InPlace):
         )
 
     def object_type_definition(self, tree: Tree) -> GraphQLObjectType:
-        # TODO: Add directives
         description = None
         name = None
         interfaces = None
         fields = None
+        directives = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
@@ -260,6 +270,8 @@ class SchemaTransformer(Transformer_InPlace):
                 name = child.value
             elif child.type == "interfaces":
                 interfaces = child.value
+            elif child.type == "directives":
+                directives = child.value
             elif child.type == "fields":
                 fields = child.value
             elif child.type == "discard" or child.type == "TYPE":
@@ -276,6 +288,7 @@ class SchemaTransformer(Transformer_InPlace):
             interfaces=interfaces,
             description=description,
             schema=self._schema,
+            directives=directives,
         )
 
     def implements_interfaces(self, tree: Tree) -> SchemaNode:
@@ -291,15 +304,17 @@ class SchemaTransformer(Transformer_InPlace):
     def input_object_type_definition(
         self, tree: Tree
     ) -> GraphQLInputObjectType:
-        # TODO: Add directives
         description = None
         name = None
         fields = None
+        directives = None
         for child in tree.children:
             if child.type == "description":
                 description = child.value
             elif child.type == "IDENT":
                 name = child.value
+            elif child.type == "directives":
+                directives = child.value
             elif child.type == "input_fields":
                 fields = child.value
             elif child.type == "discard" or child.type == "INPUT":
@@ -315,6 +330,7 @@ class SchemaTransformer(Transformer_InPlace):
             fields=fields,
             description=description,
             schema=self._schema,
+            directives=directives,
         )
 
     def input_fields_definition(self, tree: Tree) -> SchemaNode:
@@ -367,7 +383,6 @@ class SchemaTransformer(Transformer_InPlace):
         )
 
     def input_value_definition(self, tree: Tree) -> GraphQLArgument:
-        # TODO: Add directives
         description = None
         name = None
         gql_type = None

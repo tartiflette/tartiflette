@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 
 class GraphQLType:
@@ -71,11 +71,7 @@ class GraphQLType:
     def schema(self) -> Optional["GraphQLSchema"]:
         return self._schema
 
-    def bake(
-        self,
-        schema: "GraphQLSchema",
-        _custom_default_resolver: Optional[Callable],
-    ) -> None:
+    def bake(self, schema: "GraphQLSchema") -> None:
         self._schema = schema
 
     @property

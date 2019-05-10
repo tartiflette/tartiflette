@@ -1,6 +1,11 @@
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
+from tartiflette.types.helpers import (
+    get_directive_implem_list,
+    surround_with_directive,
+)
 from tartiflette.types.type import GraphQLType
+from tartiflette.utils.coercer_way import CoercerWay
 
 
 class GraphQLInputObjectType(GraphQLType):
@@ -19,12 +24,15 @@ class GraphQLInputObjectType(GraphQLType):
         fields: Dict[str, "GraphQLArgument"],
         description: Optional[str] = None,
         schema: Optional["GraphQLSchema"] = None,
+        directives: Optional[Dict[str, Union[str, Dict[str, Any]]]] = None,
     ) -> None:
         super().__init__(name=name, description=description, schema=schema)
         self._fields = fields
         self._input_fields: List["GraphQLArgument"] = list(
             self._fields.values()
         )
+        self._directives = directives
+        self._directives_implementations = {}
 
     def __repr__(self) -> str:
         return "{}(name={!r}, fields={!r}, description={!r})".format(
@@ -50,12 +58,16 @@ class GraphQLInputObjectType(GraphQLType):
     ) -> List["GraphQLArgument"]:
         return self.input_fields
 
-    def bake(
-        self,
-        schema: "GraphQLSchema",
-        custom_default_resolver: Optional[Callable],
-    ) -> None:
-        super().bake(schema, custom_default_resolver)
+    def bake(self, schema: "GraphQLSchema") -> None:
+        super().bake(schema)
+
+        self._directives_implementations = {
+            CoercerWay.INPUT: surround_with_directive(
+                None,
+                get_directive_implem_list(self._directives, self._schema),
+                "on_post_input_coercion",
+            )
+        }
 
         for arg in self._fields.values():
             arg.bake(self._schema)
@@ -63,3 +75,7 @@ class GraphQLInputObjectType(GraphQLType):
     @property
     def input_fields(self):
         return self._input_fields
+
+    @property
+    def directives(self):
+        return self._directives_implementations

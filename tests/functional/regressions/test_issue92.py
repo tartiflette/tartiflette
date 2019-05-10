@@ -154,6 +154,7 @@ async def test_issue92_fragment_inordered():
     results = await _TTFTT_ENGINE.execute(
         _INTROSPECTION_QUERY, operation_name="IntrospectionQuery"
     )
+
     assert results == {
         "data": {
             "__schema": {

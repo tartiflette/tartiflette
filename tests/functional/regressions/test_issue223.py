@@ -40,35 +40,19 @@ type Query {
 @Directive("lower", schema_name="issue223")
 class Lower(CommonDirective):
     @staticmethod
-    async def on_enum_value_field_execution(
-        directive_args,
-        next_directive,
-        enum_value,
-        field,
-        field_args,
-        ctx,
-        info,
+    async def on_pre_output_coercion(
+        directive_args, next_directive, val, ctx, info
     ):
-        return await next_directive(
-            enum_value.lower(), field, field_args, ctx, info
-        )
+        return await next_directive(val.lower(), ctx, info)
 
 
 @Directive("upper", schema_name="issue223")
 class Upper(CommonDirective):
     @staticmethod
-    async def on_enum_value_field_execution(
-        directive_args,
-        next_directive,
-        enum_value,
-        field,
-        field_args,
-        ctx,
-        info,
+    async def on_pre_output_coercion(
+        directive_args, next_directive, val, ctx, info
     ):
-        return await next_directive(
-            enum_value.upper(), field, field_args, ctx, info
-        )
+        return await next_directive(val.upper(), ctx, info)
 
 
 @Resolver("Query.wardrobe", schema_name="issue223")

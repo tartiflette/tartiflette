@@ -1,6 +1,11 @@
-from typing import Any, Optional
+from typing import Any, Dict, Optional, Union
 
+from tartiflette.types.helpers import (
+    get_directive_implem_list,
+    surround_with_directive,
+)
 from tartiflette.types.type import GraphQLType
+from tartiflette.utils.coercer_way import CoercerWay
 
 
 class GraphQLScalarType(GraphQLType):
@@ -17,17 +22,15 @@ class GraphQLScalarType(GraphQLType):
     def __init__(
         self,
         name: str,
-        coerce_output: Optional[callable] = None,
-        coerce_input: Optional[callable] = None,
         description: Optional[str] = None,
         schema: Optional["GraphQLSchema"] = None,
-        directives: Optional["GraphQLSchema"] = None,
+        directives: Optional[Dict[str, Union[str, Dict[str, Any]]]] = None,
     ) -> None:
         super().__init__(name=name, description=description, schema=schema)
-        self.coerce_output = coerce_output
-        self.coerce_input = coerce_input
+        self.coerce_output = None
+        self.coerce_input = None
         self._directives = directives
-        self._directives_implem = {}
+        self._directives_implementations = {}
 
     def __repr__(self) -> str:
         return "{}(name={!r}, description={!r})".format(
@@ -46,3 +49,23 @@ class GraphQLScalarType(GraphQLType):
     @property
     def kind(self) -> str:
         return "SCALAR"
+
+    def bake(self, schema):
+        super().bake(schema)
+
+        self._directives_implementations = {
+            CoercerWay.OUTPUT: surround_with_directive(
+                None,
+                get_directive_implem_list(self._directives, self._schema),
+                "on_pre_output_coercion",
+            ),
+            CoercerWay.INPUT: surround_with_directive(
+                None,
+                get_directive_implem_list(self._directives, self._schema),
+                "on_post_input_coercion",
+            ),
+        }
+
+    @property
+    def directives(self):
+        return self._directives_implementations

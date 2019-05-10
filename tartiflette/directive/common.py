@@ -68,12 +68,10 @@ class OnExecutionDirective:
         return await next_directive(argument_definition, args, ctx, info)
 
     @staticmethod
-    async def on_enum_value_field_execution(
+    async def on_post_input_coercion(
         directive_args: Dict[str, Any],
         next_directive: Callable,
-        enum_value: Any,
-        field: "GraphQLField",
-        field_args: Dict[str, Any],
+        val: Any,
         ctx: Optional[Dict[str, Any]],
         info: "Info",
     ) -> Any:
@@ -81,22 +79,19 @@ class OnExecutionDirective:
         Hook allowing you to alterate the coercition behavior of an enum value.
         :param directive_args: arguments passed to the directive
         :param next_directive: next directive to call
-        :param enum_value: the enum value to work with
-        :param field: The field definition which resulted in this value
-        :param field_args: arguments passed to the field
+        :param val: the enum value to work with
         :param ctx: context passed to the query execution
         :param info: information related to the execution & field resolve
         :return: Any
         """
         # pylint: disable=unused-argument
-        return await next_directive(enum_value, field, field_args, ctx, info)
+        return await next_directive(val, field, field_args, ctx, info)
 
     @staticmethod
-    async def on_enum_value_argument_execution(
+    async def on_pre_output_coercion(
         directive_args: Dict[str, Any],
         next_directive: Callable,
-        enum_value: Any,
-        argument: "GraphQLArgument",
+        val: Any,
         ctx: Optional[Dict[str, Any]],
         info: "Info",
     ) -> Any:
@@ -111,7 +106,7 @@ class OnExecutionDirective:
         :return: Any
         """
         # pylint: disable=unused-argument
-        return await next_directive(enum_value, argument, ctx, info)
+        return await next_directive(val, argument, ctx, info)
 
 
 class OnIntrospectionDirective:

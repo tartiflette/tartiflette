@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional
+from typing import Any, List, Optional
 
 from tartiflette.types.type import GraphQLType
 
@@ -51,12 +51,9 @@ class GraphQLUnionType(GraphQLType):
     ) -> List[GraphQLType]:
         return self._possible_types
 
-    def bake(
-        self,
-        schema: "GraphQLSchema",
-        custom_default_resolver: Optional[Callable],
-    ) -> None:
-        super().bake(schema, custom_default_resolver)
+    def bake(self, schema: "GraphQLSchema") -> None:
+        super().bake(schema)
+
         self._possible_types = [
             self._schema.find_type(x) for x in self.gql_types
         ]

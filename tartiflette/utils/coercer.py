@@ -23,7 +23,9 @@ def _set_typename(result: Any, typename: Optional[str]) -> None:
         pass  # Res is unmutable
 
 
-async def _scalar_coercer(func: Callable, val: Optional[Any], _: "Info"):
+async def _scalar_coercer(
+    func: Callable, val: Optional[Any], *_args, **_kwargs
+):
     if val is None:
         return val
 
@@ -41,24 +43,24 @@ async def _object_coercer(
 
 
 async def _list_coercer(
-    func: Callable, val: Optional[Any], info: "Info"
+    func: Callable, val: Optional[Any], ctx: Dict[Any, Any], info: "Info"
 ) -> Optional[list]:
     if val is None:
         return val
 
     if isinstance(val, list):
         # TODO maybe gather them
-        return [await func(v, info) for v in val]
+        return [await func(v, ctx, info) for v in val]
 
-    return [await func(val, info)]
+    return [await func(val, ctx, info)]
 
 
 async def _not_null_coercer(
-    func: Callable, val: Optional[Any], info: "Info"
+    func: Callable, val: Optional[Any], ctx: Dict[Any, Any], info: "Info"
 ) -> Any:
     if val is None:
         raise NullError(val, info)
-    return await func(val, info)
+    return await func(val, ctx, info)
 
 
 def _get_type_coercers(field_type: "GraphQLType") -> List[Callable]:
@@ -86,6 +88,7 @@ async def _enum_coercer(
     enum_valid_values: List[str],
     func: Callable,
     val: Optional[str],
+    ctx: Dict[Any, Any],
     info: "Info",
 ) -> Optional[str]:
     if val is None:
@@ -93,7 +96,7 @@ async def _enum_coercer(
 
     if val not in enum_valid_values:
         raise InvalidValue(val, info)
-    return await func(val, info)
+    return await func(val, ctx, info)
 
 
 def _is_an_enum(
@@ -138,7 +141,7 @@ def _is_union(reduced_type: str, schema: "GraphQLSchema") -> bool:
 
 
 async def _input_object_coercer(
-    input_field_coercers: Dict[str, "GraphQLArgument"], values, info
+    input_field_coercers: Dict[str, "GraphQLArgument"], values, ctx, info
 ):
     if values is None:
         return None
@@ -146,7 +149,7 @@ async def _input_object_coercer(
     coerced = {}
 
     for field_name, coercer in input_field_coercers.items():
-        coerced[field_name] = await coercer(values.get(field_name), info)
+        coerced[field_name] = await coercer(values.get(field_name), ctx, info)
     return coerced
 
 
@@ -175,28 +178,36 @@ async def _directive_endpoint(val, *_args, **_kwargs):
     return val
 
 
-async def _arg_directive_runner(
-    directives, coercers, val, info, *args, **kwargs
+async def _input_directive_runner(
+    directives, coercers, val, ctx, info, **kwargs
 ):
-    return await directives(await coercers(val, info), *args, **kwargs)
+
+    return await directives(
+        await coercers(val, ctx, info), ctx, info, **kwargs
+    )
 
 
-async def _field_directive_runner(
-    directives, coercers, val, info, *args, **kwargs
+async def _output_directive_runner(
+    directives, coercers, val, ctx, info, **kwargs
 ):
-    return await coercers(await directives(val, *args, **kwargs), info)
+    return await coercers(
+        await directives(val, ctx, info, **kwargs), ctx, info
+    )
 
 
 def _add_directive_runner_partial(func, reduce_type_name, schema, way):
     try:
-        directives = schema.find_type(reduce_type_name).directives
-    except (KeyError, AttributeError):
-        directives = {}
+        rtype = schema.find_type(reduce_type_name)
+    except KeyError:
+        return func
 
-    directives = directives.get(way, _directive_endpoint)
-    if way == CoercerWay.OUTPUT:
-        return partial(_field_directive_runner, directives, func)
-    return partial(_arg_directive_runner, directives, func)
+    if hasattr(rtype, "directives"):
+        directives = rtype.directives.get(way)
+        if way == CoercerWay.OUTPUT:
+            return partial(_output_directive_runner, directives, func)
+        return partial(_input_directive_runner, directives, func)
+
+    return func
 
 
 def get_coercer(
@@ -212,31 +223,22 @@ def get_coercer(
     field_type = field.gql_type
     reduced_type = reduce_type(field_type)
     is_union = _is_union(reduced_type, schema)
+    default_coercer = partial(
+        _object_coercer, reduced_type if not is_union else None
+    )
 
-    if reduced_type == "__Type":
-        # preserve None
-        coercer = partial(
-            _object_coercer, reduced_type if not is_union else None
-        )
-
-    else:
-        # TODO We can do better here.
-        try:
-            coercer = _is_an_enum(reduced_type, schema, way)
+    # TODO We can do better here.
+    try:
+        coercer = _is_an_enum(reduced_type, schema, way)
+        if not coercer:
+            coercer = _is_a_scalar(reduced_type, schema, way)
             if not coercer:
-                coercer = _is_a_scalar(reduced_type, schema, way)
+                coercer = _is_an_input_object(reduced_type, schema)
                 if not coercer:
-                    coercer = _is_an_input_object(reduced_type, schema)
-                    if not coercer:
-                        # per default you're an object
-                        coercer = partial(
-                            _object_coercer,
-                            reduced_type if not is_union else None,
-                        )
-        except AttributeError:
-            coercer = partial(
-                _object_coercer, reduced_type if not is_union else None
-            )
+                    # per default you're an object
+                    coercer = default_coercer
+    except AttributeError:
+        coercer = default_coercer
 
     # Manage List and NonNull
     coercer = _list_and_null_coercer(field_type, coercer)

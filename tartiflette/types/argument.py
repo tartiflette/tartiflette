@@ -94,6 +94,7 @@ class GraphQLArgument:
         self._directives_implementations = get_directive_implem_list(
             self._directives, self._schema
         )
+
         if isinstance(self.gql_type, GraphQLType):
             self._type = self.gql_type
         else:

@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.type import GraphQLType
@@ -53,15 +53,9 @@ class GraphQLInterfaceType(GraphQLType):
             pass
         return []
 
-    def bake(
-        self,
-        schema: "GraphQLSchema",
-        custom_default_resolver: Optional[Callable],
-    ) -> None:
-        super().bake(schema, custom_default_resolver)
-
-        for field in list(self._fields.values()):
-            field.bake(schema, self, custom_default_resolver)
+    def bake_fields(self, custom_default_resolver):
+        for field in self._fields.values():
+            field.bake(self._schema, self, custom_default_resolver)
 
     # introspection attribute
     @property
