@@ -1,7 +1,6 @@
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.resolver import ResolverExecutorFactory
-from tartiflette.types.enum import GraphQLEnumType
 from tartiflette.types.helpers import (
     get_directive_instances,
     reduce_type,
@@ -45,7 +44,6 @@ class GraphQLField:
         self.isDeprecated = False  # pylint: disable=invalid-name
         self._directives_implementations = None
         self._is_leaf = False
-        self._is_enum = False
         self._reduced_type = None
         self._reduced_type_name = None
         self._introspection_directives = None
@@ -115,10 +113,6 @@ class GraphQLField:
         return self._is_leaf
 
     @property
-    def is_enum(self) -> bool:
-        return self._is_enum
-
-    @property
     def reduced_type(self) -> "GraphQLType":
         return self._reduced_type
 
@@ -156,7 +150,6 @@ class GraphQLField:
         self.parent_type = parent_type
 
         self._is_leaf = self._compute_is_leaf()
-        self._is_enum = isinstance(self._reduced_type, GraphQLEnumType)
 
         for arg in self.arguments.values():
             arg.bake(self._schema)

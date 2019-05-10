@@ -42,7 +42,6 @@ class _ResolverExecutor:
         self._schema_field = schema_field
         self._coercer = get_coercer(schema_field)
         self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
-        self._is_enum = False
 
     async def _introspection(self, element: Any, ctx, info) -> Optional[Any]:
         if isinstance(element, list):
