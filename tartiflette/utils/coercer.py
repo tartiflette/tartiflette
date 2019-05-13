@@ -43,24 +43,28 @@ async def _object_coercer(
 
 
 async def _list_coercer(
-    func: Callable, val: Optional[Any], ctx: Dict[Any, Any], info: "Info"
+    func: Callable, val: Optional[Any], *args, **kwargs
 ) -> Optional[list]:
     if val is None:
         return val
 
     if isinstance(val, list):
         # TODO maybe gather them
-        return [await func(v, ctx, info) for v in val]
+        return [await func(v, *args, **kwargs) for v in val]
 
-    return [await func(val, ctx, info)]
+    return [await func(val, *args, **kwargs)]
 
 
 async def _not_null_coercer(
-    func: Callable, val: Optional[Any], ctx: Dict[Any, Any], info: "Info"
+    func: Callable,
+    val: Optional[Any],
+    field_definition: "GraphQLField",
+    ctx: Dict[Any, Any],
+    info: "Info",
 ) -> Any:
     if val is None:
         raise NullError(val, info)
-    return await func(val, ctx, info)
+    return await func(val, field_definition, ctx, info)
 
 
 def _get_type_coercers(field_type: "GraphQLType") -> List[Callable]:
@@ -88,6 +92,7 @@ async def _enum_coercer(
     enum_valid_values: List[str],
     func: Callable,
     val: Optional[str],
+    field_definion: "GraphQLField",
     ctx: Dict[Any, Any],
     info: "Info",
 ) -> Optional[str]:
@@ -96,7 +101,7 @@ async def _enum_coercer(
 
     if val not in enum_valid_values:
         raise InvalidValue(val, info)
-    return await func(val, ctx, info)
+    return await func(val, field_definion, ctx, info)
 
 
 def _is_an_enum(
@@ -141,7 +146,11 @@ def _is_union(reduced_type: str, schema: "GraphQLSchema") -> bool:
 
 
 async def _input_object_coercer(
-    input_field_coercers: Dict[str, "GraphQLArgument"], values, ctx, info
+    input_field_coercers: Dict[str, "GraphQLArgument"],
+    values: Dict[Any, Any],
+    field_definition: "GraphQLField",
+    ctx: Dict[Any, Any],
+    info: "Info",
 ):
     if values is None:
         return None
@@ -149,7 +158,9 @@ async def _input_object_coercer(
     coerced = {}
 
     for field_name, coercer in input_field_coercers.items():
-        coerced[field_name] = await coercer(values.get(field_name), ctx, info)
+        coerced[field_name] = await coercer(
+            values.get(field_name), field_definition, ctx, info
+        )
     return coerced
 
 
@@ -178,20 +189,15 @@ async def _directive_endpoint(val, *_args, **_kwargs):
     return val
 
 
-async def _input_directive_runner(
-    directives, coercers, val, ctx, info, **kwargs
-):
-
+async def _input_directive_runner(directives, coercers, val, *args, **kwargs):
     return await directives(
-        await coercers(val, ctx, info), ctx, info, **kwargs
+        await coercers(val, *args, **kwargs), *args, **kwargs
     )
 
 
-async def _output_directive_runner(
-    directives, coercers, val, ctx, info, **kwargs
-):
+async def _output_directive_runner(directives, coercers, val, *args, **kwargs):
     return await coercers(
-        await directives(val, ctx, info, **kwargs), ctx, info
+        await directives(val, *args, **kwargs), *args, **kwargs
     )
 
 

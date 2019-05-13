@@ -72,6 +72,7 @@ class OnExecutionDirective:
         directive_args: Dict[str, Any],
         next_directive: Callable,
         val: Any,
+        argument_definition: "GraphQLArgument",
         ctx: Optional[Dict[str, Any]],
         info: "Info",
     ) -> Any:
@@ -85,13 +86,14 @@ class OnExecutionDirective:
         :return: Any
         """
         # pylint: disable=unused-argument
-        return await next_directive(val, field, field_args, ctx, info)
+        return await next_directive(val, argument_definition, ctx, info)
 
     @staticmethod
     async def on_pre_output_coercion(
         directive_args: Dict[str, Any],
         next_directive: Callable,
         val: Any,
+        field_definition: "GraphQLField",
         ctx: Optional[Dict[str, Any]],
         info: "Info",
     ) -> Any:
@@ -106,7 +108,7 @@ class OnExecutionDirective:
         :return: Any
         """
         # pylint: disable=unused-argument
-        return await next_directive(val, argument, ctx, info)
+        return await next_directive(val, field_definition, ctx, info)
 
 
 class OnIntrospectionDirective:

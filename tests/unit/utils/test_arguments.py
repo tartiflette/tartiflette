@@ -7,7 +7,6 @@ from tartiflette.utils.arguments import (
     UNDEFINED_VALUE,
     argument_coercer,
     coerce_arguments,
-    surround_with_argument_execution_directives,
 )
 from tests.functional.utils import AsyncMock
 

@@ -29,7 +29,9 @@ async def argument_coercer(
         value = (
             value.value
             if not input_coercer
-            else await input_coercer(value.value, ctx, info)
+            else await input_coercer(
+                value.value, argument_definition, ctx, info
+            )
         )
     except AttributeError:
         pass

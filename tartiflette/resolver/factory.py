@@ -6,7 +6,9 @@ from tartiflette.utils.arguments import coerce_arguments
 from tartiflette.utils.coercer import get_coercer
 
 
-async def _execute_introspection_directives(elements: list, ctx, info) -> list:
+async def _execute_introspection_directives(
+    elements: List, ctx: Dict[Any, Any], info: "Info"
+) -> list:
     results = []
     for element in elements:
         try:
@@ -83,7 +85,10 @@ class _ResolverExecutor:
             if info.execution_ctx.is_introspection:
                 result = await self._introspection(result, ctx, info)
 
-            return result, await self._coercer(result, ctx, info)
+            return (
+                result,
+                await self._coercer(result, self._schema_field, ctx, info),
+            )
         except SkipExecution as e:
             raise e
         except Exception as e:  # pylint: disable=broad-except

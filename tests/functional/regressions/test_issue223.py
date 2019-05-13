@@ -41,18 +41,18 @@ type Query {
 class Lower(CommonDirective):
     @staticmethod
     async def on_pre_output_coercion(
-        directive_args, next_directive, val, ctx, info
+        directive_args, next_directive, val, field_definition, ctx, info
     ):
-        return await next_directive(val.lower(), ctx, info)
+        return await next_directive(val.lower(), field_definition, ctx, info)
 
 
 @Directive("upper", schema_name="issue223")
 class Upper(CommonDirective):
     @staticmethod
     async def on_pre_output_coercion(
-        directive_args, next_directive, val, ctx, info
+        directive_args, next_directive, val, field_definition, ctx, info
     ):
-        return await next_directive(val.upper(), ctx, info)
+        return await next_directive(val.upper(), field_definition, ctx, info)
 
 
 @Resolver("Query.wardrobe", schema_name="issue223")
