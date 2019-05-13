@@ -111,7 +111,6 @@ class SchemaTransformer(Transformer_InPlace):
         return tree
 
     def scalar_type_definition(self, tree: Tree) -> GraphQLScalarType:
-        # TODO: Add directives
         description = None
         name = None
         directives = None
@@ -175,7 +174,6 @@ class SchemaTransformer(Transformer_InPlace):
         )
 
     def enum_type_definition(self, tree: Tree) -> GraphQLEnumType:
-        # TODO: Add directives
         description = None
         name = None
         values = None
@@ -212,7 +210,6 @@ class SchemaTransformer(Transformer_InPlace):
         return SchemaNode("enum_values", [child for child in tree.children])
 
     def enum_value_definition(self, tree: Tree) -> GraphQLEnumValue:
-        # TODO: Add directives
         description = None
         directives = None
         value = None
