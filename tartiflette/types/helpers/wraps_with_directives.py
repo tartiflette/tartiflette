@@ -12,7 +12,7 @@ def wraps_with_directives(
     func: Callable = None,
 ) -> Callable:
 
-    if not func:
+    if func is None:
         func = _default_directive_endpoint
 
     for directive in reversed(directives_definition):

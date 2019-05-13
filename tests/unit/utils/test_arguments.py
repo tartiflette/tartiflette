@@ -55,19 +55,31 @@ async def test_argument_coercer(default_value, args, expected):
     )
 
 
-def test_surround_with_argument_execution_directives():
+def test_wraps_with_directives():
+    from tartiflette.types.helpers import wraps_with_directives
+
     cllbs_a = Mock()
-    cllbs_a.on_field_execution = Mock()
+    cllbs_a.on_argument_execution = Mock()
 
     cllbs_b = Mock()
-    cllbs_b.on_field_execution = Mock()
+    cllbs_b.on_argument_execution = Mock()
 
     directives = [
-        {"callables": cllbs_a, "args": {"a": "b"}},
-        {"callables": cllbs_b, "args": {"c": "d"}},
+        {
+            "callables": {
+                "on_argument_execution": cllbs_a.on_argument_execution
+            },
+            "args": {"a": "b"},
+        },
+        {
+            "callables": {
+                "on_argument_execution": cllbs_b.on_argument_execution
+            },
+            "args": {"c": "d"},
+        },
     ]
 
-    r = surround_with_argument_execution_directives("A", directives)
+    r = wraps_with_directives(directives, "on_argument_execution", "A")
     assert r is not None
     assert r.func is cllbs_a.on_argument_execution
     a, b = r.args
@@ -77,7 +89,7 @@ def test_surround_with_argument_execution_directives():
     assert a == {"c": "d"}
     assert b == "A"
 
-    assert surround_with_argument_execution_directives("A", []) == "A"
+    assert wraps_with_directives([], "on_argument_execution", "A") == "A"
 
 
 @pytest.mark.asyncio

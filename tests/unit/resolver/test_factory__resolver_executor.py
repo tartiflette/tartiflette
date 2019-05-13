@@ -29,8 +29,7 @@ def test_resolver_factory__resolver_executor_instance():
 
 class FakeAsyncMock(MagicMock):
     async def __call__(self, *args, **kwargs):
-        super().__call__(*args, **kwargs)
-        return "aResult"
+        return super().__call__(*args, **kwargs)
 
 
 @pytest.fixture
@@ -42,7 +41,7 @@ def _resolver_executor_mock():
     field.gql_type = "aType"
     field.arguments = {}
 
-    res_ex = _ResolverExecutor(FakeAsyncMock(), field)
+    res_ex = _ResolverExecutor(FakeAsyncMock(return_value="aResult"), field)
     return res_ex
 
 
@@ -52,7 +51,7 @@ async def test_resolver_factory__resolver_executor__introspection(
 ):
     with patch(
         "tartiflette.resolver.factory._execute_introspection_directives",
-        return_value=["A"],
+        return_value=FakeAsyncMock(return_value=["A"])(),
     ) as mocked_intro:
         r = await _resolver_executor_mock._introspection(["T"], None, None)
         assert mocked_intro.call_args_list == [((["T"], None, None),)]
@@ -60,7 +59,7 @@ async def test_resolver_factory__resolver_executor__introspection(
 
     with patch(
         "tartiflette.resolver.factory._execute_introspection_directives",
-        return_value=["A"],
+        return_value=FakeAsyncMock(return_value=["A"])(),
     ) as mocked_intro:
         r = await _resolver_executor_mock._introspection("T", None, None)
         assert mocked_intro.call_args_list == [((["T"], None, None),)]
@@ -82,8 +81,10 @@ async def test_resolver_factory__resolver_executor___call__(
     info.execution_ctx = Mock()
     info.execution_ctx.is_introspection = False
 
-    _resolver_executor_mock._coercer = Mock(return_value="LOL")
-    _resolver_executor_mock._introspection = FakeAsyncMock()
+    _resolver_executor_mock._coercer = FakeAsyncMock(return_value="LOL")
+    _resolver_executor_mock._introspection = FakeAsyncMock(
+        return_value="aResult"
+    )
 
     with patch(
         "tartiflette.resolver.factory.coerce_arguments",
@@ -101,7 +102,7 @@ async def test_resolver_factory__resolver_executor___call__(
         ((p_r, {"AB": "M2B"}, req_ctx, info),)
     ]
     assert _resolver_executor_mock._coercer.call_args_list == [
-        (("aResult", info),)
+        (("aResult", _resolver_executor_mock._schema_field, req_ctx, info),)
     ]
 
     info.execution_ctx.is_introspection = True
@@ -149,18 +150,18 @@ def test_resolver_factory__resolver_executor_update_coercer(
 def test_resolver_factory__resolver_executor_update_bake(
     _resolver_executor_mock
 ):
-    from tartiflette.resolver.factory import default_resolver
-
-    _resolver_executor_mock._schema_field.subscribe = None
-    _resolver_executor_mock.update_func = Mock()
-    _resolver_executor_mock.update_coercer = Mock()
-
     with patch(
-        "tartiflette.resolver.factory._surround_with_execution_directives"
-    ) as surround_with_execution_directives_mock:
+        "tartiflette.resolver.factory.wraps_with_directives"
+    ) as wraps_with_directives_mock:
+        from tartiflette.resolver.factory import default_resolver
+
+        _resolver_executor_mock._schema_field.subscribe = None
+        _resolver_executor_mock.update_func = Mock()
+        _resolver_executor_mock.update_coercer = Mock()
+
         assert _resolver_executor_mock.bake(None) is None
         _resolver_executor_mock.update_coercer.assert_called_once()
-        surround_with_execution_directives_mock.assert_called_once()
+        wraps_with_directives_mock.assert_called_once()
         assert not _resolver_executor_mock.update_func.called
         assert _resolver_executor_mock._raw_func is not "T"
 
