@@ -80,7 +80,8 @@ class OnExecutionDirective:
         Hook allowing you to alterate the coercition behavior of an enum value.
         :param directive_args: arguments passed to the directive
         :param next_directive: next directive to call
-        :param val: the enum value to work with
+        :param val: the value to work with.
+        :param argument_definition: the argument definition for which the value is being coerced for
         :param ctx: context passed to the query execution
         :param info: information related to the execution & field resolve
         :return: Any
@@ -101,8 +102,8 @@ class OnExecutionDirective:
         Hook allowing you to alterate the coercition behavior of an enum value.
         :param directive_args: arguments passed to the directive
         :param next_directive: next directive to call
-        :param enum_value: the enum value to work with
-        :param argument: The Argument definition which resulted in this value
+        :param val: the value to work with
+        :param field_definition: the field definition from which resolution the value came from.
         :param ctx: context passed to the query execution
         :param info: information related to the execution & field resolve
         :return: Any
