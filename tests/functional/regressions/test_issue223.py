@@ -12,7 +12,7 @@ directive @lower on ENUM_VALUE
 directive @upper on ENUM_VALUE
 directive @capitalized on SCALAR
 directive @mapToValue on ENUM
-directive @addValue(value: Int = 1) on OBJECT
+directive @addValue(value: Int = 1) on OBJECT | INPUT_OBJECT
 
 scalar Bobby @capitalized
 
@@ -35,6 +35,11 @@ enum Color @mapToValue {
     BROWN
 }
 
+input ThisIsAnInputObject @addValue(value: 17) {
+    aColor: Color
+    value: Int
+}
+
 type TShirt {
     size: Size
     color: Color
@@ -55,6 +60,7 @@ type Query {
     test3(argument1: Color): String
     test4: Color
     test5: Wahou
+    test6(argument1: ThisIsAnInputObject): String
 }
 """
 
@@ -66,6 +72,13 @@ async def resolver_test5(_pr, _args, _ctx, _info):
 
 @Directive("addValue", schema_name="issue223")
 class AddValue(CommonDirective):
+    @staticmethod
+    async def on_post_input_coercion(
+        directive_args, next_directive, value, argument_definition, ctx, info
+    ):
+        value["value"] = value["value"] + directive_args["value"]
+        return await next_directive(value, argument_definition, ctx, info)
+
     @staticmethod
     async def on_pre_output_coercion(
         directive_args, next_directive, value, field_definition, ctx, info
@@ -99,6 +112,7 @@ async def resolver_test4(_pr, _args, _ctx, _info):
 
 
 @Resolver("Query.test3", schema_name="issue223")
+@Resolver("Query.test6", schema_name="issue223")
 async def resolver_test3(_pr, args, _ctx, _info):
     return json.dumps(args)
 
@@ -184,6 +198,10 @@ _ENGINE = Engine(_SDL, schema_name="issue223")
                 }
             },
         ),
+        (
+            "query { test6(argument1: { value: 3, aColor: RED })}",
+            {"data": {"test6": '{"argument1": {"aColor": "BROWN", "value": 20}}'}}
+        )
     ],
 )
 async def test_issue223(query, expected):
