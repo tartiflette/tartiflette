@@ -56,14 +56,14 @@ async def test_issue143():
                         "isDeprecated": True,
                     },
                     {
-                        "isDeprecated": False,
+                        "isDeprecated": True,
                         "name": "b",
-                        "deprecationReason": None,
+                        "deprecationReason": "NTM3",
                     },
                     {
-                        "isDeprecated": False,
+                        "isDeprecated": True,
                         "name": "c",
-                        "deprecationReason": None,
+                        "deprecationReason": "jjjjjjjjjjjjjj",
                     },
                 ]
             }

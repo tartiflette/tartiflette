@@ -60,7 +60,7 @@ _TEST_REQUIRE = [
 
 _BENCHMARK_REQUIRE = ["pytest-benchmark==3.2.2"]
 
-_VERSION = "0.9.0"
+_VERSION = "0.10.0"
 
 _PACKAGES = find_packages(exclude=["tests*"])
 
@@ -73,8 +73,9 @@ def _read_file(filename):
 setup(
     name="tartiflette",
     version=_VERSION,
-    description="GraphQL Engine for python",
+    description="GraphQL Engine for Python",
     long_description=_read_file("README.md"),
+    long_description_content_type="text/markdown",
     url="https://github.com/dailymotion/tartiflette",
     author="Dailymotion Core API Team",
     author_email="team@tartiflette.io",

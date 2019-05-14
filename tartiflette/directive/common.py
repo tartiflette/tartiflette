@@ -20,6 +20,8 @@ class OnExecutionDirective:
     the moment are:
     * on_field_execution
     * on_argument_execution
+    * on_post_input_coercion
+    * on_pre_output_coercion
     """
 
     @staticmethod
@@ -67,6 +69,50 @@ class OnExecutionDirective:
         # pylint: disable=unused-argument
         return await next_directive(argument_definition, args, ctx, info)
 
+    @staticmethod
+    async def on_post_input_coercion(
+        directive_args: Dict[str, Any],
+        next_directive: Callable,
+        value: Any,
+        argument_definition: "GraphQLArgument",
+        ctx: Optional[Dict[str, Any]],
+        info: "Info",
+    ) -> Any:
+        """
+        Hook allowing you to alterate the coercition behavior of an enum value.
+        :param directive_args: arguments passed to the directive
+        :param next_directive: next directive to call
+        :param value: the value to work with.
+        :param argument_definition: the argument definition for which the value is being coerced for
+        :param ctx: context passed to the query execution
+        :param info: information related to the execution & field resolve
+        :return: Any
+        """
+        # pylint: disable=unused-argument
+        return await next_directive(value, argument_definition, ctx, info)
+
+    @staticmethod
+    async def on_pre_output_coercion(
+        directive_args: Dict[str, Any],
+        next_directive: Callable,
+        value: Any,
+        field_definition: "GraphQLField",
+        ctx: Optional[Dict[str, Any]],
+        info: "Info",
+    ) -> Any:
+        """
+        Hook allowing you to alterate the coercition behavior of an enum value.
+        :param directive_args: arguments passed to the directive
+        :param next_directive: next directive to call
+        :param value: the value to work with
+        :param field_definition: the field definition from which resolution the value came from.
+        :param ctx: context passed to the query execution
+        :param info: information related to the execution & field resolve
+        :return: Any
+        """
+        # pylint: disable=unused-argument
+        return await next_directive(value, field_definition, ctx, info)
+
 
 class OnIntrospectionDirective:
     """
@@ -74,7 +120,7 @@ class OnIntrospectionDirective:
     """
 
     @staticmethod
-    def on_introspection(
+    async def on_introspection(
         directive_args: Dict[str, Any],
         next_directive: Callable,
         introspected_element: Any,
@@ -92,7 +138,7 @@ class OnIntrospectionDirective:
         :return: Any
         """
         # pylint: disable=unused-argument
-        return next_directive(introspected_element, ctx, info)
+        return await next_directive(introspected_element, ctx, info)
 
 
 class CommonDirective(

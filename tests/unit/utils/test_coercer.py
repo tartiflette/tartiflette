@@ -1,83 +1,78 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
-
-def test_resolver_factory__built_in_coercer():
-    from tartiflette.utils.coercer import _built_in_coercer
-
-    func = Mock(return_value="a")
-
-    assert _built_in_coercer(func, 1, None) == "a"
-    assert func.call_args_list == [((1,),)]
+from tests.unit.utils import AsyncMock
 
 
-def test_resolver_factory__built_in_coercer_none_val():
-    from tartiflette.utils.coercer import _built_in_coercer
-
-    func = Mock(return_value="a")
-    assert _built_in_coercer(func, None, None) is None
-    assert func.called is False
-
-
-def test_resolver_factory__object_coercer():
+@pytest.mark.asyncio
+async def test_utils_coercers__object_coercer():
     from tartiflette.utils.coercer import _object_coercer
 
-    assert _object_coercer(None, None, None) == None
-    assert _object_coercer(None, Mock(), None) == {}
+    assert await _object_coercer(None, None, None) == None
+    assert await _object_coercer(None, Mock(), None) == {}
 
 
-def test_resolver_factory__list_coercer():
+@pytest.mark.asyncio
+async def test_utils_coercers__list_coercer():
     from tartiflette.utils.coercer import _list_coercer
 
-    func = Mock(return_value="a")
+    func = AsyncMock(return_value="a")
     info = Mock()
+    ctx = {}
 
-    assert _list_coercer(func, "r", info) == ["a"]
-    assert func.call_args_list == [(("r", info),)]
+    assert await _list_coercer(func, "r", ctx, info) == ["a"]
+    assert func.call_args_list == [(("r", ctx, info),)]
 
 
-def test_resolver_factory__list_coercer_is_alist():
+@pytest.mark.asyncio
+async def test_utils_coercers__list_coercer_is_alist():
     from tartiflette.utils.coercer import _list_coercer
 
-    func = Mock(return_value="a")
+    func = AsyncMock(return_value="a")
     info = Mock()
+    ctx = {}
 
-    assert _list_coercer(func, ["r", "d"], info) == ["a", "a"]
-    assert func.call_args_list == [(("r", info),), (("d", info),)]
+    assert await _list_coercer(func, ["r", "d"], ctx, info) == ["a", "a"]
+    assert func.call_args_list == [(("r", ctx, info),), (("d", ctx, info),)]
 
 
-def test_resolver_factory__list_coercer_none_val():
+@pytest.mark.asyncio
+async def test_utils_coercers__list_coercer_none_val():
     from tartiflette.utils.coercer import _list_coercer
 
-    func = Mock(return_value="a")
-    assert _list_coercer(func, None, None) is None
+    func = AsyncMock(return_value="a")
+    assert await _list_coercer(func, None, None) is None
     assert func.called is False
 
 
-def test_resolver_factory__not_null_coercer():
+@pytest.mark.asyncio
+async def test_utils_coercers__not_null_coercer():
     from tartiflette.utils.coercer import _not_null_coercer
 
-    func = Mock(return_value="a")
+    func = AsyncMock(return_value="a")
     info = Mock()
+    ctx = {}
+    fldd = Mock()
 
-    assert _not_null_coercer(func, "T", info) == "a"
-    assert func.call_args_list == [(("T", info),)]
+    assert await _not_null_coercer(func, "T", fldd, ctx, info) == "a"
+    assert func.call_args_list == [(("T", fldd, ctx, info),)]
 
 
-def test_resolver_factory__not_null_coercer_none_value():
+@pytest.mark.asyncio
+async def test_utils_coercers__not_null_coercer_none_value():
     from tartiflette.utils.coercer import _not_null_coercer
     from tartiflette.types.exceptions.tartiflette import NullError
 
-    func = Mock(return_value="a")
+    func = AsyncMock(return_value="a")
     info = Mock()
 
     with pytest.raises(NullError):
-        assert _not_null_coercer(func, None, info)
+        assert await _not_null_coercer(func, None, None, {}, info)
     assert func.called is False
 
 
-def test_resolver_factory__get_type_coercers():
+def test_utils_coercers__get_type_coercers():
     from tartiflette.utils.coercer import _get_type_coercers
     from tartiflette.types.list import GraphQLList
     from tartiflette.types.non_null import GraphQLNonNull
@@ -99,7 +94,7 @@ def test_resolver_factory__get_type_coercers():
     ) == [_not_null_coercer, _list_coercer, _not_null_coercer]
 
 
-def test_resolver_factory__list_and_null_coercer():
+def test_utils_coercers__list_and_null_coercer():
     from tartiflette.utils.coercer import _list_and_null_coercer
     from tartiflette.utils.coercer import _list_coercer, _not_null_coercer
     from tartiflette.types.list import GraphQLList
@@ -145,28 +140,33 @@ def test_resolver_factory__list_and_null_coercer():
     assert lol in a1.args
 
 
-def test_resolver_factory__enum_coercer_none():
+@pytest.mark.asyncio
+async def test_utils_coercers__enum_coercer_none():
     from tartiflette.utils.coercer import _enum_coercer
 
-    assert _enum_coercer(None, None, None, None) is None
+    assert await _enum_coercer(None, None, None, None, None, None) is None
 
 
-def test_resolver_factory__enum_coercer_raise():
+@pytest.mark.asyncio
+async def test_utils_coercers__enum_coercer_raise():
     from tartiflette.utils.coercer import _enum_coercer
     from tartiflette.types.exceptions.tartiflette import InvalidValue
 
     with pytest.raises(InvalidValue):
-        assert _enum_coercer([], None, 4, Mock())
+        assert await _enum_coercer([], None, 4, Mock(), {}, Mock())
 
 
-def test_resolver_factory__enum_coercer():
+@pytest.mark.asyncio
+async def test_utils_coercers__enum_coercer():
     from tartiflette.utils.coercer import _enum_coercer
 
-    a = Mock(return_value="TopTop")
+    a = AsyncMock(return_value="TopTop")
     info = Mock()
+    ctx = {}
+    fldd = Mock()
 
-    assert _enum_coercer([4], a, 4, info) == "TopTop"
-    assert a.call_args_list == [((4, info),)]
+    assert await _enum_coercer([4], a, 4, fldd, ctx, info) == "TopTop"
+    assert a.call_args_list == [((4, fldd, ctx, info),)]
 
 
 @pytest.fixture
@@ -213,8 +213,8 @@ def field_mock(schema_mock):
 
 def test_resovler_factory__is_an_enum(schema_mock, scalar_mock):
     from tartiflette.utils.coercer import _is_an_enum
-    from tartiflette.utils.coercer import _built_in_coercer
     from tartiflette.utils.coercer import _enum_coercer
+    from tartiflette.utils.coercer import _scalar_coercer
     from tartiflette.utils.coercer import CoercerWay
 
     r = _is_an_enum("A", schema_mock, CoercerWay.OUTPUT)
@@ -223,7 +223,7 @@ def test_resovler_factory__is_an_enum(schema_mock, scalar_mock):
     assert schema_mock.find_scalar.call_args_list == [(("String",),)]
     a, b = r.args
     assert a == ["A", "B"]
-    assert b.func == _built_in_coercer
+    assert b.func == _scalar_coercer
     assert scalar_mock.coerce_output in b.args
 
 
@@ -237,9 +237,9 @@ def test_resovler_factory__is_an_enum_not():
     assert _is_an_enum("A", sch, CoercerWay.OUTPUT) is None
 
 
-def test_resolver_factory__is_a_scalar(schema_mock, scalar_mock):
+def test_utils_coercers__is_a_scalar(schema_mock, scalar_mock):
     from tartiflette.utils.coercer import _is_a_scalar
-    from tartiflette.utils.coercer import _built_in_coercer
+    from tartiflette.utils.coercer import _scalar_coercer
     from tartiflette.utils.coercer import CoercerWay
 
     schema_mock.find_enum = Mock(return_value=None)
@@ -248,11 +248,11 @@ def test_resolver_factory__is_a_scalar(schema_mock, scalar_mock):
 
     assert schema_mock.find_scalar.call_args_list == [(("A",),)]
 
-    assert r.func is _built_in_coercer
+    assert r.func is _scalar_coercer
     assert scalar_mock.coerce_output in r.args
 
 
-def test_resolver_factory__is_a_scalar_not():
+def test_utils_coercers__is_a_scalar_not():
     from tartiflette.utils.coercer import _is_a_scalar
     from tartiflette.utils.coercer import CoercerWay
 
@@ -262,23 +262,7 @@ def test_resolver_factory__is_a_scalar_not():
     assert _is_a_scalar("A", sch, CoercerWay.OUTPUT) is None
 
 
-def test_resolver_factory__get_coercer___Type():
-    from tartiflette.utils.coercer import get_coercer
-    from tartiflette.utils.coercer import _built_in_coercer
-    from tartiflette.utils.coercer import _object_coercer
-
-    field = Mock()
-    field.gql_type = "__Type"
-
-    c = get_coercer(field)
-
-    assert c.func is _built_in_coercer
-    a, = c.args
-    assert a.func is _object_coercer
-    assert a.args == (None,)
-
-
-def test_resolver_factory__get_coercer(field_mock):
+def test_utils_coercers__get_coercer(field_mock):
     from tartiflette.utils.coercer import get_coercer
 
     field_mock.schema.find_type = Mock(return_value=None)
@@ -306,14 +290,14 @@ def test_resolver_factory__get_coercer(field_mock):
     assert field_mock.schema.find_scalar.call_args_list == [(("aType",),)]
 
 
-def test_resolver_factory__get_coercer_not_ok(field_mock):
+def test_utils_coercers__get_coercer_not_ok(field_mock):
     from tartiflette.utils.coercer import get_coercer
 
     field_mock.schema.find_scalar = Mock(return_value=None)
     assert get_coercer(field_mock) is not None
 
 
-def test_resolver_factory__get_coercer_no_schema():
+def test_utils_coercers__get_coercer_no_schema():
     from tartiflette.utils.coercer import get_coercer
 
     f = Mock()

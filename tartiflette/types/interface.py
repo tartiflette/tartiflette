@@ -1,6 +1,10 @@
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from tartiflette.types.field import GraphQLField
+from tartiflette.types.helpers import (
+    get_directive_instances,
+    wraps_with_directives,
+)
 from tartiflette.types.type import GraphQLType
 
 
@@ -22,10 +26,12 @@ class GraphQLInterfaceType(GraphQLType):
         fields: Dict[str, GraphQLField],
         description: Optional[str] = None,
         schema: Optional["GraphQLSchema"] = None,
+        directives=None,
     ) -> None:
         super().__init__(name=name, description=description, schema=schema)
         self._fields = fields
         self._possible_types = []
+        self._directives = directives
 
     def __repr__(self) -> str:
         return "{}(name={!r}, fields={!r}, description={!r})".format(
@@ -53,15 +59,19 @@ class GraphQLInterfaceType(GraphQLType):
             pass
         return []
 
-    def bake(
-        self,
-        schema: "GraphQLSchema",
-        custom_default_resolver: Optional[Callable],
-    ) -> None:
-        super().bake(schema, custom_default_resolver)
+    def bake(self, schema):
+        super().bake(schema)
 
-        for field in list(self._fields.values()):
-            field.bake(schema, self, custom_default_resolver)
+        self._introspection_directives = wraps_with_directives(
+            directives_definition=get_directive_instances(
+                self._directives, self._schema
+            ),
+            directive_hook="on_introspection",
+        )
+
+    def bake_fields(self, custom_default_resolver):
+        for field in self._fields.values():
+            field.bake(self._schema, self, custom_default_resolver)
 
     # introspection attribute
     @property

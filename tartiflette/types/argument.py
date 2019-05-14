@@ -1,12 +1,12 @@
 from functools import partial
 from typing import Any, Dict, List, Optional, Union
 
-from tartiflette.types.helpers import get_directive_implem_list
-from tartiflette.types.type import GraphQLType
-from tartiflette.utils.arguments import (
-    argument_coercer,
-    surround_with_argument_execution_directives,
+from tartiflette.types.helpers import (
+    get_directive_instances,
+    wraps_with_directives,
 )
+from tartiflette.types.type import GraphQLType
+from tartiflette.utils.arguments import argument_coercer
 from tartiflette.utils.coercer import CoercerWay, get_coercer
 
 
@@ -40,6 +40,7 @@ class GraphQLArgument:
 
         # Introspection Attribute
         self._directives_implementations = None
+        self._introspection_directives = None
 
     def __repr__(self) -> str:
         return (
@@ -80,6 +81,10 @@ class GraphQLArgument:
         return self._directives_implementations
 
     @property
+    def introspection_directives(self):
+        return self._introspection_directives
+
+    @property
     def is_required(self) -> bool:
         if not isinstance(self.gql_type, GraphQLType):
             return False
@@ -91,9 +96,15 @@ class GraphQLArgument:
 
     def bake(self, schema: "GraphQLSchema") -> None:
         self._schema = schema
-        self._directives_implementations = get_directive_implem_list(
+        self._directives_implementations = get_directive_instances(
             self._directives, self._schema
         )
+
+        self._introspection_directives = wraps_with_directives(
+            directives_definition=self._directives_implementations,
+            directive_hook="on_introspection",
+        )
+
         if isinstance(self.gql_type, GraphQLType):
             self._type = self.gql_type
         else:
@@ -101,14 +112,15 @@ class GraphQLArgument:
             self._type["kind"] = self._schema.find_type(self.gql_type).kind
 
         self.coercer = partial(
-            surround_with_argument_execution_directives(
-                partial(
+            wraps_with_directives(
+                directives_definition=self.directives,
+                directive_hook="on_argument_execution",
+                func=partial(
                     argument_coercer,
                     input_coercer=get_coercer(
                         self, schema=schema, way=CoercerWay.INPUT
                     ),
                 ),
-                self.directives,
             ),
             self,
         )

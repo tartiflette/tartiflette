@@ -1,7 +1,6 @@
 import asyncio
 
-from functools import partial
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from tartiflette.types.exceptions.tartiflette import MultipleException
 from tartiflette.types.helpers import reduce_type
@@ -9,18 +8,6 @@ from tartiflette.types.input_object import GraphQLInputObjectType
 from tartiflette.utils.errors import to_graphql_error
 
 UNDEFINED_VALUE = object()
-
-
-def surround_with_argument_execution_directives(
-    func: Callable, directives: List[Dict[str, Any]]
-) -> Callable:
-    for directive in reversed(directives):
-        func = partial(
-            directive["callables"].on_argument_execution,
-            directive["args"],
-            func,
-        )
-    return func
 
 
 async def argument_coercer(
@@ -42,7 +29,9 @@ async def argument_coercer(
         value = (
             value.value
             if not input_coercer
-            else input_coercer(value.value, info)
+            else await input_coercer(
+                value.value, argument_definition, ctx, info
+            )
         )
     except AttributeError:
         pass

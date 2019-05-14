@@ -47,15 +47,19 @@ async def test_common_directives_on_argument_execution_call():
     assert a.called_with("PARIS", "EST", "MAGIC", "!")
 
 
-def test_common_directives_on_introspection_call():
+@pytest.mark.asyncio
+async def test_common_directives_on_introspection_call():
     from tartiflette.directive.common import CommonDirective
     from unittest.mock import Mock
 
-    c2 = Mock()
+    b = Mock()
 
-    CommonDirective.on_introspection({}, c2, "IE", None, None)
+    async def c2(*args, **kwargs):
+        b(*args, **kwargs)
 
-    assert c2.called_with("IE")
+    await CommonDirective.on_introspection({}, c2, "IE", None, None)
+
+    assert b.called_with("IE")
 
 
 def test_common_directives_on_build_call():

@@ -274,8 +274,9 @@ class GraphQLSchema:
             self.bake_types(custom_default_resolver)  # Bake types
             self.call_onbuild_directives()  # Call on_build directive that can modify the schema
         except Exception:  # Failure here should be collected at validation time. pylint: disable=broad-except
-            # TODO Change this when we'll have a better idea on what to do with the on_build kind of directive.
             pass
+            # TODO Change this when we'll have a better idea on what to do with the on_build kind of directive.
+
         self.validate()  # Revalidate.
 
     def validate(self) -> bool:
@@ -512,11 +513,19 @@ class GraphQLSchema:
     def bake_types(
         self, custom_default_resolver: Optional[Callable] = None
     ) -> None:
+        for gql_type in self._custom_scalars.values():
+            gql_type.bake(self)
+
         for gql_type in self._gql_types.values():
-            gql_type.bake(self, custom_default_resolver)
+            if not isinstance(gql_type, GraphQLScalarType):  # Are baked first
+                gql_type.bake(self)
 
         for directive in self._directives.values():
             directive.bake(self)
+
+        for gql_type in self._gql_types.values():
+            if isinstance(gql_type, (GraphQLObjectType, GraphQLInterfaceType)):
+                gql_type.bake_fields(custom_default_resolver)
 
     def call_onbuild_directives(self) -> None:
         for name, directive in self._directives.items():
