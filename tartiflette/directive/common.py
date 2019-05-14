@@ -20,6 +20,8 @@ class OnExecutionDirective:
     the moment are:
     * on_field_execution
     * on_argument_execution
+    * on_post_input_coercion
+    * on_pre_output_coercion
     """
 
     @staticmethod
@@ -71,7 +73,7 @@ class OnExecutionDirective:
     async def on_post_input_coercion(
         directive_args: Dict[str, Any],
         next_directive: Callable,
-        val: Any,
+        value: Any,
         argument_definition: "GraphQLArgument",
         ctx: Optional[Dict[str, Any]],
         info: "Info",
@@ -80,20 +82,20 @@ class OnExecutionDirective:
         Hook allowing you to alterate the coercition behavior of an enum value.
         :param directive_args: arguments passed to the directive
         :param next_directive: next directive to call
-        :param val: the value to work with.
+        :param value: the value to work with.
         :param argument_definition: the argument definition for which the value is being coerced for
         :param ctx: context passed to the query execution
         :param info: information related to the execution & field resolve
         :return: Any
         """
         # pylint: disable=unused-argument
-        return await next_directive(val, argument_definition, ctx, info)
+        return await next_directive(value, argument_definition, ctx, info)
 
     @staticmethod
     async def on_pre_output_coercion(
         directive_args: Dict[str, Any],
         next_directive: Callable,
-        val: Any,
+        value: Any,
         field_definition: "GraphQLField",
         ctx: Optional[Dict[str, Any]],
         info: "Info",
@@ -102,14 +104,14 @@ class OnExecutionDirective:
         Hook allowing you to alterate the coercition behavior of an enum value.
         :param directive_args: arguments passed to the directive
         :param next_directive: next directive to call
-        :param val: the value to work with
+        :param value: the value to work with
         :param field_definition: the field definition from which resolution the value came from.
         :param ctx: context passed to the query execution
         :param info: information related to the execution & field resolve
         :return: Any
         """
         # pylint: disable=unused-argument
-        return await next_directive(val, field_definition, ctx, info)
+        return await next_directive(value, field_definition, ctx, info)
 
 
 class OnIntrospectionDirective:

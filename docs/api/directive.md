@@ -10,7 +10,7 @@ Tartiflette bases most of its extensibility on Directives. A directive will allo
 * `on_field_execution`: Allows you to wrap the field execution. _(e.g. Access Rights on a specific field, apply a specific rate limit on a field.)_
 * `on_argument_execution`: Allows you to wrap the argument execution. _(e.g Check the format of an input.)_.
 * `on_pre_output_coercion`: Allows you to hook the execution flow right before a field result value is being coerced (Appears in version `0.10.0`)
-* `on_post_intput_coercien`: Allows you to hook the execution flow right after an argument value has beed coerced (Appears in version `0.10.0`)
+* `on_post_input_coercion`: Allows you to hook the execution flow right after an argument value has beed coerced (Appears in version `0.10.0`)
 * `on_introspection`: During an introspection query, allows you to wrap the schema fields to add metadata _(e.g. add deprecated information)_ to fields or even to remove objects _(e.g. dynamic introspection based on access rights)_.
 
 ## How to declare a new directive?
