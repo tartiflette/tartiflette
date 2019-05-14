@@ -74,7 +74,7 @@ class MyDirective(CommonDirective):
     async def on_post_input_coercion(
         directive_args: Dict[str, Any],
         next_directive: Callable,
-        val: Any,
+        value: Any,
         argument_definition: "GraphQLArgument",
         ctx: Optional[Dict[str, Any]],
         info: "Info",
@@ -82,14 +82,14 @@ class MyDirective(CommonDirective):
         ######################
         # Add your code here #
         ######################
-        return await next_directive(val, argument_definition, ctx, info)
+        return await next_directive(value, argument_definition, ctx, info)
 
 
     @staticmethod
     async def on_pre_output_coercion(
         directive_args: Dict[str, Any],
         next_directive: Callable,
-        val: Any,
+        value: Any,
         field_definition: "GraphQLField",
         ctx: Optional[Dict[str, Any]],
         info: "Info",
@@ -97,7 +97,7 @@ class MyDirective(CommonDirective):
         ######################
         # Add your code here #
         ######################
-        return await next_directive(val, field_definition, ctx, info)
+        return await next_directive(value, field_definition, ctx, info)
 
 
     @staticmethod

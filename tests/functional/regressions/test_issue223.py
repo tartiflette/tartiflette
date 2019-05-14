@@ -200,8 +200,12 @@ _ENGINE = Engine(_SDL, schema_name="issue223")
         ),
         (
             "query { test6(argument1: { value: 3, aColor: RED })}",
-            {"data": {"test6": '{"argument1": {"aColor": "BROWN", "value": 20}}'}}
-        )
+            {
+                "data": {
+                    "test6": '{"argument1": {"aColor": "BROWN", "value": 20}}'
+                }
+            },
+        ),
     ],
 )
 async def test_issue223(query, expected):
