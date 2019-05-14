@@ -73,8 +73,9 @@ def _read_file(filename):
 setup(
     name="tartiflette",
     version=_VERSION,
-    description="GraphQL Engine for python",
+    description="GraphQL Engine for Python",
     long_description=_read_file("README.md"),
+    long_description_content_type="text/markdown",
     url="https://github.com/dailymotion/tartiflette",
     author="Dailymotion Core API Team",
     author_email="team@tartiflette.io",
