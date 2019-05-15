@@ -4,7 +4,7 @@ title: Directive
 sidebar_label: Directive
 ---
 
-Tartiflette bases most of its extensibility on Directives. A directive will allow you to execute a behavior at 4 different stages.
+Tartiflette bases most of its extensibility on Directives. A directive will allow you to execute a behavior at 6 different stages.
 
 * `on_build`: To wrap your directive around the build process of the SDL
 * `on_field_execution`: Allows you to wrap the field execution. _(e.g. Access Rights on a specific field, apply a specific rate limit on a field.)_
