@@ -88,7 +88,7 @@ from typing import Any, Callable, Dict, Optional
 from tartiflette import Scalar
 
 @Scalar("Int")
-class CapitalizedString:
+class ScalarInt:
     @staticmethod
     def coerce_input(val):
         # Do what you want
