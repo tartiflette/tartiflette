@@ -1,11 +1,14 @@
 from typing import Any, Callable, Dict, Optional
 
-from .common import CommonDirective
+from tartiflette import Directive
 
 
-class Deprecated(CommonDirective):
-    @staticmethod
+class Deprecated:
+    def __init__(self, _config):
+        pass
+
     async def on_introspection(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         introspected_element: Any,
@@ -23,3 +26,15 @@ class Deprecated(CommonDirective):
         )
 
         return introspected_element
+
+
+def bake(schema_name, config):
+    sdl = """
+    directive @deprecated(
+        reason: String = "Deprecated"
+    ) on FIELD_DEFINITION | ENUM_VALUE
+    """
+
+    Directive("deprecated", schema_name=schema_name)(Deprecated(config))
+
+    return sdl

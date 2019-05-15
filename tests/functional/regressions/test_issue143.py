@@ -1,7 +1,6 @@
 import pytest
 
 from tartiflette import Directive, Engine
-from tartiflette.directive import CommonDirective
 
 _SDL = """
 directive @lol on FIELD_DEFINITION
@@ -22,12 +21,12 @@ type Query {
 
 
 @Directive("lol", schema_name="test_issue143")
-class Lol(CommonDirective):
+class Lol:
     pass
 
 
 @Directive("ninja", schema_name="test_issue143")
-class Ninja(CommonDirective):
+class Ninja:
     pass
 
 

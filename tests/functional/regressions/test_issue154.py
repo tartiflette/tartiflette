@@ -1,7 +1,6 @@
 import pytest
 
 from tartiflette import Directive, Engine
-from tartiflette.directive import CommonDirective
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 
 
@@ -42,7 +41,7 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
     ],
 )
 async def test_issue154(sdl, should_exp, adddir):
-    class aDirective(CommonDirective):
+    class aDirective:
         pass
 
     if adddir:

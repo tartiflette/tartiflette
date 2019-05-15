@@ -1,7 +1,6 @@
 import pytest
 
 from tartiflette import Directive, Engine, Resolver
-from tartiflette.directive import CommonDirective
 
 
 @pytest.mark.asyncio
@@ -147,10 +146,9 @@ async def test_tartiflette_directive_declaration(clean_registry):
     # Execute directive
 
     @Directive("lol2")
-    class Loled2(CommonDirective):
-        @staticmethod
+    class Loled2:
         async def on_field_execution(
-            _directive_args, func, pr, args, rctx, info
+            self, _directive_args, func, pr, args, rctx, info
         ):
             return (await func(pr, args, rctx, info)) + int(
                 _directive_args["value"]
@@ -169,10 +167,9 @@ async def test_tartiflette_directive_declaration(clean_registry):
         return 42
 
     @Directive("lol")
-    class Loled(CommonDirective):
-        @staticmethod
+    class Loled:
         async def on_field_execution(
-            _directive_arg, func, pr, args, rctx, info
+            self, _directive_arg, func, pr, args, rctx, info
         ):
             return (await func(pr, args, rctx, info)) + 1
 

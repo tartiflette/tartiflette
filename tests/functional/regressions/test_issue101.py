@@ -1,11 +1,10 @@
 import pytest
 
 from tartiflette import Directive, Engine
-from tartiflette.directive import CommonDirective
 
 
 @Directive("testdire", schema_name="test_issue101")
-class Test101Directive(CommonDirective):
+class Test101Directive:
     pass
 
 

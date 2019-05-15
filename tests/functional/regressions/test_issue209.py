@@ -1,7 +1,6 @@
 import pytest
 
 from tartiflette import Directive, Engine, Resolver
-from tartiflette.directive import CommonDirective
 
 
 class LimitReachedException(Exception):
@@ -24,10 +23,15 @@ class LimitReachedException(Exception):
 
 
 @Directive("validateLimit", schema_name="test_issue209")
-class ValidateLimitDirective(CommonDirective):
-    @staticmethod
+class ValidateLimitDirective:
     async def on_argument_execution(
-        directive_args, next_directive, argument_definition, args, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        argument_definition,
+        args,
+        ctx,
+        info,
     ):
         value = await next_directive(argument_definition, args, ctx, info)
         if value > directive_args["limit"]:
@@ -49,7 +53,7 @@ directive @validateLimit(
 type Query {
   aList(
     nbItems: Int! @validateLimit(limit: 2)
-  ): [String!] 
+  ): [String!]
 }
 """
 

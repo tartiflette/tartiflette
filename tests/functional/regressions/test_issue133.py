@@ -6,16 +6,15 @@ from unittest.mock import Mock
 import pytest
 
 from tartiflette import Directive, Engine, Resolver
-from tartiflette.directive import CommonDirective
 from tartiflette.utils.arguments import UNDEFINED_VALUE
 
 logger = logging.getLogger(__name__)
 
 
 @Directive("maxLength", schema_name="test_issue133")
-class MaxLengthDirective(CommonDirective):
-    @staticmethod
+class MaxLengthDirective:
     async def on_argument_execution(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",
@@ -39,9 +38,9 @@ class MaxLengthDirective(CommonDirective):
 
 
 @Directive("validateChoices", schema_name="test_issue133")
-class ValidateChoicesDirective(CommonDirective):
-    @staticmethod
+class ValidateChoicesDirective:
     async def on_argument_execution(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",
@@ -64,9 +63,9 @@ class ValidateChoicesDirective(CommonDirective):
 
 
 @Directive("debug", schema_name="test_issue133")
-class DebugDirective(CommonDirective):
-    @staticmethod
+class DebugDirective:
     async def on_argument_execution(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",
@@ -78,9 +77,9 @@ class DebugDirective(CommonDirective):
 
 
 @Directive("stop", schema_name="test_issue133")
-class StopDirective(CommonDirective):
-    @staticmethod
+class StopDirective:
     async def on_argument_execution(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",

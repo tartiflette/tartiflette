@@ -6,37 +6,6 @@ from typing import List, Optional, Union
 from tartiflette.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import ImproperlyConfigured
 
-_DIR_PATH = os.path.dirname(__file__)
-
-# TODO: re-use "CUSTOM_SCALARS" from tartiflette.scalar (impossible for now  due to cyclic import)
-_BUILTINS_SCALARS = [
-    "Boolean",
-    "Date",
-    "DateTime",
-    "Float",
-    "ID",
-    "Int",
-    "String",
-    "Time",
-]
-
-
-def _get_builtins_sdl_files(
-    exclude_builtins_scalars: Optional[List[str]]
-) -> List[str]:
-    return [
-        *[
-            "%s/builtins/scalars/%s.sdl" % (_DIR_PATH, builtin_scalar.lower())
-            for builtin_scalar in _BUILTINS_SCALARS
-            if (
-                exclude_builtins_scalars is None
-                or builtin_scalar not in exclude_builtins_scalars
-            )
-        ],
-        "%s/builtins/directives.sdl" % _DIR_PATH,
-        "%s/builtins/introspection.sdl" % _DIR_PATH,
-    ]
-
 
 class SchemaRegistry:
     _schemas = {}
@@ -93,13 +62,11 @@ class SchemaRegistry:
     def register_sdl(
         schema_name: str,
         sdl: Union[str, List[str], GraphQLSchema],
-        exclude_builtins_scalars: Optional[List[str]] = None,
+        modules_sdl: str = None,
     ) -> None:
         SchemaRegistry._schemas.setdefault(schema_name, {})
 
-        # Maybe read them one and use them a lot :p
-        sdl_files_list = _get_builtins_sdl_files(exclude_builtins_scalars)
-
+        sdl_files_list = []
         full_sdl = ""
 
         if isinstance(sdl, list):
@@ -117,6 +84,9 @@ class SchemaRegistry:
         for filepath in sdl_files_list:
             with open(filepath, "r") as sdl_file:
                 full_sdl += "\n" + sdl_file.read()
+
+        if modules_sdl:
+            full_sdl = f"{full_sdl} {modules_sdl}"
 
         SchemaRegistry._schemas[schema_name]["sdl"] = full_sdl
 

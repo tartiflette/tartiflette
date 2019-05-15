@@ -2,9 +2,8 @@ import json
 
 import pytest
 
-from tartiflette import Engine, Resolver, Scalar
-from tartiflette.directive import CommonDirective, Directive
-from tartiflette.scalar.string import ScalarString
+from tartiflette import Directive, Engine, Resolver, Scalar
+from tartiflette.scalar.builtins.string import ScalarString
 
 _SDL = """
 
@@ -71,36 +70,56 @@ async def resolver_test5(_pr, _args, _ctx, _info):
 
 
 @Directive("addValue", schema_name="issue223")
-class AddValue(CommonDirective):
-    @staticmethod
+class AddValue:
     async def on_post_input_coercion(
-        directive_args, next_directive, value, argument_definition, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        value,
+        argument_definition,
+        ctx,
+        info,
     ):
         value["value"] = value["value"] + directive_args["value"]
         return await next_directive(value, argument_definition, ctx, info)
 
-    @staticmethod
     async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        value,
+        field_definition,
+        ctx,
+        info,
     ):
         value["value"] = value["value"] + directive_args["value"]
         return await next_directive(value, field_definition, ctx, info)
 
 
 @Directive("mapToValue", schema_name="issue223")
-class MapToValue(CommonDirective):
+class MapToValue:
     my_map = {"RED": "BROWN", "BROWN": "RED"}
 
-    @staticmethod
     async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        value,
+        field_definition,
+        ctx,
+        info,
     ):
         value = MapToValue.my_map.get(value, value)
         return await next_directive(value, field_definition, ctx, info)
 
-    @staticmethod
     async def on_post_input_coercion(
-        directive_args, next_directive, value, argument_definition, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        value,
+        argument_definition,
+        ctx,
+        info,
     ):
         value = MapToValue.my_map.get(value, value)
         return await next_directive(value, argument_definition, ctx, info)
@@ -123,10 +142,15 @@ class BobbyScalar(ScalarString):
 
 
 @Directive("capitalized", schema_name="issue223")
-class Capitalized(CommonDirective):
-    @staticmethod
+class Capitalized:
     async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        value,
+        field_definition,
+        ctx,
+        info,
     ):
         return await next_directive(
             value.capitalize(), field_definition, ctx, info
@@ -134,19 +158,29 @@ class Capitalized(CommonDirective):
 
 
 @Directive("lower", schema_name="issue223")
-class Lower(CommonDirective):
-    @staticmethod
+class Lower:
     async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        value,
+        field_definition,
+        ctx,
+        info,
     ):
         return await next_directive(value.lower(), field_definition, ctx, info)
 
 
 @Directive("upper", schema_name="issue223")
-class Upper(CommonDirective):
-    @staticmethod
+class Upper:
     async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        value,
+        field_definition,
+        ctx,
+        info,
     ):
         return await next_directive(value.upper(), field_definition, ctx, info)
 

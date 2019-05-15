@@ -3,15 +3,19 @@ import asyncio
 import pytest
 
 from tartiflette import Directive, Engine, Subscription
-from tartiflette.directive import CommonDirective
 from tartiflette.types.exceptions.tartiflette import MultipleException
 
 
 @Directive("validateMaxLength", schema_name="test_issue139")
-class ValidateMaxLengthDirective(CommonDirective):
-    @staticmethod
+class ValidateMaxLengthDirective:
     async def on_argument_execution(
-        directive_args, next_directive, argument_definition, args, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        argument_definition,
+        args,
+        ctx,
+        info,
     ):
         limit = directive_args["limit"]
         value = await next_directive(argument_definition, args, ctx, info)
@@ -26,10 +30,15 @@ class ValidateMaxLengthDirective(CommonDirective):
 
 
 @Directive("validateChoices", schema_name="test_issue139")
-class ValidateChoicesDirective(CommonDirective):
-    @staticmethod
+class ValidateChoicesDirective:
     async def on_argument_execution(
-        directive_args, next_directive, argument_definition, args, ctx, info
+        self,
+        directive_args,
+        next_directive,
+        argument_definition,
+        args,
+        ctx,
+        info,
     ):
         choices = directive_args["choices"]
         value = await next_directive(argument_definition, args, ctx, info)

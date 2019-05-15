@@ -1,3 +1,5 @@
+import asyncio
+
 from importlib import import_module, invalidate_caches
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
@@ -15,12 +17,50 @@ from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import GraphQLError
 from tartiflette.utils.errors import to_graphql_error
 
+_BUILTINS_OBJECTS = {
+    "deprecated": "tartiflette.directive.builtins.deprecated",
+    "include": "tartiflette.directive.builtins.include",
+    "nonIntrospectable": "tartiflette.directive.builtins.non_introspectable",
+    "skip": "tartiflette.directive.builtins.skip",
+    "Boolean": "tartiflette.scalar.builtins.boolean",
+    "Date": "tartiflette.scalar.builtins.date",
+    "DateTime": "tartiflette.scalar.builtins.datetime",
+    "Float": "tartiflette.scalar.builtins.float",
+    "ID": "tartiflette.scalar.builtins.id",
+    "Int": "tartiflette.scalar.builtins.int",
+    "String": "tartiflette.scalar.builtins.string",
+    "Time": "tartiflette.scalar.builtins.time",
+    "Introspection": "tartiflette.schema.builtins.introspection",
+}
 
-def _import_modules(modules):
-    if modules:
-        invalidate_caches()
-        return [import_module(x) for x in modules]
-    return []
+
+def _import_modules(modules, schema_name, exclude_builtins):
+    imported_modules = []
+    sdl = ""
+
+    invalidate_caches()
+
+    modules.extend(
+        [v for k, v in _BUILTINS_OBJECTS.items() if k not in exclude_builtins]
+    )
+
+    for module in modules:
+        if not isinstance(module, dict):
+            module = {"name": module, "config": {}}
+
+        config = module["config"]
+        module = import_module(module["name"])
+
+        if hasattr(module, "bake"):
+            msdl = getattr(module, "bake")(schema_name, config)
+            if asyncio.iscoroutine(msdl):
+                msdl = asyncio.get_event_loop().run_until_complete(msdl)
+
+            sdl = f"{sdl}\n{msdl or ''}"
+
+        imported_modules.append(module)
+
+    return imported_modules, sdl
 
 
 class Engine:
@@ -30,7 +70,7 @@ class Engine:
         schema_name: str = "default",
         error_coercer: Callable[[Exception], dict] = default_error_coercer,
         custom_default_resolver: Optional[Callable] = None,
-        exclude_builtins_scalars: Optional[List[str]] = None,
+        exclude_builtins: Optional[List[str]] = None,
         modules: Optional[Union[str, List[str]]] = None,
     ) -> None:
         """Create an engine by analyzing the SDL and connecting it with the imported Resolver, Mutation,
@@ -45,21 +85,24 @@ class Engine:
             schema_name {str} -- The name of the SDL (default: {"default"})
             error_coercer {Callable[[Exception, dict], dict]} -- An optional callable in charge of transforming a couple Exception/error into an error dict (default: {default_error_coercer})
             custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
-            exclude_builtins_scalars {Optional[List[str]]} -- An optional list of string containing the names of the builtin scalar you don't want to be automatically included, usually it's Date, DateTime or Time scalars (default: {None})
+            exclude_builtins {Optional[List[str]]} -- An optional list of string containing the names of the builtin scalar you don't want to be automatically included, usually it's Date, DateTime or Time scalars (default: {None})
             modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
         """
+
+        if not modules:
+            modules = []
 
         if isinstance(modules, str):
             modules = [modules]
 
-        self._modules = _import_modules(modules)
+        self._modules, modules_sdl = _import_modules(
+            modules, schema_name, exclude_builtins or []
+        )
 
         self._error_coercer = error_coercer_factory(error_coercer)
         self._parser = TartifletteRequestParser()
-        SchemaRegistry.register_sdl(schema_name, sdl, exclude_builtins_scalars)
-        self._schema = SchemaBakery.bake(
-            schema_name, custom_default_resolver, exclude_builtins_scalars
-        )
+        SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
+        self._schema = SchemaBakery.bake(schema_name, custom_default_resolver)
 
     async def execute(
         self,
