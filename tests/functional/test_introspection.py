@@ -247,7 +247,7 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
                     {
                         "locations": ["FIELD_DEFINITION"],
                         "args": [],
-                        "name": "non_introspectable",
+                        "name": "nonIntrospectable",
                         "description": None,
                     },
                     {
@@ -316,7 +316,7 @@ async def test_tartiflette_execute_schema_introspection_output_exclude_scalars(
     }
     """
 
-    ttftt = Engine(schema_sdl, exclude_builtins_scalars=["Date", "DateTime"])
+    ttftt = Engine(schema_sdl, exclude_builtins=["Date", "DateTime"])
     result = await ttftt.execute(
         """
     query Test{
@@ -366,7 +366,7 @@ async def test_tartiflette_execute_schema_introspection_output_exclude_scalars(
                         "description": None,
                     },
                     {
-                        "name": "non_introspectable",
+                        "name": "nonIntrospectable",
                         "description": None,
                         "args": [],
                         "locations": ["FIELD_DEFINITION"],
@@ -440,7 +440,7 @@ async def test_tartiflette_execute_schema_introspection_output_introspecting_arg
     }
     """
 
-    ttftt = Engine(schema_sdl, exclude_builtins_scalars=["Date", "DateTime"])
+    ttftt = Engine(schema_sdl, exclude_builtins=["Date", "DateTime"])
     result = await ttftt.execute(
         """
     query IntrospectionQuery {
@@ -562,7 +562,7 @@ fragment TypeRef on __Type {
                         "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
                     },
                     {
-                        "name": "non_introspectable",
+                        "name": "nonIntrospectable",
                         "locations": ["FIELD_DEFINITION"],
                         "args": [],
                     },

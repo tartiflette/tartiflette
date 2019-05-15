@@ -197,12 +197,10 @@ async def test_tartiflette_declare_custom_scalar(clean_registry):
 
     @Scalar(name="Ntm")
     class Ntm:
-        @staticmethod
-        def coerce_output(val):
+        def coerce_output(self, val):
             return "I'am a val %s " % val.p1
 
-        @staticmethod
-        def coerce_input(val):
+        def coerce_input(self, val):
             return val
 
     ttftt = Engine(sdl)

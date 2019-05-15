@@ -1,3 +1,5 @@
+from inspect import isclass
+
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
     MissingImplementation,
@@ -51,6 +53,9 @@ class Scalar:
         scalar.coerce_input = self._implementation.coerce_input
 
     def __call__(self, implementation):
-        SchemaRegistry.register_scalar(self._schema_name, self)
+        if isclass(implementation):
+            implementation = implementation()
+
         self._implementation = implementation
+        SchemaRegistry.register_scalar(self._schema_name, self)
         return implementation

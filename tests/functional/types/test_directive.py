@@ -204,7 +204,7 @@ async def test_tartiflette_non_introspectable_execution_directive(
     schema = """
     type Query {
         fieldNormal: Int
-        fieldHiddendToIntrospactable: Int @non_introspectable
+        fieldHiddendToIntrospactable: Int @nonIntrospectable
     }
     """
 
@@ -219,12 +219,12 @@ async def test_tartiflette_non_introspectable_execution_directive(
     ttftt = Engine(schema)
 
     assert (
-        clean_registry.find_schema().find_directive("non_introspectable")
+        clean_registry.find_schema().find_directive("nonIntrospectable")
         is not None
     )
     assert (
         clean_registry.find_schema()
-        .find_directive("non_introspectable")
+        .find_directive("nonIntrospectable")
         .implementation
         is not None
     )

@@ -16,7 +16,8 @@ def wraps_with_directives(
         func = _default_directive_endpoint
 
     for directive in reversed(directives_definition):
-        func = partial(
-            directive["callables"][directive_hook], directive["args"], func
-        )
+        if directive_hook in directive["callables"]:
+            func = partial(
+                directive["callables"][directive_hook], directive["args"], func
+            )
     return func

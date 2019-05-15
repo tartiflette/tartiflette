@@ -35,12 +35,10 @@ type Query {
 
 @Scalar("CapitalizedString", schema_name="test_issue185")
 class CapitalizedString:
-    @staticmethod
-    def coerce_output(val) -> str:
+    def coerce_output(self, val) -> str:
         return str(val)
 
-    @staticmethod
-    def coerce_input(val: str) -> str:
+    def coerce_input(self, val: str) -> str:
         return val.capitalize()
 
 

@@ -175,7 +175,7 @@ async def test_issue92_fragment_inordered():
                         "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
                     },
                     {
-                        "name": "non_introspectable",
+                        "name": "nonIntrospectable",
                         "locations": ["FIELD_DEFINITION"],
                         "args": [],
                     },

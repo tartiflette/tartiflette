@@ -138,7 +138,8 @@ async def resolver_test3(_pr, args, _ctx, _info):
 
 @Scalar("Bobby", schema_name="issue223")
 class BobbyScalar(ScalarString):
-    pass
+    def __init__(self):
+        pass
 
 
 @Directive("capitalized", schema_name="issue223")
