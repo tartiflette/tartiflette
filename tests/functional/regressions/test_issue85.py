@@ -43,13 +43,9 @@ async def ttftt_engine():
     return await create_engine(sdl=_SDL, schema_name="test_issue85")
 
 
-# TODO: unskip this test once `validate_document` function has been implemented
-@pytest.mark.skip(
-    reason="Will handled by the `validate_document` function which isn't implemented yet."
-)
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "query,errors",
+    "query,expected",
     [
         (
             """
@@ -67,16 +63,25 @@ async def ttftt_engine():
           }
         }
         """,
-            [
-                {
-                    "message": "Operation name < getName > should be unique.",
-                    "path": None,
-                    "locations": [
-                        {"line": 2, "column": 9},
-                        {"line": 8, "column": 9},
-                    ],
-                }
-            ],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Can't have multiple operations named < getName >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 2, "column": 9},
+                            {"line": 8, "column": 9},
+                        ],
+                        "extensions": {
+                            "rule": "5.2.1.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Operation-Name-Uniqueness",
+                            "tag": "operation-name-uniqueness",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """
@@ -102,29 +107,28 @@ async def ttftt_engine():
           }
         }
         """,
-            [
-                {
-                    "message": "Operation name < getName > should be unique.",
-                    "path": None,
-                    "locations": [
-                        {"line": 2, "column": 9},
-                        {"line": 8, "column": 9},
-                    ],
-                },
-                {
-                    "message": "Operation name < getName > should be unique.",
-                    "path": None,
-                    "locations": [
-                        {"line": 2, "column": 9},
-                        {"line": 16, "column": 9},
-                    ],
-                },
-            ],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Can't have multiple operations named < getName >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 2, "column": 9},
+                            {"line": 8, "column": 9},
+                            {"line": 16, "column": 9},
+                        ],
+                        "extensions": {
+                            "rule": "5.2.1.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Operation-Name-Uniqueness",
+                            "tag": "operation-name-uniqueness",
+                        },
+                    }
+                ],
+            },
         ),
     ],
 )
-async def test_issue85(query, errors, ttftt_engine):
-    assert await ttftt_engine.execute(query) == {
-        "data": None,
-        "errors": errors,
-    }
+async def test_issue85(query, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query) == expected

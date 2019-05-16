@@ -194,7 +194,7 @@ async def ttftt_engine():
         def coerce_input(val: str) -> str:
             if not isinstance(val, str):
                 raise TypeError(
-                    f"String cannot represent a non string value: < {val} >"
+                    f"String cannot represent a non string value: < {val} >."
                 )
             return val.capitalize()
 

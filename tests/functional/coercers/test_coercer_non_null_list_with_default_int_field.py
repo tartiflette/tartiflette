@@ -24,12 +24,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListWithDefaultIntField(param: null) }""",
             None,
             {
-                "data": {"nonNullListWithDefaultIntField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < [Int]! > must not be null.",
                         "path": ["nonNullListWithDefaultIntField"],
-                        "locations": [{"line": 1, "column": 47}],
+                        "locations": [{"line": 1, "column": 40}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },

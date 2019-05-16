@@ -57,7 +57,7 @@ type Query {
   channels(
     order: ChannelOrder! @debug(message: "channels.order")
   ): [Channel]
-  
+
   users(input: Complex!): Channel
 }
 """
@@ -153,7 +153,7 @@ async def ttftt_engine():
         def coerce_input(value):
             if not isinstance(value, str):
                 raise TypeError(
-                    f"String cannot represent a non string value: < {value} >"
+                    f"String cannot represent a non string value: < {value} >."
                 )
             return value
 
@@ -274,13 +274,63 @@ async def ttftt_engine():
             """,
             None,
             {
-                "data": {"users": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < input > has invalid value < {filters: {groups: [Group 1, null, Group 2, null], fields: [FIELD_1, null, FIELD_2, null, UNKNOWN_FIELD]}} >.",
+                        "message": "Input Field < groups > of non-null type < String! > must not be null.",
                         "path": ["users"],
-                        "locations": [{"line": 3, "column": 28}],
-                    }
+                        "locations": [{"line": 5, "column": 19}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < groups > of non-null type < String! > must not be null.",
+                        "path": ["users"],
+                        "locations": [{"line": 5, "column": 19}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < fields > of non-null type < Field! > must not be null.",
+                        "path": ["users"],
+                        "locations": [{"line": 6, "column": 19}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < fields > of non-null type < Field! > must not be null.",
+                        "path": ["users"],
+                        "locations": [{"line": 6, "column": 19}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Value UNKNOWN_FIELD is not a valid value for enum Field",
+                        "path": ["users"],
+                        "locations": [{"line": 3, "column": 21}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
                 ],
             },
         ),

@@ -1,6 +1,6 @@
 # -*- mode: conf -*-
 [MASTER]
-load-plugins=pylint.extensions.docparams,pylint.extensions.docstyle
+load-plugins=pylint.extensions.docparams,pylint.extensions.docstyle,pylint.extensions.mccabe
 
 [GENERAL]
 init-hook='import sys; sys.path.append("/usr/src/app")'
@@ -63,7 +63,7 @@ max-attributes=15
 max-line-length=80
 
 ## Maximum number of lines in a module
-max-module-lines=1000
+max-module-lines=1500
 
 # String used as indentation unit. We found that two spaces is the best balance for readability, easy typing, etc.
 indent-string='    '

@@ -36,16 +36,20 @@ from tests.functional.coercers.common import resolve_input_object_field
             """query { nonNullWithDefaultInputObjectWithDefaultField(param: null) }""",
             None,
             {
-                "data": {
-                    "nonNullWithDefaultInputObjectWithDefaultField": None
-                },
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < MyInputWithDefault! > must not be null.",
                         "path": [
                             "nonNullWithDefaultInputObjectWithDefaultField"
                         ],
-                        "locations": [{"line": 1, "column": 62}],
+                        "locations": [{"line": 1, "column": 55}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },

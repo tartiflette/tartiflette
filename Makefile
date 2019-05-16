@@ -31,7 +31,7 @@ check-format:
 
 .PHONY: style
 style: check-format check-import
-	pylint tartiflette --rcfile=pylintrc --load-plugins=pylint.extensions.mccabe
+	pylint tartiflette --rcfile=pylintrc
 
 .PHONY: test-integration
 test-integration: clean

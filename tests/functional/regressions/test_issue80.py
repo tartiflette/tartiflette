@@ -24,10 +24,6 @@ async def ttftt_engine():
     return await create_engine(sdl=_SDL, schema_name="test_issue80")
 
 
-# TODO: unskip this test once `validate_document` function has been implemented
-@pytest.mark.skip(
-    reason="Will handled by the `validate_document` function which isn't implemented yet."
-)
 @pytest.mark.asyncio
 async def test_issue80(ttftt_engine):
     query = """
@@ -51,6 +47,12 @@ async def test_issue80(ttftt_engine):
                 "message": "Fragment < UserFields > is never used.",
                 "path": None,
                 "locations": [{"line": 2, "column": 5}],
+                "extensions": {
+                    "rule": "5.5.1.4",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragments-Must-Be-Used",
+                    "tag": "fragment-must-be-used",
+                },
             }
         ],
     }

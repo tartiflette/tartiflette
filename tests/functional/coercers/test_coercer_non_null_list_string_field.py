@@ -15,12 +15,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListStringField }""",
             None,
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [String]! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullListStringField >.",
                         "path": ["nonNullListStringField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -29,12 +35,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListStringField(param: null) }""",
             None,
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < [String]! > must not be null.",
                         "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 39}],
+                        "locations": [{"line": 1, "column": 32}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -72,50 +84,50 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [String]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]!) { nonNullListStringField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [String]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 58}],
+                        "message": "Variable < $param > of required type < [String]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [String]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]!) { nonNullListStringField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [String]! > must not be null.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 58}],
+                        "message": "Variable < $param > of non-null type < [String]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [String]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]!) { nonNullListStringField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListStringField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [String]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]!) { nonNullListStringField(param: $param) }""",
             {"param": "varValue"},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]!) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue"]},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]!) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue", None]},
             {
                 "data": {
@@ -124,50 +136,50 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [String] = null) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = null) { nonNullListStringField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [String]! > must not be null.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 65}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 28}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [String] = null) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = null) { nonNullListStringField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [String]! > must not be null.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 65}],
+                        "message": "Variable < $param > of non-null type < [String]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [String] = null) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = null) { nonNullListStringField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListStringField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [String] = null) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = null) { nonNullListStringField(param: $param) }""",
             {"param": "varValue"},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String] = null) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = null) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue"]},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String] = null) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = null) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue", None]},
             {
                 "data": {
@@ -176,41 +188,41 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [String] = [null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = [null]) { nonNullListStringField(param: $param) }""",
             None,
             {"data": {"nonNullListStringField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [String] = [null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = [null]) { nonNullListStringField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [String]! > must not be null.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 67}],
+                        "message": "Variable < $param > of non-null type < [String]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [String] = [null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = [null]) { nonNullListStringField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListStringField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [String] = [null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = [null]) { nonNullListStringField(param: $param) }""",
             {"param": "varValue"},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String] = [null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = [null]) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue"]},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String] = [null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = [null]) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue", None]},
             {
                 "data": {
@@ -219,54 +231,7 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [String] = "varDefault") { nonNullListStringField(param: $param) }""",
-            None,
-            {
-                "data": {
-                    "nonNullListStringField": "SUCCESS-[vardefault-scalar]"
-                }
-            },
-        ),
-        (
-            """query ($param: [String] = "varDefault") { nonNullListStringField(param: $param) }""",
-            {"param": None},
-            {
-                "data": {"nonNullListStringField": None},
-                "errors": [
-                    {
-                        "message": "Argument < param > of non-null type < [String]! > must not be null.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 73}],
-                    }
-                ],
-            },
-        ),
-        (
-            """query ($param: [String] = "varDefault") { nonNullListStringField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"nonNullListStringField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [String] = "varDefault") { nonNullListStringField(param: $param) }""",
-            {"param": "varValue"},
-            {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
-        ),
-        (
-            """query ($param: [String] = "varDefault") { nonNullListStringField(param: $param) }""",
-            {"param": ["varValue"]},
-            {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
-        ),
-        (
-            """query ($param: [String] = "varDefault") { nonNullListStringField(param: $param) }""",
-            {"param": ["varValue", None]},
-            {
-                "data": {
-                    "nonNullListStringField": "SUCCESS-[varvalue-scalar-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [String] = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = "varDefault") { nonNullListStringField(param: $param) }""",
             None,
             {
                 "data": {
@@ -275,36 +240,36 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [String] = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = "varDefault") { nonNullListStringField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [String]! > must not be null.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 75}],
+                        "message": "Variable < $param > of non-null type < [String]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [String] = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = "varDefault") { nonNullListStringField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListStringField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [String] = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = "varDefault") { nonNullListStringField(param: $param) }""",
             {"param": "varValue"},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String] = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = "varDefault") { nonNullListStringField(param: $param) }""",
             {"param": ["varValue"]},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String] = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = "varDefault") { nonNullListStringField(param: $param) }""",
             {"param": ["varValue", None]},
             {
                 "data": {
@@ -313,7 +278,54 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [String] = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            None,
+            {
+                "data": {
+                    "nonNullListStringField": "SUCCESS-[vardefault-scalar]"
+                }
+            },
+        ),
+        (
+            """query ($param: [String]! = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            {"param": None},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > of non-null type < [String]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [String]! = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            {"param": [None]},
+            {"data": {"nonNullListStringField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [String]! = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            {"param": "varValue"},
+            {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
+        ),
+        (
+            """query ($param: [String]! = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            {"param": ["varValue"]},
+            {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
+        ),
+        (
+            """query ($param: [String]! = ["varDefault"]) { nonNullListStringField(param: $param) }""",
+            {"param": ["varValue", None]},
+            {
+                "data": {
+                    "nonNullListStringField": "SUCCESS-[varvalue-scalar-None]"
+                }
+            },
+        ),
+        (
+            """query ($param: [String]! = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
             None,
             {
                 "data": {
@@ -322,36 +334,36 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [String] = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [String]! > must not be null.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 81}],
+                        "message": "Variable < $param > of non-null type < [String]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [String] = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListStringField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [String] = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
             {"param": "varValue"},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String] = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue"]},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String] = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String]! = ["varDefault", null]) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue", None]},
             {
                 "data": {
@@ -412,35 +424,35 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [String!]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String!]!) { nonNullListStringField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [String]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 59}],
+                        "message": "Variable < $param > of required type < [String!]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [String!]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String!]!) { nonNullListStringField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [String]! > must not be null.",
-                        "path": ["nonNullListStringField"],
-                        "locations": [{"line": 1, "column": 59}],
+                        "message": "Variable < $param > of non-null type < [String!]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [String!]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String!]!) { nonNullListStringField(param: $param) }""",
             {"param": [None]},
             {
                 "data": None,
@@ -454,17 +466,17 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [String!]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String!]!) { nonNullListStringField(param: $param) }""",
             {"param": "varValue"},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String!]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String!]!) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue"]},
             {"data": {"nonNullListStringField": "SUCCESS-[varvalue-scalar]"}},
         ),
         (
-            """query ($param: [String!]) { nonNullListStringField(param: $param) }""",
+            """query ($param: [String!]!) { nonNullListStringField(param: $param) }""",
             {"param": ["varValue", None]},
             {
                 "data": None,

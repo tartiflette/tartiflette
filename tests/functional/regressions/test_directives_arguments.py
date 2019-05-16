@@ -12,6 +12,7 @@ directive @truncate(
 ) on FIELD_DEFINITION | FIELD
 directive @lowercase on FIELD_DEFINITION | FIELD
 directive @uppercase on FIELD_DEFINITION | FIELD
+directive @uppercase2 on FIELD_DEFINITION | FIELD
 directive @uppercased on FIELD_DEFINITION | FIELD
 
 type Person {
@@ -131,6 +132,7 @@ async def ttftt_engine():
             result = await next_resolver(parent, args, ctx, info)
             return result.lower() if isinstance(result, str) else result
 
+    @Directive("uppercase2", schema_name="test_directives_arguments")
     @Directive("uppercase", schema_name="test_directives_arguments")
     class UppercaseDirective:
         async def on_field_execution(
@@ -361,7 +363,7 @@ async def ttftt_engine():
               person(id: 1) {
                 id @increment(step: 2)
                 name @truncate(limit: 4)
-                nickname @truncate(limit: 6) @uppercase @lowercase @uppercase
+                nickname @truncate(limit: 6) @uppercase @lowercase @uppercase2
                 hobby @lowercase
                 ...PersonFields
                 hobby @lowercase

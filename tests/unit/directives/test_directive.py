@@ -24,13 +24,13 @@ def test_directive_bake_except_no_implem():
         a_directive.bake(Mock())
 
 
-def test_directive_bake_except_unknowdirective(clean_registry):
+def test_directive_bake_except_unknowdirective():
     from tartiflette.directive.directive import Directive
     from tartiflette.types.exceptions.tartiflette import (
         UnknownDirectiveDefinition,
     )
 
-    a_directive = Directive("deprecated", schema_name="Ninja")
+    a_directive = Directive("deprecated", schema_name="Ninja3")
 
     def schema_find_directive(*_args, **_kwargs):
         raise KeyError

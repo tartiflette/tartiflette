@@ -15,12 +15,18 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             """query { nonNullStringField }""",
             None,
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < String! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullStringField >.",
                         "path": ["nonNullStringField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -29,12 +35,18 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             """query { nonNullStringField(param: null) }""",
             None,
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < String! > must not be null.",
                         "path": ["nonNullStringField"],
-                        "locations": [{"line": 1, "column": 35}],
+                        "locations": [{"line": 1, "column": 28}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -49,35 +61,35 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             },
         ),
         (
-            """query ($param: String) { nonNullStringField(param: $param) }""",
+            """query ($param: String!) { nonNullStringField(param: $param) }""",
             None,
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < String! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullStringField"],
-                        "locations": [{"line": 1, "column": 52}],
+                        "message": "Variable < $param > of required type < String! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: String) { nonNullStringField(param: $param) }""",
+            """query ($param: String!) { nonNullStringField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < String! > must not be null.",
-                        "path": ["nonNullStringField"],
-                        "locations": [{"line": 1, "column": 52}],
+                        "message": "Variable < $param > of non-null type < String! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: String) { nonNullStringField(param: $param) }""",
+            """query ($param: String!) { nonNullStringField(param: $param) }""",
             {"param": "varValue"},
             {
                 "data": {
@@ -86,35 +98,35 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             },
         ),
         (
-            """query ($param: String = null) { nonNullStringField(param: $param) }""",
+            """query ($param: String! = null) { nonNullStringField(param: $param) }""",
             None,
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < String! > must not be null.",
-                        "path": ["nonNullStringField"],
-                        "locations": [{"line": 1, "column": 59}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 26}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: String = null) { nonNullStringField(param: $param) }""",
+            """query ($param: String! = null) { nonNullStringField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < String! > must not be null.",
-                        "path": ["nonNullStringField"],
-                        "locations": [{"line": 1, "column": 59}],
+                        "message": "Variable < $param > of non-null type < String! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: String = null) { nonNullStringField(param: $param) }""",
+            """query ($param: String! = null) { nonNullStringField(param: $param) }""",
             {"param": "varValue"},
             {
                 "data": {
@@ -123,7 +135,7 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             },
         ),
         (
-            """query ($param: String = "varDefault") { nonNullStringField(param: $param) }""",
+            """query ($param: String! = "varDefault") { nonNullStringField(param: $param) }""",
             None,
             {
                 "data": {
@@ -132,21 +144,21 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             },
         ),
         (
-            """query ($param: String = "varDefault") { nonNullStringField(param: $param) }""",
+            """query ($param: String! = "varDefault") { nonNullStringField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < String! > must not be null.",
-                        "path": ["nonNullStringField"],
-                        "locations": [{"line": 1, "column": 67}],
+                        "message": "Variable < $param > of non-null type < String! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: String = "varDefault") { nonNullStringField(param: $param) }""",
+            """query ($param: String! = "varDefault") { nonNullStringField(param: $param) }""",
             {"param": "varValue"},
             {
                 "data": {

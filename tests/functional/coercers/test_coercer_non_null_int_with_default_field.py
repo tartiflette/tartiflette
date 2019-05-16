@@ -20,12 +20,18 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             """query { nonNullIntWithDefaultField(param: null) }""",
             None,
             {
-                "data": {"nonNullIntWithDefaultField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < Int! > must not be null.",
                         "path": ["nonNullIntWithDefaultField"],
-                        "locations": [{"line": 1, "column": 43}],
+                        "locations": [{"line": 1, "column": 36}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },

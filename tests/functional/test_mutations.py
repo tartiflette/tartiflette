@@ -6,7 +6,7 @@ from tartiflette import Resolver, create_engine
 
 
 @pytest.mark.asyncio
-async def test_full_mutation_execute(clean_registry):
+async def test_full_mutation_execute():
     schema_sdl = """
     enum Status {
         SUCCESS
@@ -47,7 +47,9 @@ async def test_full_mutation_execute(clean_registry):
 
     data_store = [Book(title="The Jungle Book", price=14.99)]
 
-    @Resolver("CustomRootMutation.addBook")
+    @Resolver(
+        "CustomRootMutation.addBook", schema_name="test_full_mutation_execute"
+    )
     async def add_book_resolver(_, args, *__):
         added_book = Book(
             title=args["input"]["title"], price=args["input"]["price"]
@@ -61,7 +63,9 @@ async def test_full_mutation_execute(clean_registry):
 
     assert len(data_store) == 1
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl, schema_name="test_full_mutation_execute"
+    )
 
     result = await ttftt.execute(
         """

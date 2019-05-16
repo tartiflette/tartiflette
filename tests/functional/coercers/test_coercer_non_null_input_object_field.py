@@ -15,12 +15,18 @@ from tests.functional.coercers.common import resolve_input_object_field
             """query { nonNullInputObjectField }""",
             None,
             {
-                "data": {"nonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyInput! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullInputObjectField >.",
                         "path": ["nonNullInputObjectField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -29,12 +35,18 @@ from tests.functional.coercers.common import resolve_input_object_field
             """query { nonNullInputObjectField(param: null) }""",
             None,
             {
-                "data": {"nonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < MyInput! > must not be null.",
                         "path": ["nonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 40}],
+                        "locations": [{"line": 1, "column": 33}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -210,40 +222,40 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput!) { nonNullInputObjectField(param: $param) }""",
             None,
             {
-                "data": {"nonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyInput! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 58}],
+                        "message": "Variable < $param > of required type < MyInput! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyInput) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput!) { nonNullInputObjectField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyInput! > must not be null.",
-                        "path": ["nonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 58}],
+                        "message": "Variable < $param > of non-null type < MyInput! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyInput) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput!) { nonNullInputObjectField(param: $param) }""",
             {"param": {}},
             {"data": {"nonNullInputObjectField": "SUCCESS-{}"}},
         ),
         (
-            """query ($param: MyInput) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput!) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -275,7 +287,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput!) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -307,7 +319,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput!) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -339,7 +351,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput!) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -371,7 +383,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput!) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -403,40 +415,40 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput = null) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput! = null) { nonNullInputObjectField(param: $param) }""",
             None,
             {
-                "data": {"nonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyInput! > must not be null.",
-                        "path": ["nonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 65}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 27}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyInput = null) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput! = null) { nonNullInputObjectField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyInput! > must not be null.",
-                        "path": ["nonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 65}],
+                        "message": "Variable < $param > of non-null type < MyInput! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyInput = null) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput! = null) { nonNullInputObjectField(param: $param) }""",
             {"param": {}},
             {"data": {"nonNullInputObjectField": "SUCCESS-{}"}},
         ),
         (
-            """query ($param: MyInput = null) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput! = null) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -468,7 +480,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput = null) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput! = null) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -500,7 +512,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput = null) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput! = null) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -532,7 +544,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput = null) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput! = null) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -564,7 +576,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInput = null) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput! = null) { nonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,

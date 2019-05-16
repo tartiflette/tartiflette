@@ -24,10 +24,6 @@ async def ttftt_engine():
     return await create_engine(sdl=_SDL, schema_name="test_issue79")
 
 
-# TODO: unskip this test once `validate_document` function has been implemented
-@pytest.mark.skip(
-    reason="Will handled by the `validate_document` function which isn't implemented yet."
-)
 @pytest.mark.asyncio
 async def test_issue79(ttftt_engine):
     query = """
@@ -48,14 +44,26 @@ async def test_issue79(ttftt_engine):
         "data": None,
         "errors": [
             {
-                "message": "Unknown type < UnknownType >.",
-                "path": None,
-                "locations": [{"line": 2, "column": 5}],
+                "message": "Field name doesn't exist on UnknownType",
+                "path": ["name"],
+                "locations": [{"line": 3, "column": 9}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
             {
-                "message": "Undefined fragment < UnknownFields >.",
+                "message": "Unknown type UnknownType.",
                 "path": None,
-                "locations": [{"line": 8, "column": 13}],
+                "locations": [{"line": 2, "column": 5}],
+                "extensions": {
+                    "rule": "5.5.1.2",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragment-Spread-Type-Existence",
+                    "tag": "fragment-spread-type-existence",
+                },
             },
         ],
     }

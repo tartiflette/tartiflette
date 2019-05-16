@@ -30,10 +30,6 @@ async def ttftt_engine():
     )
 
 
-# TODO: unskip this test once `validate_document` function has been implemented
-@pytest.mark.skip(
-    reason="Will handled by the `validate_document` function which isn't implemented yet."
-)
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query,expected",
@@ -46,12 +42,41 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $aParam > expected value of "
-                        "type < MyType > which cannot be used as "
-                        "an input type.",
+                        "message": "Variable aParam cannot be non-input type MyType.",
                         "path": None,
-                        "locations": [{"column": 29, "line": 2}],
-                    }
+                        "locations": [{"line": 2, "column": 20}],
+                        "extensions": {
+                            "rule": "5.8.2",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Variables-Are-Input-Types",
+                            "tag": "variables-are-input-types",
+                        },
+                    },
+                    {
+                        "message": "Field aField of type MyType must have a selection of subfields.",
+                        "path": ["aField"],
+                        "locations": [{"line": 2, "column": 39}],
+                        "extensions": {
+                            "rule": "5.3.3",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
+                            "tag": "leaf-field-selections",
+                        },
+                    },
+                    {
+                        "message": "Can't use < $aParam / MyType > for type < String >.",
+                        "path": ["aField"],
+                        "locations": [
+                            {"line": 2, "column": 20},
+                            {"line": 2, "column": 54},
+                        ],
+                        "extensions": {
+                            "rule": "5.8.5",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-All-Variable-Usages-are-Allowed",
+                            "tag": "all-variable-usages-are-allowed",
+                        },
+                    },
                 ],
             },
         ),
@@ -63,12 +88,41 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $aParam > expected value of "
-                        "type < UnionType > which cannot be used "
-                        "as an input type.",
+                        "message": "Variable aParam cannot be non-input type UnionType.",
                         "path": None,
-                        "locations": [{"column": 29, "line": 2}],
-                    }
+                        "locations": [{"line": 2, "column": 20}],
+                        "extensions": {
+                            "rule": "5.8.2",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Variables-Are-Input-Types",
+                            "tag": "variables-are-input-types",
+                        },
+                    },
+                    {
+                        "message": "Field aField of type MyType must have a selection of subfields.",
+                        "path": ["aField"],
+                        "locations": [{"line": 2, "column": 42}],
+                        "extensions": {
+                            "rule": "5.3.3",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
+                            "tag": "leaf-field-selections",
+                        },
+                    },
+                    {
+                        "message": "Can't use < $aParam / UnionType > for type < String >.",
+                        "path": ["aField"],
+                        "locations": [
+                            {"line": 2, "column": 20},
+                            {"line": 2, "column": 57},
+                        ],
+                        "extensions": {
+                            "rule": "5.8.5",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-All-Variable-Usages-are-Allowed",
+                            "tag": "all-variable-usages-are-allowed",
+                        },
+                    },
                 ],
             },
         ),

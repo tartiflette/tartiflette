@@ -13,15 +13,15 @@ logger = logging.getLogger(__name__)
 _SDL = """
 directive @maxLength(
   limit: Int!
-) on ARGUMENT_DEFINITION
+) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
 directive @validateChoices(
-  choices: String!
-) on ARGUMENT_DEFINITION
+  choices: [String!]!
+) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
-directive @debug on ARGUMENT_DEFINITION
+directive @debug on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
-directive @stop on ARGUMENT_DEFINITION
+directive @stop on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
 input MyInput {
   myInputArg: MyInputInput! @debug
@@ -86,6 +86,26 @@ async def ttftt_engine():
                 )
             return result
 
+        async def on_post_input_coercion(
+            self,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node,
+            value: Any,
+            ctx: Optional[Any],
+        ):
+            result = await next_directive(parent_node, value, ctx)
+            if len(result) > directive_args["limit"]:
+                raise Exception(
+                    "Value on < %s > is too long (%s/%s)."
+                    % (
+                        parent_node.name.value,
+                        len(result),
+                        directive_args["limit"],
+                    )
+                )
+            return result
+
     @Directive("validateChoices", schema_name="test_issue133")
     class ValidateChoicesDirective:
         async def on_argument_execution(
@@ -112,6 +132,25 @@ async def ttftt_engine():
                 )
             return result
 
+        async def on_post_input_coercion(
+            self,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node,
+            value: Any,
+            ctx: Optional[Any],
+        ):
+            result = await next_directive(parent_node, value, ctx)
+            if result not in directive_args["choices"]:
+                raise Exception(
+                    "Value on < %s > is invalid. Valid options are < %s >."
+                    % (
+                        parent_node.name.value,
+                        ", ".join(directive_args["choices"]),
+                    )
+                )
+            return result
+
     @Directive("debug", schema_name="test_issue133")
     class DebugDirective:
         async def on_argument_execution(
@@ -125,6 +164,16 @@ async def ttftt_engine():
         ) -> Any:
             return await next_directive(parent_node, argument_node, value, ctx)
 
+        async def on_post_input_coercion(
+            self,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node,
+            value: Any,
+            ctx: Optional[Any],
+        ):
+            return await next_directive(parent_node, value, ctx)
+
     @Directive("stop", schema_name="test_issue133")
     class StopDirective:
         async def on_argument_execution(
@@ -136,6 +185,16 @@ async def ttftt_engine():
             value: Any,
             ctx: Optional[Any],
         ) -> Any:
+            return UNDEFINED_VALUE
+
+        async def on_post_input_coercion(
+            self,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node,
+            value: Any,
+            ctx: Optional[Any],
+        ):
             return UNDEFINED_VALUE
 
     @Resolver("Query.search", schema_name="test_issue133")
@@ -157,10 +216,6 @@ async def ttftt_engine():
     return await create_engine(_SDL, schema_name="test_issue133")
 
 
-# TODO: fix the test once `on_post_input_coercion` has been defined and properly handled.
-@pytest.mark.skip(
-    reason="`on_post_input_coercion` aren't handled properly yet. The method's prototype need to be defined."
-)
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query,expected",
@@ -197,9 +252,9 @@ async def ttftt_engine():
                 "data": {"aField": None},
                 "errors": [
                     {
-                        "message": "Value of argument < myInputInputArg1 > on field < aField > is invalid. Valid options are < VALID >.",
-                        "locations": [{"line": 3, "column": 15}],
+                        "message": "Value on < myArg > is invalid. Valid options are < VALID >.",
                         "path": ["aField"],
+                        "locations": [{"line": 5, "column": 37}],
                     }
                 ],
             },
@@ -219,14 +274,14 @@ async def ttftt_engine():
                 "data": {"aField": None},
                 "errors": [
                     {
-                        "message": "Value of argument < myInputInputArg1 > on field < aField > is invalid. Valid options are < VALID >.",
-                        "locations": [{"line": 3, "column": 15}],
+                        "message": "Value on < myArg > is invalid. Valid options are < VALID >.",
                         "path": ["aField"],
+                        "locations": [{"line": 5, "column": 37}],
                     },
                     {
-                        "message": "Value of argument < myInputInputArg2 > on field < aField > is invalid. Valid options are < VALID >.",
-                        "locations": [{"line": 3, "column": 15}],
+                        "message": "Value on < myArg > is invalid. Valid options are < VALID >.",
                         "path": ["aField"],
+                        "locations": [{"line": 6, "column": 37}],
                     },
                 ],
             },
@@ -250,18 +305,18 @@ async def ttftt_engine():
                 "errors": [
                     {
                         "message": "Value of argument < myInputArg > on field < anotherField > is invalid. Valid options are < VALID >.",
-                        "locations": [{"line": 3, "column": 15}],
                         "path": ["anotherField"],
+                        "locations": [{"line": 4, "column": 17}],
                     },
                     {
-                        "message": "Value of argument < myInputInputArg1 > on field < anotherField > is invalid. Valid options are < VALID >.",
-                        "locations": [{"line": 3, "column": 15}],
+                        "message": "Value on < myArg > is invalid. Valid options are < VALID >.",
                         "path": ["anotherField"],
+                        "locations": [{"line": 7, "column": 39}],
                     },
                     {
-                        "message": "Value of argument < myInputInputArg2 > on field < anotherField > is invalid. Valid options are < VALID >.",
-                        "locations": [{"line": 3, "column": 15}],
+                        "message": "Value on < myArg > is invalid. Valid options are < VALID >.",
                         "path": ["anotherField"],
+                        "locations": [{"line": 8, "column": 39}],
                     },
                 ],
             },
@@ -271,13 +326,22 @@ async def ttftt_engine():
             query {
               stopedField(stopedArg: {
                 myInputArg: {
-                  myInputInputArg1: "INVALID"
+                  myInputInputArg1: "VALID"
                   myInputInputArg2: "VALID"
                 }
               })
             }
             """,
-            {"data": {"stopedField": None}},
+            {
+                "data": {"stopedField": None},
+                "errors": [
+                    {
+                        "message": "Argument < stopedArg > has invalid value < {myInputArg: {myInputInputArg1: VALID, myInputInputArg2: VALID}} >.",
+                        "path": ["stopedField"],
+                        "locations": [{"line": 3, "column": 38}],
+                    }
+                ],
+            },
         ),
     ],
 )

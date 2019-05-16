@@ -20,7 +20,7 @@ from tartiflette.coercers.outputs.enum_coercer import enum_coercer
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLType
+from tartiflette.types.type import GraphQLInputType, GraphQLType
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLEnumValue", "GraphQLEnumType")
@@ -147,7 +147,7 @@ class GraphQLEnumValue:
         )
 
 
-class GraphQLEnumType(GraphQLType):
+class GraphQLEnumType(GraphQLInputType, GraphQLType):
     """
     Definition of a GraphQL enum type.
     """
