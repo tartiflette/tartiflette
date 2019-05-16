@@ -3,9 +3,6 @@ from tartiflette.types.exceptions.tartiflette import SkipExecution
 
 
 class Skip:
-    def __init__(self, _config):
-        pass
-
     async def on_field_execution(
         self, directive_args, next_resolver, parent_result, args, ctx, info
     ):
@@ -15,9 +12,9 @@ class Skip:
         return await next_resolver(parent_result, args, ctx, info)
 
 
-def bake(schema_name, config):
+def bake(schema_name, _config):
     sdl = "directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT"
 
-    Directive(name="skip", schema_name=schema_name)(Skip(config))
+    Directive(name="skip", schema_name=schema_name)(Skip())
 
     return sdl

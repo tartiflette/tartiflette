@@ -4,9 +4,6 @@ from tartiflette import Scalar
 
 
 class ScalarBoolean:
-    def __init__(self, _config):
-        pass
-
     def coerce_output(self, val: Any) -> bool:
         return bool(val)
 
@@ -14,9 +11,9 @@ class ScalarBoolean:
         return bool(val)
 
 
-def bake(schema_name, config):
+def bake(schema_name, _config):
     sdl = "scalar Boolean"
 
-    Scalar(name="Boolean", schema_name=schema_name)(ScalarBoolean(config))
+    Scalar(name="Boolean", schema_name=schema_name)(ScalarBoolean())
 
     return sdl

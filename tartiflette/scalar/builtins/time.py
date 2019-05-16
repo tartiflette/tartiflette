@@ -4,9 +4,6 @@ from tartiflette import Scalar
 
 
 class ScalarTime:
-    def __init__(self, _config):
-        pass
-
     def coerce_output(self, val: datetime) -> str:
         return val.isoformat().split("T")[1]
 
@@ -14,9 +11,9 @@ class ScalarTime:
         return datetime.strptime(val, "%H:%M:%S")
 
 
-def bake(schema_name, config):
+def bake(schema_name, _config):
     sdl = "scalar Time"
 
-    Scalar("Time", schema_name=schema_name)(ScalarTime(config))
+    Scalar("Time", schema_name=schema_name)(ScalarTime())
 
     return sdl

@@ -4,9 +4,6 @@ from tartiflette import Scalar
 
 
 class ScalarString:
-    def __init__(self, _config):
-        pass
-
     def coerce_output(self, val: Any) -> str:
         return str(val)
 
@@ -14,9 +11,9 @@ class ScalarString:
         return str(val)
 
 
-def bake(schema_name, config):
+def bake(schema_name, _config):
     sdl = "scalar String"
 
-    Scalar(name="String", schema_name=schema_name)(ScalarString(config))
+    Scalar(name="String", schema_name=schema_name)(ScalarString())
 
     return sdl

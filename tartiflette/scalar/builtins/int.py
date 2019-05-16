@@ -4,9 +4,6 @@ from tartiflette import Scalar
 
 
 class ScalarInt:
-    def __init__(self, _config):
-        pass
-
     def coerce_output(self, val: Any) -> int:
         return int(val)
 
@@ -14,9 +11,9 @@ class ScalarInt:
         return int(val)
 
 
-def bake(schema_name, config):
+def bake(schema_name, _config):
     sdl = "scalar Int"
 
-    Scalar(name="Int", schema_name=schema_name)(ScalarInt(config))
+    Scalar(name="Int", schema_name=schema_name)(ScalarInt())
 
     return sdl

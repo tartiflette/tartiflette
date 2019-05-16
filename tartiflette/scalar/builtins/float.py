@@ -4,9 +4,6 @@ from tartiflette import Scalar
 
 
 class ScalarFloat:
-    def __init__(self, _config):
-        pass
-
     def coerce_output(self, val: Any) -> float:
         return float(val)
 
@@ -14,9 +11,9 @@ class ScalarFloat:
         return float(val)
 
 
-def bake(schema_name, config):
+def bake(schema_name, _config):
     sdl = "scalar Float"
 
-    Scalar(name="Float", schema_name=schema_name)(ScalarFloat(config))
+    Scalar(name="Float", schema_name=schema_name)(ScalarFloat())
 
     return sdl

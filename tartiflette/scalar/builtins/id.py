@@ -7,9 +7,9 @@ class ScalarId(ScalarString):
     pass
 
 
-def bake(schema_name, config):
+def bake(schema_name, _config):
     sdl = "scalar ID"
 
-    Scalar(name="ID", schema_name=schema_name)(ScalarId(config))
+    Scalar(name="ID", schema_name=schema_name)(ScalarId())
 
     return sdl

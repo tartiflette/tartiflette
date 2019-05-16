@@ -5,40 +5,60 @@ from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 from tartiflette.executors.basic import execute as basic_execute
 from tartiflette.executors.basic import subscribe as basic_subscribe
 from tartiflette.parser import TartifletteRequestParser
-from tartiflette.resolver.factory import (default_error_coercer,
-                                          error_coercer_factory)
+from tartiflette.resolver.factory import (
+    default_error_coercer,
+    error_coercer_factory,
+)
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry
-from tartiflette.types.exceptions.tartiflette import GraphQLError
+from tartiflette.types.exceptions.tartiflette import (
+    GraphQLError,
+    ImproperlyConfigured,
+)
 from tartiflette.utils.errors import to_graphql_error
 
-_BUILTINS_OBJECTS = {
-    "deprecated": "tartiflette.directive.builtins.deprecated",
-    "nonIntrospectable": "tartiflette.directive.builtins.non_introspectable",
-    "skip": "tartiflette.directive.builtins.skip",
+_BUILTINS_MODULES = [
+    "tartiflette.directive.builtins.deprecated",
+    "tartiflette.directive.builtins.non_introspectable",
+    "tartiflette.directive.builtins.skip",
+    "tartiflette.directive.builtins.include",
+    "tartiflette.scalar.builtins.boolean",
+    "tartiflette.scalar.builtins.date",
+    "tartiflette.scalar.builtins.datetime",
+    "tartiflette.scalar.builtins.float",
+    "tartiflette.scalar.builtins.id",
+    "tartiflette.scalar.builtins.int",
+    "tartiflette.scalar.builtins.string",
+    "tartiflette.scalar.builtins.time",
+    "tartiflette.schema.builtins.introspection",
+]
 
-    "include": "tartiflette.directive.builtins.include",
-    "Boolean": "tartiflette.scalar.builtins.boolean",
-    "Date": "tartiflette.scalar.builtins.date",
-    "DateTime": "tartiflette.scalar.builtins.datetime",
-    "Float": "tartiflette.scalar.builtins.float",
-    "ID": "tartiflette.scalar.builtins.id",
-    "Int": "tartiflette.scalar.builtins.int",
-    "String": "tartiflette.scalar.builtins.string",
-    "Time": "tartiflette.scalar.builtins.time",
-    "Introspection": "tartiflette.schema.builtins.introspection",
-}
+
+def _bake_module(module, schema_name, config=None):
+    msdl = module.bake(schema_name, config)
+    if asyncio.iscoroutine(msdl):
+        msdl = asyncio.get_event_loop().run_until_complete(msdl)
+
+    return msdl
 
 
-def _import_modules(modules, schema_name, exclude_builtins):
+def _import_builtins(imported_modules, sdl, schema_name):
+    for module in _BUILTINS_MODULES:
+        try:
+            module = import_module(module)
+            sdl = f"{sdl}\n{_bake_module(module, schema_name)}"
+            imported_modules.append(module)
+        except ImproperlyConfigured:
+            pass
+
+    return imported_modules, sdl
+
+
+def _import_modules(modules, schema_name):
     imported_modules = []
     sdl = ""
 
     invalidate_caches()
-
-    modules.extend(
-        [v for k, v in _BUILTINS_OBJECTS.items() if k not in exclude_builtins]
-    )
 
     for module in modules:
         if not isinstance(module, dict):
@@ -48,15 +68,11 @@ def _import_modules(modules, schema_name, exclude_builtins):
         module = import_module(module["name"])
 
         if hasattr(module, "bake"):
-            msdl = getattr(module, "bake")(schema_name, config)
-            if asyncio.iscoroutine(msdl):
-                msdl = asyncio.get_event_loop().run_until_complete(msdl)
-
-            sdl = f"{sdl}\n{msdl or ''}"
+            sdl = f"{sdl}\n{_bake_module(module, schema_name, config) or ''}"
 
         imported_modules.append(module)
 
-    return imported_modules, sdl
+    return _import_builtins(imported_modules, sdl, schema_name)
 
 
 class Engine:
@@ -66,7 +82,6 @@ class Engine:
         schema_name: str = "default",
         error_coercer: Callable[[Exception], dict] = default_error_coercer,
         custom_default_resolver: Optional[Callable] = None,
-        exclude_builtins: Optional[List[str]] = None,
         modules: Optional[Union[str, List[str]]] = None,
     ) -> None:
         """Create an engine by analyzing the SDL and connecting it with the imported Resolver, Mutation,
@@ -91,9 +106,7 @@ class Engine:
         if isinstance(modules, str):
             modules = [modules]
 
-        self._modules, modules_sdl = _import_modules(
-            modules, schema_name, exclude_builtins or []
-        )
+        self._modules, modules_sdl = _import_modules(modules, schema_name)
 
         self._error_coercer = error_coercer_factory(error_coercer)
         self._parser = TartifletteRequestParser()

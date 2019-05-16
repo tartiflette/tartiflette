@@ -4,9 +4,6 @@ from tartiflette import Directive
 
 
 class Deprecated:
-    def __init__(self, _config):
-        pass
-
     async def on_introspection(
         self,
         directive_args: Dict[str, Any],
@@ -28,13 +25,13 @@ class Deprecated:
         return introspected_element
 
 
-def bake(schema_name, config):
+def bake(schema_name, _config):
     sdl = """
     directive @deprecated(
         reason: String = "Deprecated"
     ) on FIELD_DEFINITION | ENUM_VALUE
     """
 
-    Directive("deprecated", schema_name=schema_name)(Deprecated(config))
+    Directive("deprecated", schema_name=schema_name)(Deprecated())
 
     return sdl
