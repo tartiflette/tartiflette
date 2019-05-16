@@ -45,7 +45,7 @@ from .values import (
 from .variable import VariableNode
 from .variable_definition import VariableDefinitionNode
 
-__all__ = [
+__all__ = (
     "ArgumentNode",
     "BooleanValueNode",
     "DescriptionNode",
@@ -91,4 +91,4 @@ __all__ = [
     "UnionTypeExtensionNode",
     "VariableDefinitionNode",
     "VariableNode",
-]
+)

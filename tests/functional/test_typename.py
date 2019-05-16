@@ -1,7 +1,6 @@
 import pytest
 
 from tartiflette import Resolver, create_engine
-from tartiflette.executors.types import Info
 
 _SDL = """
 type One {
@@ -30,7 +29,9 @@ type Query {
 @pytest.fixture(scope="module")
 async def ttftt_engine():
     @Resolver("Query.test", schema_name="test_typename")
-    async def func_field_resolver(parent, arguments, request_ctx, info: Info):
+    async def func_field_resolver(
+        parent, arguments, request_ctx, info: "ResolveInfo"
+    ):
         chosen = arguments.get("choose", 0)
         if chosen == 1:
             return {"aField": "aValue", "bField": 1, "_typename": "One"}

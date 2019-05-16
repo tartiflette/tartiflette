@@ -55,8 +55,8 @@ async def test_tartiflette_execute_nested_error(clean_registry):
         "data": {"test": {"deep": {"lastUpdate": None}}},
         "errors": [
             {
-                "message": "Invalid value (value: None) for field `lastUpdate` of type `[Float!]`",
-                "path": ["test", "deep", "lastUpdate"],
+                "message": "Cannot return null for non-nullable field Nested.lastUpdate.",
+                "path": ["test", "deep", "lastUpdate", 1],
                 "locations": [{"line": 5, "column": 17}],
             }
         ],

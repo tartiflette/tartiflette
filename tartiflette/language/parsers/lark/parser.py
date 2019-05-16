@@ -9,6 +9,8 @@ from tartiflette.language.parsers.lark.transformers import (
     TokenTransformer,
 )
 
+__all__ = ("parse_to_document",)
+
 _LARK_PARSER = Lark.open(
     os.path.join(os.path.dirname(__file__), "graphql_sdl_grammar.lark"),
     start="document",

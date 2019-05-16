@@ -2,6 +2,8 @@ from typing import Any, Optional
 
 from tartiflette.language.ast.base import Node
 
+__all__ = ("VariableDefinitionNode",)
+
 
 class VariableDefinitionNode(Node):
     """
@@ -13,7 +15,7 @@ class VariableDefinitionNode(Node):
     def __init__(
         self,
         variable: "VariableNode",
-        type: "TypeNode",
+        type: "TypeNode",  # pylint: disable=redefined-builtin
         default_value: Optional["ValueNode"] = None,
         location: Optional["Location"] = None,
     ) -> None:
@@ -27,7 +29,6 @@ class VariableDefinitionNode(Node):
         :type default_value: Optional[ValueNode]
         :type location: Optional[Location]
         """
-        # pylint: disable=redefined-builtin
         self.variable = variable
         self.type = type
         self.default_value = default_value
@@ -43,12 +44,10 @@ class VariableDefinitionNode(Node):
         """
         return self is other or (
             isinstance(other, VariableDefinitionNode)
-            and (
-                self.variable == other.variable
-                and self.type == other.type
-                and self.default_value == other.default_value
-                and self.location == other.location
-            )
+            and self.variable == other.variable
+            and self.type == other.type
+            and self.default_value == other.default_value
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:

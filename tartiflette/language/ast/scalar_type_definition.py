@@ -2,6 +2,8 @@ from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeDefinitionNode
 
+__all__ = ("ScalarTypeDefinitionNode",)
+
 
 class ScalarTypeDefinitionNode(TypeDefinitionNode):
     """
@@ -43,12 +45,10 @@ class ScalarTypeDefinitionNode(TypeDefinitionNode):
         """
         return self is other or (
             isinstance(other, ScalarTypeDefinitionNode)
-            and (
-                self.description == other.description
-                and self.name == other.name
-                and self.directives == other.directives
-                and self.location == other.location
-            )
+            and self.description == other.description
+            and self.name == other.name
+            and self.directives == other.directives
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:

@@ -3,7 +3,6 @@ import os
 import pytest
 
 from tartiflette import create_engine
-from tartiflette.schema.schema import GraphQLSchema
 
 _curr_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -14,6 +13,7 @@ async def test_tartiflette_engine_initialization_with_sdl_file_list(
 ):
     engine = await create_engine(
         [
+            _curr_path + "/data/splitted_sdl/directives.sdl",
             _curr_path + "/data/splitted_sdl/author.sdl",
             _curr_path + "/data/splitted_sdl/blog.sdl",
             _curr_path + "/data/splitted_sdl/post.sdl",
@@ -77,6 +77,9 @@ async def test_tartiflette_engine_initialization_with_string_schema(
 ):
     engine = await create_engine(
         """
+    directive @relation(name: String!) on FIELD_DEFINITION
+    directive @default(value: Int!) on FIELD_DEFINITION
+
     type Post {
         id: ID!
         title: String!

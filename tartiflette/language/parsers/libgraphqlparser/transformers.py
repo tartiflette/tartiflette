@@ -28,6 +28,8 @@ from tartiflette.language.ast import (
     VariableNode,
 )
 
+__all__ = ("document_from_ast_json",)
+
 
 def _parse_location(location_ast: dict) -> "Location":
     """
@@ -137,7 +139,7 @@ def _parse_float_value(float_value_ast: dict) -> "FloatValueNode":
     :rtype: FloatValueNode
     """
     return FloatValueNode(
-        value=float(float_value_ast["value"]),
+        value=float_value_ast["value"],
         location=_parse_location(float_value_ast["loc"]),
     )
 
@@ -152,7 +154,7 @@ def _parse_int_value(int_value_ast: dict) -> "IntValueNode":
     :rtype: IntValueNode
     """
     return IntValueNode(
-        value=int(int_value_ast["value"]),
+        value=int_value_ast["value"],
         location=_parse_location(int_value_ast["loc"]),
     )
 

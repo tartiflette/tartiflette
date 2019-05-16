@@ -2,6 +2,8 @@ from typing import Any, Optional, Union
 
 from tartiflette.language.ast.base import TypeNode
 
+__all__ = ("ListTypeNode", "NonNullTypeNode")
+
 
 class ListTypeNode(TypeNode):
     """
@@ -12,7 +14,9 @@ class ListTypeNode(TypeNode):
 
     def __init__(
         self,
-        type: Union["NamedTypeNode", "NonNullTypeNode"],
+        type: Union[  # pylint: disable=redefined-builtin
+            "NamedTypeNode", "NonNullTypeNode"
+        ],
         location: Optional["Location"] = None,
     ) -> None:
         """
@@ -21,7 +25,6 @@ class ListTypeNode(TypeNode):
         :type type: Union[NamedTypeNode, NonNullTypeNode]
         :type location: Optional[Location]
         """
-        # pylint: disable=redefined-builtin
         self.type = type
         self.location = location
 
@@ -35,7 +38,8 @@ class ListTypeNode(TypeNode):
         """
         return self is other or (
             isinstance(other, ListTypeNode)
-            and (self.type == other.type and self.location == other.location)
+            and self.type == other.type
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -49,6 +53,14 @@ class ListTypeNode(TypeNode):
             self.location,
         )
 
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return f"[{self.type}]"
+
 
 class NonNullTypeNode(TypeNode):
     """
@@ -59,7 +71,9 @@ class NonNullTypeNode(TypeNode):
 
     def __init__(
         self,
-        type: Union["NamedTypeNode", "ListTypeNode"],
+        type: Union[  # pylint: disable=redefined-builtin
+            "NamedTypeNode", "ListTypeNode"
+        ],
         location: Optional["Location"] = None,
     ) -> None:
         """
@@ -68,7 +82,6 @@ class NonNullTypeNode(TypeNode):
         :type type: Union[NamedTypeNode, ListTypeNode]
         :type location: Optional[Location]
         """
-        # pylint: disable=redefined-builtin
         self.type = type
         self.location = location
 
@@ -82,7 +95,8 @@ class NonNullTypeNode(TypeNode):
         """
         return self is other or (
             isinstance(other, NonNullTypeNode)
-            and (self.type == other.type and self.location == other.location)
+            and self.type == other.type
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -95,3 +109,11 @@ class NonNullTypeNode(TypeNode):
             self.type,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return f"{self.type}!"

@@ -1,0 +1,73 @@
+import asyncio
+
+from typing import Any, Callable, List
+
+from tartiflette.coercers.common import Path
+from tartiflette.coercers.outputs.null_coercer import null_coercer_wrapper
+from tartiflette.resolver.factory import complete_value_catching_error
+from tartiflette.types.exceptions.tartiflette import MultipleException
+
+__all__ = ("list_coercer",)
+
+
+@null_coercer_wrapper
+async def list_coercer(
+    result: Any,
+    info: "ResolveInfo",
+    execution_context: "ExecutionContext",
+    field_nodes: List["FieldNode"],
+    path: "Path",
+    item_type: "GraphQLOutputType",
+    inner_coercer: Callable,
+) -> List[Any]:
+    """
+    Computes the value of a list.
+    :param result: resolved value
+    :param info: information related to the execution and the resolved field
+    :param execution_context: instance of the query execution context
+    :param field_nodes: AST nodes related to the resolved field
+    :param path: the path traveled until this resolver
+    :param item_type: GraphQLType of list items
+    :param inner_coercer: the pre-computed coercer to use on the result
+    :type result: Any
+    :type info: ResolveInfo
+    :type execution_context: ExecutionContext
+    :type field_nodes: List[FieldNode]
+    :type path: Path
+    :type item_type: GraphQLOutputType
+    :type inner_coercer: Callable
+    :return: the computed value
+    :rtype: List[Any]
+    """
+    if not isinstance(result, list):
+        raise TypeError(
+            "Expected Iterable, but did not find one for field "
+            f"{info.parent_type.name}.{info.field_name}."
+        )
+
+    results = await asyncio.gather(
+        *[
+            complete_value_catching_error(
+                item,
+                info,
+                execution_context,
+                field_nodes,
+                Path(path, index),
+                item_type,
+                inner_coercer,
+            )
+            for index, item in enumerate(result)
+        ],
+        return_exceptions=True,
+    )
+
+    # TODO: maybe we could do something cleaner here
+    exceptions = MultipleException()
+    for item in results:
+        if isinstance(item, MultipleException):
+            exceptions += item
+
+    if exceptions:
+        raise exceptions
+
+    return results

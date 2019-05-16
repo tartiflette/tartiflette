@@ -2,6 +2,8 @@ from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import Node
 
+__all__ = ("SelectionSetNode",)
+
 
 class SelectionSetNode(Node):
     """
@@ -18,7 +20,7 @@ class SelectionSetNode(Node):
         """
         :param selections: selections of the selection set
         :param location: location of the selection set in the query/SDL
-        :type selections: List["SelectionNode"]
+        :type selections: List[SelectionNode]
         :type location: Optional[Location]
         """
         self.selections = selections
@@ -34,10 +36,8 @@ class SelectionSetNode(Node):
         """
         return self is other or (
             isinstance(other, SelectionSetNode)
-            and (
-                self.selections == other.selections
-                and self.location == other.location
-            )
+            and self.selections == other.selections
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:

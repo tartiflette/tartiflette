@@ -40,15 +40,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < ids > is not known",
+                        "message": "Variable < $ids > of required type < [String]! > was not provided.",
                         "path": None,
-                        "locations": [],
-                    },
-                    {
-                        "message": "Variable < ids > is not known",
-                        "path": None,
-                        "locations": [],
-                    },
+                        "locations": [{"line": 1, "column": 8}],
+                    }
                 ],
             },
         ),
@@ -59,15 +54,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < ids > is not known",
+                        "message": "Variable < $ids > of required type < [String!]! > was not provided.",
                         "path": None,
-                        "locations": [],
-                    },
-                    {
-                        "message": "Variable < ids > is not known",
-                        "path": None,
-                        "locations": [],
-                    },
+                        "locations": [{"line": 1, "column": 8}],
+                    }
                 ],
             },
         ),
@@ -89,15 +79,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < ids > is not known",
+                        "message": "Variable < $ids > of required type < [String]! > was not provided.",
                         "path": None,
-                        "locations": [],
-                    },
-                    {
-                        "message": "Variable < ids > is not known",
-                        "path": None,
-                        "locations": [],
-                    },
+                        "locations": [{"line": 1, "column": 8}],
+                    }
                 ],
             },
         ),
@@ -108,15 +93,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < ids > is not known",
+                        "message": "Variable < $ids > of required type < [String!]! > was not provided.",
                         "path": None,
-                        "locations": [],
-                    },
-                    {
-                        "message": "Variable < ids > is not known",
-                        "path": None,
-                        "locations": [],
-                    },
+                        "locations": [{"line": 1, "column": 8}],
+                    }
                 ],
             },
         ),
@@ -138,15 +118,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Value can't be null or contain a null value",
+                        "message": "Variable < $ids > of non-null type < [String]! > must not be null.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
-                    },
-                    {
-                        "message": "Given value for < ids > is not type < <class 'str'> >",
-                        "path": None,
-                        "locations": [{"line": 1, "column": 8}],
-                    },
+                    }
                 ],
             },
         ),
@@ -157,15 +132,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Value can't be null or contain a null value",
+                        "message": "Variable < $ids > of non-null type < [String!]! > must not be null.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
-                    },
-                    {
-                        "message": "Given value for < ids > is not type < <class 'str'> >",
-                        "path": None,
-                        "locations": [{"line": 1, "column": 8}],
-                    },
+                    }
                 ],
             },
         ),
@@ -203,15 +173,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Value can't be null or contain a null value",
+                        "message": "Variable < $ids > got invalid value < [None] >; Expected non-nullable type < String! > not to be null at value[0].",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
-                    },
-                    {
-                        "message": "Given value for < ids > is not type < <class 'str'> >",
-                        "path": None,
-                        "locations": [{"line": 1, "column": 8}],
-                    },
+                    }
                 ],
             },
         ),
@@ -227,15 +192,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Value can't be null or contain a null value",
+                        "message": "Variable < $ids > got invalid value < [None] >; Expected non-nullable type < String! > not to be null at value[0].",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
-                    },
-                    {
-                        "message": "Given value for < ids > is not type < <class 'str'> >",
-                        "path": None,
-                        "locations": [{"line": 1, "column": 8}],
-                    },
+                    }
                 ],
             },
         ),

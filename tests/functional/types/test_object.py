@@ -54,7 +54,7 @@ async def test_tartiflette_execute_object_type_output(clean_registry):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Invalid value (value: None) for field `testField` of type `Test!`",
+                        "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
                         "locations": [{"line": 3, "column": 9}],
                     }
@@ -243,7 +243,7 @@ async def test_ttftt_object_with_interfaces(clean_registry):
     assert len(repository_interfaces) == len(repository_type.interfaces_names)
 
     url_interface = ttftt_engine._schema.find_type("UniformResourceLocatable")
-    assert url_interface.possibleTypes == []
+    assert url_interface.possibleTypes is None
 
     result = await ttftt_engine.execute(
         """

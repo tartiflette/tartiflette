@@ -5,9 +5,7 @@ async def _query_dog_resolver(*_args, **__kwargs):
     return {"name": "Doggy"}
 
 
-async def _dog_does_know_command_resolver(
-    _parent_result, args, *__args, **___kwargs
-):
+async def _dog_does_know_command_resolver(_parent, args, *__args, **___kwargs):
     return args["dogCommand"] == "SIT"
 
 

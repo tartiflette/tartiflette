@@ -88,7 +88,7 @@ string_value: STRING
 boolean_value: TRUE
              | FALSE
 null_value: NULL
-enum_value: name // TODO: but not "true", "false" or "null"
+enum_value: name
 list_value: "[" "]"
           | "[" value+ "]"
 object_field: name ":" value
@@ -129,13 +129,6 @@ arguments_definition: "(" input_value_definition+ ")"
 //
 // Directives
 //
-EXECUTABLE_DIRECTIVE_LOCATION: "QUERY"
-                             | "MUTATION"
-                             | "SUBSCRIPTION"
-                             | "FIELD"
-                             | "FRAGMENT_DEFINITION"
-                             | "FRAGMENT_SPREAD"
-                             | "INLINE_FRAGMENT"
 TYPE_SYSTEM_DIRECTIVE_LOCATION: "SCHEMA"
                               | "SCALAR"
                               | "OBJECT"
@@ -143,15 +136,22 @@ TYPE_SYSTEM_DIRECTIVE_LOCATION: "SCHEMA"
                               | "ARGUMENT_DEFINITION"
                               | "INTERFACE"
                               | "UNION"
-                              | "ENUM"
                               | "ENUM_VALUE"
+                              | "ENUM"
                               | "INPUT_OBJECT"
                               | "INPUT_FIELD_DEFINITION"
+EXECUTABLE_DIRECTIVE_LOCATION: "QUERY"
+                             | "MUTATION"
+                             | "SUBSCRIPTION"
+                             | "FIELD"
+                             | "FRAGMENT_DEFINITION"
+                             | "FRAGMENT_SPREAD"
+                             | "INLINE_FRAGMENT"
 directive: "@" name arguments?
 directives: directive+
-directive_location: EXECUTABLE_DIRECTIVE_LOCATION
-                  | TYPE_SYSTEM_DIRECTIVE_LOCATION
-directive_locations: "|"? directive_location ("|" directive_location)*
+directive_location: TYPE_SYSTEM_DIRECTIVE_LOCATION
+                  | EXECUTABLE_DIRECTIVE_LOCATION
+directive_locations: directive_location ("|" directive_location)*
 
 
 //

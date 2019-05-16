@@ -5,6 +5,10 @@ async def _query_human_resolver(*_args, **__kwargs):
     return {"name": "Hooman"}
 
 
+# TODO: unskip this test once `validate_document` function has been implemented
+@pytest.mark.skip(
+    reason="Will handled by the `validate_document` function which isn't implemented yet."
+)
 @pytest.mark.asyncio
 @pytest.mark.ttftt_engine(resolvers={"Query.human": _query_human_resolver})
 @pytest.mark.parametrize(

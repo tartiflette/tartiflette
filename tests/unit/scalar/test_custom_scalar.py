@@ -4,7 +4,7 @@ import pytest
 
 
 def test_scalar_custom_scalar_inst():
-    from tartiflette.scalar.custom_scalar import Scalar
+    from tartiflette.scalar.scalar import Scalar
 
     s = Scalar("A")
     assert s._name == "A"
@@ -14,7 +14,7 @@ def test_scalar_custom_scalar_inst():
 
 @pytest.fixture
 def a_scalar():
-    from tartiflette.scalar.custom_scalar import Scalar
+    from tartiflette.scalar.scalar import Scalar
 
     return Scalar("A")
 

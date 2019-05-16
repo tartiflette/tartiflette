@@ -2,6 +2,8 @@ from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import Node
 
+__all__ = ("InputValueDefinitionNode",)
+
 
 class InputValueDefinitionNode(Node):
     """
@@ -20,7 +22,7 @@ class InputValueDefinitionNode(Node):
     def __init__(
         self,
         name: "NameNode",
-        type: "TypeNode",
+        type: "TypeNode",  # pylint: disable=redefined-builtin
         description: Optional["DescriptionNode"] = None,
         default_value: Optional["ValueNode"] = None,
         directives: Optional[List["DirectiveNode"]] = None,
@@ -41,7 +43,6 @@ class InputValueDefinitionNode(Node):
         :type directives: Optional[List[DirectiveNode]]
         :type location: Optional[Location]
         """
-        # pylint: disable=redefined-builtin
         self.name = name
         self.type = type
         self.description = description
@@ -59,14 +60,12 @@ class InputValueDefinitionNode(Node):
         """
         return self is other or (
             isinstance(other, InputValueDefinitionNode)
-            and (
-                self.description == other.description
-                and self.name == other.name
-                and self.type == other.type
-                and self.default_value == other.default_value
-                and self.directives == other.directives
-                and self.location == other.location
-            )
+            and self.description == other.description
+            and self.name == other.name
+            and self.type == other.type
+            and self.default_value == other.default_value
+            and self.directives == other.directives
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:

@@ -1,36 +1,80 @@
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
-from tartiflette.executors.types import Info
-from tartiflette.types.location import Location
+
+class SkipCollection(Exception):
+    pass
 
 
 class TartifletteError(Exception):
+    """
+    Base exceptions of all internal errors raised by the Tartiflette engine.
+    """
+
     def __init__(
         self,
         message: str,
-        path: Optional[list] = None,
-        locations: Optional[List[Location]] = None,
-        user_message: str = None,
-        more_info: str = "",
-        extensions: Optional[dict] = None,
+        path: Optional[List[str]] = None,
+        locations: Optional[List["Location"]] = None,
+        user_message: Optional[str] = None,
+        more_info: Optional[str] = None,
+        extensions: Optional[Dict[str, Any]] = None,
         original_error: Optional[Exception] = None,
     ) -> None:
+        """
+        :param message: message explaining the error which occurred
+        :param path: path on the query where the error occurred
+        :param locations: locations on the document where the error occurred
+        :param user_message: more detailed human message explaining the error
+        :param more_info: extra information for the error
+        :param extensions: extra information for the error which will be added
+        to the `extensions` key once coerced
+        :param original_error: instance of the original exception which lead to
+        the error
+        :type message: str
+        :type path: Optional[List[str]]
+        :type locations: Optional[List[Location]]
+        :type user_message: Optional[str]
+        :type more_info: Optional[str]
+        :type extensions: Optional[Dict[str, Any]]
+        :type original_error: Optional[Exception]
+        """
         super().__init__(message)
         self.message = message  # Developer message by default
-        self.user_message = user_message or message
-        self.more_info = more_info
+        self.user_message = user_message
+        self.more_info = more_info or ""
         self.path = path or None
         self.locations = locations or []
         self.extensions = extensions or {}
         self.original_error = original_error
 
+    def __repr__(self) -> str:
+        """
+        Returns the representation of a TartifletteError instance.
+        :return: the representation of a TartifletteError instance
+        :rtype: str
+        """
+        return f"{self.__class__.__name__}(message=%r, locations=%r)" % (
+            self.user_message or self.message,
+            self.locations,
+        )
+
     def coerce_value(
         self,
         *_args,
-        path: Optional[list] = None,
-        locations: Optional[List[Location]] = None,
+        path: Optional[List[str]] = None,
+        locations: Optional[List["Location"]] = None,
         **_kwargs,
-    ):
+    ) -> Dict[str, Any]:
+        """
+        Converts the TartifletteError instance into a valid GraphQL error
+        output.
+        :param path: path on the query where the error occurred
+        :param locations: locations on the document where the error occurred
+        :type path: Optional[List[str]]
+        :type locations: Optional[List[Location]]
+        :return: a valid GraphQL error output
+        :rtype: Dict[str, Any]
+        """
         computed_locations = []
 
         try:
@@ -40,9 +84,7 @@ class TartifletteError(Exception):
             pass
 
         errors = {
-            "message": self.user_message
-            if self.user_message
-            else self.message,
+            "message": self.user_message or self.message,
             "path": path or self.path,
             "locations": computed_locations,
         }
@@ -52,54 +94,44 @@ class TartifletteError(Exception):
         return errors
 
 
-class GraphQLError(TartifletteError):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        print(
-            "GraphQLError is deprecated, please use TartifletteError instead"
-        )
-
-
 class MultipleException(Exception):
-    exceptions = None
+    """
+    Utility exception which allows to handle multiple errors at once.
+    """
 
-    def __init__(self, exceptions=None):
+    def __init__(self, exceptions: Optional[List[Exception]] = None) -> None:
+        """
+        :param exceptions: list of exceptions to handle
+        :type exceptions: Optional[List[Exception]]
+        """
         super().__init__()
-        self.exceptions = exceptions
+        self.exceptions = exceptions or []
+
+    def __bool__(self) -> bool:
+        """
+        Determines whether or not there is exceptions.
+        :return: whether or not there is exceptions
+        :rtype: bool
+        """
+        return bool(self.exceptions)
+
+    def __add__(self, other: "MultipleException") -> "MultipleException":
+        """
+        Concatenates the exception list of both MultipleException to return a
+        new MultipleException instance containing both exception list.
+        :param other: an MultipleException instance
+        :type other: MultipleException
+        :return: a new MultipleException containing both exception list
+        :rtype: MultipleException
+        """
+        return MultipleException(self.exceptions + other.exceptions)
 
 
 class ImproperlyConfigured(TartifletteError):
     pass
 
 
-class InvalidValue(TartifletteError):
-    def __init__(self, value: Any, info: Info) -> None:
-        self.value = value
-        self.info = info
-        message = "Invalid value (value: {!r})".format(value)
-        try:
-            if self.info.schema_field:
-                message += " for field `{}`".format(
-                    self.info.schema_field.name
-                )
-            if self.info.schema_field.gql_type:
-                message += " of type `{}`".format(
-                    str(self.info.schema_field.gql_type)
-                )
-        except (AttributeError, TypeError, ValueError):
-            pass
-        super().__init__(
-            message=message,
-            path=self.info.path,
-            locations=[self.info.location],
-        )
-
-
 class InvalidType(TartifletteError):
-    pass
-
-
-class NullError(InvalidValue):
     pass
 
 
@@ -112,10 +144,6 @@ class GraphQLSyntaxError(TartifletteError):
 
 
 class NonAwaitableResolver(ImproperlyConfigured):
-    pass
-
-
-class NonAwaitableDirective(ImproperlyConfigured):
     pass
 
 
@@ -147,87 +175,9 @@ class UnknownTypeDefinition(TartifletteError):
     pass
 
 
-class UnusedFragment(TartifletteError):
-    pass
-
-
 class MissingImplementation(ImproperlyConfigured):
     pass
 
 
-class UnexpectedASTNode(TartifletteError):
-    pass
-
-
-class InvalidSDL(TartifletteError):
-    pass
-
-
-class RedefinedImplementation(InvalidSDL):
-    pass
-
-
-class AlreadyDefined(TartifletteError):
-    pass
-
-
-class UndefinedFragment(TartifletteError):
-    pass
-
-
-class NotALeafType(TartifletteError):
-    pass
-
-
-class NotAnObjectType(TartifletteError):
-    pass
-
-
-class NotUniqueOperationName(TartifletteError):
-    pass
-
-
-class NotLoneAnonymousOperation(TartifletteError):
-    pass
-
-
-class MultipleRootNodeOnSubscriptionOperation(TartifletteError):
-    pass
-
-
-class UndefinedFieldArgument(TartifletteError):
-    pass
-
-
-class UndefinedDirectiveArgument(TartifletteError):
-    pass
-
-
-class MissingRequiredArgument(TartifletteError):
-    pass
-
-
-class UniqueArgumentNames(TartifletteError):
-    pass
-
-
-class UnknownNamedOperation(TartifletteError):
-    pass
-
-
-class UnknownAnonymousdOperation(TartifletteError):
-    pass
-
-
-class UnknownVariableException(TartifletteError):
-    def __init__(self, varname: str) -> None:
-        # TODO: Unify error messages format
-        super().__init__(message="Variable < %s > is not known" % varname)
-
-
-class UnknownGraphQLType(TartifletteError):
-    pass
-
-
-class SkipExecution(Exception):
+class RedefinedImplementation(TartifletteError):
     pass

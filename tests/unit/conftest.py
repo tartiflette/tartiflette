@@ -11,7 +11,7 @@ def fixture_mocked_get_resolver_executor():
 
 @pytest.yield_fixture()
 def mocked_resolver_factory(monkeypatch, fixture_mocked_get_resolver_executor):
-    from tartiflette.resolver.factory import ResolverExecutorFactory
+    from tartiflette.resolver.factoryyy import ResolverExecutorFactory
 
     monkeypatch.setattr(
         ResolverExecutorFactory,

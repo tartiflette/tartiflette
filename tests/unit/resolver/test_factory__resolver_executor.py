@@ -6,7 +6,7 @@ from tests.unit.utils import AsyncMock
 
 
 def test_resolver_factory__resolver_executor_instance():
-    from tartiflette.resolver.factory import _ResolverExecutor
+    from tartiflette.resolver.factoryyy import _ResolverExecutor
 
     field = Mock()
     field.schema = None
@@ -34,7 +34,7 @@ class FakeAsyncMock(MagicMock):
 
 @pytest.fixture
 def _resolver_executor_mock():
-    from tartiflette.resolver.factory import _ResolverExecutor
+    from tartiflette.resolver.factoryyy import _ResolverExecutor
 
     field = Mock()
     field.schema = None
@@ -153,7 +153,7 @@ def test_resolver_factory__resolver_executor_update_bake(
     with patch(
         "tartiflette.resolver.factory.wraps_with_directives"
     ) as wraps_with_directives_mock:
-        from tartiflette.resolver.factory import default_resolver
+        from tartiflette.resolver.factoryyy import default_resolver
 
         _resolver_executor_mock._schema_field.subscribe = None
         _resolver_executor_mock.update_func = Mock()
