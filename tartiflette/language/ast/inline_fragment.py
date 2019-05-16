@@ -2,6 +2,8 @@ from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import SelectionNode
 
+__all__ = ("InlineFragmentNode",)
+
 
 class InlineFragmentNode(SelectionNode):
     """
@@ -42,12 +44,10 @@ class InlineFragmentNode(SelectionNode):
         """
         return self is other or (
             isinstance(other, InlineFragmentNode)
-            and (
-                self.type_condition == other.type_condition
-                and self.directives == other.directives
-                and self.selection_set == other.selection_set
-                and self.location == other.location
-            )
+            and self.type_condition == other.type_condition
+            and self.directives == other.directives
+            and self.selection_set == other.selection_set
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:

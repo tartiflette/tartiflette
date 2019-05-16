@@ -39,39 +39,599 @@ async def test_tartiflette_execute_enum_type_output(clean_registry):
 @pytest.mark.parametrize(
     "input_sdl,resolver_response,expected",
     [
-        ("Test", "Value1", {"data": {"testField": "Value1"}}),
+        ("MyEnum", None, {"data": {"testField": None}}),
         (
-            "Test!",
+            "MyEnum",
+            "UNKNOWN_VALUE",
+            {
+                "data": {"testField": None},
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        ("MyEnum", "ENUM_1", {"data": {"testField": "ENUM_1"}}),
+        (
+            "MyEnum!",
             None,
             {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Invalid value (value: None) for field `testField` of type `Test!`",
+                        "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 9}],
+                        "locations": [{"line": 3, "column": 13}],
                     }
                 ],
             },
         ),
         (
-            "[Test]",
-            ["Value3", "Value1"],
-            {"data": {"testField": ["Value3", "Value1"]}},
+            "MyEnum!",
+            "UNKNOWN_VALUE",
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
         ),
+        ("MyEnum!", "ENUM_1", {"data": {"testField": "ENUM_1"}}),
+        ("[MyEnum]", None, {"data": {"testField": None}}),
+        ("[MyEnum]", [None], {"data": {"testField": [None]}}),
         (
-            "[Test]",
-            ["Value3", "UnknownValue"],
+            "[MyEnum]",
+            "UNKNOWN_VALUE",
             {
                 "data": {"testField": None},
                 "errors": [
                     {
-                        "message": "Invalid value (value: 'UnknownValue') for field `testField` of type `[Test]`",
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 9}],
+                        "locations": [{"line": 3, "column": 13}],
                     }
                 ],
             },
+        ),
+        (
+            "[MyEnum]",
+            ["UNKNOWN_VALUE"],
+            {
+                "data": {"testField": [None]},
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum]",
+            "ENUM_1",
+            {
+                "data": {"testField": None},
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        ("[MyEnum]", ["ENUM_1"], {"data": {"testField": ["ENUM_1"]}}),
+        (
+            "[MyEnum]",
+            ["ENUM_1", None],
+            {"data": {"testField": ["ENUM_1", None]}},
+        ),
+        (
+            "[MyEnum]",
+            ["ENUM_1", "UNKNOWN_VALUE"],
+            {
+                "data": {"testField": ["ENUM_1", None]},
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum]",
+            ["ENUM_1", "ENUM_2"],
+            {"data": {"testField": ["ENUM_1", "ENUM_2"]}},
+        ),
+        (
+            "[MyEnum]!",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        ("[MyEnum]!", [None], {"data": {"testField": [None]}}),
+        (
+            "[MyEnum]!",
+            "UNKNOWN_VALUE",
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum]!",
+            ["UNKNOWN_VALUE"],
+            {
+                "data": {"testField": [None]},
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum]!",
+            "ENUM_1",
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        ("[MyEnum]!", ["ENUM_1"], {"data": {"testField": ["ENUM_1"]}}),
+        (
+            "[MyEnum]!",
+            ["ENUM_1", None],
+            {"data": {"testField": ["ENUM_1", None]}},
+        ),
+        (
+            "[MyEnum]!",
+            ["ENUM_1", "UNKNOWN_VALUE"],
+            {
+                "data": {"testField": ["ENUM_1", None]},
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum]!",
+            ["ENUM_1", "ENUM_2"],
+            {"data": {"testField": ["ENUM_1", "ENUM_2"]}},
+        ),
+        ("[MyEnum!]", None, {"data": {"testField": None}}),
+        (
+            "[MyEnum!]",
+            [None],
+            {
+                "data": {"testField": None},
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]",
+            "UNKNOWN_VALUE",
+            {
+                "data": {"testField": None},
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]",
+            ["UNKNOWN_VALUE"],
+            {
+                "data": {"testField": None},
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]",
+            "ENUM_1",
+            {
+                "data": {"testField": None},
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        ("[MyEnum!]", ["ENUM_1"], {"data": {"testField": ["ENUM_1"]}}),
+        (
+            "[MyEnum!]",
+            ["ENUM_1", None],
+            {
+                "data": {"testField": None},
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField", 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]",
+            ["ENUM_1", "UNKNOWN_VALUE"],
+            {
+                "data": {"testField": None},
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]",
+            ["ENUM_1", "ENUM_2"],
+            {"data": {"testField": ["ENUM_1", "ENUM_2"]}},
+        ),
+        (
+            "[MyEnum!]!",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]!",
+            [None],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]!",
+            "UNKNOWN_VALUE",
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]!",
+            ["UNKNOWN_VALUE"],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]!",
+            "ENUM_1",
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        ("[MyEnum!]!", ["ENUM_1"], {"data": {"testField": ["ENUM_1"]}}),
+        (
+            "[MyEnum!]!",
+            ["ENUM_1", None],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField", 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]!",
+            ["ENUM_1", "UNKNOWN_VALUE"],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[MyEnum!]!",
+            ["ENUM_1", "ENUM_2"],
+            {"data": {"testField": ["ENUM_1", "ENUM_2"]}},
+        ),
+        (
+            "[[MyEnum!]!]!",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            [None],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            "UNKNOWN_VALUE",
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            ["UNKNOWN_VALUE"],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            "ENUM_1",
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField"],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            ["ENUM_1"],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            ["ENUM_1", None],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    },
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField", 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    },
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            ["ENUM_1", "UNKNOWN_VALUE"],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    },
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField", 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    },
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            ["ENUM_1", "ENUM_2"],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField", 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    },
+                    {
+                        "message": "Expected Iterable, but did not find one for field Query.testField.",
+                        "path": ["testField", 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    },
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            [[None]],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField", 0, 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            [["UNKNOWN_VALUE"]],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 0, 0],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        ("[[MyEnum!]!]!", [["ENUM_1"]], {"data": {"testField": [["ENUM_1"]]}}),
+        (
+            "[[MyEnum!]!]!",
+            [["ENUM_1", None]],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.testField.",
+                        "path": ["testField", 0, 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            [["ENUM_1", "UNKNOWN_VALUE"]],
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type MyEnum but received <class 'str'>.",
+                        "path": ["testField", 0, 1],
+                        "locations": [{"line": 3, "column": 13}],
+                    }
+                ],
+            },
+        ),
+        (
+            "[[MyEnum!]!]!",
+            [["ENUM_1", "ENUM_2"]],
+            {"data": {"testField": [["ENUM_1", "ENUM_2"]]}},
         ),
     ],
 )
@@ -79,11 +639,7 @@ async def test_tartiflette_execute_enum_type_advanced(
     input_sdl, resolver_response, expected, clean_registry
 ):
     schema_sdl = """
-    enum Test {{
-        Value1
-        Value2
-        Value3
-    }}
+    enum MyEnum {{ ENUM_1, ENUM_2 }}
 
     type Query {{
         testField: {}
@@ -100,10 +656,10 @@ async def test_tartiflette_execute_enum_type_advanced(
 
     result = await ttftt.execute(
         """
-    query Test{
-        testField
-    }
-    """,
+        query Test{
+            testField
+        }
+        """,
         operation_name="Test",
     )
 

@@ -11,6 +11,8 @@ from tartiflette.language.parsers.libgraphqlparser.transformers import (
 )
 from tartiflette.types.exceptions.tartiflette import GraphQLSyntaxError
 
+__all__ = ("parse_to_document",)
+
 # TODO: automatize read from headers files
 _FFI = FFI()
 _FFI.cdef(
@@ -30,13 +32,7 @@ const char *graphql_ast_to_json(const struct GraphQLAstNode *node);
 )
 
 # TODO: use importlib.resource in Python 3.7
-_LIBGRAPHQLPARSER_DIR = os.path.join(
-    os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    ),
-    "parser",
-    "cffi",
-)
+_LIBGRAPHQLPARSER_DIR = os.path.join(os.path.dirname(__file__), "cffi")
 try:
     _LIB = _FFI.dlopen(f"{_LIBGRAPHQLPARSER_DIR}/libgraphqlparser.so")
 except OSError:
@@ -83,7 +79,6 @@ class ParsedData:
         :type exc_type: Optional[Type]
         :type exc_value: Optional[Exception]
         :type traceback: Optional[TracebackType]
-        :rtype: None
         """
         self._destroy_cb(self._c_parsed)
 

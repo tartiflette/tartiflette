@@ -16,14 +16,14 @@ from tartiflette.types.non_null import GraphQLNonNull
     ],
 )
 def test_resolver_factory__shall_return_a_list(field_type, expected):
-    from tartiflette.resolver.factory import _shall_return_a_list
+    from tartiflette.resolver.factoryyy import _shall_return_a_list
 
     assert _shall_return_a_list(field_type) == expected
 
 
 @pytest.mark.asyncio
 async def test_resolver_factory_default_resolver():
-    from tartiflette.resolver.factory import default_resolver
+    from tartiflette.resolver.factoryyy import default_resolver
 
     info = Mock()
     info.schema_field = Mock()
@@ -39,8 +39,8 @@ async def test_resolver_factory_default_resolver():
 
 
 def test_resolver_factory_resolver_executor_factory():
-    from tartiflette.resolver.factory import ResolverExecutorFactory
-    from tartiflette.resolver.factory import default_resolver
+    from tartiflette.resolver.factoryyy import ResolverExecutorFactory
+    from tartiflette.resolver.factoryyy import default_resolver
 
     field = Mock()
     field.gql_type = "aType"
@@ -71,7 +71,7 @@ def test_resolver_factory_resolver_executor_factory():
     ],
 )
 async def test_default_subscription_resolver(parent_result):
-    from tartiflette.resolver.factory import (
+    from tartiflette.resolver.factoryyy import (
         default_resolver,
         default_subscription_resolver,
     )
@@ -122,7 +122,7 @@ def test_resolverexecutor_bake(
     with patch(
         "tartiflette.resolver.factory.wraps_with_directives"
     ) as wraps_with_directives_mock:
-        from tartiflette.resolver.factory import (
+        from tartiflette.resolver.factoryyy import (
             _ResolverExecutor,
             default_resolver,
             default_subscription_resolver,

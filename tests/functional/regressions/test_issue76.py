@@ -38,6 +38,10 @@ async def ttftt_engine():
     return await create_engine(sdl=_SDL, schema_name="test_issue76")
 
 
+# TODO: unskip this test once `validate_document` function has been implemented
+@pytest.mark.skip(
+    reason="Will handled by the `validate_document` function which isn't implemented yet."
+)
 @pytest.mark.asyncio
 async def test_issue76_raw(ttftt_engine):
     query = """
@@ -85,6 +89,10 @@ async def test_issue76_raw(ttftt_engine):
     }
 
 
+# TODO: unskip this test once `validate_document` function has been implemented
+@pytest.mark.skip(
+    reason="Will handled by the `validate_document` function which isn't implemented yet."
+)
 @pytest.mark.asyncio
 async def test_issue76_fragment(ttftt_engine):
     query = """
@@ -144,6 +152,10 @@ async def test_issue76_fragment(ttftt_engine):
     }
 
 
+# TODO: unskip this test once `validate_document` function has been implemented
+@pytest.mark.skip(
+    reason="Will handled by the `validate_document` function which isn't implemented yet."
+)
 @pytest.mark.asyncio
 async def test_issue76_another_order(ttftt_engine):
     query = """

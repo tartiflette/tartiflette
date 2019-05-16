@@ -1,4 +1,6 @@
-from typing import Any, Optional
+from typing import Any, Dict, Optional
+
+__all__ = ("Location",)
 
 
 class Location:
@@ -40,12 +42,10 @@ class Location:
         """
         return self is other or (
             isinstance(other, Location)
-            and (
-                self.line == other.line
-                and self.column == other.column
-                and self.line_end == other.line_end
-                and self.column_end == other.column_end
-            )
+            and self.line == other.line
+            and self.column == other.column
+            and self.line_end == other.line_end
+            and self.column_end == other.column_end
         )
 
     def __repr__(self) -> str:
@@ -60,3 +60,19 @@ class Location:
             self.line_end,
             self.column_end,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the location.
+        :return: a human-readable representation of the location
+        :rtype: str
+        """
+        return f"[{self.line}:{self.column}]"
+
+    def collect_value(self) -> Dict[str, int]:
+        """
+        Returns the location as a dictionary.
+        :return: the location as a dictionary
+        :rtype: Dict[str, int]
+        """
+        return {"line": self.line, "column": self.column}

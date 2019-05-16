@@ -4,6 +4,8 @@ from lark import Tree, v_args
 from lark.lexer import Token
 from lark.visitors import Transformer_InPlace
 
+__all__ = ("TokenTransformer",)
+
 _STRING_VALUE_TOKEN_TYPE = "STRING_VALUE"
 _ENUM_VALUE_TOKEN_TYPE = "NAME"
 
@@ -118,9 +120,7 @@ class TokenTransformer(Transformer_InPlace):
             tree,
             Token(
                 "STRING_VALUE",
-                bytes(token.value[slicing:-slicing], "utf-8").decode(
-                    "unicode-escape"
-                ),
+                token.value[slicing:-slicing],
                 token.pos_in_stream,
                 token.line,
                 token.column,

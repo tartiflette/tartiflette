@@ -31,7 +31,8 @@ def _build_libgraphqlparser():
 
     os.rename(
         artifact_path,
-        "tartiflette/parser/cffi/%s" % os.path.basename(artifact_path),
+        "tartiflette/language/parsers/libgraphqlparser/cffi/%s"
+        % os.path.basename(artifact_path),
     )
 
 
@@ -87,7 +88,7 @@ setup(
     ],
     keywords="api graphql protocol api rest relay tartiflette dailymotion",
     packages=_PACKAGES,
-    install_requires=["cffi>=1.0.0,<2.0.0", "lark-parser==0.6.4", "pytz"],
+    install_requires=["cffi>=1.0.0,<2.0.0", "lark-parser==0.7.1", "pytz"],
     tests_require=_TEST_REQUIRE,
     extras_require={"test": _TEST_REQUIRE, "benchmark": _BENCHMARK_REQUIRE},
     cmdclass={"build_ext": BuildExtCmd, "build_py": BuildPyCmd},

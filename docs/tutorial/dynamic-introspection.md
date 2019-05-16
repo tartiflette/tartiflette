@@ -58,7 +58,7 @@ class Auth:
         self,
         directive_args: Dict[str, Any],
         next_resolver: Callable,
-        parent_result: Optional[Any],
+        parent: Optional[Any],
         args: Dict[str, Any],
         ctx: Optional[Dict[str, Any]],
         info: "Info",
@@ -69,7 +69,7 @@ class Auth:
         if ctx["req"].host != "localhost:8080":
             raise Exception("You are not allowed to execute this action. Please retry from 'localhost:8080'")
 
-        return await next_resolver(parent_result, args, ctx, info)
+        return await next_resolver(parent, args, ctx, info)
 
 ```
 

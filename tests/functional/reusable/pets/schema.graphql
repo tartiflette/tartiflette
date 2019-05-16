@@ -1,0 +1,172 @@
+interface Identifiable {
+  id: Int!
+}
+
+interface Named {
+  name: String!
+}
+
+interface Nicknamed {
+  nickname: String
+}
+
+interface Owned {
+  owner: Human
+}
+
+"""Interface for type with birthdate."""
+interface Birthdated {
+  """Date representing a birthdate."""
+  birthdate: Date!
+}
+
+"""States of the service."""
+enum ServiceStatus {
+  """Everything works well."""
+  UP
+  IN_TROUBLE
+  DOWN
+}
+enum PetKind { CAT, DOG }
+enum CatCommand { JUMP }
+enum DogCommand { SIT, DOWN, HEEL }
+enum OrderDirection { ASC, DESC }
+enum HumanOrderField { IDENTIFIER, NAME }
+enum PetOrderField { IDENTIFIER, NAME, NICKNAME }
+
+union Pet = Cat | Dog
+union PetOrHuman = Cat | Dog | Human
+
+input HumanOrder {
+  field: HumanOrderField!
+  direction: OrderDirection!
+}
+
+input PetOrder {
+  field: PetOrderField!
+  direction: OrderDirection!
+}
+
+input HumanFilters {
+  ids: [Int!]
+  name: String
+  hasFriends: Boolean
+}
+
+input PetFilters {
+  ids: [Int!]
+  kind: PetKind
+  name: String
+  nickname: String
+  hasChildren: Boolean
+  hasFriends: Boolean
+}
+
+type Human implements Identifiable & Named {
+  id: Int!
+  name: String!
+  friends: [PetOrHuman!]
+}
+
+type Cat implements Identifiable & Named & Nicknamed & Owned & Birthdated {
+  id: Int!
+  name: String!
+  nickname: String
+  owner: Human
+  birthdate: Date!
+  doesKnowCommand(command: CatCommand!): Boolean!
+  meowVolume: Int!
+  children: [Cat!]
+  friends: [Pet!]
+}
+
+type Dog implements Identifiable & Named & Nicknamed & Owned & Birthdated {
+  id: Int!
+  name: String!
+  nickname: String
+  owner: Human
+  birthdate: Date!
+  doesKnowCommand(command: DogCommand!): Boolean!
+  barkVolume: Int!
+  children: [Dog!]
+  friends: [Pet!]
+}
+
+input AddHumanInput {
+  clientMutationId: String
+  name: String!
+}
+
+type AddHumanPayload {
+  clientMutationId: String
+  human: Human!
+}
+
+input AddCatInput {
+  clientMutationId: String
+  name: String!
+  nickname: String
+  ownerId: Int
+  birthdate: Date!
+  knownCommands: [CatCommand!]
+  meowVolume: Int!
+}
+
+type AddCatPayload {
+  clientMutationId: String
+  cat: Cat!
+}
+
+"""Input definition of the add dog mutation."""
+input AddDogInput {
+  """Identifier of the mutation."""
+  clientMutationId: String
+  name: String!
+  nickname: String
+  ownerId: Int
+  birthdate: Date!
+  knownCommands: [DogCommand!]
+  barkVolume: Int!
+}
+
+"""Payload of a add dog mutation."""
+type AddDogPayload {
+  clientMutationId: String
+  dog: Dog!
+}
+
+"""Custom Query type."""
+type MyQuery {
+  version: String!
+
+  """Service status."""
+  serviceStatus: ServiceStatus!
+
+  human(
+    """Human identifier to fetch."""
+    id: Int!
+  ): Human
+  humans(filters: HumanFilters, order: HumanOrder): [Human!]
+
+  pet(id: Int!): Pet
+  pets(filters: PetFilters, order: PetOrder): [Pet!]
+}
+
+"""Custom Mutation type."""
+type MyMutation {
+  addHuman(input: AddHumanInput!): AddHumanPayload!
+  addCat(input: AddCatInput!): AddCatPayload!
+  addDog(input: AddDogInput!): AddDogPayload!
+}
+
+"""Custom Subscription type."""
+type MySubscription {
+  humanAdded: Human!
+  petAdded(kind: PetKind): Pet!
+}
+
+schema {
+  query: MyQuery
+  mutation: MyMutation
+  subscription: MySubscription
+}

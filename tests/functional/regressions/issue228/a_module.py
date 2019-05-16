@@ -1,3 +1,5 @@
+from typing import Any, Callable, Dict, Optional
+
 from tartiflette import Directive, Resolver, Scalar
 
 _SDL = """
@@ -16,9 +18,19 @@ class BlahDir:
         self._blah_value = config["val"]
 
     async def on_field_execution(
-        self, _dirargs, nextdirective, *args, **kwargs
+        self,
+        directive_args: Dict[str, Any],
+        next_resolver: Callable,
+        parent: Optional[Any],
+        args: Dict[str, Any],
+        ctx: Optional[Any],
+        info: "ResolveInfo",
     ):
-        return await nextdirective(*args, **kwargs) + " " + self._blah_value
+        return (
+            await next_resolver(parent, args, ctx, info)
+            + " "
+            + self._blah_value
+        )
 
 
 class NinjaGo:
@@ -29,6 +41,10 @@ class NinjaGo:
     @staticmethod
     def coerce_input(val):
         return val
+
+    @staticmethod
+    def parse_literal(ast):
+        return ast.value
 
 
 async def resolver_of_lol_ninja(pr, *_args, **_kwargs):

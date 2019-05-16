@@ -10,7 +10,7 @@ class AsyncMock(MagicMock):
 
 
 def call_with_mocked_resolver_factory(acallable, *args, **kargs):
-    from tartiflette.resolver.factory import ResolverExecutorFactory
+    from tartiflette.resolver.factoryyy import ResolverExecutorFactory
 
     old_methd = ResolverExecutorFactory.get_resolver_executor
     ResolverExecutorFactory.get_resolver_executor = (

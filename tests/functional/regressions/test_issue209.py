@@ -1,3 +1,5 @@
+from typing import Any, Callable, Dict, Optional, Union
+
 import pytest
 
 from tartiflette import Directive, Resolver, create_engine
@@ -41,14 +43,16 @@ async def ttftt_engine():
     class ValidateLimitDirective:
         @staticmethod
         async def on_argument_execution(
-            directive_args,
-            next_directive,
-            argument_definition,
-            args,
-            ctx,
-            info,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node: Union["FieldNode", "DirectiveNode"],
+            argument_node: "ArgumentNode",
+            value: Any,
+            ctx: Optional[Any],
         ):
-            value = await next_directive(argument_definition, args, ctx, info)
+            value = await next_directive(
+                parent_node, argument_node, value, ctx
+            )
             if value > directive_args["limit"]:
                 raise LimitReachedException("Limit has been reached")
             return value
@@ -77,7 +81,7 @@ async def ttftt_engine():
                     {
                         "message": "Limit reached",
                         "path": ["aList"],
-                        "locations": [{"line": 3, "column": 15}],
+                        "locations": [{"line": 3, "column": 21}],
                         "type": "bad_request",
                     }
                 ],
@@ -85,5 +89,5 @@ async def ttftt_engine():
         )
     ],
 )
-async def test_issue209(query, expected, ttftt_engine):
+async def test_issue209(ttftt_engine, query, expected):
     assert await ttftt_engine.execute(query) == expected

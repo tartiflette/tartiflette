@@ -2,6 +2,8 @@ from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import SelectionNode
 
+__all__ = ("FieldNode",)
+
 
 class FieldNode(SelectionNode):
     """
@@ -57,14 +59,12 @@ class FieldNode(SelectionNode):
         """
         return self is other or (
             isinstance(other, FieldNode)
-            and (
-                self.alias == other.alias
-                and self.name == other.name
-                and self.arguments == other.arguments
-                and self.directives == other.directives
-                and self.selection_set == other.selection_set
-                and self.location == other.location
-            )
+            and self.alias == other.alias
+            and self.name == other.name
+            and self.arguments == other.arguments
+            and self.directives == other.directives
+            and self.selection_set == other.selection_set
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:

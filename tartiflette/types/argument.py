@@ -1,52 +1,86 @@
 from functools import partial
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
-from tartiflette.types.helpers import (
-    get_directive_instances,
-    wraps_with_directives,
+from tartiflette.coercers.argument import argument_coercer
+from tartiflette.coercers.literals.compute import get_literal_coercer
+from tartiflette.types.helpers.get_directive_instances import (
+    compute_directive_nodes,
 )
+from tartiflette.types.helpers.type import get_graphql_type
 from tartiflette.types.type import GraphQLType
-from tartiflette.utils.arguments import argument_coercer
-from tartiflette.utils.coercer import CoercerWay, get_coercer
+from tartiflette.utils.directives import wraps_with_directives
+
+__all__ = ("GraphQLArgument",)
 
 
 class GraphQLArgument:
     """
-    Argument Definition
-
-    Arguments are used for:
-      - GraphQLField resolvers
-      - GraphQLInputObject fields
+    Definition of a GraphQL argument.
     """
 
     def __init__(
         self,
         name: str,
-        gql_type: Union[str, GraphQLType],
-        default_value: Optional[Any] = None,
+        gql_type: Union["GraphQLList", "GraphQLNonNull", str],
+        default_value: Optional["ValueNode"] = None,
         description: Optional[str] = None,
-        directives: Optional[Dict[str, Optional[dict]]] = None,
-        schema=None,
+        directives: Optional[List["DirectiveNode"]] = None,
     ) -> None:
-        # TODO: Narrow the default_value type ?
+        """
+        :param name: name of the argument
+        :param gql_type: GraphQL type of the argument
+        :param default_value: AST node which represents the default value
+        :param description: description of the argument
+        :param directives: list of directives linked to the argument
+        :type name: str
+        :type gql_type: Union[GraphQLList, GraphQLNonNull, str]
+        :type default_value: Optional[ValueNode]
+        :type description: Optional[str]
+        :type directives: Optional[List[DirectiveNode]]
+        """
         self.name = name
         self.gql_type = gql_type
         self.default_value = default_value
         self.description = description
-        self._type = {}
-        self._schema = schema
-        self._directives = directives
-        self.coercer = None
+        self.graphql_type: Optional["GraphQLType"] = None
 
-        # Introspection Attribute
-        self._directives_implementations = None
-        self._introspection_directives = None
+        # Directives
+        self.directives = directives
+        self.introspection_directives: Optional[Callable] = None
+
+        # Coercers
+        self.literal_coercer: Optional[Callable] = None
+        self.coercer: Optional[Callable] = None
+
+        # Introspection attributes
+        self.type: Union["GraphQLType", Dict[str, Any]] = {}
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isinstance(other, GraphQLArgument)
+            and self.name == other.name
+            and self.gql_type == other.gql_type
+            and self.default_value == other.default_value
+            and self.description == other.description
+            and self.directives == other.directives
+        )
 
     def __repr__(self) -> str:
+        """
+        Returns the representation of a GraphQLArgument instance.
+        :return: the representation of a GraphQLArgument instance
+        :rtype: str
+        """
         return (
-            "{}(name={!r}, gql_type={!r}, "
-            "default_value={!r}, description={!r}, directives={!r})".format(
-                self.__class__.__name__,
+            "GraphQLArgument(name={!r}, gql_type={!r}, default_value={!r}, "
+            "description={!r}, directives={!r})".format(
                 self.name,
                 self.gql_type,
                 self.default_value,
@@ -56,77 +90,56 @@ class GraphQLArgument:
         )
 
     def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the argument.
+        :return: a human-readable representation of the argument
+        :rtype: str
+        """
         return self.name
 
-    def __eq__(self, other: Any) -> bool:
-        return self is other or (
-            type(self) is type(other)
-            and self.name == other.name
-            and self.gql_type == other.gql_type
-            and self.default_value == other.default_value
-            and self.directives == other.directives
-        )
-
+    # Introspection attribute
     @property
-    def schema(self) -> "GraphQLSchema":
-        return self._schema
-
-    # Introspection Attribute
-    @property
-    def type(self) -> dict:
-        return self._type
-
-    @property
-    def directives(self) -> List[Dict[str, Any]]:
-        return self._directives_implementations
-
-    @property
-    def introspection_directives(self):
-        return self._introspection_directives
-
-    @property
-    def is_required(self) -> bool:
-        if not isinstance(self.gql_type, GraphQLType):
-            return False
-        return self.gql_type.is_not_null and self.default_value is None
-
-    @property
-    def defaultValue(self) -> Any:  # pylint: disable=invalid-name
+    def defaultValue(  # pylint: disable=invalid-name
+        self
+    ) -> Optional["ValueNode"]:
+        """
+        Returns the default value of the argument which is used by the
+        introspection query.
+        :return: the default value of the argument
+        :rtype: Optional[ValueNode]
+        """
         return self.default_value
 
     def bake(self, schema: "GraphQLSchema") -> None:
-        self._schema = schema
-        self._directives_implementations = get_directive_instances(
-            self._directives, self._schema
-        )
+        """
+        Bakes the GraphQLArgument and computes all the necessary stuff for
+        execution.
+        :param schema: the GraphQLSchema instance linked to the engine
+        :type schema: GraphQLSchema
+        """
+        self.graphql_type = get_graphql_type(schema, self.gql_type)
 
-        self._introspection_directives = wraps_with_directives(
-            directives_definition=self._directives_implementations,
+        if isinstance(self.gql_type, GraphQLType):
+            self.type = self.gql_type
+        else:
+            self.type["name"] = self.gql_type
+            self.type["kind"] = self.graphql_type.kind
+
+        # Directives
+        directives_definition = compute_directive_nodes(
+            schema, self.directives
+        )
+        self.introspection_directives = wraps_with_directives(
+            directives_definition=directives_definition,
             directive_hook="on_introspection",
         )
 
-        if isinstance(self.gql_type, GraphQLType):
-            self._type = self.gql_type
-        else:
-            self._type["name"] = self.gql_type
-            self._type["kind"] = self._schema.find_type(self.gql_type).kind
-
+        # Coercers
+        self.literal_coercer = get_literal_coercer(self.graphql_type)
         self.coercer = partial(
-            wraps_with_directives(
-                directives_definition=self.directives,
+            argument_coercer,
+            directives=wraps_with_directives(
+                directives_definition=directives_definition,
                 directive_hook="on_argument_execution",
-                func=partial(
-                    argument_coercer,
-                    input_coercer=get_coercer(
-                        self, schema=schema, way=CoercerWay.INPUT
-                    ),
-                ),
             ),
-            self,
         )
-
-    @property
-    def is_list_type(self) -> bool:
-        if not isinstance(self.gql_type, str):
-            return self.gql_type.is_list or self.gql_type.contains_a_list
-        return False

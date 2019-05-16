@@ -63,7 +63,7 @@ from recipes_manager.data import RECIPES
 
 @Subscription("Subscription.launchAndWaitCookingTimer")
 async def subscription_cooking_time(
-    parent_result, args, ctx, info
+    parent, args, ctx, info
 ):
     recipe = [r for r in RECIPES if r["id"] == int(args["id"])]
 
@@ -97,11 +97,11 @@ from recipes_manager.data import RECIPES
 
 @Resolver("Subscription.launchAndWaitCookingTimer")
 async def resolver_cooking_time(
-    parent_result, args, ctx, info
+    parent, args, ctx, info
 ):
-    if parent_result > 0:
+    if parent > 0:
         return {
-            "remainingTime": parent_result,
+            "remainingTime": parent,
             "status": "COOKING"
         }
 
@@ -113,7 +113,7 @@ async def resolver_cooking_time(
 
 @Subscription("Subscription.launchAndWaitCookingTimer")
 async def subscription_cooking_time(
-    parent_result, args, ctx, info
+    parent, args, ctx, info
 ):
     recipe = [r for r in RECIPES if r["id"] == int(args["id"])]
 
