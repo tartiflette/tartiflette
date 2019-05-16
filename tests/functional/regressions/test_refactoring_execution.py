@@ -122,7 +122,6 @@ _EXPECTED = {
               owner {
                 ... on Human {
                   ...HumanFields
-                  ...CatFields
                 }
               }
               friends {

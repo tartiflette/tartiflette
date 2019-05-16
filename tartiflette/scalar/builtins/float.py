@@ -37,7 +37,7 @@ class ScalarFloat:
             or (isinstance(value, float) and isfinite(value))
         ):
             raise TypeError(
-                f"Float cannot represent non numeric value: < {value} >"
+                f"Float cannot represent non numeric value: < {value} >."
             )
         return float(value)
 

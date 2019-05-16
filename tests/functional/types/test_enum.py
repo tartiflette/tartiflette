@@ -4,7 +4,7 @@ from tartiflette import Resolver, create_engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_enum_type_output(clean_registry):
+async def test_tartiflette_execute_enum_type_output():
     schema_sdl = """
     enum Test {
         Value1
@@ -17,11 +17,16 @@ async def test_tartiflette_execute_enum_type_output(clean_registry):
     }
     """
 
-    @Resolver("Query.enumTest")
+    @Resolver(
+        "Query.enumTest",
+        schema_name="test_tartiflette_execute_enum_type_output",
+    )
     async def func_field_resolver(*args, **kwargs):
         return "Value1"
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl, schema_name="test_tartiflette_execute_enum_type_output"
+    )
 
     result = await ttftt.execute(
         """
@@ -636,7 +641,7 @@ async def test_tartiflette_execute_enum_type_output(clean_registry):
     ],
 )
 async def test_tartiflette_execute_enum_type_advanced(
-    input_sdl, resolver_response, expected, clean_registry
+    input_sdl, resolver_response, expected, random_schema_name
 ):
     schema_sdl = """
     enum MyEnum {{ ENUM_1, ENUM_2 }}
@@ -648,11 +653,11 @@ async def test_tartiflette_execute_enum_type_advanced(
         input_sdl
     )
 
-    @Resolver("Query.testField")
+    @Resolver("Query.testField", schema_name=random_schema_name)
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl, schema_name=random_schema_name)
 
     result = await ttftt.execute(
         """

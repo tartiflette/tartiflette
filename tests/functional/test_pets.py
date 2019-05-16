@@ -185,20 +185,41 @@ async def resolve_friends(parent, args, ctx, info):
             """,
             None,
             {
-                "data": {
-                    "pet": {
-                        "__typename": "Dog",
-                        "id": 1,
-                        "name": "Dog 1",
-                        "friends": None,
-                    }
-                },
+                "data": None,
                 "errors": [
                     {
-                        "message": "Runtime object type < Human > is not a possible type for < Pet >.",
-                        "path": ["pet", "friends", 1],
+                        "message": "Field id doesn't exist on Pet",
+                        "path": ["pet", "id"],
+                        "locations": [{"line": 5, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field name doesn't exist on Pet",
+                        "path": ["pet", "name"],
+                        "locations": [{"line": 6, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field friends doesn't exist on Pet",
+                        "path": ["pet", "friends"],
                         "locations": [{"line": 7, "column": 17}],
-                    }
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
                 ],
             },
         ),
@@ -207,19 +228,21 @@ async def resolve_friends(parent, args, ctx, info):
             {
               pet(id: 2) {
                 __typename
-                id
-                name
-                friends {
-                  __typename
-                  ... on Human {
+                ... on Cat {
                     id
-                  }
-                  ... on Cat {
-                    id
-                  }
-                  ... on Dog {
-                    id
-                  }
+                    name
+                    friends {
+                    __typename
+                    ... on Human {
+                        id
+                    }
+                    ... on Cat {
+                        id
+                    }
+                    ... on Dog {
+                        id
+                    }
+                    }
                 }
               }
             }

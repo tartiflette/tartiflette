@@ -17,12 +17,18 @@ from tests.functional.coercers.common import resolve_input_object_field
             """query { nonNullWithDefaultInputObjectField }""",
             None,
             {
-                "data": {"nonNullWithDefaultInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyInputWithDefault! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullWithDefaultInputObjectField >.",
                         "path": ["nonNullWithDefaultInputObjectField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -31,12 +37,18 @@ from tests.functional.coercers.common import resolve_input_object_field
             """query { nonNullWithDefaultInputObjectField(param: null) }""",
             None,
             {
-                "data": {"nonNullWithDefaultInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < MyInputWithDefault! > must not be null.",
                         "path": ["nonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 1, "column": 51}],
+                        "locations": [{"line": 1, "column": 44}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -226,35 +238,35 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault!) { nonNullWithDefaultInputObjectField(param: $param) }""",
             None,
             {
-                "data": {"nonNullWithDefaultInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyInputWithDefault! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 1, "column": 80}],
+                        "message": "Variable < $param > of required type < MyInputWithDefault! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyInputWithDefault) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault!) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullWithDefaultInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyInputWithDefault! > must not be null.",
-                        "path": ["nonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 1, "column": 80}],
+                        "message": "Variable < $param > of non-null type < MyInputWithDefault! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyInputWithDefault) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault!) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {"param": {}},
             {
                 "data": {
@@ -273,7 +285,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault!) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -305,7 +317,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault!) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -337,7 +349,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault!) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -369,7 +381,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault!) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -401,7 +413,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault!) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -433,35 +445,35 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault! = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
             None,
             {
-                "data": {"nonNullWithDefaultInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyInputWithDefault! > must not be null.",
-                        "path": ["nonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 1, "column": 87}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 38}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyInputWithDefault = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault! = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullWithDefaultInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyInputWithDefault! > must not be null.",
-                        "path": ["nonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 1, "column": 87}],
+                        "message": "Variable < $param > of non-null type < MyInputWithDefault! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyInputWithDefault = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault! = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {"param": {}},
             {
                 "data": {
@@ -480,7 +492,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault! = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -512,7 +524,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault! = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -544,7 +556,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault! = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -576,7 +588,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault! = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -608,7 +620,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: MyInputWithDefault = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
+            """query ($param: MyInputWithDefault! = null) { nonNullWithDefaultInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,

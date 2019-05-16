@@ -65,7 +65,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ENUM_1 >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < ENUM_1 >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -79,7 +79,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < 2345678.9 >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < 2345678.9 >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -93,7 +93,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < 10 >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < 10 >",
+                        "message": "Variable < $param > got invalid value < 10 >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < 10 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -107,7 +107,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < paramValue >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < paramValue >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -121,7 +121,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [None] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < [None] >",
+                        "message": "Variable < $param > got invalid value < [None] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < [None] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -135,7 +135,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [True] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < [True] >",
+                        "message": "Variable < $param > got invalid value < [True] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < [True] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -149,7 +149,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < ['ENUM_1'] >",
+                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < ['ENUM_1'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -163,7 +163,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [2345678.9] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < [2345678.9] >",
+                        "message": "Variable < $param > got invalid value < [2345678.9] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < [2345678.9] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -177,7 +177,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [10] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < [10] >",
+                        "message": "Variable < $param > got invalid value < [10] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < [10] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -191,7 +191,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ['paramValue'] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < ['paramValue'] >",
+                        "message": "Variable < $param > got invalid value < ['paramValue'] >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < ['paramValue'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -205,7 +205,7 @@ from tests.functional.coercers.common import (
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {} >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < {} >",
+                        "message": "Variable < $param > got invalid value < {} >; Expected type < Boolean >; Boolean cannot represent a non boolean value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -487,7 +487,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < True >; Expected type < Float >; Float cannot represent non numeric value: < True >",
+                        "message": "Variable < $param > got invalid value < True >; Expected type < Float >; Float cannot represent non numeric value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -501,7 +501,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ENUM_1 >; Expected type < Float >; Float cannot represent non numeric value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < ENUM_1 >; Expected type < Float >; Float cannot represent non numeric value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -515,7 +515,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < paramValue >; Expected type < Float >; Float cannot represent non numeric value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < paramValue >; Expected type < Float >; Float cannot represent non numeric value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -529,7 +529,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [None] >; Expected type < Float >; Float cannot represent non numeric value: < [None] >",
+                        "message": "Variable < $param > got invalid value < [None] >; Expected type < Float >; Float cannot represent non numeric value: < [None] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -543,7 +543,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [True] >; Expected type < Float >; Float cannot represent non numeric value: < [True] >",
+                        "message": "Variable < $param > got invalid value < [True] >; Expected type < Float >; Float cannot represent non numeric value: < [True] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -557,7 +557,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < Float >; Float cannot represent non numeric value: < ['ENUM_1'] >",
+                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < Float >; Float cannot represent non numeric value: < ['ENUM_1'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -571,7 +571,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [2345678.9] >; Expected type < Float >; Float cannot represent non numeric value: < [2345678.9] >",
+                        "message": "Variable < $param > got invalid value < [2345678.9] >; Expected type < Float >; Float cannot represent non numeric value: < [2345678.9] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -585,7 +585,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [10] >; Expected type < Float >; Float cannot represent non numeric value: < [10] >",
+                        "message": "Variable < $param > got invalid value < [10] >; Expected type < Float >; Float cannot represent non numeric value: < [10] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -599,7 +599,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ['paramValue'] >; Expected type < Float >; Float cannot represent non numeric value: < ['paramValue'] >",
+                        "message": "Variable < $param > got invalid value < ['paramValue'] >; Expected type < Float >; Float cannot represent non numeric value: < ['paramValue'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -613,7 +613,7 @@ async def test_coercion_enum_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {} >; Expected type < Float >; Float cannot represent non numeric value: < {} >",
+                        "message": "Variable < $param > got invalid value < {} >; Expected type < Float >; Float cannot represent non numeric value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -684,7 +684,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < True >; Expected type < Int >; Int cannot represent non-integer value: < True >",
+                        "message": "Variable < $param > got invalid value < True >; Expected type < Int >; Int cannot represent non-integer value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -698,7 +698,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ENUM_1 >; Expected type < Int >; Int cannot represent non-integer value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < ENUM_1 >; Expected type < Int >; Int cannot represent non-integer value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -712,7 +712,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < 2345678.9 >; Expected type < Int >; Int cannot represent non-integer value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < 2345678.9 >; Expected type < Int >; Int cannot represent non-integer value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -726,7 +726,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < paramValue >; Expected type < Int >; Int cannot represent non-integer value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < paramValue >; Expected type < Int >; Int cannot represent non-integer value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -740,7 +740,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [None] >; Expected type < Int >; Int cannot represent non-integer value: < [None] >",
+                        "message": "Variable < $param > got invalid value < [None] >; Expected type < Int >; Int cannot represent non-integer value: < [None] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -754,7 +754,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [True] >; Expected type < Int >; Int cannot represent non-integer value: < [True] >",
+                        "message": "Variable < $param > got invalid value < [True] >; Expected type < Int >; Int cannot represent non-integer value: < [True] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -768,7 +768,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < Int >; Int cannot represent non-integer value: < ['ENUM_1'] >",
+                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < Int >; Int cannot represent non-integer value: < ['ENUM_1'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -782,7 +782,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [2345678.9] >; Expected type < Int >; Int cannot represent non-integer value: < [2345678.9] >",
+                        "message": "Variable < $param > got invalid value < [2345678.9] >; Expected type < Int >; Int cannot represent non-integer value: < [2345678.9] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -796,7 +796,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [10] >; Expected type < Int >; Int cannot represent non-integer value: < [10] >",
+                        "message": "Variable < $param > got invalid value < [10] >; Expected type < Int >; Int cannot represent non-integer value: < [10] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -810,7 +810,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ['paramValue'] >; Expected type < Int >; Int cannot represent non-integer value: < ['paramValue'] >",
+                        "message": "Variable < $param > got invalid value < ['paramValue'] >; Expected type < Int >; Int cannot represent non-integer value: < ['paramValue'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -824,7 +824,7 @@ async def test_coercion_float_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {} >; Expected type < Int >; Int cannot represent non-integer value: < {} >",
+                        "message": "Variable < $param > got invalid value < {} >; Expected type < Int >; Int cannot represent non-integer value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -895,7 +895,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < True >; Expected type < String >; String cannot represent a non string value: < True >",
+                        "message": "Variable < $param > got invalid value < True >; Expected type < String >; String cannot represent a non string value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -909,7 +909,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < 2345678.9 >; Expected type < String >; String cannot represent a non string value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < 2345678.9 >; Expected type < String >; String cannot represent a non string value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -923,7 +923,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < 10 >; Expected type < String >; String cannot represent a non string value: < 10 >",
+                        "message": "Variable < $param > got invalid value < 10 >; Expected type < String >; String cannot represent a non string value: < 10 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -937,7 +937,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [None] >; Expected type < String >; String cannot represent a non string value: < [None] >",
+                        "message": "Variable < $param > got invalid value < [None] >; Expected type < String >; String cannot represent a non string value: < [None] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -951,7 +951,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [True] >; Expected type < String >; String cannot represent a non string value: < [True] >",
+                        "message": "Variable < $param > got invalid value < [True] >; Expected type < String >; String cannot represent a non string value: < [True] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -965,7 +965,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < String >; String cannot represent a non string value: < ['ENUM_1'] >",
+                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < String >; String cannot represent a non string value: < ['ENUM_1'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -979,7 +979,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [2345678.9] >; Expected type < String >; String cannot represent a non string value: < [2345678.9] >",
+                        "message": "Variable < $param > got invalid value < [2345678.9] >; Expected type < String >; String cannot represent a non string value: < [2345678.9] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -993,7 +993,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < [10] >; Expected type < String >; String cannot represent a non string value: < [10] >",
+                        "message": "Variable < $param > got invalid value < [10] >; Expected type < String >; String cannot represent a non string value: < [10] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -1007,7 +1007,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ['paramValue'] >; Expected type < String >; String cannot represent a non string value: < ['paramValue'] >",
+                        "message": "Variable < $param > got invalid value < ['paramValue'] >; Expected type < String >; String cannot represent a non string value: < ['paramValue'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -1021,7 +1021,7 @@ async def test_coercion_int_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {} >; Expected type < String >; String cannot represent a non string value: < {} >",
+                        "message": "Variable < $param > got invalid value < {} >; Expected type < String >; String cannot represent a non string value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -1423,17 +1423,17 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < True >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < True >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < String > at value.stringField; String cannot represent a non string value: < True >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < String > at value.stringField; String cannot represent a non string value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1443,17 +1443,17 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < Float > at value.listFloatField; Float cannot represent non numeric value: < True >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < Float > at value.listFloatField; Float cannot represent non numeric value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < True >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < String > at value.listStringField; String cannot represent a non string value: < True >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': True, 'enumField': True, 'floatField': True, 'intField': True, 'stringField': True, 'listBooleanField': True, 'listEnumField': True, 'listFloatField': True, 'listIntField': True, 'listStringField': True} >; Expected type < String > at value.listStringField; String cannot represent a non string value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1480,32 +1480,32 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Float > at value.listFloatField; Float cannot represent non numeric value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Float > at value.listFloatField; Float cannot represent non numeric value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'ENUM_1', 'enumField': 'ENUM_1', 'floatField': 'ENUM_1', 'intField': 'ENUM_1', 'stringField': 'ENUM_1', 'listBooleanField': 'ENUM_1', 'listEnumField': 'ENUM_1', 'listFloatField': 'ENUM_1', 'listIntField': 'ENUM_1', 'listStringField': 'ENUM_1'} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1532,7 +1532,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1542,17 +1542,17 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < String > at value.stringField; String cannot represent a non string value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < String > at value.stringField; String cannot represent a non string value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1562,12 +1562,12 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < String > at value.listStringField; String cannot represent a non string value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 2345678.9, 'enumField': 2345678.9, 'floatField': 2345678.9, 'intField': 2345678.9, 'stringField': 2345678.9, 'listBooleanField': 2345678.9, 'listEnumField': 2345678.9, 'listFloatField': 2345678.9, 'listIntField': 2345678.9, 'listStringField': 2345678.9} >; Expected type < String > at value.listStringField; String cannot represent a non string value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1594,7 +1594,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 10, 'enumField': 10, 'floatField': 10, 'intField': 10, 'stringField': 10, 'listBooleanField': 10, 'listEnumField': 10, 'listFloatField': 10, 'listIntField': 10, 'listStringField': 10} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < 10 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 10, 'enumField': 10, 'floatField': 10, 'intField': 10, 'stringField': 10, 'listBooleanField': 10, 'listEnumField': 10, 'listFloatField': 10, 'listIntField': 10, 'listStringField': 10} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < 10 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1604,12 +1604,12 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 10, 'enumField': 10, 'floatField': 10, 'intField': 10, 'stringField': 10, 'listBooleanField': 10, 'listEnumField': 10, 'listFloatField': 10, 'listIntField': 10, 'listStringField': 10} >; Expected type < String > at value.stringField; String cannot represent a non string value: < 10 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 10, 'enumField': 10, 'floatField': 10, 'intField': 10, 'stringField': 10, 'listBooleanField': 10, 'listEnumField': 10, 'listFloatField': 10, 'listIntField': 10, 'listStringField': 10} >; Expected type < String > at value.stringField; String cannot represent a non string value: < 10 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 10, 'enumField': 10, 'floatField': 10, 'intField': 10, 'stringField': 10, 'listBooleanField': 10, 'listEnumField': 10, 'listFloatField': 10, 'listIntField': 10, 'listStringField': 10} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < 10 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 10, 'enumField': 10, 'floatField': 10, 'intField': 10, 'stringField': 10, 'listBooleanField': 10, 'listEnumField': 10, 'listFloatField': 10, 'listIntField': 10, 'listStringField': 10} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < 10 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1619,7 +1619,7 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 10, 'enumField': 10, 'floatField': 10, 'intField': 10, 'stringField': 10, 'listBooleanField': 10, 'listEnumField': 10, 'listFloatField': 10, 'listIntField': 10, 'listStringField': 10} >; Expected type < String > at value.listStringField; String cannot represent a non string value: < 10 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 10, 'enumField': 10, 'floatField': 10, 'intField': 10, 'stringField': 10, 'listBooleanField': 10, 'listEnumField': 10, 'listFloatField': 10, 'listIntField': 10, 'listStringField': 10} >; Expected type < String > at value.listStringField; String cannot represent a non string value: < 10 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1646,7 +1646,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1656,17 +1656,17 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1676,12 +1676,12 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Float > at value.listFloatField; Float cannot represent non numeric value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Float > at value.listFloatField; Float cannot represent non numeric value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': 'paramValue', 'enumField': 'paramValue', 'floatField': 'paramValue', 'intField': 'paramValue', 'stringField': 'paramValue', 'listBooleanField': 'paramValue', 'listEnumField': 'paramValue', 'listFloatField': 'paramValue', 'listIntField': 'paramValue', 'listStringField': 'paramValue'} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1708,7 +1708,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [None], 'enumField': [None], 'floatField': [None], 'intField': [None], 'stringField': [None], 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < [None] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [None], 'enumField': [None], 'floatField': [None], 'intField': [None], 'stringField': [None], 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < [None] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1718,17 +1718,17 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [None], 'enumField': [None], 'floatField': [None], 'intField': [None], 'stringField': [None], 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < [None] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [None], 'enumField': [None], 'floatField': [None], 'intField': [None], 'stringField': [None], 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < [None] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [None], 'enumField': [None], 'floatField': [None], 'intField': [None], 'stringField': [None], 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < [None] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [None], 'enumField': [None], 'floatField': [None], 'intField': [None], 'stringField': [None], 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < [None] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [None], 'enumField': [None], 'floatField': [None], 'intField': [None], 'stringField': [None], 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected type < String > at value.stringField; String cannot represent a non string value: < [None] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [None], 'enumField': [None], 'floatField': [None], 'intField': [None], 'stringField': [None], 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected type < String > at value.stringField; String cannot represent a non string value: < [None] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1755,7 +1755,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < [True] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < [True] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1765,17 +1765,17 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < [True] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < [True] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < [True] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < [True] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < String > at value.stringField; String cannot represent a non string value: < [True] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < String > at value.stringField; String cannot represent a non string value: < [True] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1785,17 +1785,17 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Float > at value.listFloatField[0]; Float cannot represent non numeric value: < True >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Float > at value.listFloatField[0]; Float cannot represent non numeric value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Int > at value.listIntField[0]; Int cannot represent non-integer value: < True >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < Int > at value.listIntField[0]; Int cannot represent non-integer value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < String > at value.listStringField[0]; String cannot represent a non string value: < True >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [True], 'enumField': [True], 'floatField': [True], 'intField': [True], 'stringField': [True], 'listBooleanField': [True], 'listEnumField': [True], 'listFloatField': [True], 'listIntField': [True], 'listStringField': [True]} >; Expected type < String > at value.listStringField[0]; String cannot represent a non string value: < True >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1822,7 +1822,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < ['ENUM_1'] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < ['ENUM_1'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1832,32 +1832,32 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < ['ENUM_1'] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < ['ENUM_1'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < ['ENUM_1'] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < ['ENUM_1'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < String > at value.stringField; String cannot represent a non string value: < ['ENUM_1'] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < String > at value.stringField; String cannot represent a non string value: < ['ENUM_1'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Boolean > at value.listBooleanField[0]; Boolean cannot represent a non boolean value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Boolean > at value.listBooleanField[0]; Boolean cannot represent a non boolean value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Float > at value.listFloatField[0]; Float cannot represent non numeric value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Float > at value.listFloatField[0]; Float cannot represent non numeric value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Int > at value.listIntField[0]; Int cannot represent non-integer value: < ENUM_1 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < Int > at value.listIntField[0]; Int cannot represent non-integer value: < ENUM_1 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1884,7 +1884,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < [2345678.9] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < [2345678.9] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1894,22 +1894,22 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < [2345678.9] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < [2345678.9] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < [2345678.9] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < [2345678.9] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < String > at value.stringField; String cannot represent a non string value: < [2345678.9] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < String > at value.stringField; String cannot represent a non string value: < [2345678.9] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Boolean > at value.listBooleanField[0]; Boolean cannot represent a non boolean value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Boolean > at value.listBooleanField[0]; Boolean cannot represent a non boolean value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1919,12 +1919,12 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Int > at value.listIntField[0]; Int cannot represent non-integer value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < Int > at value.listIntField[0]; Int cannot represent non-integer value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < String > at value.listStringField[0]; String cannot represent a non string value: < 2345678.9 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [2345678.9], 'enumField': [2345678.9], 'floatField': [2345678.9], 'intField': [2345678.9], 'stringField': [2345678.9], 'listBooleanField': [2345678.9], 'listEnumField': [2345678.9], 'listFloatField': [2345678.9], 'listIntField': [2345678.9], 'listStringField': [2345678.9]} >; Expected type < String > at value.listStringField[0]; String cannot represent a non string value: < 2345678.9 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1951,7 +1951,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < [10] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < [10] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1961,22 +1961,22 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < [10] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < [10] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < [10] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < [10] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < String > at value.stringField; String cannot represent a non string value: < [10] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < String > at value.stringField; String cannot represent a non string value: < [10] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < Boolean > at value.listBooleanField[0]; Boolean cannot represent a non boolean value: < 10 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < Boolean > at value.listBooleanField[0]; Boolean cannot represent a non boolean value: < 10 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1986,7 +1986,7 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < String > at value.listStringField[0]; String cannot represent a non string value: < 10 >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': [10], 'enumField': [10], 'floatField': [10], 'intField': [10], 'stringField': [10], 'listBooleanField': [10], 'listEnumField': [10], 'listFloatField': [10], 'listIntField': [10], 'listStringField': [10]} >; Expected type < String > at value.listStringField[0]; String cannot represent a non string value: < 10 >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -2013,7 +2013,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < ['paramValue'] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < ['paramValue'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -2023,22 +2023,22 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < ['paramValue'] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < ['paramValue'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < ['paramValue'] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < ['paramValue'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < String > at value.stringField; String cannot represent a non string value: < ['paramValue'] >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < String > at value.stringField; String cannot represent a non string value: < ['paramValue'] >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Boolean > at value.listBooleanField[0]; Boolean cannot represent a non boolean value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Boolean > at value.listBooleanField[0]; Boolean cannot represent a non boolean value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -2048,12 +2048,12 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Float > at value.listFloatField[0]; Float cannot represent non numeric value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Float > at value.listFloatField[0]; Float cannot represent non numeric value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Int > at value.listIntField[0]; Int cannot represent non-integer value: < paramValue >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['paramValue'], 'enumField': ['paramValue'], 'floatField': ['paramValue'], 'intField': ['paramValue'], 'stringField': ['paramValue'], 'listBooleanField': ['paramValue'], 'listEnumField': ['paramValue'], 'listFloatField': ['paramValue'], 'listIntField': ['paramValue'], 'listStringField': ['paramValue']} >; Expected type < Int > at value.listIntField[0]; Int cannot represent non-integer value: < paramValue >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -2080,7 +2080,7 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < {} >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Boolean > at value.booleanField; Boolean cannot represent a non boolean value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -2090,22 +2090,22 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < {} >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Float > at value.floatField; Float cannot represent non numeric value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < {} >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Int > at value.intField; Int cannot represent non-integer value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < String > at value.stringField; String cannot represent a non string value: < {} >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < String > at value.stringField; String cannot represent a non string value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < {} >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Boolean > at value.listBooleanField; Boolean cannot represent a non boolean value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -2115,17 +2115,17 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Float > at value.listFloatField; Float cannot represent non numeric value: < {} >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Float > at value.listFloatField; Float cannot represent non numeric value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < {} >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < Int > at value.listIntField; Int cannot represent non-integer value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < String > at value.listStringField; String cannot represent a non string value: < {} >",
+                        "message": "Variable < $param > got invalid value < {'booleanField': {}, 'enumField': {}, 'floatField': {}, 'intField': {}, 'stringField': {}, 'listBooleanField': {}, 'listEnumField': {}, 'listFloatField': {}, 'listIntField': {}, 'listStringField': {}} >; Expected type < String > at value.listStringField; String cannot represent a non string value: < {} >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },

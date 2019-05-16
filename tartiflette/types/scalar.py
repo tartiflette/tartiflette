@@ -20,13 +20,13 @@ from tartiflette.coercers.outputs.scalar_coercer import scalar_coercer
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLType
+from tartiflette.types.type import GraphQLInputType, GraphQLType
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLScalarType",)
 
 
-class GraphQLScalarType(GraphQLType):
+class GraphQLScalarType(GraphQLInputType, GraphQLType):
     """
     Definition of a GraphQL scalar.
     """

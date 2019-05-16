@@ -5,10 +5,6 @@ async def _query_human_resolver(*_args, **__kwargs):
     return {"name": "Hooman"}
 
 
-# TODO: unskip this test once `validate_document` function has been implemented
-@pytest.mark.skip(
-    reason="Will handled by the `validate_document` function which isn't implemented yet."
-)
 @pytest.mark.asyncio
 @pytest.mark.ttftt_engine(resolvers={"Query.human": _query_human_resolver})
 @pytest.mark.parametrize(
@@ -40,9 +36,15 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "field `Human.unknownField` was not found in GraphQL schema.",
+                        "message": "Field unknownField doesn't exist on Human",
                         "path": ["human", "unknownField"],
                         "locations": [{"line": 5, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     }
                 ],
             },
@@ -63,14 +65,26 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Undefined argument < undefinedArgument > on field < human > of type < Query >.",
-                        "path": None,
-                        "locations": [{"line": 3, "column": 21}],
-                    },
-                    {
-                        "message": "field `Human.unknownField` was not found in GraphQL schema.",
+                        "message": "Field unknownField doesn't exist on Human",
                         "path": ["human", "unknownField"],
                         "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Provided Argument < undefinedArgument > doesn't exists on field < Query.human >.",
+                        "path": ["human"],
+                        "locations": [{"line": 3, "column": 21}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
                     },
                 ],
             },
@@ -91,19 +105,48 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Undefined argument < undefinedArgument > on field < human > of type < Query >.",
-                        "path": None,
-                        "locations": [{"line": 3, "column": 21}],
-                    },
-                    {
-                        "message": "field `Human.unknownField` was not found in GraphQL schema.",
+                        "message": "Field unknownField doesn't exist on Human",
                         "path": ["human", "unknownField"],
                         "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                     {
-                        "message": "field `Query.unknownField` was not found in GraphQL schema.",
+                        "message": "Provided Argument < undefinedArgument > doesn't exists on field < Query.human >.",
+                        "path": ["human"],
+                        "locations": [{"line": 3, "column": 21}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
+                    },
+                    {
+                        "message": "Field name doesn't exist on Root",
+                        "path": ["unknownField", "name"],
+                        "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField doesn't exist on Query",
                         "path": ["unknownField"],
                         "locations": [{"line": 7, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                 ],
             },
@@ -120,14 +163,26 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                        "path": None,
+                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 4, "column": 33}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
                     },
                     {
-                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                        "path": None,
+                        "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                        "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -149,14 +204,26 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                        "path": None,
+                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
                         "locations": [{"line": 4, "column": 33}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
                     },
                     {
-                        "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                        "path": None,
+                        "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
                         "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -178,24 +245,81 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "field `Query.unknownField1` was not found in GraphQL schema.",
+                        "message": "Field unknownField1 doesn't exist on Query",
                         "path": ["unknownField1"],
                         "locations": [{"line": 3, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                     {
-                        "message": "field < doesKnowCommand > is a leaf and thus can't have a selection set",
+                        "message": "Field unknownField2 doesn't exist on Boolean",
+                        "path": ["dog", "doesKnowCommand", "unknownField2"],
+                        "locations": [{"line": 6, "column": 19}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field doesKnowCommand must not have a selection since type Boolean has no subfields.",
                         "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 5, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.3",
+                            "tag": "leaf-field-selections",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
+                            "spec": "June 2018",
+                        },
                     },
                     {
-                        "message": "field `Dog.unknownField3` was not found in GraphQL schema.",
+                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "path": ["dog", "doesKnowCommand"],
+                        "locations": [{"line": 5, "column": 33}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
+                    },
+                    {
+                        "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                        "path": ["dog", "doesKnowCommand"],
+                        "locations": [{"line": 5, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField3 doesn't exist on Dog",
                         "path": ["dog", "unknownField3"],
                         "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                     {
-                        "message": "field `Query.unknownField4` was not found in GraphQL schema.",
+                        "message": "Field unknownField4 doesn't exist on Query",
                         "path": ["unknownField4"],
                         "locations": [{"line": 10, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                 ],
             },
@@ -232,29 +356,92 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "field `Dog.unknownField4` was not found in GraphQL schema.",
-                        "path": ["dog", "unknownField4"],
-                        "locations": [{"line": 23, "column": 17}],
-                    },
-                    {
-                        "message": "field `Query.unknownField5` was not found in GraphQL schema.",
-                        "path": ["unknownField5"],
-                        "locations": [{"line": 25, "column": 15}],
-                    },
-                    {
-                        "message": "field `Query.unknownField1` was not found in GraphQL schema.",
+                        "message": "Field unknownField1 doesn't exist on Query",
                         "path": ["unknownField1"],
                         "locations": [{"line": 3, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                     {
-                        "message": "field `Dog.unknownField3` was not found in GraphQL schema.",
-                        "path": ["dog", "unknownField3"],
-                        "locations": [{"line": 16, "column": 15}],
+                        "message": "Field unknownField2 doesn't exist on Boolean",
+                        "path": ["doesKnowCommand", "unknownField2"],
+                        "locations": [{"line": 9, "column": 19}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                     {
-                        "message": "field < doesKnowCommand > is a leaf and thus can't have a selection set",
-                        "path": ["dog", "doesKnowCommand"],
+                        "message": "Field doesKnowCommand must not have a selection since type Boolean has no subfields.",
+                        "path": ["doesKnowCommand"],
                         "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.3",
+                            "tag": "leaf-field-selections",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
+                            "spec": "June 2018",
+                        },
+                    },
+                    {
+                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
+                        "locations": [{"line": 8, "column": 33}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
+                    },
+                    {
+                        "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
+                        "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField3 doesn't exist on Dog",
+                        "path": ["unknownField3"],
+                        "locations": [{"line": 16, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField4 doesn't exist on Dog",
+                        "path": ["dog", "unknownField4"],
+                        "locations": [{"line": 23, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField5 doesn't exist on Query",
+                        "path": ["unknownField5"],
+                        "locations": [{"line": 25, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                 ],
             },
@@ -293,29 +480,107 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "field `Dog.unknownField4` was not found in GraphQL schema.",
-                        "path": ["dog", "unknownField4"],
-                        "locations": [{"line": 25, "column": 17}],
-                    },
-                    {
-                        "message": "field `Query.unknownField5` was not found in GraphQL schema.",
-                        "path": ["unknownField5"],
-                        "locations": [{"line": 27, "column": 15}],
-                    },
-                    {
-                        "message": "field `Query.unknownField1` was not found in GraphQL schema.",
+                        "message": "Field unknownField1 doesn't exist on Query",
                         "path": ["unknownField1"],
                         "locations": [{"line": 3, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                     {
-                        "message": "field `Dog.unknownField3` was not found in GraphQL schema.",
-                        "path": ["dog", "unknownField3"],
-                        "locations": [{"line": 17, "column": 15}],
+                        "message": "Field unknownField21 doesn't exist on Root",
+                        "path": [
+                            "doesKnowCommand",
+                            "unknownField2",
+                            "unknownField21",
+                        ],
+                        "locations": [{"line": 10, "column": 21}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                     {
-                        "message": "field < doesKnowCommand > is a leaf and thus can't have a selection set",
-                        "path": ["dog", "doesKnowCommand"],
+                        "message": "Field unknownField2 doesn't exist on Boolean",
+                        "path": ["doesKnowCommand", "unknownField2"],
+                        "locations": [{"line": 9, "column": 19}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field doesKnowCommand must not have a selection since type Boolean has no subfields.",
+                        "path": ["doesKnowCommand"],
                         "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.3",
+                            "tag": "leaf-field-selections",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
+                            "spec": "June 2018",
+                        },
+                    },
+                    {
+                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
+                        "locations": [{"line": 8, "column": 33}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
+                    },
+                    {
+                        "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
+                        "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField3 doesn't exist on Dog",
+                        "path": ["unknownField3"],
+                        "locations": [{"line": 17, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField4 doesn't exist on Dog",
+                        "path": ["dog", "unknownField4"],
+                        "locations": [{"line": 25, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField5 doesn't exist on Query",
+                        "path": ["unknownField5"],
+                        "locations": [{"line": 27, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                 ],
             },
@@ -359,44 +624,193 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Undefined argument < undefinedArgument > on field < doesKnowCommand > of type < Dog >.",
-                        "path": None,
-                        "locations": [{"line": 27, "column": 67}],
-                    },
-                    {
-                        "message": "field `Dog.unknownField4` was not found in GraphQL schema.",
-                        "path": ["dog", "unknownField4"],
-                        "locations": [{"line": 29, "column": 17}],
-                    },
-                    {
-                        "message": "Undefined argument < undefinedArgument > on directive < @deprecated >.",
-                        "path": None,
-                        "locations": [{"line": 30, "column": 84}],
-                    },
-                    {
-                        "message": "field `Query.unknownField5` was not found in GraphQL schema.",
-                        "path": ["unknownField5"],
-                        "locations": [{"line": 32, "column": 15}],
-                    },
-                    {
-                        "message": "field `Query.unknownField1` was not found in GraphQL schema.",
+                        "message": "Field unknownField1 doesn't exist on Query",
                         "path": ["unknownField1"],
                         "locations": [{"line": 3, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                     {
-                        "message": "field `Dog.unknownField3` was not found in GraphQL schema.",
-                        "path": ["dog", "unknownField3"],
-                        "locations": [{"line": 20, "column": 15}],
+                        "message": "Provided Argument < undefinedArgument > doesn't exists on directive < @deprecated >.",
+                        "path": ["doesKnowCommand", "unknownField2"],
+                        "locations": [{"line": 10, "column": 45}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
                     },
                     {
-                        "message": "field < doesKnowCommand > is a leaf and thus can't have a selection set",
-                        "path": ["dog", "doesKnowCommand"],
+                        "message": "Field unknownField21 doesn't exist on Root",
+                        "path": [
+                            "doesKnowCommand",
+                            "unknownField2",
+                            "unknownField21",
+                        ],
+                        "locations": [{"line": 11, "column": 21}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Directive < @deprecated > is not used in a valid location.",
+                        "path": ["doesKnowCommand", "unknownField2"],
+                        "locations": [
+                            {"line": 10, "column": 19},
+                            {"line": 10, "column": 33},
+                        ],
+                        "extensions": {
+                            "rule": "5.7.2",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "tag": "directives-are-in-valid-locations",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField2 doesn't exist on Boolean",
+                        "path": ["doesKnowCommand", "unknownField2"],
+                        "locations": [{"line": 10, "column": 19}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Field doesKnowCommand must not have a selection since type Boolean has no subfields.",
+                        "path": ["doesKnowCommand"],
                         "locations": [{"line": 9, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.3",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
+                            "tag": "leaf-field-selections",
+                        },
                     },
                     {
-                        "message": "Undefined argument < undefinedArgument > on directive < @deprecated >.",
-                        "path": None,
+                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
+                        "locations": [{"line": 9, "column": 58}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
+                    },
+                    {
+                        "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
+                        "locations": [{"line": 9, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
+                    },
+                    {
+                        "message": "Provided Argument < undefinedArgument > doesn't exists on directive < @deprecated >.",
+                        "path": ["doesKnowCommand"],
                         "locations": [{"line": 14, "column": 84}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
+                    },
+                    {
+                        "message": "Directive < @deprecated > is not used in a valid location.",
+                        "path": ["doesKnowCommand"],
+                        "locations": [
+                            {"line": 14, "column": 17},
+                            {"line": 14, "column": 72},
+                        ],
+                        "extensions": {
+                            "rule": "5.7.2",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "tag": "directives-are-in-valid-locations",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField3 doesn't exist on Dog",
+                        "path": ["unknownField3"],
+                        "locations": [{"line": 20, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Provided Argument < undefinedArgument > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "path": ["dog", "doesKnowCommand"],
+                        "locations": [{"line": 27, "column": 67}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField4 doesn't exist on Dog",
+                        "path": ["dog", "unknownField4"],
+                        "locations": [{"line": 29, "column": 17}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
+                    },
+                    {
+                        "message": "Provided Argument < undefinedArgument > doesn't exists on directive < @deprecated >.",
+                        "path": ["dog", "doesKnowCommand"],
+                        "locations": [{"line": 30, "column": 84}],
+                        "extensions": {
+                            "rule": "5.4.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                            "tag": "argument-names",
+                        },
+                    },
+                    {
+                        "message": "Directive < @deprecated > is not used in a valid location.",
+                        "path": ["dog", "doesKnowCommand"],
+                        "locations": [
+                            {"line": 30, "column": 17},
+                            {"line": 30, "column": 72},
+                        ],
+                        "extensions": {
+                            "rule": "5.7.2",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "tag": "directives-are-in-valid-locations",
+                        },
+                    },
+                    {
+                        "message": "Field unknownField5 doesn't exist on Query",
+                        "path": ["unknownField5"],
+                        "locations": [{"line": 32, "column": 15}],
+                        "extensions": {
+                            "rule": "5.3.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                        },
                     },
                 ],
             },

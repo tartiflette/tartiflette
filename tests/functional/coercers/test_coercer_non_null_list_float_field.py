@@ -15,12 +15,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListFloatField }""",
             None,
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [Float]! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullListFloatField >.",
                         "path": ["nonNullListFloatField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -29,12 +35,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListFloatField(param: null) }""",
             None,
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < [Float]! > must not be null.",
                         "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 38}],
+                        "locations": [{"line": 1, "column": 31}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -60,254 +72,254 @@ from tests.functional.coercers.common import resolve_list_field
             {"data": {"nonNullListFloatField": "SUCCESS-[2345681.9-None]"}},
         ),
         (
-            """query ($param: [Float]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]!) { nonNullListFloatField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [Float]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 56}],
+                        "message": "Variable < $param > of required type < [Float]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]!) { nonNullListFloatField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Float]! > must not be null.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 56}],
+                        "message": "Variable < $param > of non-null type < [Float]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]!) { nonNullListFloatField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]!) { nonNullListFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]!) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]!) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2, None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9-None]"}},
         ),
         (
-            """query ($param: [Float] = null) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = null) { nonNullListFloatField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Float]! > must not be null.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 63}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 27}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float] = null) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = null) { nonNullListFloatField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Float]! > must not be null.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 63}],
+                        "message": "Variable < $param > of non-null type < [Float]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float] = null) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = null) { nonNullListFloatField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = null) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = null) { nonNullListFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float] = null) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = null) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float] = null) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = null) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2, None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9-None]"}},
         ),
         (
-            """query ($param: [Float] = [null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [null]) { nonNullListFloatField(param: $param) }""",
             None,
             {"data": {"nonNullListFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = [null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [null]) { nonNullListFloatField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Float]! > must not be null.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 65}],
+                        "message": "Variable < $param > of non-null type < [Float]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float] = [null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [null]) { nonNullListFloatField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = [null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [null]) { nonNullListFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float] = [null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [null]) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float] = [null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [null]) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2, None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9-None]"}},
         ),
         (
-            """query ($param: [Float] = 456.789e2) { nonNullListFloatField(param: $param) }""",
-            None,
-            {"data": {"nonNullListFloatField": "SUCCESS-[45681.9]"}},
-        ),
-        (
-            """query ($param: [Float] = 456.789e2) { nonNullListFloatField(param: $param) }""",
-            {"param": None},
-            {
-                "data": {"nonNullListFloatField": None},
-                "errors": [
-                    {
-                        "message": "Argument < param > of non-null type < [Float]! > must not be null.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 68}],
-                    }
-                ],
-            },
-        ),
-        (
-            """query ($param: [Float] = 456.789e2) { nonNullListFloatField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"nonNullListFloatField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Float] = 456.789e2) { nonNullListFloatField(param: $param) }""",
-            {"param": 3456.789e2},
-            {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
-        ),
-        (
-            """query ($param: [Float] = 456.789e2) { nonNullListFloatField(param: $param) }""",
-            {"param": [3456.789e2]},
-            {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
-        ),
-        (
-            """query ($param: [Float] = 456.789e2) { nonNullListFloatField(param: $param) }""",
-            {"param": [3456.789e2, None]},
-            {"data": {"nonNullListFloatField": "SUCCESS-[345681.9-None]"}},
-        ),
-        (
-            """query ($param: [Float] = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = 456.789e2) { nonNullListFloatField(param: $param) }""",
             None,
             {"data": {"nonNullListFloatField": "SUCCESS-[45681.9]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = 456.789e2) { nonNullListFloatField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Float]! > must not be null.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 70}],
+                        "message": "Variable < $param > of non-null type < [Float]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float] = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = 456.789e2) { nonNullListFloatField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = 456.789e2) { nonNullListFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = 456.789e2) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = 456.789e2) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2, None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9-None]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            None,
+            {"data": {"nonNullListFloatField": "SUCCESS-[45681.9]"}},
+        ),
+        (
+            """query ($param: [Float]! = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            {"param": None},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > of non-null type < [Float]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [Float]! = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            {"param": [None]},
+            {"data": {"nonNullListFloatField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [Float]! = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            {"param": 3456.789e2},
+            {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
+        ),
+        (
+            """query ($param: [Float]! = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            {"param": [3456.789e2]},
+            {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
+        ),
+        (
+            """query ($param: [Float]! = [456.789e2]) { nonNullListFloatField(param: $param) }""",
+            {"param": [3456.789e2, None]},
+            {"data": {"nonNullListFloatField": "SUCCESS-[345681.9-None]"}},
+        ),
+        (
+            """query ($param: [Float]! = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
             None,
             {"data": {"nonNullListFloatField": "SUCCESS-[45681.9-None]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Float]! > must not be null.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 76}],
+                        "message": "Variable < $param > of non-null type < [Float]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float] = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float]! = [456.789e2, null]) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2, None]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9-None]"}},
         ),
@@ -360,35 +372,35 @@ from tests.functional.coercers.common import resolve_list_field
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9-None]"}},
         ),
         (
-            """query ($param: [Float!]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float!]!) { nonNullListFloatField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [Float]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 57}],
+                        "message": "Variable < $param > of required type < [Float!]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float!]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float!]!) { nonNullListFloatField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Float]! > must not be null.",
-                        "path": ["nonNullListFloatField"],
-                        "locations": [{"line": 1, "column": 57}],
+                        "message": "Variable < $param > of non-null type < [Float!]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float!]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float!]!) { nonNullListFloatField(param: $param) }""",
             {"param": [None]},
             {
                 "data": None,
@@ -402,17 +414,17 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float!]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float!]!) { nonNullListFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float!]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float!]!) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {"data": {"nonNullListFloatField": "SUCCESS-[345681.9]"}},
         ),
         (
-            """query ($param: [Float!]) { nonNullListFloatField(param: $param) }""",
+            """query ($param: [Float!]!) { nonNullListFloatField(param: $param) }""",
             {"param": [3456.789e2, None]},
             {
                 "data": None,

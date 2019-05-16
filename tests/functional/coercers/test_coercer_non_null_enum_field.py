@@ -15,12 +15,18 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             """query { nonNullEnumField }""",
             None,
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyEnum! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullEnumField >.",
                         "path": ["nonNullEnumField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -29,12 +35,18 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             """query { nonNullEnumField(param: null) }""",
             None,
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < MyEnum! > must not be null.",
                         "path": ["nonNullEnumField"],
-                        "locations": [{"line": 1, "column": 33}],
+                        "locations": [{"line": 1, "column": 26}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -49,35 +61,35 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             },
         ),
         (
-            """query ($param: MyEnum) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum!) { nonNullEnumField(param: $param) }""",
             None,
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyEnum! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullEnumField"],
-                        "locations": [{"line": 1, "column": 50}],
+                        "message": "Variable < $param > of required type < MyEnum! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyEnum) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum!) { nonNullEnumField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyEnum! > must not be null.",
-                        "path": ["nonNullEnumField"],
-                        "locations": [{"line": 1, "column": 50}],
+                        "message": "Variable < $param > of non-null type < MyEnum! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyEnum) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum!) { nonNullEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {
                 "data": {
@@ -86,35 +98,35 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             },
         ),
         (
-            """query ($param: MyEnum = null) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum! = null) { nonNullEnumField(param: $param) }""",
             None,
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyEnum! > must not be null.",
-                        "path": ["nonNullEnumField"],
-                        "locations": [{"line": 1, "column": 57}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 26}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyEnum = null) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum! = null) { nonNullEnumField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyEnum! > must not be null.",
-                        "path": ["nonNullEnumField"],
-                        "locations": [{"line": 1, "column": 57}],
+                        "message": "Variable < $param > of non-null type < MyEnum! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyEnum = null) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum! = null) { nonNullEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {
                 "data": {
@@ -123,7 +135,7 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             },
         ),
         (
-            """query ($param: MyEnum = ENUM_4) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum! = ENUM_4) { nonNullEnumField(param: $param) }""",
             None,
             {
                 "data": {
@@ -132,21 +144,21 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             },
         ),
         (
-            """query ($param: MyEnum = ENUM_4) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum! = ENUM_4) { nonNullEnumField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyEnum! > must not be null.",
-                        "path": ["nonNullEnumField"],
-                        "locations": [{"line": 1, "column": 59}],
+                        "message": "Variable < $param > of non-null type < MyEnum! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyEnum = ENUM_4) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum! = ENUM_4) { nonNullEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {
                 "data": {

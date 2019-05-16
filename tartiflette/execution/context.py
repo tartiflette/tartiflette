@@ -4,10 +4,7 @@ from tartiflette.coercers.variables import coerce_variables
 from tartiflette.execution.collect import (
     collect_executable_variable_definitions,
 )
-from tartiflette.language.ast import (
-    FragmentDefinitionNode,
-    OperationDefinitionNode,
-)
+from tartiflette.language.ast import OperationDefinitionNode
 from tartiflette.types.exceptions.tartiflette import (
     MultipleException,
     TartifletteError,
@@ -134,31 +131,27 @@ async def build_execution_context(
     errors: List["TartifletteError"] = []
     operation: Optional["OperationDefinitionNode"] = None
     fragments: Dict[str, "FragmentDefinitionNode"] = {}
+    operations: Dict[Optional[str], "OperationDefinitionNode"] = {}
 
-    has_multiple_assumed_operations = False
     for definition in document.definitions:
         if isinstance(definition, OperationDefinitionNode):
-            if not operation_name and operation:
-                has_multiple_assumed_operations = True
-            elif not operation_name or (
-                definition.name and definition.name.value == operation_name
-            ):
-                operation = definition
-        if isinstance(definition, FragmentDefinitionNode):
+            operations[
+                definition.name.value if definition.name else None
+            ] = definition
+        else:
             fragments[definition.name.value] = definition
+
+    if operation_name:
+        operation = operations.get(operation_name)
+    elif len(operations) == 1:
+        _, operation = operations.popitem()
 
     if not operation:
         errors.append(
             TartifletteError(
                 f"Unknown operation named < {operation_name} >."
                 if operation_name
-                else "Must provide an operation."
-            )
-        )
-    elif has_multiple_assumed_operations:
-        errors.append(
-            TartifletteError(
-                "Must provide operation name if query contains multiple operations."
+                else "Must provide operation name if query contains multiple operations."
             )
         )
 

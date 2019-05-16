@@ -36,12 +36,12 @@ class ScalarInt:
         # ¯\_(ツ)_/¯ booleans are int: `assert isinstance(True, int) is True`
         if not isinstance(value, int) or isinstance(value, bool):
             raise TypeError(
-                f"Int cannot represent non-integer value: < {value} >"
+                f"Int cannot represent non-integer value: < {value} >."
             )
         if not _MIN_INT <= value <= _MAX_INT:
             raise TypeError(
                 "Int cannot represent non 32-bit signed integer value: "
-                f"< {value} >"
+                f"< {value} >."
             )
         return value
 

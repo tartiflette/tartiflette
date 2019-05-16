@@ -211,6 +211,16 @@ class GraphQLSchema:
             directive_definition.name
         ] = directive_definition
 
+    def has_directive(self, name: str) -> bool:
+        """
+        Determines whether or not the name corresponds to a defined directive.
+        :param name: name of the directive to find
+        :type name: str
+        :return: whether or not the name corresponds to a defined directive
+        :rtype: bool
+        """
+        return name in self._directive_definitions
+
     def find_directive(self, name: str) -> "GraphQLDirective":
         """
         Returns the defined directive corresponding to the name.
@@ -638,6 +648,8 @@ class GraphQLSchema:
                 )
             elif isinstance(type_definition, GraphQLEnumType):
                 await type_definition.bake_enum_values(self)
+            elif isinstance(type_definition, GraphQLInputObjectType):
+                await type_definition.bake_input_fields(self)
 
     def get_operation_root_type(
         self, operation: "OperationDefinitionNode"
