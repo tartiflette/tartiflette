@@ -5,6 +5,10 @@ async def resolver_query_viewer(*_, **__):
     return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
 
 
+# TODO: unskip this test once `validate_document` function has been implemented
+@pytest.mark.skip(
+    reason="Will handled by the `validate_document` function which isn't implemented yet."
+)
 @pytest.mark.asyncio
 @pytest.mark.ttftt_engine(resolvers={"Query.dog": resolver_query_viewer})
 @pytest.mark.parametrize(

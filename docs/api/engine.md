@@ -126,7 +126,7 @@ Use another default resolver. It can be useful to override the behavior for reso
 ```python
 from tartiflette import create_engine
 
-async def my_default_resolver(parent_result, arguments, context, info):
+async def my_default_resolver(parent, arguments, context, info):
     do_ing_some_thin_gs = 42
     return a_value
 

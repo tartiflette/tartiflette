@@ -37,7 +37,7 @@ class MyDirective:
         self,
         directive_args: Dict[str, Any],
         next_resolver: Callable,
-        parent_result: Optional[Any],
+        parent: Optional[Any],
         args: Dict[str, Any],
         ctx: Optional[Dict[str, Any]],
         info: "Info",
@@ -45,7 +45,7 @@ class MyDirective:
         ######################
         # Add your code here #
         ######################
-        return await next_resolver(parent_result, args, ctx, info)
+        return await next_resolver(parent, args, ctx, info)
 
 
     async def on_argument_execution(

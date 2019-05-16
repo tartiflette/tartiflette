@@ -1,5 +1,7 @@
 import asyncio
 
+from typing import Any, Callable, Dict, Optional, Union
+
 import pytest
 
 from tartiflette import Directive, Subscription, create_engine
@@ -40,21 +42,23 @@ async def ttftt_engine():
     class ValidateMaxLengthDirective:
         @staticmethod
         async def on_argument_execution(
-            directive_args,
-            next_directive,
-            argument_definition,
-            args,
-            ctx,
-            info,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node: Union["FieldNode", "DirectiveNode"],
+            argument_node: "ArgumentNode",
+            value: Any,
+            ctx: Optional[Any],
         ):
             limit = directive_args["limit"]
-            value = await next_directive(argument_definition, args, ctx, info)
+            value = await next_directive(
+                parent_node, argument_node, value, ctx
+            )
             argument_length = len(value)
             if argument_length > limit:
                 raise Exception(
-                    f"Value of argument < {argument_definition.name} > on field "
-                    f"< {info.schema_field.name} > is too long ({argument_length}/"
-                    f"{limit})."
+                    f"Value of argument < {argument_node.name.value} > on "
+                    f"field < {parent_node.name.value} > is too long "
+                    f"({argument_length}/{limit})."
                 )
             return value
 
@@ -62,20 +66,22 @@ async def ttftt_engine():
     class ValidateChoicesDirective:
         @staticmethod
         async def on_argument_execution(
-            directive_args,
-            next_directive,
-            argument_definition,
-            args,
-            ctx,
-            info,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node: Union["FieldNode", "DirectiveNode"],
+            argument_node: "ArgumentNode",
+            value: Any,
+            ctx: Optional[Any],
         ):
             choices = directive_args["choices"]
-            value = await next_directive(argument_definition, args, ctx, info)
+            value = await next_directive(
+                parent_node, argument_node, value, ctx
+            )
             if value not in choices:
                 raise Exception(
-                    f"Value of argument < {argument_definition.name} > on field "
-                    f"< {info.schema_field.name} > is not a valid option "
-                    f"< {value} >. Allowed values are {choices}."
+                    f"Value of argument < {argument_node.name.value} > on "
+                    f"field < {parent_node.name.value} > is not a valid "
+                    f"option < {value} >. Allowed values are {choices}."
                 )
             return value
 
@@ -104,18 +110,14 @@ async def ttftt_engine():
                 "data": {"search": None},
                 "errors": [
                     {
-                        "message": "Value of argument < query > on field "
-                        "< search > is too long (14/5).",
+                        "message": "Value of argument < query > on field < search > is too long (14/5).",
                         "path": ["search"],
-                        "locations": [{"line": 3, "column": 15}],
+                        "locations": [{"line": 3, "column": 22}],
                     },
                     {
-                        "message": "Value of argument < kind > on field "
-                        "< search > is not a valid option "
-                        "< INVALID_KIND >. Allowed values are "
-                        "['ACTOR', 'DIRECTOR'].",
+                        "message": "Value of argument < kind > on field < search > is not a valid option < INVALID_KIND >. Allowed values are ['ACTOR', 'DIRECTOR'].",
                         "path": ["search"],
-                        "locations": [{"line": 3, "column": 15}],
+                        "locations": [{"line": 3, "column": 47}],
                     },
                 ],
             },

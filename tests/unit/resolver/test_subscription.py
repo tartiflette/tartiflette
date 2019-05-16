@@ -49,7 +49,8 @@ def test_subscription_bake_unknown_field_definition(a_subscription):
     ]
 
 
-@pytest.mark.skip
+# TODO: fix this test once `subscriptions` are properly handled
+@pytest.mark.skip(reason="`subscriptions` aren't properly handled yet.")
 def test_subscription_bake_not_subscription_field(a_subscription):
     from tartiflette.types.exceptions.tartiflette import NotSubscriptionField
 

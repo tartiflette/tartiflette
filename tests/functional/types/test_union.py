@@ -1,7 +1,6 @@
 import pytest
 
 from tartiflette import Resolver, create_engine
-from tartiflette.executors.types import Info
 
 
 @pytest.mark.asyncio
@@ -141,7 +140,9 @@ async def test_tartiflette_execute_union_type_output(
     """
 
     @Resolver("Query.test")
-    async def func_field_resolver(parent, arguments, request_ctx, info: Info):
+    async def func_field_resolver(
+        parent, arguments, request_ctx, info: "ResolveInfo"
+    ):
         chosen = arguments.get("choose", 0)
         if chosen == 1:
             return {"aField": "aValue", "bField": 1, "_typename": "One"}

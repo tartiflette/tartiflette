@@ -1,29 +1,33 @@
 import logging
 
+from functools import partial
 from importlib import import_module, invalidate_caches
 from inspect import isawaitable, iscoroutinefunction
-from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
-
-from tartiflette.executors.basic import (
-    execute as basic_execute,
-    subscribe as basic_subscribe,
+from typing import (
+    Any,
+    AsyncIterable,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Union,
 )
-from tartiflette.parser import TartifletteRequestParser
-from tartiflette.resolver.factory import (
+
+from tartiflette.execution.collect import parse_and_validate_query
+from tartiflette.execution.execute import create_source_event_stream, execute
+from tartiflette.execution.response import build_response
+from tartiflette.schema.bakery import SchemaBakery
+from tartiflette.schema.registry import SchemaRegistry
+from tartiflette.types.exceptions.tartiflette import ImproperlyConfigured
+from tartiflette.utils.errors import (
     default_error_coercer,
     error_coercer_factory,
 )
-from tartiflette.schema.bakery import SchemaBakery
-from tartiflette.schema.registry import SchemaRegistry
-from tartiflette.types.exceptions.tartiflette import (
-    ImproperlyConfigured,
-    TartifletteError,
-)
-from tartiflette.utils.errors import to_graphql_error
 
 logger = logging.getLogger(__name__)
 
-_BUILTINS_MODULES = [
+_BUILTINS_MODULES = (
     "tartiflette.directive.builtins.deprecated",
     "tartiflette.directive.builtins.non_introspectable",
     "tartiflette.directive.builtins.skip",
@@ -37,18 +41,44 @@ _BUILTINS_MODULES = [
     "tartiflette.scalar.builtins.string",
     "tartiflette.scalar.builtins.time",
     "tartiflette.schema.builtins.introspection",
-]
+)
 
 
-async def _bake_module(module, schema_name, config=None):
+async def _bake_module(
+    module: object, schema_name: str, config: Optional[Dict[str, Any]] = None
+) -> str:
+    """
+    Bakes a module and retrieves its extra SDL content.
+    :param module: module instance to bake
+    :param schema_name: schema name to link with
+    :param config: configuration of the module
+    :type module: object
+    :type schema_name: str
+    :type config: Optional[Dict[str, Any]]
+    :return: the extra SDL provided by the module
+    :rtype: str
+    """
     msdl = module.bake(schema_name, config)
     if isawaitable(msdl):
         msdl = await msdl
+    return msdl or ""
 
-    return msdl
 
-
-async def _import_builtins(imported_modules, sdl, schema_name):
+async def _import_builtins(
+    imported_modules: List[object], sdl: str, schema_name: str
+) -> Tuple[List[object], str]:
+    """
+    Imports and bakes built-ins directives and scalars if not already
+    implemented.
+    :param imported_modules: list of already imported modules
+    :param sdl: SDL with complementary content from already baked modules
+    :param schema_name: schema name to link with
+    :type imported_modules: List[object]
+    :type sdl: str
+    :type schema_name: str
+    :return: couple list of imported modules instance/final SDL
+    :rtype: Tuple[List[object], str]
+    """
     for module in _BUILTINS_MODULES:
         try:
             module = import_module(module)
@@ -62,31 +92,46 @@ async def _import_builtins(imported_modules, sdl, schema_name):
     return imported_modules, sdl
 
 
-async def _import_modules(modules, schema_name):
-    imported_modules = []
+async def _import_modules(
+    module_definitions: List[Union[str, Dict[str, Any]]], schema_name: str
+) -> Tuple[List[object], str]:
+    """
+    Imports and bakes the list of modules filled at engine initialisation
+    before importing & baking built-ins modules.
+    :param module_definitions: list of modules filled at engine initialisation
+    :param schema_name: schema name to link with
+    :type module_definitions: List[Union[str, Dict[str, Any]]]
+    :type schema_name: str
+    :return: couple list of imported modules instance/final SDL
+    :rtype: Tuple[List[object], str]
+    """
     sdl = ""
+    imported_modules = []
 
     invalidate_caches()
 
-    for module in modules:
-        if not isinstance(module, dict):
-            module = {"name": module, "config": {}}
+    for module_definition in module_definitions:
+        if not isinstance(module_definition, dict):
+            module_definition = {"name": module_definition, "config": None}
 
-        config = module["config"]
-        module = import_module(module["name"])
-
+        module = import_module(module_definition["name"])
         if callable(getattr(module, "bake", None)):
             sdl = "{sdl}\n{msdl}".format(
                 sdl=sdl,
-                msdl=await _bake_module(module, schema_name, config) or "",
+                msdl=await _bake_module(
+                    module, schema_name, module_definition["config"]
+                ),
             )
-
         imported_modules.append(module)
 
     return await _import_builtins(imported_modules, sdl, schema_name)
 
 
 class Engine:
+    """
+    Tartiflette GraphQL engine.
+    """
+
     def __init__(
         self,
         sdl=None,
@@ -96,9 +141,8 @@ class Engine:
         modules=None,
     ) -> None:
         """
-        Create an uncooked Engine instance
+        Creates an uncooked Engine instance.
         """
-        self._parser = TartifletteRequestParser()
         self._schema = None
         self._schema_name = schema_name
         self._error_coercer = error_coercer
@@ -106,26 +150,37 @@ class Engine:
         self._modules = modules
         self._sdl = sdl
         self._cooked = False
+        self._build_response = None
 
     async def cook(
         self,
         sdl: Union[str, List[str]] = None,
-        error_coercer: Callable[[Exception], dict] = None,
+        error_coercer: Callable[
+            [Exception, Dict[str, Any]], Dict[str, Any]
+        ] = None,
         custom_default_resolver: Optional[Callable] = None,
         modules: Optional[Union[str, List[str]]] = None,
         schema_name: str = None,
     ):
         """
-        Cook the tartiflette, i.e. prepare the engine by binding it to given modules using the schema_name as a key.
-        You won't be able to execute a request if the engine hasn't been cooked.
-        Has no effect if the engine has already been cooked.
-
-        Keyword Arguments:
-            sdl {Union[str, List[str]]} -- The SDL to work with.
-            schema_name {str} -- The name of the SDL (default: {"default"})
-            error_coercer {Callable[[Exception, dict], dict]} -- An optional callable in charge of transforming a couple Exception/error into an error dict (default: {default_error_coercer})
-            custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
-            modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
+        Cook the tartiflette, basically prepare the engine by binding it to
+        given modules using the schema_name as a key. You wont be able to
+        execute a request if the engine wasn't cooked.
+        :param sdl: path or list of path to the files / directories containing
+        the SDL
+        :param error_coercer: callable in charge of transforming a couple
+        Exception/error into an error dictionary
+        :param custom_default_resolver: callable that will replace the builtin
+        default_resolver (called as resolver for each UNDECORATED field)
+        :param modules: list of string containing the name of the modules you
+        want the engine to import, usually this modules contains your
+        Resolvers, Directives, Scalar or Subscription code
+        :param schema_name: name of the SDL
+        :type sdl: Union[str, List[str]]
+        :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
+        :type custom_default_resolver: Optional[Callable]
+        :type modules: Optional[Union[str, List[str]]]
+        :type schema_name: str
         """
         if self._cooked:
             return
@@ -163,91 +218,109 @@ class Engine:
         )
 
         SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
-        self._schema = SchemaBakery.bake(schema_name, custom_default_resolver)
+        self._schema = await SchemaBakery.bake(
+            schema_name, custom_default_resolver
+        )
+        self._build_response = partial(
+            build_response,
+            error_coercer=error_coercer_factory(
+                error_coercer or default_error_coercer
+            ),
+        )
 
         self._cooked = True
 
     async def execute(
         self,
-        query: str,
+        query: Union[str, bytes],
         operation_name: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[Any] = None,
         variables: Optional[Dict[str, Any]] = None,
         initial_value: Optional[Any] = None,
-    ) -> dict:
+    ) -> Dict[str, Any]:
         """
-        Parse and execute a GraphQL request (as string).
+        Parses and executes a GraphQL query/mutation request.
         :param query: the GraphQL request / query as UTF8-encoded string
         :param operation_name: the operation name to execute
-        :param context: a dict containing anything you need
+        :param context: value that can contain everything you need and that
+        will be accessible from the resolvers
         :param variables: the variables used in the GraphQL request
-        :param initial_value: an initial value corresponding to the root type being executed
-        :return: a GraphQL response (as dict)
+        :param initial_value: an initial value corresponding to the root type
+        being executed
+        :type query: Union[str, bytes]
+        :type operation_name: Optional[str]
+        :type context: Optional[Any]
+        :type variables: Optional[Dict[str, Any]]
+        :type initial_value: Optional[Any]
+        :return: computed response corresponding to the request
+        :rtype: Dict[str, Any]
         """
-        operations, errors = self._parse_query_to_operations(query, variables)
-
+        document, errors = parse_and_validate_query(query)
         if errors:
-            return errors
+            return await self._build_response(errors=errors)
 
-        return await basic_execute(
-            operations,
+        return await execute(
+            self._schema,
+            document,
+            self._build_response,
+            initial_value,
+            context,
+            variables,
             operation_name,
-            request_ctx=context,
-            initial_value=initial_value,
-            error_coercer=self._error_coercer,
         )
 
     async def subscribe(
         self,
-        query: str,
+        query: Union[str, bytes],
         operation_name: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[Any] = None,
         variables: Optional[Dict[str, Any]] = None,
         initial_value: Optional[Any] = None,
     ) -> AsyncIterable[Dict[str, Any]]:
         """
-        Parse and execute a GraphQL request (as string).
+        Parses and executes a GraphQL subscription request.
         :param query: the GraphQL request / query as UTF8-encoded string
         :param operation_name: the operation name to execute
-        :param context: a dict containing anything you need
+        :param context: value that can contain everything you need and that
+        will be accessible from the resolvers
         :param variables: the variables used in the GraphQL request
-        :param initial_value: an initial value corresponding to the root type being executed
-        :return: a GraphQL response (as dict)
+        :param initial_value: an initial value corresponding to the root type
+        being executed
+        :type query: Union[str, bytes]
+        :type operation_name: Optional[str]
+        :type context: Optional[Any]
+        :type variables: Optional[Dict[str, Any]]
+        :type initial_value: Optional[Any]
+        :return: computed response corresponding to the request
+        :rtype: AsyncIterable[Dict[str, Any]]
         """
-        operations, errors = self._parse_query_to_operations(query, variables)
-
+        # pylint: disable=too-many-locals
+        document, errors = parse_and_validate_query(query)
         if errors:
-            yield errors
-        else:
-            async for result in basic_subscribe(  # pylint: disable=not-an-iterable
-                operations,
-                operation_name,
-                request_ctx=context,
-                initial_value=initial_value,
-                error_coercer=self._error_coercer,
-            ):
-                yield result
+            yield await self._build_response(errors=errors)
+            return
 
-    def _parse_query_to_operations(self, query, variables):
-        try:
-            operations, errors = self._parser.parse_and_tartify(
+        source_event_stream = await create_source_event_stream(
+            self._schema,
+            document,
+            self._build_response,
+            initial_value,
+            context,
+            variables,
+            operation_name,
+        )
+
+        if isinstance(source_event_stream, dict):
+            yield source_event_stream
+            return
+
+        async for payload in source_event_stream:
+            yield await execute(
                 self._schema,
-                query,
-                variables=dict(variables) if variables else variables,
+                document,
+                self._build_response,
+                payload,
+                context,
+                variables,
+                operation_name,
             )
-        except TartifletteError as e:
-            errors = [e]
-        except Exception as e:  # pylint: disable=broad-except
-            errors = [
-                to_graphql_error(e, message="Server encountered an error.")
-            ]
-
-        if errors:
-            return (
-                None,
-                {
-                    "data": None,
-                    "errors": [self._error_coercer(err) for err in errors],
-                },
-            )
-        return operations, None

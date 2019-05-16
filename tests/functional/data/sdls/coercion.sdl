@@ -1,0 +1,469 @@
+directive @debug(message: DefaultRawString) on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM | ENUM_VALUE
+directive @lowercase on ENUM_VALUE | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+directive @increment(step: DefaultRawInt = 1) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+directive @mapToValue(newValue: DefaultRawString!) on ENUM_VALUE
+directive @concatenate(with: DefaultRawString!) on ENUM_VALUE | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+
+scalar DefaultRawInt
+scalar DefaultRawString
+scalar Boolean @debug(message: "Scalar.Boolean")
+scalar Float @debug(message: "Scalar.Float") @increment
+scalar Int @debug(message: "Scalar.Int") @increment
+scalar String @debug(message: "Scalar.String") @lowercase @concatenate(with: "-SCALAR")
+
+enum MyEnum @debug(message: "MyEnum") @concatenate(with: "-MyEnum") {
+  ENUM_1 @debug(message: "MyEnum.ENUM_1") @mapToValue(newValue: "ENUM_1_1")
+  ENUM_2 @debug(message: "MyEnum.ENUM_2") @mapToValue(newValue: "ENUM_2_2")
+  ENUM_3 @debug(message: "MyEnum.ENUM_3") @mapToValue(newValue: "ENUM_3_3")
+  ENUM_4 @debug(message: "MyEnum.ENUM_4") @mapToValue(newValue: "ENUM_4_4")
+}
+
+input MyInput @debug(message: "MyInput") {
+  booleanField: Boolean @debug(message: "MyInput.booleanField")
+  enumField: MyEnum @debug(message: "MyInput.enumField") @concatenate(with: "-enumField")
+  floatField: Float @debug(message: "MyInput.floatField") @increment(step: 2)
+  intField: Int @debug(message: "MyInput.intField") @increment(step: 2)
+  stringField: String @debug(message: "MyInput.stringField") @concatenate(with: "-stringField")
+  listBooleanField: [Boolean] @debug(message: "MyInput.listBooleanField")
+  listEnumField: [MyEnum] @debug(message: "MyInput.listEnumField") @lowercase
+  listFloatField: [Float] @debug(message: "MyInput.listFloatField") @increment(step: 2)
+  listIntField: [Int] @debug(message: "MyInput.listIntField") @increment(step: 2)
+  listStringField: [String] @debug(message: "MyInput.listStringField") @lowercase
+}
+
+input MyInputWithDefault @debug(message: "MyInputWithDefault") {
+  booleanField: Boolean = true @debug(message: "MyInputWithDefault.booleanField")
+  enumField: MyEnum = ENUM_1 @debug(message: "MyInputWithDefault.enumField") @concatenate(with: "-enumField")
+  floatField: Float = 123456.789e2 @debug(message: "MyInputWithDefault.floatField") @increment(step: 2)
+  intField: Int = 123456 @debug(message: "MyInputWithDefault.intField") @increment(step: 2)
+  stringField: String = "defaultString" @debug(message: "MyInputWithDefault.stringField") @concatenate(with: "-stringField")
+  listBooleanField: [Boolean] = [true, null] @debug(message: "MyInputWithDefault.listBooleanField")
+  listEnumField: [MyEnum] = [ENUM_1, null] @debug(message: "MyInputWithDefault.listEnumField") @lowercase
+  listFloatField: [Float] = [123456.789e2, null] @debug(message: "MyInputWithDefault.listFloatField") @increment(step: 2)
+  listIntField: [Int] = [123456, null] @debug(message: "MyInputWithDefault.listIntField") @increment(step: 2)
+  listStringField: [String] = ["defaultString", null] @debug(message: "MyInputWithDefault.listStringField") @lowercase
+}
+
+input WrapperNonNullMyInput @debug(message: "WrapperNonNullMyInput") {
+  booleanField: Boolean! @debug(message: "WrapperNonNullMyInput.booleanField")
+  enumField: MyEnum! @debug(message: "WrapperNonNullMyInput.enumField") @concatenate(with: "-enumField")
+  floatField: Float! @debug(message: "WrapperNonNullMyInput.floatField") @increment(step: 2)
+  intField: Int! @debug(message: "WrapperNonNullMyInput.intField") @increment(step: 2)
+  stringField: String! @debug(message: "WrapperNonNullMyInput.stringField") @concatenate(with: "-stringField")
+  listBooleanField: [Boolean]! @debug(message: "WrapperNonNullMyInput.listBooleanField")
+  listEnumField: [MyEnum]! @debug(message: "WrapperNonNullMyInput.listEnumField") @lowercase
+  listFloatField: [Float]! @debug(message: "WrapperNonNullMyInput.listFloatField") @increment(step: 2)
+  listIntField: [Int]! @debug(message: "WrapperNonNullMyInput.listIntField") @increment(step: 2)
+  listStringField: [String]! @debug(message: "WrapperNonNullMyInput.listStringField") @lowercase
+}
+
+input WrapperNonNullWithDefaultMyInput @debug(message: "WrapperNonNullWithDefaultMyInput") {
+  booleanField: Boolean! = true @debug(message: "WrapperNonNullWithDefaultMyInput.booleanField")
+  enumField: MyEnum! = ENUM_1 @debug(message: "WrapperNonNullWithDefaultMyInput.enumField") @concatenate(with: "-enumField")
+  floatField: Float! = 123456.789e2 @debug(message: "WrapperNonNullWithDefaultMyInput.floatField") @increment(step: 2)
+  intField: Int! = 123456 @debug(message: "WrapperNonNullWithDefaultMyInput.intField") @increment(step: 2)
+  stringField: String! = "defaultString" @debug(message: "WrapperNonNullWithDefaultMyInput.stringField") @concatenate(with: "-stringField")
+  listBooleanField: [Boolean]! = [true, null] @debug(message: "WrapperNonNullWithDefaultMyInput.listBooleanField")
+  listEnumField: [MyEnum]! = [ENUM_1, null] @debug(message: "WrapperNonNullWithDefaultMyInput.listEnumField") @lowercase
+  listFloatField: [Float]! = [123456.789e2, null] @debug(message: "WrapperNonNullWithDefaultMyInput.listFloatField") @increment(step: 2)
+  listIntField: [Int]! = [123456, null] @debug(message: "WrapperNonNullWithDefaultMyInput.listIntField") @increment(step: 2)
+  listStringField: [String]! = ["defaultString", null] @debug(message: "WrapperNonNullWithDefaultMyInput.listStringField") @lowercase
+}
+
+input InnerNonNullMyInput @debug(message: "InnerNonNullMyInput") {
+  booleanField: Boolean! @debug(message: "InnerNonNullMyInput.booleanField")
+  enumField: MyEnum! @debug(message: "InnerNonNullMyInput.enumField") @concatenate(with: "-enumField")
+  floatField: Float! @debug(message: "InnerNonNullMyInput.floatField") @increment(step: 2)
+  intField: Int! @debug(message: "InnerNonNullMyInput.intField") @increment(step: 2)
+  stringField: String! @debug(message: "InnerNonNullMyInput.stringField") @concatenate(with: "-stringField")
+  listBooleanField: [Boolean!] @debug(message: "InnerNonNullMyInput.listBooleanField")
+  listEnumField: [MyEnum!] @debug(message: "InnerNonNullMyInput.listEnumField") @lowercase
+  listFloatField: [Float!] @debug(message: "InnerNonNullMyInput.listFloatField") @increment(step: 2)
+  listIntField: [Int!] @debug(message: "InnerNonNullMyInput.listIntField") @increment(step: 2)
+  listStringField: [String!] @debug(message: "InnerNonNullMyInput.listStringField") @lowercase
+}
+
+input InnerNonNullWithDefaultMyInput @debug(message: "InnerNonNullWithDefaultMyInput") {
+  booleanField: Boolean! = true @debug(message: "InnerNonNullWithDefaultMyInput.booleanField")
+  enumField: MyEnum! = ENUM_1 @debug(message: "InnerNonNullWithDefaultMyInput.enumField") @concatenate(with: "-enumField")
+  floatField: Float! = 123456.789e2 @debug(message: "InnerNonNullWithDefaultMyInput.floatField") @increment(step: 2)
+  intField: Int! = 123456 @debug(message: "InnerNonNullWithDefaultMyInput.intField") @increment(step: 2)
+  stringField: String! = "defaultString" @debug(message: "InnerNonNullWithDefaultMyInput.stringField") @concatenate(with: "-stringField")
+  listBooleanField: [Boolean!] = [true] @debug(message: "InnerNonNullWithDefaultMyInput.listBooleanField")
+  listEnumField: [MyEnum!] = [ENUM_1] @debug(message: "InnerNonNullWithDefaultMyInput.listEnumField") @lowercase
+  listFloatField: [Float!] = [123456.789e2] @debug(message: "InnerNonNullWithDefaultMyInput.listFloatField") @increment(step: 2)
+  listIntField: [Int!] = [123456] @debug(message: "InnerNonNullWithDefaultMyInput.listIntField") @increment(step: 2)
+  listStringField: [String!] = ["defaultString"] @debug(message: "InnerNonNullWithDefaultMyInput.listStringField") @lowercase
+}
+
+type Query {
+  booleanField(
+    param: Boolean @debug(message: "booleanField.param")
+  ): DefaultRawString
+  enumField(
+    param: MyEnum @debug(message: "enumField.param") @concatenate(with: "-enumField")
+  ): DefaultRawString
+  floatField(
+    param: Float @debug(message: "floatField.param") @increment(step: 2)
+  ): DefaultRawString
+  intField(
+    param: Int @debug(message: "intField.param") @increment(step: 2)
+  ): DefaultRawString
+  stringField(
+    param: String @debug(message: "stringField.param") @concatenate(with: "-stringField")
+  ): DefaultRawString
+
+  booleanWithDefaultField(
+    param: Boolean = true @debug(message: "booleanWithDefaultField.param")
+  ): DefaultRawString
+  enumWithDefaultField(
+    param: MyEnum = ENUM_1 @debug(message: "enumWithDefaultField.param") @concatenate(with: "-enumWithDefaultField")
+  ): DefaultRawString
+  floatWithDefaultField(
+    param: Float = 123456.789e2 @debug(message: "floatWithDefaultField.param") @increment(step: 2)
+  ): DefaultRawString
+  intWithDefaultField(
+    param: Int = 123456 @debug(message: "intWithDefaultField.param") @increment(step: 2)
+  ): DefaultRawString
+  stringWithDefaultField(
+    param: String = "defaultString" @debug(message: "stringWithDefaultField.param") @concatenate(with: "-stringWithDefaultField")
+  ): DefaultRawString
+
+  nonNullBooleanField(
+    param: Boolean! @debug(message: "booleanField.param")
+  ): DefaultRawString
+  nonNullEnumField(
+    param: MyEnum! @debug(message: "enumField.param") @concatenate(with: "-nonNullEnumField")
+  ): DefaultRawString
+  nonNullFloatField(
+    param: Float! @debug(message: "floatField.param") @increment(step: 2)
+  ): DefaultRawString
+  nonNullIntField(
+    param: Int! @debug(message: "intField.param") @increment(step: 2)
+  ): DefaultRawString
+  nonNullStringField(
+    param: String! @debug(message: "stringField.param") @concatenate(with: "-nonNullStringField")
+  ): DefaultRawString
+
+  nonNullBooleanWithDefaultField(
+    param: Boolean! = true @debug(message: "booleanField.param")
+  ): DefaultRawString
+  nonNullEnumWithDefaultField(
+    param: MyEnum! = ENUM_1 @debug(message: "enumField.param") @concatenate(with: "-nonNullEnumWithDefaultField")
+  ): DefaultRawString
+  nonNullFloatWithDefaultField(
+    param: Float! = 123456.789e2 @debug(message: "floatField.param") @increment(step: 2)
+  ): DefaultRawString
+  nonNullIntWithDefaultField(
+    param: Int! = 123456 @debug(message: "intField.param") @increment(step: 2)
+  ): DefaultRawString
+  nonNullStringWithDefaultField(
+    param: String! = "defaultString" @debug(message: "stringField.param") @concatenate(with: "-nonNullStringWithDefaultField")
+  ): DefaultRawString
+
+  listBooleanField(
+    param: [Boolean] @debug(message: "listBooleanField.param")
+  ): DefaultRawString
+  listEnumField(
+    param: [MyEnum] @debug(message: "listEnumField.param") @lowercase
+  ): DefaultRawString
+  listFloatField(
+    param: [Float] @debug(message: "listFloatField.param") @increment(step: 2)
+  ): DefaultRawString
+  listIntField(
+    param: [Int] @debug(message: "listIntField.param") @increment(step: 2)
+  ): DefaultRawString
+  listStringField(
+    param: [String] @debug(message: "listStringField.param") @lowercase
+  ): DefaultRawString
+
+  listWithDefaultBooleanField(
+    param: [Boolean] = [true, null] @debug(message: "listWithDefaultBooleanField.param")
+  ): DefaultRawString
+  listWithDefaultEnumField(
+    param: [MyEnum] = [ENUM_1, null] @debug(message: "listWithDefaultEnumField.param") @lowercase
+  ): DefaultRawString
+  listWithDefaultFloatField(
+    param: [Float] = [123456.789e2, null] @debug(message: "listWithDefaultFloatField.param") @increment(step: 2)
+  ): DefaultRawString
+  listWithDefaultIntField(
+    param: [Int] = [123456, null] @debug(message: "listWithDefaultIntField.param") @increment(step: 2)
+  ): DefaultRawString
+  listWithDefaultStringField(
+    param: [String] = ["defaultString", null] @debug(message: "listWithDefaultStringField.param") @lowercase
+  ): DefaultRawString
+
+  nonNullListBooleanField(
+    param: [Boolean]! @debug(message: "nonNullListBooleanField.param")
+  ): DefaultRawString
+  nonNullListEnumField(
+    param: [MyEnum]! @debug(message: "nonNullListEnumField.param") @lowercase
+  ): DefaultRawString
+  nonNullListFloatField(
+    param: [Float]! @debug(message: "nonNullListFloatField.param") @increment(step: 2)
+  ): DefaultRawString
+  nonNullListIntField(
+    param: [Int]! @debug(message: "nonNullListIntField.param") @increment(step: 2)
+  ): DefaultRawString
+  nonNullListStringField(
+    param: [String]! @debug(message: "nonNullListStringField.param") @lowercase
+  ): DefaultRawString
+
+  nonNullListWithDefaultBooleanField(
+    param: [Boolean]! = [true, null] @debug(message: "nonNullListWithDefaultBooleanField.param")
+  ): DefaultRawString
+  nonNullListWithDefaultEnumField(
+    param: [MyEnum]! = [ENUM_1, null] @debug(message: "nonNullListWithDefaultEnumField.param") @lowercase
+  ): DefaultRawString
+  nonNullListWithDefaultFloatField(
+    param: [Float]! = [123456.789e2, null] @debug(message: "nonNullListWithDefaultFloatField.param") @increment(step: 2)
+  ): DefaultRawString
+  nonNullListWithDefaultIntField(
+    param: [Int]! = [123456, null] @debug(message: "nonNullListWithDefaultIntField.param") @increment(step: 2)
+  ): DefaultRawString
+  nonNullListWithDefaultStringField(
+    param: [String]! = ["defaultString", null] @debug(message: "nonNullListWithDefaultStringField.param") @lowercase
+  ): DefaultRawString
+
+  listNonNullBooleanField(
+    param: [Boolean!] @debug(message: "listNonNullBooleanField.param")
+  ): DefaultRawString
+  listNonNullEnumField(
+    param: [MyEnum!] @debug(message: "listNonNullEnumField.param") @lowercase
+  ): DefaultRawString
+  listNonNullFloatField(
+    param: [Float!] @debug(message: "listNonNullFloatField.param") @increment(step: 2)
+  ): DefaultRawString
+  listNonNullIntField(
+    param: [Int!] @debug(message: "listNonNullIntField.param") @increment(step: 2)
+  ): DefaultRawString
+  listNonNullStringField(
+    param: [String!] @debug(message: "listNonNullStringField.param") @lowercase
+  ): DefaultRawString
+
+  listWithDefaultNonNullBooleanField(
+    param: [Boolean!] = [true] @debug(message: "listWithDefaultNonNullBooleanField.param")
+  ): DefaultRawString
+  listWithDefaultNonNullEnumField(
+    param: [MyEnum!] = [ENUM_1] @debug(message: "listWithDefaultNonNullEnumField.param") @lowercase
+  ): DefaultRawString
+  listWithDefaultNonNullFloatField(
+    param: [Float!] = [123456.789e2] @debug(message: "listWithDefaultNonNullFloatField.param") @increment(step: 2)
+  ): DefaultRawString
+  listWithDefaultNonNullIntField(
+    param: [Int!] = [123456] @debug(message: "listWithDefaultNonNullIntField.param") @increment(step: 2)
+  ): DefaultRawString
+  listWithDefaultNonNullStringField(
+    param: [String!] = ["defaultString"] @debug(message: "listWithDefaultNonNullStringField.param") @lowercase
+  ): DefaultRawString
+
+  inputObjectField(
+    param: MyInput @debug(message: "inputObjectField.param")
+  ): DefaultRawString
+  inputObjectWithDefaultField(
+    param: MyInput = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true, null]
+      listEnumField: [ENUM_1, null]
+      listFloatField: [123456.789e2, null]
+      listIntField: [123456, null]
+      listStringField: ["defaultString", null]
+    } @debug(message: "inputObjectWithDefaultField.param")
+  ): DefaultRawString
+  nonNullInputObjectField(
+    param: MyInput! @debug(message: "nonNullInputObjectField.param")
+  ): DefaultRawString
+  nonNullInputObjectWithDefaultField(
+    param: MyInput! = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true, null]
+      listEnumField: [ENUM_1, null]
+      listFloatField: [123456.789e2, null]
+      listIntField: [123456, null]
+      listStringField: ["defaultString", null]
+    } @debug(message: "nonNullInputObjectWithDefaultField.param")
+  ): DefaultRawString
+
+  withDefaultInputObjectField(
+    param: MyInputWithDefault @debug(message: "withDefaultInputObjectField.param")
+  ): DefaultRawString
+  withDefaultInputObjectWithDefaultField(
+    param: MyInputWithDefault = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true, null]
+      listEnumField: [ENUM_1, null]
+      listFloatField: [123456.789e2, null]
+      listIntField: [123456, null]
+      listStringField: ["defaultString", null]
+    } @debug(message: "withDefaultInputObjectWithDefaultField.param")
+  ): DefaultRawString
+  nonNullWithDefaultInputObjectField(
+    param: MyInputWithDefault! @debug(message: "nonNullWithDefaultInputObjectField.param")
+  ): DefaultRawString
+  nonNullWithDefaultInputObjectWithDefaultField(
+    param: MyInputWithDefault! = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true, null]
+      listEnumField: [ENUM_1, null]
+      listFloatField: [123456.789e2, null]
+      listIntField: [123456, null]
+      listStringField: ["defaultString", null]
+    } @debug(message: "nonNullWithDefaultInputObjectWithDefaultField.param")
+  ): DefaultRawString
+
+  wrapperNonNullInputObjectField(
+    param: WrapperNonNullMyInput @debug(message: "wrapperNonNullInputObjectField.param")
+  ): DefaultRawString
+  wrapperNonNullInputObjectWithDefaultField(
+    param: WrapperNonNullMyInput = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true, null]
+      listEnumField: [ENUM_1, null]
+      listFloatField: [123456.789e2, null]
+      listIntField: [123456, null]
+      listStringField: ["defaultString", null]
+    } @debug(message: "wrapperNonNullInputObjectWithDefaultField.param")
+  ): DefaultRawString
+  nonNullWrapperNonNullInputObjectField(
+    param: WrapperNonNullMyInput! @debug(message: "nonNullWrapperNonNullInputObjectField.param")
+  ): DefaultRawString
+  nonNullWrapperNonNullInputObjectWithDefaultField(
+    param: WrapperNonNullMyInput! = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true, null]
+      listEnumField: [ENUM_1, null]
+      listFloatField: [123456.789e2, null]
+      listIntField: [123456, null]
+      listStringField: ["defaultString", null]
+    } @debug(message: "nonNullWrapperNonNullInputObjectWithDefaultField.param")
+  ): DefaultRawString
+
+  wrapperNonNullWithDefaultInputObjectField(
+    param: WrapperNonNullWithDefaultMyInput @debug(message: "wrapperNonNullWithDefaultInputObjectField.param")
+  ): DefaultRawString
+  wrapperNonNullWithDefaultInputObjectWithDefaultField(
+    param: WrapperNonNullWithDefaultMyInput = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true, null]
+      listEnumField: [ENUM_1, null]
+      listFloatField: [123456.789e2, null]
+      listIntField: [123456, null]
+      listStringField: ["defaultString", null]
+    } @debug(message: "wrapperNonNullWithDefaultInputObjectWithDefaultField.param")
+  ): DefaultRawString
+  nonNullWrapperNonNullWithDefaultInputObjectField(
+    param: WrapperNonNullWithDefaultMyInput! @debug(message: "nonNullWrapperNonNullWithDefaultInputObjectField.param")
+  ): DefaultRawString
+  nonNullWrapperNonNullWithDefaultInputObjectWithDefaultField(
+    param: WrapperNonNullWithDefaultMyInput! = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true, null]
+      listEnumField: [ENUM_1, null]
+      listFloatField: [123456.789e2, null]
+      listIntField: [123456, null]
+      listStringField: ["defaultString", null]
+    } @debug(message: "nonNullWrapperNonNullWithDefaultInputObjectWithDefaultField.param")
+  ): DefaultRawString
+
+  innerNonNullInputObjectField(
+    param: InnerNonNullMyInput @debug(message: "innerNonNullInputObjectField.param")
+  ): DefaultRawString
+  innerNonNullInputObjectWithDefaultField(
+    param: InnerNonNullMyInput = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true]
+      listEnumField: [ENUM_1]
+      listFloatField: [123456.789e2]
+      listIntField: [123456]
+      listStringField: ["defaultString"]
+    } @debug(message: "innerNonNullInputObjectWithDefaultField.param")
+  ): DefaultRawString
+  nonNullInnerNonNullInputObjectField(
+    param: InnerNonNullMyInput! @debug(message: "nonNullInnerNonNullInputObjectField.param")
+  ): DefaultRawString
+  nonNullInnerNonNullInputObjectWithDefaultField(
+    param: InnerNonNullMyInput! = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true]
+      listEnumField: [ENUM_1]
+      listFloatField: [123456.789e2]
+      listIntField: [123456]
+      listStringField: ["defaultString"]
+    } @debug(message: "nonNullInnerNonNullInputObjectWithDefaultField.param")
+  ): DefaultRawString
+
+  innerNonNullWithDefaultInputObjectField(
+    param: InnerNonNullWithDefaultMyInput @debug(message: "innerNonNullWithDefaultInputObjectField.param")
+  ): DefaultRawString
+  innerNonNullWithDefaultInputObjectWithDefaultField(
+    param: InnerNonNullWithDefaultMyInput = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true]
+      listEnumField: [ENUM_1]
+      listFloatField: [123456.789e2]
+      listIntField: [123456]
+      listStringField: ["defaultString"]
+    } @debug(message: "innerNonNullWithDefaultInputObjectWithDefaultField.param")
+  ): DefaultRawString
+  nonNullInnerNonNullWithDefaultInputObjectField(
+    param: InnerNonNullWithDefaultMyInput! @debug(message: "nonNullInnerNonNullWithDefaultInputObjectField.param")
+  ): DefaultRawString
+  nonNullInnerNonNullWithDefaultInputObjectWithDefaultField(
+    param: InnerNonNullWithDefaultMyInput! = {
+      booleanField: true
+      enumField: ENUM_1
+      floatField: 123456.789e2
+      intField: 123456
+      stringField: "defaultString"
+      listBooleanField: [true]
+      listEnumField: [ENUM_1]
+      listFloatField: [123456.789e2]
+      listIntField: [123456]
+      listStringField: ["defaultString"]
+    } @debug(message: "nonNullInnerNonNullWithDefaultInputObjectWithDefaultField.param")
+  ): DefaultRawString
+}

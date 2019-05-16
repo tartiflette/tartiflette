@@ -62,9 +62,9 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Invalid value (value: None) for field `string1` of type `String!`",
+                        "message": "Cannot return null for non-nullable field Query.string1.",
                         "path": ["string1"],
-                        "locations": [{"line": 3, "column": 17}],
+                        "locations": [{"column": 17, "line": 3}],
                     }
                 ],
             },
@@ -95,7 +95,7 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Invalid value (value: None) for field `stringListNonNull` of type `[String]!`",
+                        "message": "Cannot return null for non-nullable field Query.stringListNonNull.",
                         "path": ["stringListNonNull"],
                         "locations": [{"line": 3, "column": 17}],
                     }
@@ -112,10 +112,40 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Invalid value (value: None) for field `nonNullStringListNonNull` of type `[String!]!`",
+                        "message": "Cannot return null for non-nullable field Query.nonNullStringListNonNull.",
                         "path": ["nonNullStringListNonNull"],
                         "locations": [{"line": 3, "column": 17}],
                     }
+                ],
+            },
+        ),
+        (
+            """
+            query {
+                string1
+                stringList
+                nonNullStringList
+                stringListNonNull
+                nonNullStringListNonNull
+            }""",
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Cannot return null for non-nullable field Query.string1.",
+                        "path": ["string1"],
+                        "locations": [{"line": 3, "column": 17}],
+                    },
+                    {
+                        "message": "Cannot return null for non-nullable field Query.stringListNonNull.",
+                        "path": ["stringListNonNull"],
+                        "locations": [{"line": 6, "column": 17}],
+                    },
+                    {
+                        "message": "Cannot return null for non-nullable field Query.nonNullStringListNonNull.",
+                        "path": ["nonNullStringListNonNull"],
+                        "locations": [{"line": 7, "column": 17}],
+                    },
                 ],
             },
         ),
@@ -140,7 +170,7 @@ async def test_empty_values_2(ttftt_engine):
             "data": {"anObject": {"a": None}},
             "errors": [
                 {
-                    "message": "Invalid value (value: None) for field `b` of type `bobby!`",
+                    "message": "Cannot return null for non-nullable field boby.b.",
                     "path": ["anObject", "a", "b"],
                     "locations": [{"line": 3, "column": 27}],
                 }

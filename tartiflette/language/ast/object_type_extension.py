@@ -2,6 +2,8 @@ from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeExtensionNode
 
+__all__ = ("ObjectTypeExtensionNode",)
+
 
 class ObjectTypeExtensionNode(TypeExtensionNode):
     """
@@ -46,13 +48,11 @@ class ObjectTypeExtensionNode(TypeExtensionNode):
         """
         return self is other or (
             isinstance(other, ObjectTypeExtensionNode)
-            and (
-                self.name == other.name
-                and self.interfaces == other.interfaces
-                and self.directives == other.directives
-                and self.fields == other.fields
-                and self.location == other.location
-            )
+            and self.name == other.name
+            and self.interfaces == other.interfaces
+            and self.directives == other.directives
+            and self.fields == other.fields
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:

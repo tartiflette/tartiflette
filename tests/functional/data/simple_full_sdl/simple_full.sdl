@@ -1,3 +1,6 @@
+directive @relation(name: String!) on FIELD_DEFINITION
+directive @default(value: Int!) on FIELD_DEFINITION
+
 type Post {
   id: ID!
   title: String!

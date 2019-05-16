@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from tartiflette.resolver.factory import default_resolver
+from tartiflette.resolver.factoryyy import default_resolver
 from tartiflette.types.field import GraphQLField
 from tests.unit.utils import call_with_mocked_resolver_factory
 

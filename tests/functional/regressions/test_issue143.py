@@ -39,7 +39,7 @@ async def ttftt_engine():
 async def test_issue143(ttftt_engine):
     query = """query Test{
         __type(name: "R") {
-            fields {
+            fields(includeDeprecated: true) {
                 name
                 isDeprecated
                 deprecationReason

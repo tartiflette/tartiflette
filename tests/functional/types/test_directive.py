@@ -1,3 +1,5 @@
+from typing import Any, Callable, Dict, Optional
+
 import pytest
 
 from tartiflette import Directive, Resolver, create_engine
@@ -95,7 +97,7 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
         """
     query Test{
         __type(name: "Query") {
-            fields {
+            fields(includeDeprecated: true) {
                 name
                 isDeprecated
                 deprecationReason
@@ -111,14 +113,14 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
             "__type": {
                 "fields": [
                     {
-                        "deprecationReason": None,
-                        "isDeprecated": False,
                         "name": "fieldNormal",
+                        "isDeprecated": False,
+                        "deprecationReason": None,
                     },
                     {
-                        "deprecationReason": "Deprecated",
-                        "isDeprecated": True,
                         "name": "fieldDeprecatedDefault",
+                        "isDeprecated": True,
+                        "deprecationReason": "No longer supported",
                     },
                     {
                         "name": "fieldDeprecatedCustom",
@@ -149,10 +151,15 @@ async def test_tartiflette_directive_declaration(clean_registry):
     class Loled2:
         @staticmethod
         async def on_field_execution(
-            _directive_args, func, pr, args, rctx, info
+            directive_args: Dict[str, Any],
+            next_resolver: Callable,
+            parent: Optional[Any],
+            args: Dict[str, Any],
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
-            return (await func(pr, args, rctx, info)) + int(
-                _directive_args["value"]
+            return (await next_resolver(parent, args, ctx, info)) + int(
+                directive_args["value"]
             )
 
     @Resolver("Query.fieldLoled1")
@@ -171,9 +178,14 @@ async def test_tartiflette_directive_declaration(clean_registry):
     class Loled:
         @staticmethod
         async def on_field_execution(
-            _directive_arg, func, pr, args, rctx, info
+            directive_args: Dict[str, Any],
+            next_resolver: Callable,
+            parent: Optional[Any],
+            args: Dict[str, Any],
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
-            return (await func(pr, args, rctx, info)) + 1
+            return (await next_resolver(parent, args, ctx, info)) + 1
 
     ttftt = await create_engine(schema_sdl)
 

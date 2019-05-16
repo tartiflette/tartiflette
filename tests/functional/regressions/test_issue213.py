@@ -84,10 +84,9 @@ async def ttftt_engine():
                 "data": {"bye": None},
                 "errors": [
                     {
-                        "message": "Invalid value ("
-                        "value: None) for field `bye` of type `String`",
-                        "locations": [{"column": 15, "line": 3}],
+                        "message": "Argument < name > of non-null type < String! > must not be null.",
                         "path": ["bye"],
+                        "locations": [{"line": 3, "column": 25}],
                     }
                 ],
             },
@@ -149,10 +148,9 @@ async def ttftt_engine():
                 "data": {"bye": None},
                 "errors": [
                     {
-                        "message": "Invalid value ("
-                        "value: None) for field `bye` of type `String`",
-                        "locations": [{"column": 15, "line": 3}],
+                        "message": "Argument < name > of non-null type < String! > must not be null.",
                         "path": ["bye"],
+                        "locations": [{"line": 3, "column": 25}],
                     }
                 ],
             },
@@ -168,15 +166,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Value can't be null or contain a null value",
+                        "message": "Variable < $name > of non-null type < String! > must not be null.",
                         "path": None,
                         "locations": [{"line": 2, "column": 20}],
-                    },
-                    {
-                        "message": "Given value for < name > is not type < <class 'str'> >",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 20}],
-                    },
+                    }
                 ],
             },
         ),

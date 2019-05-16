@@ -1,10 +1,10 @@
 import pytest
 
 
-async def _query_human_resolver(parent_result, *_args, **__kwargs):
-    if not parent_result:
-        parent_result = {}
-    return {"name": parent_result.get("name", "Hooman")}
+async def _query_human_resolver(parent, *_args, **__kwargs):
+    if not parent:
+        parent = {}
+    return {"name": parent.get("name", "Hooman")}
 
 
 @pytest.mark.asyncio

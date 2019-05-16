@@ -6,7 +6,7 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_build_schema(monkeypatch, clean_registry):
-    from tartiflette.resolver.factory import ResolverExecutorFactory
+    from tartiflette.resolver.factoryyy import ResolverExecutorFactory
     from tartiflette.engine import _import_builtins
 
     resolver_excutor = Mock()

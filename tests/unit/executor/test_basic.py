@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from tartiflette.executors.basic import get_operation
-from tartiflette.resolver.factory import (
+from tartiflette.resolver.factoryyy import (
     default_error_coercer,
     error_coercer_factory,
 )

@@ -1,10 +1,13 @@
 from inspect import isclass
+from typing import Any
 
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
     MissingImplementation,
     UnknownDirectiveDefinition,
 )
+
+__all__ = ("Directive",)
 
 
 class Directive:
@@ -25,29 +28,43 @@ class Directive:
     """
 
     def __init__(self, name: str, schema_name: str = "default") -> None:
-        self._name = name
+        """
+        :param name: name of the directive
+        :param schema_name: name of the schema to which link the directive
+        :type name: str
+        :type schema_name: str
+        """
+        self.name = name
         self._implementation = None
         self._schema_name = schema_name
 
-    @property
-    def name(self) -> str:
-        return self._name
-
     def bake(self, schema: "GraphQLSchema") -> None:
+        """
+        Sets the directive implementation into the schema directive definition.
+        :param schema: the GraphQLSchema instance linked to the directive
+        :type schema: GraphQLSchema
+        """
         if not self._implementation:
             raise MissingImplementation(
-                "No implementation given for directive < %s >" % self._name
+                f"No implementation given for directive < {self.name} >"
             )
 
         try:
-            directive = schema.find_directive(self._name)
+            directive = schema.find_directive(self.name)
             directive.implementation = self._implementation
         except KeyError:
             raise UnknownDirectiveDefinition(
-                "Unknow Directive Definition %s" % self._name
+                f"Unknown Directive Definition {self.name}"
             )
 
-    def __call__(self, implementation):
+    def __call__(self, implementation: type) -> Any:
+        """
+        Registers the directive into the schema.
+        :param implementation: implementation of the directive
+        :type implementation: type
+        :return: the implementation of the directive
+        :rtype: Any
+        """
         if isclass(implementation):
             self._implementation = implementation()
         else:
