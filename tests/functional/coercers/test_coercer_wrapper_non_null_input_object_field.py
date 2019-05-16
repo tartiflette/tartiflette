@@ -27,13 +27,118 @@ from tests.functional.coercers.common import resolve_input_object_field
             """query { wrapperNonNullInputObjectField(param: {}) }""",
             None,
             {
-                "data": {"wrapperNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {} >.",
+                        "message": "Missing non nullable Input Field < booleanField > for Input Object < WrapperNonNullMyInput >.",
                         "path": ["wrapperNonNullInputObjectField"],
                         "locations": [{"line": 1, "column": 47}],
-                    }
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < enumField > for Input Object < WrapperNonNullMyInput >.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 47}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < floatField > for Input Object < WrapperNonNullMyInput >.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 47}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < intField > for Input Object < WrapperNonNullMyInput >.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 47}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < stringField > for Input Object < WrapperNonNullMyInput >.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 47}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < listBooleanField > for Input Object < WrapperNonNullMyInput >.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 47}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < listEnumField > for Input Object < WrapperNonNullMyInput >.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 47}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < listFloatField > for Input Object < WrapperNonNullMyInput >.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 47}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < listIntField > for Input Object < WrapperNonNullMyInput >.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 47}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < listStringField > for Input Object < WrapperNonNullMyInput >.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 47}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
                 ],
             },
         ),
@@ -55,13 +160,118 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             None,
             {
-                "data": {"wrapperNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: null, enumField: null, floatField: null, intField: null, stringField: null, listBooleanField: null, listEnumField: null, listFloatField: null, listIntField: null, listStringField: null} >.",
+                        "message": "Input Field < booleanField > of non-null type < Boolean! > must not be null.",
                         "path": ["wrapperNonNullInputObjectField"],
-                        "locations": [{"line": 3, "column": 53}],
-                    }
+                        "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < enumField > of non-null type < MyEnum! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 5, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < floatField > of non-null type < Float! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 6, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < intField > of non-null type < Int! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 7, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < stringField > of non-null type < String! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listBooleanField > of non-null type < [Boolean]! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 9, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listEnumField > of non-null type < [MyEnum]! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 10, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listFloatField > of non-null type < [Float]! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 11, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listIntField > of non-null type < [Int]! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 12, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listStringField > of non-null type < [String]! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 13, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
                 ],
             },
         ),
@@ -83,13 +293,63 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             None,
             {
-                "data": {"wrapperNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: null, enumField: null, floatField: null, intField: null, stringField: null, listBooleanField: [null], listEnumField: [null], listFloatField: [null], listIntField: [null], listStringField: [null]} >.",
+                        "message": "Input Field < booleanField > of non-null type < Boolean! > must not be null.",
                         "path": ["wrapperNonNullInputObjectField"],
-                        "locations": [{"line": 3, "column": 53}],
-                    }
+                        "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < enumField > of non-null type < MyEnum! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 5, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < floatField > of non-null type < Float! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 6, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < intField > of non-null type < Int! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 7, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < stringField > of non-null type < String! > must not be null.",
+                        "path": ["wrapperNonNullInputObjectField"],
+                        "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
                 ],
             },
         ),

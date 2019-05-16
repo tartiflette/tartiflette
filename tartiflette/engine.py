@@ -283,7 +283,7 @@ class Engine:
         :return: computed response corresponding to the request
         :rtype: Dict[str, Any]
         """
-        document, errors = parse_and_validate_query(query)
+        document, errors = parse_and_validate_query(query, self._schema)
         if errors:
             return await self._build_response(errors=errors)
 
@@ -323,7 +323,7 @@ class Engine:
         :rtype: AsyncIterable[Dict[str, Any]]
         """
         # pylint: disable=too-many-locals
-        document, errors = parse_and_validate_query(query)
+        document, errors = parse_and_validate_query(query, self._schema)
         if errors:
             yield await self._build_response(errors=errors)
             return

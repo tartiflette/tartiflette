@@ -32,7 +32,7 @@ class ScalarBoolean:
         # pylint: disable=no-self-use
         if not isinstance(value, bool):
             raise TypeError(
-                f"Boolean cannot represent a non boolean value: < {value} >"
+                f"Boolean cannot represent a non boolean value: < {value} >."
             )
         return value
 

@@ -15,12 +15,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListEnumField }""",
             None,
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [MyEnum]! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullListEnumField >.",
                         "path": ["nonNullListEnumField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -29,12 +35,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListEnumField(param: null) }""",
             None,
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
                         "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 37}],
+                        "locations": [{"line": 1, "column": 30}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -64,50 +76,50 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]!) { nonNullListEnumField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [MyEnum]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 56}],
+                        "message": "Variable < $param > of required type < [MyEnum]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]!) { nonNullListEnumField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 56}],
+                        "message": "Variable < $param > of non-null type < [MyEnum]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]!) { nonNullListEnumField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListEnumField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [MyEnum]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]!) { nonNullListEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]!) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]!) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3", None]},
             {
                 "data": {
@@ -116,50 +128,50 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum] = null) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 63}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 28}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum] = null) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 63}],
+                        "message": "Variable < $param > of non-null type < [MyEnum]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum] = null) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListEnumField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [MyEnum] = null) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = null) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = null) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3", None]},
             {
                 "data": {
@@ -168,41 +180,41 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum] = [null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [null]) { nonNullListEnumField(param: $param) }""",
             None,
             {"data": {"nonNullListEnumField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [MyEnum] = [null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [null]) { nonNullListEnumField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 65}],
+                        "message": "Variable < $param > of non-null type < [MyEnum]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum] = [null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [null]) { nonNullListEnumField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListEnumField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [MyEnum] = [null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [null]) { nonNullListEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = [null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [null]) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = [null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [null]) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3", None]},
             {
                 "data": {
@@ -211,84 +223,41 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum] = ENUM_4) { nonNullListEnumField(param: $param) }""",
-            None,
-            {"data": {"nonNullListEnumField": "SUCCESS-[enum_4_4-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { nonNullListEnumField(param: $param) }""",
-            {"param": None},
-            {
-                "data": {"nonNullListEnumField": None},
-                "errors": [
-                    {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 65}],
-                    }
-                ],
-            },
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { nonNullListEnumField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"nonNullListEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { nonNullListEnumField(param: $param) }""",
-            {"param": "ENUM_3"},
-            {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { nonNullListEnumField(param: $param) }""",
-            {"param": ["ENUM_3"]},
-            {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { nonNullListEnumField(param: $param) }""",
-            {"param": ["ENUM_3", None]},
-            {
-                "data": {
-                    "nonNullListEnumField": "SUCCESS-[enum_3_3-myenum-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = ENUM_4) { nonNullListEnumField(param: $param) }""",
             None,
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_4_4-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = ENUM_4) { nonNullListEnumField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 67}],
+                        "message": "Variable < $param > of non-null type < [MyEnum]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = ENUM_4) { nonNullListEnumField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListEnumField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = ENUM_4) { nonNullListEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = ENUM_4) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = ENUM_4) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3", None]},
             {
                 "data": {
@@ -297,7 +266,50 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            None,
+            {"data": {"nonNullListEnumField": "SUCCESS-[enum_4_4-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum]! = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            {"param": None},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > of non-null type < [MyEnum]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [MyEnum]! = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            {"param": [None]},
+            {"data": {"nonNullListEnumField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [MyEnum]! = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            {"param": "ENUM_3"},
+            {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum]! = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            {"param": ["ENUM_3"]},
+            {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum]! = [ENUM_4]) { nonNullListEnumField(param: $param) }""",
+            {"param": ["ENUM_3", None]},
+            {
+                "data": {
+                    "nonNullListEnumField": "SUCCESS-[enum_3_3-myenum-None]"
+                }
+            },
+        ),
+        (
+            """query ($param: [MyEnum]! = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
             None,
             {
                 "data": {
@@ -306,36 +318,36 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 73}],
+                        "message": "Variable < $param > of non-null type < [MyEnum]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListEnumField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum]! = [ENUM_4, null]) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3", None]},
             {
                 "data": {
@@ -396,35 +408,35 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum!]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]!) { nonNullListEnumField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [MyEnum]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 57}],
+                        "message": "Variable < $param > of required type < [MyEnum!]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum!]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]!) { nonNullListEnumField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 57}],
+                        "message": "Variable < $param > of non-null type < [MyEnum!]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum!]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]!) { nonNullListEnumField(param: $param) }""",
             {"param": [None]},
             {
                 "data": None,
@@ -438,17 +450,17 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum!]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]!) { nonNullListEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum!]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]!) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
             {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum!]) { nonNullListEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]!) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3", None]},
             {
                 "data": None,

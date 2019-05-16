@@ -15,12 +15,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListIntField }""",
             None,
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [Int]! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullListIntField >.",
                         "path": ["nonNullListIntField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -29,12 +35,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListIntField(param: null) }""",
             None,
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < [Int]! > must not be null.",
                         "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 36}],
+                        "locations": [{"line": 1, "column": 29}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -60,254 +72,254 @@ from tests.functional.coercers.common import resolve_list_field
             {"data": {"nonNullListIntField": "SUCCESS-[13-None]"}},
         ),
         (
-            """query ($param: [Int]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]!) { nonNullListIntField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [Int]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 52}],
+                        "message": "Variable < $param > of required type < [Int]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]!) { nonNullListIntField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Int]! > must not be null.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 52}],
+                        "message": "Variable < $param > of non-null type < [Int]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]!) { nonNullListIntField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListIntField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Int]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]!) { nonNullListIntField(param: $param) }""",
             {"param": 20},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]!) { nonNullListIntField(param: $param) }""",
             {"param": [20]},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]!) { nonNullListIntField(param: $param) }""",
             {"param": [20, None]},
             {"data": {"nonNullListIntField": "SUCCESS-[23-None]"}},
         ),
         (
-            """query ($param: [Int] = null) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = null) { nonNullListIntField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Int]! > must not be null.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 59}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 25}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int] = null) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = null) { nonNullListIntField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Int]! > must not be null.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 59}],
+                        "message": "Variable < $param > of non-null type < [Int]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int] = null) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = null) { nonNullListIntField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListIntField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Int] = null) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = null) { nonNullListIntField(param: $param) }""",
             {"param": 20},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = null) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = null) { nonNullListIntField(param: $param) }""",
             {"param": [20]},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = null) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = null) { nonNullListIntField(param: $param) }""",
             {"param": [20, None]},
             {"data": {"nonNullListIntField": "SUCCESS-[23-None]"}},
         ),
         (
-            """query ($param: [Int] = [null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [null]) { nonNullListIntField(param: $param) }""",
             None,
             {"data": {"nonNullListIntField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Int] = [null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [null]) { nonNullListIntField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Int]! > must not be null.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 61}],
+                        "message": "Variable < $param > of non-null type < [Int]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int] = [null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [null]) { nonNullListIntField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListIntField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Int] = [null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [null]) { nonNullListIntField(param: $param) }""",
             {"param": 20},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = [null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [null]) { nonNullListIntField(param: $param) }""",
             {"param": [20]},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = [null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [null]) { nonNullListIntField(param: $param) }""",
             {"param": [20, None]},
             {"data": {"nonNullListIntField": "SUCCESS-[23-None]"}},
         ),
         (
-            """query ($param: [Int] = 30) { nonNullListIntField(param: $param) }""",
-            None,
-            {"data": {"nonNullListIntField": "SUCCESS-[33]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { nonNullListIntField(param: $param) }""",
-            {"param": None},
-            {
-                "data": {"nonNullListIntField": None},
-                "errors": [
-                    {
-                        "message": "Argument < param > of non-null type < [Int]! > must not be null.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 57}],
-                    }
-                ],
-            },
-        ),
-        (
-            """query ($param: [Int] = 30) { nonNullListIntField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"nonNullListIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { nonNullListIntField(param: $param) }""",
-            {"param": 20},
-            {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { nonNullListIntField(param: $param) }""",
-            {"param": [20]},
-            {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { nonNullListIntField(param: $param) }""",
-            {"param": [20, None]},
-            {"data": {"nonNullListIntField": "SUCCESS-[23-None]"}},
-        ),
-        (
-            """query ($param: [Int] = [30]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = 30) { nonNullListIntField(param: $param) }""",
             None,
             {"data": {"nonNullListIntField": "SUCCESS-[33]"}},
         ),
         (
-            """query ($param: [Int] = [30]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = 30) { nonNullListIntField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Int]! > must not be null.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 59}],
+                        "message": "Variable < $param > of non-null type < [Int]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int] = [30]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = 30) { nonNullListIntField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListIntField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Int] = [30]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = 30) { nonNullListIntField(param: $param) }""",
             {"param": 20},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = [30]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = 30) { nonNullListIntField(param: $param) }""",
             {"param": [20]},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = [30]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = 30) { nonNullListIntField(param: $param) }""",
             {"param": [20, None]},
             {"data": {"nonNullListIntField": "SUCCESS-[23-None]"}},
         ),
         (
-            """query ($param: [Int] = [30, null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [30]) { nonNullListIntField(param: $param) }""",
+            None,
+            {"data": {"nonNullListIntField": "SUCCESS-[33]"}},
+        ),
+        (
+            """query ($param: [Int]! = [30]) { nonNullListIntField(param: $param) }""",
+            {"param": None},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > of non-null type < [Int]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [Int]! = [30]) { nonNullListIntField(param: $param) }""",
+            {"param": [None]},
+            {"data": {"nonNullListIntField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [Int]! = [30]) { nonNullListIntField(param: $param) }""",
+            {"param": 20},
+            {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int]! = [30]) { nonNullListIntField(param: $param) }""",
+            {"param": [20]},
+            {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int]! = [30]) { nonNullListIntField(param: $param) }""",
+            {"param": [20, None]},
+            {"data": {"nonNullListIntField": "SUCCESS-[23-None]"}},
+        ),
+        (
+            """query ($param: [Int]! = [30, null]) { nonNullListIntField(param: $param) }""",
             None,
             {"data": {"nonNullListIntField": "SUCCESS-[33-None]"}},
         ),
         (
-            """query ($param: [Int] = [30, null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [30, null]) { nonNullListIntField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Int]! > must not be null.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 65}],
+                        "message": "Variable < $param > of non-null type < [Int]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int] = [30, null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [30, null]) { nonNullListIntField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListIntField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Int] = [30, null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [30, null]) { nonNullListIntField(param: $param) }""",
             {"param": 20},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = [30, null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [30, null]) { nonNullListIntField(param: $param) }""",
             {"param": [20]},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = [30, null]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int]! = [30, null]) { nonNullListIntField(param: $param) }""",
             {"param": [20, None]},
             {"data": {"nonNullListIntField": "SUCCESS-[23-None]"}},
         ),
@@ -360,35 +372,35 @@ from tests.functional.coercers.common import resolve_list_field
             {"data": {"nonNullListIntField": "SUCCESS-[23-None]"}},
         ),
         (
-            """query ($param: [Int!]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int!]!) { nonNullListIntField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [Int]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 53}],
+                        "message": "Variable < $param > of required type < [Int!]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int!]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int!]!) { nonNullListIntField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Int]! > must not be null.",
-                        "path": ["nonNullListIntField"],
-                        "locations": [{"line": 1, "column": 53}],
+                        "message": "Variable < $param > of non-null type < [Int!]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int!]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int!]!) { nonNullListIntField(param: $param) }""",
             {"param": [None]},
             {
                 "data": None,
@@ -402,17 +414,17 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Int!]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int!]!) { nonNullListIntField(param: $param) }""",
             {"param": 20},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int!]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int!]!) { nonNullListIntField(param: $param) }""",
             {"param": [20]},
             {"data": {"nonNullListIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int!]) { nonNullListIntField(param: $param) }""",
+            """query ($param: [Int!]!) { nonNullListIntField(param: $param) }""",
             {"param": [20, None]},
             {
                 "data": None,

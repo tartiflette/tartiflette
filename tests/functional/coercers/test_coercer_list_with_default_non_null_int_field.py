@@ -25,12 +25,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { listWithDefaultNonNullIntField(param: [null]) }""",
             None,
             {
-                "data": {"listWithDefaultNonNullIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [null] >.",
+                        "message": "Argument < param > of non-null type < Int! > must not be null.",
                         "path": ["listWithDefaultNonNullIntField"],
-                        "locations": [{"line": 1, "column": 47}],
+                        "locations": [{"line": 1, "column": 40}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -49,204 +55,168 @@ from tests.functional.coercers.common import resolve_list_field
             """query { listWithDefaultNonNullIntField(param: [10, null]) }""",
             None,
             {
-                "data": {"listWithDefaultNonNullIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [10, null] >.",
+                        "message": "Argument < param > of non-null type < Int! > must not be null.",
                         "path": ["listWithDefaultNonNullIntField"],
-                        "locations": [{"line": 1, "column": 47}],
+                        "locations": [{"line": 1, "column": 40}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Int]) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!]) { listWithDefaultNonNullIntField(param: $param) }""",
             None,
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[123459]"}},
         ),
         (
-            """query ($param: [Int]) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!]) { listWithDefaultNonNullIntField(param: $param) }""",
             {"param": None},
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Int]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int]) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!]) { listWithDefaultNonNullIntField(param: $param) }""",
             {"param": 20},
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int]) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!]) { listWithDefaultNonNullIntField(param: $param) }""",
             {"param": [20]},
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20, None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23-None]"}},
-        ),
-        (
-            """query ($param: [Int] = null) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!] = null) { listWithDefaultNonNullIntField(param: $param) }""",
             None,
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Int] = null) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!] = null) { listWithDefaultNonNullIntField(param: $param) }""",
             {"param": None},
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Int] = null) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = null) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!] = null) { listWithDefaultNonNullIntField(param: $param) }""",
             {"param": 20},
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = null) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!] = null) { listWithDefaultNonNullIntField(param: $param) }""",
             {"param": [20]},
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int] = null) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20, None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23-None]"}},
-        ),
-        (
-            """query ($param: [Int] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            None,
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": None},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": 20},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20, None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23-None]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
-            None,
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[33]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": None},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": 20},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20, None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23-None]"}},
-        ),
-        (
-            """query ($param: [Int] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
-            None,
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[33]"}},
-        ),
-        (
-            """query ($param: [Int] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": None},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": 20},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20, None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23-None]"}},
-        ),
-        (
-            """query ($param: [Int] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            None,
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[33-None]"}},
-        ),
-        (
-            """query ($param: [Int] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": None},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": 20},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20, None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23-None]"}},
-        ),
-        (
-            """query ($param: [Int]!) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
             None,
             {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > of required type < [Int]! > was not provided.",
+                        "message": "Variable < $param > got invalid default value < [null] >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 25}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [Int!] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": None},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [Int!] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": 20},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int!] = [null]) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": [20]},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int!] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
+            None,
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[33]"}},
+        ),
+        (
+            """query ($param: [Int!] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": None},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [Int!] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": 20},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int!] = 30) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": [20]},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int!] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
+            None,
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[33]"}},
+        ),
+        (
+            """query ($param: [Int!] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": None},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [Int!] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": 20},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int!] = [30]) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": [20]},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int!] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > got invalid default value < [30, null] >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 25}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [Int!] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": None},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [Int!] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": 20},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int!] = [30, null]) { listWithDefaultNonNullIntField(param: $param) }""",
+            {"param": [20]},
+            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
+        ),
+        (
+            """query ($param: [Int!]!) { listWithDefaultNonNullIntField(param: $param) }""",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > of required type < [Int!]! > was not provided.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -254,13 +224,13 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Int]!) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!]!) { listWithDefaultNonNullIntField(param: $param) }""",
             {"param": None},
             {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > of non-null type < [Int]! > must not be null.",
+                        "message": "Variable < $param > of non-null type < [Int!]! > must not be null.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -268,24 +238,14 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Int]!) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Int]!) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!]!) { listWithDefaultNonNullIntField(param: $param) }""",
             {"param": 20},
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
         ),
         (
-            """query ($param: [Int]!) { listWithDefaultNonNullIntField(param: $param) }""",
+            """query ($param: [Int!]!) { listWithDefaultNonNullIntField(param: $param) }""",
             {"param": [20]},
             {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23]"}},
-        ),
-        (
-            """query ($param: [Int]!) { listWithDefaultNonNullIntField(param: $param) }""",
-            {"param": [20, None]},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[23-None]"}},
         ),
         (
             """query ($param: [Int!]) { listWithDefaultNonNullIntField(param: $param) }""",

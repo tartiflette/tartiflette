@@ -7,7 +7,7 @@ from tartiflette import Resolver, create_engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_object_type_output(clean_registry):
+async def test_tartiflette_execute_object_type_output():
     schema_sdl = """
     type Test {
         field1: String
@@ -18,11 +18,16 @@ async def test_tartiflette_execute_object_type_output(clean_registry):
     }
     """
 
-    @Resolver("Query.objectTest")
+    @Resolver(
+        "Query.objectTest",
+        schema_name="test_tartiflette_execute_object_type_output",
+    )
     async def func_field_resolver(*args, **kwargs):
         return {"field1": "Test"}
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl, schema_name="test_tartiflette_execute_object_type_output"
+    )
 
     result = await ttftt.execute(
         """
@@ -64,7 +69,7 @@ async def test_tartiflette_execute_object_type_output(clean_registry):
     ],
 )
 async def test_tartiflette_execute_object_type_advanced(
-    input_sdl, resolver_response, expected, clean_registry
+    input_sdl, resolver_response, expected, random_schema_name
 ):
     schema_sdl = """
     type Test {{
@@ -78,11 +83,11 @@ async def test_tartiflette_execute_object_type_advanced(
         input_sdl
     )
 
-    @Resolver("Query.testField")
+    @Resolver("Query.testField", schema_name=random_schema_name)
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl, schema_name=random_schema_name)
 
     result = await ttftt.execute(
         """
@@ -99,7 +104,7 @@ async def test_tartiflette_execute_object_type_advanced(
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_object_type_unknown_field(clean_registry):
+async def test_tartiflette_execute_object_type_unknown_field():
     schema_sdl = """
     type Post {
         content: Content
@@ -117,25 +122,37 @@ async def test_tartiflette_execute_object_type_unknown_field(clean_registry):
 
     mock_call = Mock()
 
-    @Resolver("Content.title")
+    @Resolver(
+        "Content.title",
+        schema_name="test_tartiflette_execute_object_type_unknown_field",
+    )
     async def func_field_resolver(*args, **kwargs):
         mock_call()
         return "Test"
 
-    @Resolver("Post.content")
-    async def func_field_resolver(*args, **kwargs):
+    @Resolver(
+        "Post.content",
+        schema_name="test_tartiflette_execute_object_type_unknown_field",
+    )
+    async def func_field_resolver_2(*args, **kwargs):
         return {"title": "Stuff"}
 
     Post = namedtuple("Post", ["content", "meta_creator"])
     Content = namedtuple("Content", ["title"])
 
-    @Resolver("Query.posts")
-    async def func_field_resolver(*args, **kwargs):
+    @Resolver(
+        "Query.posts",
+        schema_name="test_tartiflette_execute_object_type_unknown_field",
+    )
+    async def func_field_resolver_3(*args, **kwargs):
         return [
             Post(content=Content(title="Test"), meta_creator="Dailymotion")
         ]
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl,
+        schema_name="test_tartiflette_execute_object_type_unknown_field",
+    )
 
     result = await ttftt.execute(
         """
@@ -155,7 +172,7 @@ async def test_tartiflette_execute_object_type_unknown_field(clean_registry):
 
 
 @pytest.mark.asyncio
-async def test_ttftt_object_with_interfaces(clean_registry):
+async def test_ttftt_object_with_interfaces():
     sdl = """
     interface Identifiable {
       id: String!

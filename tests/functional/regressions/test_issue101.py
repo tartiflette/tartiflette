@@ -79,17 +79,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None, "cats": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < ids > of required type < [Int!]! > was not provided.",
-                        "path": ["cats"],
-                        "locations": [{"line": 6, "column": 15}],
-                    },
-                    {
-                        "message": "Argument < id > of required type < Int! > was not provided.",
+                        "message": "Missing mandatory argument < id > in field < Query.cat >.",
                         "path": ["cat"],
                         "locations": [{"line": 3, "column": 15}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
+                    },
+                    {
+                        "message": "Missing mandatory argument < ids > in field < Query.cats >.",
+                        "path": ["cats"],
+                        "locations": [{"line": 6, "column": 15}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -108,17 +120,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None, "cats": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < id > of required type < Int! > was not provided.",
+                        "message": "Missing mandatory argument < id > in field < Query.cat >.",
                         "path": ["cat"],
                         "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < ids > of required type < [Int!]! > was not provided.",
+                        "message": "Missing mandatory argument < ids > in field < Query.cats >.",
                         "path": ["cats"],
                         "locations": [{"line": 7, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -138,17 +162,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None, "cats": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < ids > of required type < [Int!]! > was not provided.",
-                        "path": ["cats"],
-                        "locations": [{"line": 6, "column": 15}],
-                    },
-                    {
-                        "message": "Argument < id > of required type < Int! > was not provided.",
+                        "message": "Missing mandatory argument < id > in field < Query.cat >.",
                         "path": ["cat"],
                         "locations": [{"line": 3, "column": 15}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
+                    },
+                    {
+                        "message": "Missing mandatory argument < ids > in field < Query.cats >.",
+                        "path": ["cats"],
+                        "locations": [{"line": 6, "column": 15}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -170,17 +206,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None, "cats": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < ids > of required type < [Int!]! > was not provided.",
-                        "path": ["cats"],
-                        "locations": [{"line": 7, "column": 17}],
-                    },
-                    {
-                        "message": "Argument < id > of required type < Int! > was not provided.",
+                        "message": "Missing mandatory argument < id > in field < Query.cat >.",
                         "path": ["cat"],
                         "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
+                    },
+                    {
+                        "message": "Missing mandatory argument < ids > in field < Query.cats >.",
+                        "path": ["cats"],
+                        "locations": [{"line": 7, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -195,12 +243,18 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < catCommand > of required type < String! > was not provided.",
+                        "message": "Missing mandatory argument < catCommand > in field < Cat.doesKnowCommand >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -216,12 +270,18 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < catCommand > of required type < String! > was not provided.",
+                        "message": "Missing mandatory argument < catCommand > in field < Cat.doesKnowCommand >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 5, "column": 19}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -238,12 +298,18 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < catCommand > of required type < String! > was not provided.",
+                        "message": "Missing mandatory argument < catCommand > in field < Cat.doesKnowCommand >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -262,12 +328,18 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < catCommand > of required type < String! > was not provided.",
+                        "message": "Missing mandatory argument < catCommand > in field < Cat.doesKnowCommand >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 5, "column": 19}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -293,12 +365,18 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < catCommand > of required type < String! > was not provided.",
-                        "path": ["cat", "doesKnowCommand"],
+                        "message": "Missing mandatory argument < catCommand > in field < Cat.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
                         "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -313,17 +391,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
                         "path": ["cat"],
                         "locations": [{"line": 3, "column": 26}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
                         "path": ["cat"],
                         "locations": [{"line": 3, "column": 26}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -339,17 +429,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
                         "path": ["cat"],
                         "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
                         "path": ["cat"],
                         "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -366,17 +468,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
                         "path": ["cat"],
                         "locations": [{"line": 3, "column": 26}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
                         "path": ["cat"],
                         "locations": [{"line": 3, "column": 26}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -395,17 +509,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
                         "path": ["cat"],
                         "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
                         "path": ["cat"],
                         "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -420,17 +546,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 4, "column": 53}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 4, "column": 53}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -446,17 +584,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 5, "column": 55}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 5, "column": 55}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -473,17 +623,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 4, "column": 53}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 4, "column": 53}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -502,17 +664,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 5, "column": 55}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
                         "path": ["cat", "doesKnowCommand"],
                         "locations": [{"line": 5, "column": 55}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -538,17 +712,29 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
-                        "path": ["cat", "doesKnowCommand"],
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
+                        "path": ["doesKnowCommand"],
                         "locations": [{"line": 4, "column": 53}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
-                        "path": ["cat", "doesKnowCommand"],
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
+                        "path": ["doesKnowCommand"],
                         "locations": [{"line": 4, "column": 53}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },
@@ -575,17 +761,40 @@ async def ttftt_engine():
             }
             """,
             {
-                "data": {"cat": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < conditions > of required type < [Boolean!]! > was not provided.",
-                        "path": ["cat"],
-                        "locations": [{"line": 10, "column": 28}],
+                        "message": "Missing mandatory argument < catCommand > in field < Cat.doesKnowCommand >.",
+                        "path": ["doesKnowCommand"],
+                        "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                     {
-                        "message": "Argument < list > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < conditions > in directive < @testdire >.",
                         "path": ["cat"],
                         "locations": [{"line": 10, "column": 28}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
+                    },
+                    {
+                        "message": "Missing mandatory argument < list > in directive < @testdire >.",
+                        "path": ["cat"],
+                        "locations": [{"line": 10, "column": 28}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     },
                 ],
             },

@@ -518,24 +518,40 @@ async def test_issue70_dont_execute_fragment_on_wrong_type(ttftt_engine):
 
     results = await ttftt_engine.execute(query)
     assert results == {
-        "data": {
-            "viewer": {
-                "repositories": {
-                    "edges": [
-                        {
-                            "node": {
-                                "name": "N1",
-                                "owner": {"bob": {"d": {}}, "login": "LOL"},
-                            }
-                        },
-                        {
-                            "node": {
-                                "owner": {"bob": {"d": {}}, "login": "AA"},
-                                "name": "N2",
-                            }
-                        },
-                    ]
-                }
-            }
-        }
+        "data": None,
+        "errors": [
+            {
+                "message": "Field e doesn't exist on Rascal",
+                "path": ["e"],
+                "locations": [{"line": 4, "column": 9}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
+            },
+            {
+                "message": "Field petaleColor doesn't exist on Rascal",
+                "path": ["petaleColor"],
+                "locations": [{"line": 5, "column": 9}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
+            },
+            {
+                "message": "Can't spread < Rascal > via < FleurFragment > Fragment on Type < Fleur >.",
+                "path": ["bob", "d"],
+                "locations": [{"line": 13, "column": 21}],
+                "extensions": {
+                    "rule": "5.5.2.3",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragment-spread-is-possible",
+                    "tag": "fragment-spread-is-possible",
+                },
+            },
+        ],
     }

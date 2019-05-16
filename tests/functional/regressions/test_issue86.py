@@ -5,10 +5,6 @@ async def resolver_query_viewer(*_, **__):
     return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
 
 
-# TODO: unskip this test once `validate_document` function has been implemented
-@pytest.mark.skip(
-    reason="Will handled by the `validate_document` function which isn't implemented yet."
-)
 @pytest.mark.asyncio
 @pytest.mark.ttftt_engine(resolvers={"Query.dog": resolver_query_viewer})
 @pytest.mark.parametrize(
@@ -21,7 +17,7 @@ async def resolver_query_viewer(*_, **__):
                 name
               }
             }
-            
+
             query getName {
               dog {
                 owner {
@@ -35,6 +31,12 @@ async def resolver_query_viewer(*_, **__):
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
                     "locations": [{"line": 2, "column": 13}],
+                    "extensions": {
+                        "rule": "5.2.2.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Lone-Anonymous-Operation",
+                        "tag": "lone-anonymous-operation",
+                    },
                 }
             ],
         ),
@@ -59,6 +61,12 @@ async def resolver_query_viewer(*_, **__):
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
                     "locations": [{"line": 10, "column": 13}],
+                    "extensions": {
+                        "rule": "5.2.2.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Lone-Anonymous-Operation",
+                        "tag": "lone-anonymous-operation",
+                    },
                 }
             ],
         ),
@@ -69,7 +77,7 @@ async def resolver_query_viewer(*_, **__):
                 name
               }
             }
-            
+
             query {
               dog {
                 owner {
@@ -82,13 +90,17 @@ async def resolver_query_viewer(*_, **__):
                 {
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [{"line": 2, "column": 13}],
-                },
-                {
-                    "message": "Anonymous operation must be the only defined operation.",
-                    "path": None,
-                    "locations": [{"line": 8, "column": 13}],
-                },
+                    "locations": [
+                        {"line": 2, "column": 13},
+                        {"line": 8, "column": 13},
+                    ],
+                    "extensions": {
+                        "rule": "5.2.2.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Lone-Anonymous-Operation",
+                        "tag": "lone-anonymous-operation",
+                    },
+                }
             ],
         ),
         (
@@ -111,13 +123,17 @@ async def resolver_query_viewer(*_, **__):
                 {
                     "message": "Anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [{"line": 2, "column": 13}],
-                },
-                {
-                    "message": "Anonymous operation must be the only defined operation.",
-                    "path": None,
-                    "locations": [{"line": 10, "column": 13}],
-                },
+                    "locations": [
+                        {"line": 2, "column": 13},
+                        {"line": 10, "column": 13},
+                    ],
+                    "extensions": {
+                        "rule": "5.2.2.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Lone-Anonymous-Operation",
+                        "tag": "lone-anonymous-operation",
+                    },
+                }
             ],
         ),
     ],

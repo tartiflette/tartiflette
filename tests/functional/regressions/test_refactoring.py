@@ -121,12 +121,6 @@ _EXPECTED = {
         (
             None,
             """
-            fragment HumanFields on Human {
-              ... on Human {
-                name
-              }
-            }
-
             fragment CatOrDogFields on CatOrDog {
               ... on Dog {
                 name
@@ -135,10 +129,6 @@ _EXPECTED = {
               ... on Cat {
                 name
                 catNickname: nickname
-              }
-              ...HumanFields
-              ... on Human {
-                name
               }
             }
 
@@ -202,7 +192,6 @@ _EXPECTED = {
               owner {
                 ... on Human {
                   ...HumanFields
-                  ...CatFields
                 }
               }
               friends {

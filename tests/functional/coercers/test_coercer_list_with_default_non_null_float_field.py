@@ -29,12 +29,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { listWithDefaultNonNullFloatField(param: [null]) }""",
             None,
             {
-                "data": {"listWithDefaultNonNullFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [null] >.",
+                        "message": "Argument < param > of non-null type < Float! > must not be null.",
                         "path": ["listWithDefaultNonNullFloatField"],
-                        "locations": [{"line": 1, "column": 49}],
+                        "locations": [{"line": 1, "column": 42}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -61,18 +67,24 @@ from tests.functional.coercers.common import resolve_list_field
             """query { listWithDefaultNonNullFloatField(param: [23456.789e2, null]) }""",
             None,
             {
-                "data": {"listWithDefaultNonNullFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [23456.789e2, null] >.",
+                        "message": "Argument < param > of non-null type < Float! > must not be null.",
                         "path": ["listWithDefaultNonNullFloatField"],
-                        "locations": [{"line": 1, "column": 49}],
+                        "locations": [{"line": 1, "column": 42}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Float]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!]) { listWithDefaultNonNullFloatField(param: $param) }""",
             None,
             {
                 "data": {
@@ -81,17 +93,12 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!]) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": None},
             {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Float]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!]) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {
                 "data": {
@@ -100,7 +107,7 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!]) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {
                 "data": {
@@ -109,31 +116,17 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [3456.789e2, None]},
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
             None,
             {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": None},
             {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Float] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {
                 "data": {
@@ -142,7 +135,7 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {
                 "data": {
@@ -151,31 +144,26 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = null) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [3456.789e2, None]},
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
             None,
-            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > got invalid default value < [null] >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 27}],
+                    }
+                ],
+            },
         ),
         (
-            """query ($param: [Float] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": None},
             {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Float] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {
                 "data": {
@@ -184,7 +172,7 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {
                 "data": {
@@ -193,16 +181,7 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = [null]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [3456.789e2, None]},
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
             None,
             {
                 "data": {
@@ -211,17 +190,12 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": None},
             {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Float] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {
                 "data": {
@@ -230,7 +204,7 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {
                 "data": {
@@ -239,16 +213,7 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = 456.789e2) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [3456.789e2, None]},
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
             None,
             {
                 "data": {
@@ -257,17 +222,12 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": None},
             {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Float] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Float] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {
                 "data": {
@@ -276,7 +236,7 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {
                 "data": {
@@ -285,68 +245,50 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float] = [456.789e2]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [3456.789e2, None]},
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            None,
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[45681.9-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": None},
-            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Float] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Float] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": 3456.789e2},
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [3456.789e2]},
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [3456.789e2, None]},
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float]!) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
             None,
             {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > of required type < [Float]! > was not provided.",
+                        "message": "Variable < $param > got invalid default value < [456.789e2, null] >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 27}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [Float!] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            {"param": None},
+            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [Float!] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            {"param": 3456.789e2},
+            {
+                "data": {
+                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9]"
+                }
+            },
+        ),
+        (
+            """query ($param: [Float!] = [456.789e2, null]) { listWithDefaultNonNullFloatField(param: $param) }""",
+            {"param": [3456.789e2]},
+            {
+                "data": {
+                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9]"
+                }
+            },
+        ),
+        (
+            """query ($param: [Float!]!) { listWithDefaultNonNullFloatField(param: $param) }""",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > of required type < [Float!]! > was not provided.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -354,13 +296,13 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float]!) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!]!) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": None},
             {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > of non-null type < [Float]! > must not be null.",
+                        "message": "Variable < $param > of non-null type < [Float!]! > must not be null.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -368,12 +310,7 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float]!) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listWithDefaultNonNullFloatField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Float]!) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!]!) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": 3456.789e2},
             {
                 "data": {
@@ -382,20 +319,11 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Float]!) { listWithDefaultNonNullFloatField(param: $param) }""",
+            """query ($param: [Float!]!) { listWithDefaultNonNullFloatField(param: $param) }""",
             {"param": [3456.789e2]},
             {
                 "data": {
                     "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9]"
-                }
-            },
-        ),
-        (
-            """query ($param: [Float]!) { listWithDefaultNonNullFloatField(param: $param) }""",
-            {"param": [3456.789e2, None]},
-            {
-                "data": {
-                    "listWithDefaultNonNullFloatField": "SUCCESS-[345681.9-None]"
                 }
             },
         ),

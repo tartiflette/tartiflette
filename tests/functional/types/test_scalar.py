@@ -6,20 +6,25 @@ from tartiflette import Resolver, create_engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_scalar_type_output(clean_registry):
+async def test_tartiflette_execute_scalar_type_output():
     schema_sdl = """
     type Query {
         lastUpdate: DateTime
     }
     """
 
-    @Resolver("Query.lastUpdate")
+    @Resolver(
+        "Query.lastUpdate",
+        schema_name="test_tartiflette_execute_scalar_type_output",
+    )
     async def func_field_resolver(*args, **kwargs):
         return datetime(
             year=2018, month=4, day=19, hour=14, minute=57, second=38
         )
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl, schema_name="test_tartiflette_execute_scalar_type_output"
+    )
 
     result = await ttftt.execute(
         """
@@ -1770,7 +1775,7 @@ async def test_tartiflette_execute_scalar_type_output(clean_registry):
     ],
 )
 async def test_tartiflette_execute_scalar_type_advanced(
-    input_sdl, resolver_response, expected, clean_registry
+    input_sdl, resolver_response, expected, random_schema_name
 ):
     schema_sdl = """
     type Query {{
@@ -1780,11 +1785,11 @@ async def test_tartiflette_execute_scalar_type_advanced(
         input_sdl
     )
 
-    @Resolver("Query.testField")
+    @Resolver("Query.testField", schema_name=random_schema_name)
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl, schema_name=random_schema_name)
 
     result = await ttftt.execute(
         """
@@ -1799,7 +1804,7 @@ async def test_tartiflette_execute_scalar_type_advanced(
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_declare_custom_scalar(clean_registry):
+async def test_tartiflette_declare_custom_scalar():
     from tartiflette import Scalar
 
     sdl = """
@@ -1814,7 +1819,9 @@ async def test_tartiflette_declare_custom_scalar(clean_registry):
         }
     """
 
-    @Resolver("Query.alol")
+    @Resolver(
+        "Query.alol", schema_name="test_tartiflette_declare_custom_scalar"
+    )
     async def alol_resolver(*_, **__):
         class customobject:
             def __init__(self, p1):
@@ -1822,7 +1829,7 @@ async def test_tartiflette_declare_custom_scalar(clean_registry):
 
         return {"joey": customobject("OL")}
 
-    @Scalar(name="Ntm")
+    @Scalar(name="Ntm", schema_name="test_tartiflette_declare_custom_scalar")
     class Ntm:
         @staticmethod
         def coerce_output(val):
@@ -1836,7 +1843,9 @@ async def test_tartiflette_declare_custom_scalar(clean_registry):
         def parse_literal(ast: "Node") -> str:
             return ast.value
 
-    ttftt = await create_engine(sdl)
+    ttftt = await create_engine(
+        sdl, schema_name="test_tartiflette_declare_custom_scalar"
+    )
 
     result = await ttftt.execute(
         query="""

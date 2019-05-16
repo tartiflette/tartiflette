@@ -1,6 +1,7 @@
 from functools import partial
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from tartiflette.coercers.common import Path
 from tartiflette.types.exceptions.tartiflette import (
     MultipleException,
     TartifletteError,
@@ -55,8 +56,9 @@ def to_graphql_error(
 def graphql_error_from_nodes(
     message: str,
     nodes: Union["Node", List["Node"]],
-    path: Optional[List[str]] = None,
+    path: Optional[Union[List[str], "Path"]] = None,
     original_error: Optional[Exception] = None,
+    extensions: Optional[Dict[str, Any]] = None,
 ) -> "TartifletteError":
     """
     Returns a TartifletteError linked to a list of AST nodes which make it
@@ -65,21 +67,27 @@ def graphql_error_from_nodes(
     :param nodes: AST nodes to link to the error
     :param path: the path where the original exception occurred
     :param original_error: the original raised exception
+    :param extensions: Extensions dict to add to the error.
     :type message: str
     :type nodes: Union[Node, List[Node]]
     :type path: Optional[List[str]]
     :type original_error: Optional[Exception]
+    :type extensions: Optional[Dict[str, Any]]
     :return: a TartifletteError with locations
     :rtype: TartifletteError
     """
     if not isinstance(nodes, list):
         nodes = [nodes]
 
+    if isinstance(path, Path):
+        path = path.as_list()
+
     return TartifletteError(
         message,
         locations=[node.location for node in nodes],
         path=path,
         original_error=original_error,
+        extensions=extensions,
     )
 
 

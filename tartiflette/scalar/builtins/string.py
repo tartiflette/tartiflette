@@ -32,7 +32,7 @@ class ScalarString:
         # pylint: disable=no-self-use
         if not isinstance(value, str):
             raise TypeError(
-                f"String cannot represent a non string value: < {value} >"
+                f"String cannot represent a non string value: < {value} >."
             )
         return value
 

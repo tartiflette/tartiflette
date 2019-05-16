@@ -8,13 +8,13 @@ from tartiflette.coercers.outputs.object_coercer import object_coercer
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLType
+from tartiflette.types.type import GraphQLCompositeType, GraphQLType
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLObjectType",)
 
 
-class GraphQLObjectType(GraphQLType):
+class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
     """
     Definition of a GraphQL object.
     """
@@ -57,6 +57,8 @@ class GraphQLObjectType(GraphQLType):
         # Introspection attributes
         self.interfaces: List["GraphQLInterfaceType"] = []
         self.fields: List["GraphQLField"] = []
+        self._possible_types_set = set()
+        self._possible_types_set.add(self.name)
 
     def __eq__(self, other: Any) -> bool:
         """
@@ -171,3 +173,7 @@ class GraphQLObjectType(GraphQLType):
 
                 if not field.name.startswith("__"):
                     self.fields.append(field)
+
+    @property
+    def possible_types_set(self) -> set:
+        return self._possible_types_set
