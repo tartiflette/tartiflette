@@ -53,9 +53,6 @@ class Scalar:
         scalar.coerce_input = self._implementation.coerce_input
 
     def __call__(self, implementation):
-        if isclass(implementation):
-            implementation = implementation()
-
         self._implementation = implementation
         SchemaRegistry.register_scalar(self._schema_name, self)
         return implementation

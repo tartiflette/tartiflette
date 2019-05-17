@@ -1,9 +1,13 @@
 import asyncio
+import warnings
+
 from importlib import import_module, invalidate_caches
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
-from tartiflette.executors.basic import execute as basic_execute
-from tartiflette.executors.basic import subscribe as basic_subscribe
+from tartiflette.executors.basic import (
+    execute as basic_execute,
+    subscribe as basic_subscribe,
+)
 from tartiflette.parser import TartifletteRequestParser
 from tartiflette.resolver.factory import (
     default_error_coercer,
@@ -82,6 +86,7 @@ class Engine:
         schema_name: str = "default",
         error_coercer: Callable[[Exception], dict] = default_error_coercer,
         custom_default_resolver: Optional[Callable] = None,
+        exclude_builtins_scalars=None,
         modules: Optional[Union[str, List[str]]] = None,
     ) -> None:
         """Create an engine by analyzing the SDL and connecting it with the imported Resolver, Mutation,
@@ -96,9 +101,18 @@ class Engine:
             schema_name {str} -- The name of the SDL (default: {"default"})
             error_coercer {Callable[[Exception, dict], dict]} -- An optional callable in charge of transforming a couple Exception/error into an error dict (default: {default_error_coercer})
             custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
-            exclude_builtins {Optional[List[str]]} -- An optional list of string containing the names of the builtin scalar you don't want to be automatically included, usually it's Date, DateTime or Time scalars (default: {None})
+            exclude_builtin_scalar -- Deprecated https://tartiflette.io/docs/api/engine for details
             modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
         """
+
+        if exclude_builtins_scalars:
+            print(
+                "exclude_builtin_scalar parameter is "
+                "deprecated since 0.11.0, will be "
+                "removed in 0.12.0, have a look at "
+                "https://tartiflette.io/docs/api/engine "
+                "for details"
+            )
 
         if not modules:
             modules = []

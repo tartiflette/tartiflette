@@ -1,18 +1,6 @@
 import pytest
 
 
-def test_common_directive_creation():
-    from tartiflette.directive.common import CommonDirective
-
-    c = CommonDirective()
-
-    assert c is not None
-    assert hasattr(c, "on_build")
-    assert hasattr(c, "on_introspection")
-    assert hasattr(c, "on_field_execution")
-    assert hasattr(c, "on_argument_execution")
-
-
 @pytest.mark.asyncio
 async def test_common_directives_on_field_execution_call():
     from tartiflette.directive.common import CommonDirective

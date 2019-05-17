@@ -50,9 +50,6 @@ class Directive:
             )
 
     def __call__(self, implementation):
-        if isclass(implementation):
-            implementation = implementation()
-
         self._implementation = implementation
 
         SchemaRegistry.register_directive(self._schema_name, self)

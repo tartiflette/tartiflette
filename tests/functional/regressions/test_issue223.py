@@ -71,26 +71,16 @@ async def resolver_test5(_pr, _args, _ctx, _info):
 
 @Directive("addValue", schema_name="issue223")
 class AddValue:
+    @staticmethod
     async def on_post_input_coercion(
-        self,
-        directive_args,
-        next_directive,
-        value,
-        argument_definition,
-        ctx,
-        info,
+        directive_args, next_directive, value, argument_definition, ctx, info
     ):
         value["value"] = value["value"] + directive_args["value"]
         return await next_directive(value, argument_definition, ctx, info)
 
+    @staticmethod
     async def on_pre_output_coercion(
-        self,
-        directive_args,
-        next_directive,
-        value,
-        field_definition,
-        ctx,
-        info,
+        directive_args, next_directive, value, field_definition, ctx, info
     ):
         value["value"] = value["value"] + directive_args["value"]
         return await next_directive(value, field_definition, ctx, info)
@@ -100,26 +90,16 @@ class AddValue:
 class MapToValue:
     my_map = {"RED": "BROWN", "BROWN": "RED"}
 
+    @staticmethod
     async def on_pre_output_coercion(
-        self,
-        directive_args,
-        next_directive,
-        value,
-        field_definition,
-        ctx,
-        info,
+        directive_args, next_directive, value, field_definition, ctx, info
     ):
         value = MapToValue.my_map.get(value, value)
         return await next_directive(value, field_definition, ctx, info)
 
+    @staticmethod
     async def on_post_input_coercion(
-        self,
-        directive_args,
-        next_directive,
-        value,
-        argument_definition,
-        ctx,
-        info,
+        directive_args, next_directive, value, argument_definition, ctx, info
     ):
         value = MapToValue.my_map.get(value, value)
         return await next_directive(value, argument_definition, ctx, info)
@@ -137,21 +117,21 @@ async def resolver_test3(_pr, args, _ctx, _info):
 
 
 @Scalar("Bobby", schema_name="issue223")
-class BobbyScalar(ScalarString):
-    def __init__(self):
-        pass
+class BobbyScalar:
+    @staticmethod
+    def coerce_output(val):
+        return str(val)
+
+    @staticmethod
+    def coerce_input(val):
+        return str(val)
 
 
 @Directive("capitalized", schema_name="issue223")
 class Capitalized:
+    @staticmethod
     async def on_pre_output_coercion(
-        self,
-        directive_args,
-        next_directive,
-        value,
-        field_definition,
-        ctx,
-        info,
+        directive_args, next_directive, value, field_definition, ctx, info
     ):
         return await next_directive(
             value.capitalize(), field_definition, ctx, info
@@ -160,28 +140,18 @@ class Capitalized:
 
 @Directive("lower", schema_name="issue223")
 class Lower:
+    @staticmethod
     async def on_pre_output_coercion(
-        self,
-        directive_args,
-        next_directive,
-        value,
-        field_definition,
-        ctx,
-        info,
+        directive_args, next_directive, value, field_definition, ctx, info
     ):
         return await next_directive(value.lower(), field_definition, ctx, info)
 
 
 @Directive("upper", schema_name="issue223")
 class Upper:
+    @staticmethod
     async def on_pre_output_coercion(
-        self,
-        directive_args,
-        next_directive,
-        value,
-        field_definition,
-        ctx,
-        info,
+        directive_args, next_directive, value, field_definition, ctx, info
     ):
         return await next_directive(value.upper(), field_definition, ctx, info)
 

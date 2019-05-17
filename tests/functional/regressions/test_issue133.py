@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 @Directive("maxLength", schema_name="test_issue133")
 class MaxLengthDirective:
+    @staticmethod
     async def on_argument_execution(
-        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",
@@ -39,8 +39,8 @@ class MaxLengthDirective:
 
 @Directive("validateChoices", schema_name="test_issue133")
 class ValidateChoicesDirective:
+    @staticmethod
     async def on_argument_execution(
-        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",
@@ -64,8 +64,8 @@ class ValidateChoicesDirective:
 
 @Directive("debug", schema_name="test_issue133")
 class DebugDirective:
+    @staticmethod
     async def on_argument_execution(
-        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",
@@ -78,8 +78,8 @@ class DebugDirective:
 
 @Directive("stop", schema_name="test_issue133")
 class StopDirective:
+    @staticmethod
     async def on_argument_execution(
-        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",

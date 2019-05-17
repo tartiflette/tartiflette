@@ -24,14 +24,9 @@ class LimitReachedException(Exception):
 
 @Directive("validateLimit", schema_name="test_issue209")
 class ValidateLimitDirective:
+    @staticmethod
     async def on_argument_execution(
-        self,
-        directive_args,
-        next_directive,
-        argument_definition,
-        args,
-        ctx,
-        info,
+        directive_args, next_directive, argument_definition, args, ctx, info
     ):
         value = await next_directive(argument_definition, args, ctx, info)
         if value > directive_args["limit"]:

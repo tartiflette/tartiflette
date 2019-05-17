@@ -8,14 +8,9 @@ from tartiflette.types.exceptions.tartiflette import MultipleException
 
 @Directive("validateMaxLength", schema_name="test_issue139")
 class ValidateMaxLengthDirective:
+    @staticmethod
     async def on_argument_execution(
-        self,
-        directive_args,
-        next_directive,
-        argument_definition,
-        args,
-        ctx,
-        info,
+        directive_args, next_directive, argument_definition, args, ctx, info
     ):
         limit = directive_args["limit"]
         value = await next_directive(argument_definition, args, ctx, info)
@@ -31,14 +26,9 @@ class ValidateMaxLengthDirective:
 
 @Directive("validateChoices", schema_name="test_issue139")
 class ValidateChoicesDirective:
+    @staticmethod
     async def on_argument_execution(
-        self,
-        directive_args,
-        next_directive,
-        argument_definition,
-        args,
-        ctx,
-        info,
+        directive_args, next_directive, argument_definition, args, ctx, info
     ):
         choices = directive_args["choices"]
         value = await next_directive(argument_definition, args, ctx, info)
