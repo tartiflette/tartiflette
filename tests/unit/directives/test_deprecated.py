@@ -3,7 +3,7 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_deprecated_on_introspection():
-    from tartiflette.directive.deprecated import Deprecated
+    from tartiflette.directive.builtins.deprecated import Deprecated
     from unittest.mock import Mock
 
     areturn_value = Mock()
@@ -14,7 +14,9 @@ async def test_deprecated_on_introspection():
 
     aschema = Mock()
 
-    await Deprecated.on_introspection({"reason": "A"}, d2, aschema, None, None)
+    await Deprecated().on_introspection(
+        {"reason": "A"}, d2, aschema, None, None
+    )
 
     assert areturn_value.isDeprecated
     assert areturn_value.deprecationReason == "A"

@@ -19,9 +19,9 @@ import pytest
     ],
 )
 def test_scalar_boolean_coerce_output(val, expected):
-    from tartiflette.scalar.boolean import ScalarBoolean
+    from tartiflette.scalar.builtins.boolean import ScalarBoolean
 
-    assert ScalarBoolean.coerce_output(val) == expected
+    assert ScalarBoolean().coerce_output(val) == expected
 
 
 @pytest.mark.parametrize(
@@ -42,6 +42,6 @@ def test_scalar_boolean_coerce_output(val, expected):
     ],
 )
 def test_scalar_boolean_coerce_input(val, expected):
-    from tartiflette.scalar.boolean import ScalarBoolean
+    from tartiflette.scalar.builtins.boolean import ScalarBoolean
 
-    assert ScalarBoolean.coerce_input(val) == expected
+    assert ScalarBoolean().coerce_input(val) == expected

@@ -4,6 +4,7 @@ from unittest.mock import Mock
 
 def test_build_schema(monkeypatch, clean_registry):
     from tartiflette.resolver.factory import ResolverExecutorFactory
+    from tartiflette.engine import _import_builtins
 
     resolver_excutor = Mock()
     monkeypatch.setattr(
@@ -58,11 +59,12 @@ def test_build_schema(monkeypatch, clean_registry):
         simpleField: Date
     }
     """
-
+    _, schema_sdl = _import_builtins([], schema_sdl, "G")
+    _, schema_E = _import_builtins([], "", "E")
     clean_registry.register_sdl("G", schema_sdl)
-    clean_registry.register_sdl("E", "")
-    generated_schema = SchemaBakery._preheat("G", None)
-    expected_schema = SchemaBakery._preheat("E", None)
+    clean_registry.register_sdl("E", schema_E)
+    generated_schema = SchemaBakery._preheat("G")
+    expected_schema = SchemaBakery._preheat("E")
     expected_schema.query_type = "RootQuery"
     expected_schema.mutation_type = "RootMutation"
     expected_schema.subscription_type = "RootSubscription"

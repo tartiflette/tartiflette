@@ -4,9 +4,10 @@ import pytest
 
 from tartiflette import Resolver
 from tartiflette.directive import Directive
+from tartiflette.engine import _import_builtins
 from tartiflette.scalar import Scalar
 from tartiflette.schema.bakery import SchemaBakery
-from tartiflette.schema.registry import SchemaRegistry, _get_builtins_sdl_files
+from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
     ImproperlyConfigured,
@@ -59,8 +60,9 @@ def test_schema_object_get_field_name(clean_registry):
     }
     """
 
+    _, schema_sdl = _import_builtins([], schema_sdl, "default")
     clean_registry.register_sdl("A", schema_sdl)
-    generated_schema = SchemaBakery._preheat("A", None)
+    generated_schema = SchemaBakery._preheat("A")
 
     with pytest.raises(ImproperlyConfigured):
         generated_schema.get_field_by_name("Invalid.Field.name")
@@ -166,8 +168,9 @@ def test_schema_validate_named_types(
     full_sdl, expected_error, expected_value, clean_registry
 ):
 
+    _, full_sdl = _import_builtins([], full_sdl, "A")
     clean_registry.register_sdl("A", full_sdl)
-    generated_schema = SchemaBakery._preheat("A", None)
+    generated_schema = SchemaBakery._preheat("A")
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -333,8 +336,9 @@ def test_schema_validate_named_types(
 def test_schema_validate_object_follow_interfaces(
     full_sdl, expected_error, expected_value, clean_registry
 ):
+    _, full_sdl = _import_builtins([], full_sdl, "A")
     clean_registry.register_sdl("A", full_sdl)
-    generated_schema = SchemaBakery._preheat("A", None)
+    generated_schema = SchemaBakery._preheat("A")
 
     try:
         generated_schema.find_type("Brand").coerce_output = lambda x: x
@@ -458,8 +462,9 @@ def test_schema_validate_object_follow_interfaces(
 def test_schema_validate_root_types_exist(
     full_sdl, expected_error, expected_value, clean_registry
 ):
+    _, full_sdl = _import_builtins([], full_sdl, "a")
     clean_registry.register_sdl("a", full_sdl)
-    generated_schema = SchemaBakery._preheat("a", None)
+    generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -494,8 +499,9 @@ def test_schema_validate_root_types_exist(
 def test_schema_validate_non_empty_object(
     full_sdl, expected_error, expected_value, clean_registry
 ):
+    _, full_sdl = _import_builtins([], full_sdl, "a")
     clean_registry.register_sdl("a", full_sdl)
-    generated_schema = SchemaBakery._preheat("a", None)
+    generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -544,8 +550,9 @@ def test_schema_validate_non_empty_object(
 def test_schema_validate_union_is_acceptable(
     full_sdl, expected_error, expected_value, clean_registry
 ):
+    _, full_sdl = _import_builtins([], full_sdl, "a")
     clean_registry.register_sdl("a", full_sdl)
-    generated_schema = SchemaBakery._preheat("a", None)
+    generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
@@ -555,114 +562,24 @@ def test_schema_validate_union_is_acceptable(
 
 
 def test_schema_bake_schema(clean_registry):
-    clean_registry.register_sdl(
+    _, full_sdl = _import_builtins(
+        [],
+        """
+        type Query {
+            lol: Int
+        }""",
         "a",
-        """
-        type Query {
-            lol: Int
-        }
-    """,
     )
+    clean_registry.register_sdl("a", full_sdl)
     assert SchemaBakery.bake("a") is not None
-
-
-@pytest.mark.parametrize("exclude_date_scalar", [True, False])
-def test_schema_bake_schema_exclude_builtins_scalars(
-    clean_registry, exclude_date_scalar
-):
-    exclude_builtins_scalars = ["Date"] if exclude_date_scalar else None
-
-    clean_registry.register_sdl(
-        "exclude",
-        """
-        type Query {
-            lol: Int
-        }
-    """,
-        exclude_builtins_scalars=exclude_builtins_scalars,
-    )
-
-    schema = SchemaBakery.bake(
-        "exclude", exclude_builtins_scalars=exclude_builtins_scalars
-    )
-
-    assert schema is not None
-    assert (
-        len(
-            [
-                scalar
-                for scalar in SchemaRegistry._schemas["exclude"][
-                    "scalars"
-                ].values()
-                if scalar.name == "Date"
-            ]
-        )
-        == 0
-        if exclude_date_scalar
-        else 1
-    )
-
-
-@patch("tartiflette.schema.registry._DIR_PATH", "/dir")
-@pytest.mark.parametrize(
-    "exclude_builtins_scalars,expected",
-    [
-        (
-            None,
-            [
-                "/dir/builtins/scalars/boolean.sdl",
-                "/dir/builtins/scalars/date.sdl",
-                "/dir/builtins/scalars/datetime.sdl",
-                "/dir/builtins/scalars/float.sdl",
-                "/dir/builtins/scalars/id.sdl",
-                "/dir/builtins/scalars/int.sdl",
-                "/dir/builtins/scalars/string.sdl",
-                "/dir/builtins/scalars/time.sdl",
-                "/dir/builtins/directives.sdl",
-                "/dir/builtins/introspection.sdl",
-            ],
-        ),
-        (
-            ["Date", "Time"],
-            [
-                "/dir/builtins/scalars/boolean.sdl",
-                "/dir/builtins/scalars/datetime.sdl",
-                "/dir/builtins/scalars/float.sdl",
-                "/dir/builtins/scalars/id.sdl",
-                "/dir/builtins/scalars/int.sdl",
-                "/dir/builtins/scalars/string.sdl",
-                "/dir/builtins/directives.sdl",
-                "/dir/builtins/introspection.sdl",
-            ],
-        ),
-        (
-            ["date", "Time"],
-            [
-                "/dir/builtins/scalars/boolean.sdl",
-                "/dir/builtins/scalars/date.sdl",
-                "/dir/builtins/scalars/datetime.sdl",
-                "/dir/builtins/scalars/float.sdl",
-                "/dir/builtins/scalars/id.sdl",
-                "/dir/builtins/scalars/int.sdl",
-                "/dir/builtins/scalars/string.sdl",
-                "/dir/builtins/directives.sdl",
-                "/dir/builtins/introspection.sdl",
-            ],
-        ),
-    ],
-)
-def test_schema_registry_get_builtins_sdl_files(
-    exclude_builtins_scalars, expected
-):
-    assert _get_builtins_sdl_files(exclude_builtins_scalars) == expected
 
 
 @pytest.mark.parametrize(
     "type_name,expected", [("Unknown", False), ("User", True)]
 )
 def test_schema_has_type(clean_registry, type_name, expected):
-    clean_registry.register_sdl(
-        "a",
+    _, full_sdl = _import_builtins(
+        [],
         """
         type User {
             name: String
@@ -672,7 +589,9 @@ def test_schema_has_type(clean_registry, type_name, expected):
             viewer: User
         }
         """,
+        "a",
     )
+    clean_registry.register_sdl("a", full_sdl)
     schema = SchemaBakery.bake("a")
     assert schema.has_type(type_name) is expected
 
