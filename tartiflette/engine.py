@@ -1,5 +1,3 @@
-import asyncio
-
 from importlib import import_module, invalidate_caches
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
@@ -38,11 +36,7 @@ _BUILTINS_MODULES = [
 
 
 def _bake_module(module, schema_name, config=None):
-    msdl = module.bake(schema_name, config)
-    if asyncio.iscoroutine(msdl):
-        msdl = asyncio.get_event_loop().run_until_complete(msdl)
-
-    return msdl
+    return module.bake(schema_name, config)
 
 
 def _import_builtins(imported_modules, sdl, schema_name):
@@ -120,7 +114,6 @@ class Engine:
             modules = [modules]
 
         self._modules, modules_sdl = _import_modules(modules, schema_name)
-
         self._error_coercer = error_coercer_factory(error_coercer)
         self._parser = TartifletteRequestParser()
         SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
