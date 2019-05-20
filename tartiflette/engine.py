@@ -1,5 +1,4 @@
 import asyncio
-import warnings
 
 from importlib import import_module, invalidate_caches
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union

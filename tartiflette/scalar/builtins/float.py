@@ -4,9 +4,12 @@ from tartiflette import Scalar
 
 
 class ScalarFloat:
+
+    # pylint: disable=no-self-use
     def coerce_output(self, val: Any) -> float:
         return float(val)
 
+    # pylint: disable=no-self-use
     def coerce_input(self, val: Any) -> float:
         return float(val)
 

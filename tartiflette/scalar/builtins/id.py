@@ -4,6 +4,7 @@ from .string import ScalarString
 
 
 class ScalarId(ScalarString):
+    # TODO :-), with @relay I think.
     pass
 
 

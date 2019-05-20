@@ -1,5 +1,3 @@
-from inspect import isclass
-
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
     MissingImplementation,

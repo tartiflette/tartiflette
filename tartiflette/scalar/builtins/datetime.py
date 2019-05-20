@@ -4,9 +4,11 @@ from tartiflette import Scalar
 
 
 class ScalarDateTime:
+    # pylint: disable=no-self-use
     def coerce_output(self, val: datetime) -> str:
         return val.isoformat()
 
+    # pylint: disable=no-self-use
     def coerce_input(self, val: str) -> datetime:
         return datetime.strptime(val, "%Y-%m-%dT%H:%M:%S")
 
