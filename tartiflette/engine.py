@@ -1,4 +1,7 @@
+import asyncio
+
 from importlib import import_module, invalidate_caches
+from inspect import isawaitable
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
 from tartiflette.executors.basic import (
@@ -36,7 +39,11 @@ _BUILTINS_MODULES = [
 
 
 def _bake_module(module, schema_name, config=None):
-    return module.bake(schema_name, config)
+    msdl = module.bake(schema_name, config)
+    if isawaitable(msdl):
+        msdl = asyncio.get_event_loop().run_until_complete(msdl)
+
+    return msdl
 
 
 def _import_builtins(imported_modules, sdl, schema_name):
