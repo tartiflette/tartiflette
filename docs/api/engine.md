@@ -177,3 +177,17 @@ engine = Engine(
     os.path.dirname(os.path.abspath(__file__)) + "/sdl"
 )
 ```
+
+#### Giving conf to a module
+
+```python
+engine = Engine(
+    os.path.dirname(os.path.abspath(__file__)) + "/sdl",
+    modules=[
+        "recipes_manager.query_resolvers",
+        "recipes_manager.mutation_resolvers",
+        { "name": "a.module.that.needs.config", "config": {"key": "value"} },
+        { "name": "another.module.that.needs.config", "config": {"key": "value"} }
+    ]
+)
+```
