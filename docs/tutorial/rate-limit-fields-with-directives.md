@@ -44,7 +44,6 @@ from typing import Any, Callable, Dict, Optional
 import time
 
 from tartiflette import Directive
-from tartiflette.directive import CommonDirective
 
 _RATE_LIMIT_RULES = {}
 
@@ -64,18 +63,18 @@ def rate_limit_check_and_bump(name, max_attempts, duration):
     if int(time.time()) > (rule["start_time"] + rule["duration"]):
         rate_limit_new_rule(name, max_attempts, duration)
         return True
-    
+
     _RATE_LIMIT_RULES[name]["nb_attempts"] = rule["nb_attempts"] + 1
 
     if rule["nb_attempts"] >= rule["max_attempts"]:
         rate_limit_new_rule(name, max_attempts, duration)
         return False
-    
+
     return True
 
 
 @Directive("rateLimiting")
-class RateLimiting(CommonDirective):
+class RateLimiting:
     @staticmethod
     async def on_field_execution(
         directive_args: Dict[str, Any],
