@@ -180,6 +180,11 @@ async def test_issue92_fragment_inordered():
                         "args": [],
                     },
                     {
+                        "name": "non_introspectable",
+                        "locations": ["FIELD_DEFINITION"],
+                        "args": [],
+                    },
+                    {
                         "locations": [
                             "FIELD",
                             "FRAGMENT_SPREAD",

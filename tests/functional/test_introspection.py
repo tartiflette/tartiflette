@@ -251,6 +251,12 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
                         "description": None,
                     },
                     {
+                        "locations": ["FIELD_DEFINITION"],
+                        "args": [],
+                        "name": "non_introspectable",
+                        "description": None,
+                    },
+                    {
                         "name": "skip",
                         "locations": [
                             "FIELD",
@@ -431,6 +437,11 @@ fragment TypeRef on __Type {
                     },
                     {
                         "name": "nonIntrospectable",
+                        "locations": ["FIELD_DEFINITION"],
+                        "args": [],
+                    },
+                    {
+                        "name": "non_introspectable",
                         "locations": ["FIELD_DEFINITION"],
                         "args": [],
                     },
