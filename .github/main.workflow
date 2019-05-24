@@ -59,7 +59,7 @@ action "release" {
   secrets = ["GITHUB_TOKEN"]
   needs = ["set version and changelog"]
   env = {
-    USERNAME = "dailymotion"
+    USERNAME = "tartiflette"
     REPOSITORY = "tartiflette"
   }
 }
