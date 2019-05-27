@@ -91,7 +91,7 @@ engine = tartiflette.Engine(
 2. **schema_name:** Schema used from the **[Schema Registry](/docs/api/schema-registry/)**. _(default: "default")_
 3. **[error_coercer](#parameter-error-coercer):** Coercer used when an error is raised.
 4. **[custom_default_resolver](#parameter-custom-default-resolver):** Use another default resolver. (Useful if you want to override the behavior for resolving a property, e.g. from snake_case to camelCase and vice versa).
-5. **[modules](#parameter-modules):** list of modules containing your decorated code such as `@Resolver`, `@Subscription`, `@Mutation`, `@Scalar` and `@Directive`.
+5. **[modules](#parameter-modules):** list of modules containing your decorated code such as `@Resolver`, `@Subscription`, `@Scalar` and `@Directive`.
 
 ### Parameter: `error_coercer`
 

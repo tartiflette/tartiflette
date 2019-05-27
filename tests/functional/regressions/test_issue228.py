@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Directive, Engine, Resolver
 
 
 @pytest.mark.asyncio
@@ -54,3 +54,47 @@ def test_issue228_2():
     assert asyncio.get_event_loop().run_until_complete(
         _engine.execute("query aquery { a { ninja } }")
     ) == {"data": {"a": {"ninja": "Ohio NinjaB BBlah!!GO !B"}}}
+
+
+def test_issue228_3():
+    from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+
+    sdl = """
+
+    directive @tartifyMe on FIELD_DEFINITION
+    """
+
+    @Directive("tartifyMe", schema_name="issue223_3")
+    class TartifyYourself:
+        @staticmethod
+        def on_pre_output_coercion(*_, **_kwargs):
+            pass
+
+        @staticmethod
+        def on_post_input_coercion(*_, **_kwargs):
+            pass
+
+        @staticmethod
+        def on_field_execution(*_, **_kwargs):
+            pass
+
+        @staticmethod
+        def on_argument_execution(*_, **_kwargs):
+            pass
+
+        @staticmethod
+        def on_introspection(*_, **_kwargs):
+            pass
+
+    with pytest.raises(
+        GraphQLSchemaError,
+        match="""
+
+0: Missing Query Type < Query >.
+1: Directive tartifyMe Method on_pre_output_coercion is not awaitable
+2: Directive tartifyMe Method on_introspection is not awaitable
+3: Directive tartifyMe Method on_post_input_coercion is not awaitable
+4: Directive tartifyMe Method on_argument_execution is not awaitable
+5: Directive tartifyMe Method on_field_execution is not awaitable""",
+    ):
+        Engine(sdl=sdl, schema_name="issue223_3")

@@ -71,7 +71,7 @@ def _import_modules(modules, schema_name):
         config = module["config"]
         module = import_module(module["name"])
 
-        if hasattr(module, "bake"):
+        if callable(getattr(module, "bake", None)):
             sdl = f"{sdl}\n{_bake_module(module, schema_name, config) or ''}"
 
         imported_modules.append(module)

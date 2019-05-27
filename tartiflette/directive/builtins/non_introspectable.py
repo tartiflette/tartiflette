@@ -25,7 +25,7 @@ class NonIntrospectableDeprecated:
         _info: "Info",
     ) -> None:
         print(
-            "@non_introspectable is deprecated, please use @nonIntrospectable, will be remove in 0.12.0"
+            "@non_introspectable is deprecated, please use @nonIntrospectable, will be removed in 0.12.0"
         )
         return None
 
