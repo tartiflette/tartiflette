@@ -1,17 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
-
-
-@Resolver("Query.hello", schema_name="test_issue213")
-async def resolve_query_hello(parent, args, ctx, info):
-    return args.get("name")
-
-
-@Resolver("Query.bye", schema_name="test_issue213")
-async def resolve_query_bye(parent, args, ctx, info):
-    return args.get("name")
-
+from tartiflette import Resolver, create_engine
 
 _SDL = """
 type Query {
@@ -21,7 +10,17 @@ type Query {
 """
 
 
-_TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue213")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.hello", schema_name="test_issue213")
+    async def resolve_query_hello(parent, args, ctx, info):
+        return args.get("name")
+
+    @Resolver("Query.bye", schema_name="test_issue213")
+    async def resolve_query_bye(parent, args, ctx, info):
+        return args.get("name")
+
+    return await create_engine(sdl=_SDL, schema_name="test_issue213")
 
 
 @pytest.mark.asyncio
@@ -181,5 +180,5 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue213")
         ),
     ],
 )
-async def test_issue213(query, variables, expected):
-    assert await _TTFTT_ENGINE.execute(query, variables=variables) == expected
+async def test_issue213(query, variables, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query, variables=variables) == expected

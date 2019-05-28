@@ -2,7 +2,7 @@ from collections import namedtuple
 
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 
 @pytest.mark.asyncio
@@ -61,7 +61,7 @@ async def test_full_mutation_execute(clean_registry):
 
     assert len(data_store) == 1
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """

@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver, Scalar
+from tartiflette import Resolver, Scalar, create_engine
 
 
 @pytest.mark.asyncio
@@ -25,7 +25,7 @@ async def test_tartiflette_execute_basic_type_introspection_output(
     }
     """
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -181,7 +181,7 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
     }
     """
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -314,7 +314,7 @@ async def test_tartiflette_execute_schema_introspection_output_introspecting_arg
     }
     """
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
     result = await ttftt.execute(
         """
     query IntrospectionQuery {

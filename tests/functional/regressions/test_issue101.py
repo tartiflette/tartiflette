@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Directive, Engine
+from tartiflette import Directive, create_engine
 
 
 @Directive("testdire", schema_name="test_issue101")
@@ -35,7 +35,9 @@ type Query {
 """
 
 
-_TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    return await create_engine(sdl=_SDL, schema_name="test_issue101")
 
 
 @pytest.mark.asyncio
@@ -516,8 +518,8 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue101")
         ),
     ],
 )
-async def test_issue101(query, errors):
-    assert await _TTFTT_ENGINE.execute(query) == {
+async def test_issue101(query, errors, ttftt_engine):
+    assert await ttftt_engine.execute(query) == {
         "data": None,
         "errors": errors,
     }

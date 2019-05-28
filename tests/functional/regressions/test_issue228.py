@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Directive, Engine, Resolver
+from tartiflette import Directive, Resolver, create_engine
 
 
 @pytest.mark.asyncio
@@ -9,7 +9,7 @@ async def test_issue228_1():
     async def lol(*_args, **_kwargs):
         return {"ninja": "Ohio"}
 
-    _engine = Engine(
+    _engine = await create_engine(
         sdl="""
 
             type Query {
@@ -29,14 +29,13 @@ async def test_issue228_1():
     }
 
 
-def test_issue228_2():
-    import asyncio
-
+@pytest.mark.asyncio
+async def test_issue228_2():
     @Resolver("Query.a", schema_name="issue228_2")
     async def lol(*_args, **_kwargs):
         return {"ninja": "Ohio"}
 
-    _engine = Engine(
+    _engine = await create_engine(
         sdl="""
 
             type Query {
@@ -51,12 +50,13 @@ def test_issue228_2():
         schema_name="issue228_2",
     )
 
-    assert asyncio.get_event_loop().run_until_complete(
-        _engine.execute("query aquery { a { ninja } }")
-    ) == {"data": {"a": {"ninja": "Ohio NinjaB BBlah!!GO !B"}}}
+    assert await _engine.execute("query aquery { a { ninja } }") == {
+        "data": {"a": {"ninja": "Ohio NinjaB BBlah!!GO !B"}}
+    }
 
 
-def test_issue228_3():
+@pytest.mark.asyncio
+async def test_issue228_3():
     from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 
     sdl = """
@@ -97,4 +97,4 @@ def test_issue228_3():
 4: Directive tartifyMe Method on_argument_execution is not awaitable
 5: Directive tartifyMe Method on_field_execution is not awaitable""",
     ):
-        Engine(sdl=sdl, schema_name="issue223_3")
+        await create_engine(sdl=sdl, schema_name="issue223_3")

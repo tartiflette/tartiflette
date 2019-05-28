@@ -1,60 +1,60 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 from tartiflette.executors.types import Info
 
+_SDL = """
+type One {
+    aField: String
+    bField: Int
+}
 
-@Resolver("Query.test", schema_name="test_typename")
-async def func_field_resolver(parent, arguments, request_ctx, info: Info):
-    chosen = arguments.get("choose", 0)
-    if chosen == 1:
-        return {"aField": "aValue", "bField": 1, "_typename": "One"}
-    elif chosen == 2:
+type Two {
+    cField: Int
+    dField: String
+}
 
-        class Lol:
-            def __init__(self, *args, **kwargs):
-                self._typename = "Two"
-                self.cField = 2
-                self.dField = "dValue"
+type Three {
+    eField: Float
+    fField: String
+}
 
-        return Lol()
-    elif chosen == 3:
+union Mixed = One | Two | Three
 
-        class Three:
-            def __init__(self, *args, **kwargs):
-                self.eField = 3.6
-                self.fField = "fValue"
-
-        return Three()
-
-    return None
+type Query {
+    test(choose: Int!): Mixed
+}
+"""
 
 
-_TTFTT = Engine(
-    """
-    type One {
-        aField: String
-        bField: Int
-    }
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.test", schema_name="test_typename")
+    async def func_field_resolver(parent, arguments, request_ctx, info: Info):
+        chosen = arguments.get("choose", 0)
+        if chosen == 1:
+            return {"aField": "aValue", "bField": 1, "_typename": "One"}
+        elif chosen == 2:
 
-    type Two {
-        cField: Int
-        dField: String
-    }
+            class Lol:
+                def __init__(self, *args, **kwargs):
+                    self._typename = "Two"
+                    self.cField = 2
+                    self.dField = "dValue"
 
-    type Three {
-        eField: Float
-        fField: String
-    }
+            return Lol()
+        elif chosen == 3:
 
-    union Mixed = One | Two | Three
+            class Three:
+                def __init__(self, *args, **kwargs):
+                    self.eField = 3.6
+                    self.fField = "fValue"
 
-    type Query {
-        test(choose: Int!): Mixed
-    }
-    """,
-    schema_name="test_typename",
-)
+            return Three()
+
+        return None
+
+    return await create_engine(sdl=_SDL, schema_name="test_typename")
 
 
 @pytest.mark.asyncio
@@ -165,7 +165,7 @@ _TTFTT = Engine(
         ),
     ],
 )
-async def test_tartiflette_typename(query, expected):
-    result = await _TTFTT.execute(query, operation_name="aquery")
-
-    assert expected == result
+async def test_tartiflette_typename(query, expected, ttftt_engine):
+    assert (
+        await ttftt_engine.execute(query, operation_name="aquery") == expected
+    )

@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 _SDL = """
 
@@ -45,7 +45,9 @@ async def resolver_y(_pr, _args, _ctx, _info):
     return {}
 
 
-_ENGINE = Engine(_SDL, schema_name="test_empty_values")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    return await create_engine(sdl=_SDL, schema_name="test_empty_values")
 
 
 @pytest.mark.parametrize(
@@ -120,14 +122,14 @@ _ENGINE = Engine(_SDL, schema_name="test_empty_values")
     ],
 )
 @pytest.mark.asyncio
-async def test_empty_values_1(query, expected):
-    assert await _ENGINE.execute(query) == expected
+async def test_empty_values_1(query, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query) == expected
 
 
 @pytest.mark.asyncio
-async def test_empty_values_2():
+async def test_empty_values_2(ttftt_engine):
     assert (
-        await _ENGINE.execute(
+        await ttftt_engine.execute(
             """
         query {
             anObject { a {b { c}}}

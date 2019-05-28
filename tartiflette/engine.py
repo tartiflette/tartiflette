@@ -38,19 +38,19 @@ _BUILTINS_MODULES = [
 ]
 
 
-def _bake_module(module, schema_name, config=None):
+async def _bake_module(module, schema_name, config=None):
     msdl = module.bake(schema_name, config)
     if isawaitable(msdl):
-        msdl = asyncio.get_event_loop().run_until_complete(msdl)
+        msdl = await msdl
 
     return msdl
 
 
-def _import_builtins(imported_modules, sdl, schema_name):
+async def _import_builtins(imported_modules, sdl, schema_name):
     for module in _BUILTINS_MODULES:
         try:
             module = import_module(module)
-            sdl = f"{sdl}\n{_bake_module(module, schema_name)}"
+            sdl = f"{sdl}\n{await _bake_module(module, schema_name)}"
             imported_modules.append(module)
         except ImproperlyConfigured:
             pass
@@ -58,7 +58,7 @@ def _import_builtins(imported_modules, sdl, schema_name):
     return imported_modules, sdl
 
 
-def _import_modules(modules, schema_name):
+async def _import_modules(modules, schema_name):
     imported_modules = []
     sdl = ""
 
@@ -72,27 +72,34 @@ def _import_modules(modules, schema_name):
         module = import_module(module["name"])
 
         if callable(getattr(module, "bake", None)):
-            sdl = f"{sdl}\n{_bake_module(module, schema_name, config) or ''}"
+            sdl = f"{sdl}\n{await _bake_module(module, schema_name, config) or ''}"
 
         imported_modules.append(module)
 
-    return _import_builtins(imported_modules, sdl, schema_name)
+    return await _import_builtins(imported_modules, sdl, schema_name)
 
 
 class Engine:
-    def __init__(
+    def __init__(self,) -> None:
+        """
+        Create an Engine instance
+        """
+        self._error_coercer = None
+        self._modules = None
+        self._parser = TartifletteRequestParser()
+        self._schema = None
+
+    async def cook(
         self,
         sdl: Union[str, List[str]],
-        schema_name: str = "default",
-        error_coercer: Callable[[Exception], dict] = default_error_coercer,
+        error_coercer: Callable[[Exception], dict] = None,
         custom_default_resolver: Optional[Callable] = None,
-        exclude_builtins_scalars=None,
         modules: Optional[Union[str, List[str]]] = None,
-    ) -> None:
-        """Create an engine by analyzing the SDL and connecting it with the imported Resolver, Mutation,
-        Subscription, Directive and Scalar linking them through the schema_name.
-
-        Then using `await an_engine.execute(query)` will resolve your GQL requests.
+        schema_name: str = "default",
+    ):
+        """
+        Cook the tartiflette, basicly prepare the engine by binding it to given modules using the schema_name as a key.
+        You wont be able to execute a request if the engine wasn't cooked.
 
         Arguments:
             sdl {Union[str, List[str]]} -- The SDL to work with.
@@ -101,18 +108,8 @@ class Engine:
             schema_name {str} -- The name of the SDL (default: {"default"})
             error_coercer {Callable[[Exception, dict], dict]} -- An optional callable in charge of transforming a couple Exception/error into an error dict (default: {default_error_coercer})
             custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
-            exclude_builtin_scalar -- Deprecated https://tartiflette.io/docs/api/engine for details
             modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
         """
-
-        if exclude_builtins_scalars:
-            print(
-                "exclude_builtin_scalar parameter is "
-                "deprecated since 0.11.0, will be "
-                "removed in 0.12.0, have a look at "
-                "https://tartiflette.io/docs/api/engine "
-                "for details"
-            )
 
         if not modules:
             modules = []
@@ -120,9 +117,12 @@ class Engine:
         if isinstance(modules, str):
             modules = [modules]
 
-        self._modules, modules_sdl = _import_modules(modules, schema_name)
-        self._error_coercer = error_coercer_factory(error_coercer)
-        self._parser = TartifletteRequestParser()
+        self._error_coercer = error_coercer_factory(
+            error_coercer or default_error_coercer
+        )
+        self._modules, modules_sdl = await _import_modules(
+            modules, schema_name
+        )
         SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
         self._schema = SchemaBakery.bake(schema_name, custom_default_resolver)
 

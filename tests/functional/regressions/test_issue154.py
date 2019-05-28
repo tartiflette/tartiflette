@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Directive, Engine
+from tartiflette import Directive, create_engine
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 
 
@@ -49,9 +49,9 @@ async def test_issue154(sdl, should_exp, adddir):
 
     if should_exp:
         with pytest.raises(GraphQLSchemaError):
-            Engine(sdl=sdl, schema_name=f"issue154_{sdl}")
+            await create_engine(sdl=sdl, schema_name=f"issue154_{sdl}")
     else:
-        e = Engine(sdl=sdl, schema_name=f"issue154_{sdl}")
+        e = await create_engine(sdl=sdl, schema_name=f"issue154_{sdl}")
         assert e._schema is not None
 
 
@@ -72,7 +72,7 @@ async def test_issue154(sdl, should_exp, adddir):
 async def test_issue154_input_type(sdl, should_exp):
     if should_exp:
         with pytest.raises(GraphQLSchemaError):
-            Engine(sdl=sdl, schema_name=f"issue154_{sdl}")
+            await create_engine(sdl=sdl, schema_name=f"issue154_{sdl}")
     else:
-        e = Engine(sdl=sdl, schema_name=f"issue154_{sdl}")
+        e = await create_engine(sdl=sdl, schema_name=f"issue154_{sdl}")
         assert e._schema is not None

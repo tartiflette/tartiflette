@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 from tartiflette.executors.types import Info
 
 
@@ -165,7 +165,7 @@ async def test_tartiflette_execute_union_type_output(
 
         return None
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(query, operation_name="aquery")
 

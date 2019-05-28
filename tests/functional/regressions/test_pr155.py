@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 from tartiflette.types.exceptions import GraphQLError
 
 
@@ -9,35 +9,35 @@ class CustomError(GraphQLError):
         super().__init__(message=message, extensions=extensions)
 
 
-@Resolver("Query.viewer", schema_name="test_pr155")
-async def resolver_query_viewer(*_, **__):
-    raise CustomError(
-        "this is an error message", extensions={"code": "custom code"}
-    )
+_SDL = """
+type User {
+    name: String
+}
+
+type Query {
+    viewer: User
+    admin: User
+}
+"""
 
 
-@Resolver("Query.admin", schema_name="test_pr155")
-async def resolver_query_admin(*_, **__):
-    raise Exception("this is another error message")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.viewer", schema_name="test_pr155")
+    async def resolver_query_viewer(*_, **__):
+        raise CustomError(
+            "this is an error message", extensions={"code": "custom code"}
+        )
 
+    @Resolver("Query.admin", schema_name="test_pr155")
+    async def resolver_query_admin(*_, **__):
+        raise Exception("this is another error message")
 
-_TTFTT_ENGINE = Engine(
-    """
-    type User {
-        name: String
-    }
-
-    type Query {
-        viewer: User
-        admin: User
-    }
-    """,
-    schema_name="test_pr155",
-)
+    return await create_engine(sdl=_SDL, schema_name="test_pr155")
 
 
 @pytest.mark.asyncio
-async def test_pr155_custom():
+async def test_pr155_custom(ttftt_engine):
     query_viewer = """
     query {
         viewer {
@@ -46,7 +46,7 @@ async def test_pr155_custom():
     }
     """
 
-    results = await _TTFTT_ENGINE.execute(query_viewer)
+    results = await ttftt_engine.execute(query_viewer)
     assert results == {
         "data": {"viewer": None},
         "errors": [
@@ -61,7 +61,7 @@ async def test_pr155_custom():
 
 
 @pytest.mark.asyncio
-async def test_pr155_normal():
+async def test_pr155_normal(ttftt_engine):
     query_admin = """
     query {
         admin {
@@ -70,7 +70,7 @@ async def test_pr155_normal():
     }
     """
 
-    results = await _TTFTT_ENGINE.execute(query_admin)
+    results = await ttftt_engine.execute(query_admin)
     assert results == {
         "data": {"admin": None},
         "errors": [

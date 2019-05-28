@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Directive, Engine, Resolver
+from tartiflette import Directive, Resolver, create_engine
 
 
 class LimitReachedException(Exception):
@@ -22,24 +22,6 @@ class LimitReachedException(Exception):
         }
 
 
-@Directive("validateLimit", schema_name="test_issue209")
-class ValidateLimitDirective:
-    @staticmethod
-    async def on_argument_execution(
-        directive_args, next_directive, argument_definition, args, ctx, info
-    ):
-        value = await next_directive(argument_definition, args, ctx, info)
-        if value > directive_args["limit"]:
-            raise LimitReachedException("Limit has been reached")
-        return value
-
-
-@Resolver("Query.aList", schema_name="test_issue209")
-async def resolver_query_a_list(parent, args, ctx, info):
-    nb_items = args["nbItems"]
-    return [f"{nb_items}.{index}" for index in range(nb_items)]
-
-
 _SDL = """
 directive @validateLimit(
   limit: Int!
@@ -53,7 +35,30 @@ type Query {
 """
 
 
-_TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue209")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Directive("validateLimit", schema_name="test_issue209")
+    class ValidateLimitDirective:
+        @staticmethod
+        async def on_argument_execution(
+            directive_args,
+            next_directive,
+            argument_definition,
+            args,
+            ctx,
+            info,
+        ):
+            value = await next_directive(argument_definition, args, ctx, info)
+            if value > directive_args["limit"]:
+                raise LimitReachedException("Limit has been reached")
+            return value
+
+    @Resolver("Query.aList", schema_name="test_issue209")
+    async def resolver_query_a_list(parent, args, ctx, info):
+        nb_items = args["nbItems"]
+        return [f"{nb_items}.{index}" for index in range(nb_items)]
+
+    return await create_engine(sdl=_SDL, schema_name="test_issue209")
 
 
 @pytest.mark.asyncio
@@ -80,6 +85,5 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue209")
         )
     ],
 )
-async def test_issue209(query, expected):
-
-    assert await _TTFTT_ENGINE.execute(query) == expected
+async def test_issue209(query, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query) == expected

@@ -1,54 +1,55 @@
 import pytest
 
-from tartiflette import Engine
+from tartiflette import create_engine
 
-_TTFTT_ENGINE = Engine(
-    """
-    interface Sentient {
-      name: String!
-    }
+_SDL = """
+interface Sentient {
+    name: String!
+}
 
-    interface Pet {
-      name: String!
-    }
+interface Pet {
+    name: String!
+}
 
-    type Human implements Sentient {
-      name: String!
-    }
+type Human implements Sentient {
+    name: String!
+}
 
-    type Dog implements Pet {
-      name: String!
-      owner: Human
-    }
+type Dog implements Pet {
+    name: String!
+    owner: Human
+}
 
-    type MutateDogPayload {
-      id: String
-    }
+type MutateDogPayload {
+    id: String
+}
 
-    type Query {
-      dog: Dog
-      sentient: Mixed
-    }
+type Query {
+    dog: Dog
+    sentient: Mixed
+}
 
-    type Mutation {
-      mutateDog: MutateDogPayload
-    }
+type Mutation {
+    mutateDog: MutateDogPayload
+}
 
-    enum Test {
-        Value1
-        Value2 @deprecated(reason: "Unused anymore")
-        Value3
-    }
+enum Test {
+    Value1
+    Value2 @deprecated(reason: "Unused anymore")
+    Value3
+}
 
-    union Mixed = Dog | Human
+union Mixed = Dog | Human
 
-    input EatSomething {
-        quantity: String
-    }
+input EatSomething {
+    quantity: String
+}
+"""
 
-    """,
-    schema_name="test_issue92",
-)
+
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    return await create_engine(sdl=_SDL, schema_name="test_issue92")
 
 
 _INTROSPECTION_QUERY = """
@@ -150,8 +151,8 @@ fragment TypeRef on __Type {
 
 
 @pytest.mark.asyncio
-async def test_issue92_fragment_inordered():
-    results = await _TTFTT_ENGINE.execute(
+async def test_issue92_fragment_inordered(ttftt_engine):
+    results = await ttftt_engine.execute(
         _INTROSPECTION_QUERY, operation_name="IntrospectionQuery"
     )
 

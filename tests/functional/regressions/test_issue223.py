@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from tartiflette import Directive, Engine, Resolver, Scalar
+from tartiflette import Directive, Resolver, Scalar, create_engine
 from tartiflette.scalar.builtins.string import ScalarString
 
 _SDL = """
@@ -64,113 +64,118 @@ type Query {
 """
 
 
-@Resolver("Query.test5", schema_name="issue223")
-async def resolver_test5(_pr, _args, _ctx, _info):
-    return {"wieght": {"value": 2}, "height": {"value": 6}}
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.test5", schema_name="issue223")
+    async def resolver_test5(_pr, _args, _ctx, _info):
+        return {"wieght": {"value": 2}, "height": {"value": 6}}
 
+    @Directive("addValue", schema_name="issue223")
+    class AddValue:
+        @staticmethod
+        async def on_post_input_coercion(
+            directive_args,
+            next_directive,
+            value,
+            argument_definition,
+            ctx,
+            info,
+        ):
+            value["value"] = value["value"] + directive_args["value"]
+            return await next_directive(value, argument_definition, ctx, info)
 
-@Directive("addValue", schema_name="issue223")
-class AddValue:
-    @staticmethod
-    async def on_post_input_coercion(
-        directive_args, next_directive, value, argument_definition, ctx, info
-    ):
-        value["value"] = value["value"] + directive_args["value"]
-        return await next_directive(value, argument_definition, ctx, info)
+        @staticmethod
+        async def on_pre_output_coercion(
+            directive_args, next_directive, value, field_definition, ctx, info
+        ):
+            value["value"] = value["value"] + directive_args["value"]
+            return await next_directive(value, field_definition, ctx, info)
 
-    @staticmethod
-    async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
-    ):
-        value["value"] = value["value"] + directive_args["value"]
-        return await next_directive(value, field_definition, ctx, info)
+    @Directive("mapToValue", schema_name="issue223")
+    class MapToValue:
+        my_map = {"RED": "BROWN", "BROWN": "RED"}
 
+        @staticmethod
+        async def on_pre_output_coercion(
+            directive_args, next_directive, value, field_definition, ctx, info
+        ):
+            value = MapToValue.my_map.get(value, value)
+            return await next_directive(value, field_definition, ctx, info)
 
-@Directive("mapToValue", schema_name="issue223")
-class MapToValue:
-    my_map = {"RED": "BROWN", "BROWN": "RED"}
+        @staticmethod
+        async def on_post_input_coercion(
+            directive_args,
+            next_directive,
+            value,
+            argument_definition,
+            ctx,
+            info,
+        ):
+            value = MapToValue.my_map.get(value, value)
+            return await next_directive(value, argument_definition, ctx, info)
 
-    @staticmethod
-    async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
-    ):
-        value = MapToValue.my_map.get(value, value)
-        return await next_directive(value, field_definition, ctx, info)
+    @Resolver("Query.test4", schema_name="issue223")
+    async def resolver_test4(_pr, _args, _ctx, _info):
+        return "BROWN"
 
-    @staticmethod
-    async def on_post_input_coercion(
-        directive_args, next_directive, value, argument_definition, ctx, info
-    ):
-        value = MapToValue.my_map.get(value, value)
-        return await next_directive(value, argument_definition, ctx, info)
+    @Resolver("Query.test3", schema_name="issue223")
+    @Resolver("Query.test6", schema_name="issue223")
+    async def resolver_test3(_pr, args, _ctx, _info):
+        return json.dumps(args)
 
+    @Scalar("Bobby", schema_name="issue223")
+    class BobbyScalar:
+        @staticmethod
+        def coerce_output(val):
+            return str(val)
 
-@Resolver("Query.test4", schema_name="issue223")
-async def resolver_test4(_pr, _args, _ctx, _info):
-    return "BROWN"
+        @staticmethod
+        def coerce_input(val):
+            return str(val)
 
+    @Directive("capitalized", schema_name="issue223")
+    class Capitalized:
+        @staticmethod
+        async def on_pre_output_coercion(
+            directive_args, next_directive, value, field_definition, ctx, info
+        ):
+            return await next_directive(
+                value.capitalize(), field_definition, ctx, info
+            )
 
-@Resolver("Query.test3", schema_name="issue223")
-@Resolver("Query.test6", schema_name="issue223")
-async def resolver_test3(_pr, args, _ctx, _info):
-    return json.dumps(args)
+    @Directive("lower", schema_name="issue223")
+    class Lower:
+        @staticmethod
+        async def on_pre_output_coercion(
+            directive_args, next_directive, value, field_definition, ctx, info
+        ):
+            return await next_directive(
+                value.lower(), field_definition, ctx, info
+            )
 
+    @Directive("upper", schema_name="issue223")
+    class Upper:
+        @staticmethod
+        async def on_pre_output_coercion(
+            directive_args, next_directive, value, field_definition, ctx, info
+        ):
+            return await next_directive(
+                value.upper(), field_definition, ctx, info
+            )
 
-@Scalar("Bobby", schema_name="issue223")
-class BobbyScalar:
-    @staticmethod
-    def coerce_output(val):
-        return str(val)
+    @Resolver("Query.wardrobe", schema_name="issue223")
+    async def wardrobe_resolver(_pr, _args, _ctx, _info):
+        return [
+            {"size": "XL", "color": "GREEN"},
+            {"size": "M", "color": "BLACK"},
+            {"size": "M", "color": "YELLOW"},
+        ]
 
-    @staticmethod
-    def coerce_input(val):
-        return str(val)
+    @Resolver("Query.bobby", schema_name="issue223")
+    async def bobby_resolver(_pr, _args, _ctx, _info):
+        return "lol"
 
-
-@Directive("capitalized", schema_name="issue223")
-class Capitalized:
-    @staticmethod
-    async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
-    ):
-        return await next_directive(
-            value.capitalize(), field_definition, ctx, info
-        )
-
-
-@Directive("lower", schema_name="issue223")
-class Lower:
-    @staticmethod
-    async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
-    ):
-        return await next_directive(value.lower(), field_definition, ctx, info)
-
-
-@Directive("upper", schema_name="issue223")
-class Upper:
-    @staticmethod
-    async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
-    ):
-        return await next_directive(value.upper(), field_definition, ctx, info)
-
-
-@Resolver("Query.wardrobe", schema_name="issue223")
-async def wardrobe_resolver(_pr, _args, _ctx, _info):
-    return [
-        {"size": "XL", "color": "GREEN"},
-        {"size": "M", "color": "BLACK"},
-        {"size": "M", "color": "YELLOW"},
-    ]
-
-
-@Resolver("Query.bobby", schema_name="issue223")
-async def bobby_resolver(_pr, _args, _ctx, _info):
-    return "lol"
-
-
-_ENGINE = Engine(_SDL, schema_name="issue223")
+    return await create_engine(sdl=_SDL, schema_name="issue223")
 
 
 @pytest.mark.asyncio
@@ -213,5 +218,5 @@ _ENGINE = Engine(_SDL, schema_name="issue223")
         ),
     ],
 )
-async def test_issue223(query, expected):
-    assert await _ENGINE.execute(query) == expected
+async def test_issue223(query, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query) == expected

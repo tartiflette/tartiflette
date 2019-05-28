@@ -2,51 +2,8 @@ import asyncio
 
 import pytest
 
-from tartiflette import Directive, Engine, Subscription
+from tartiflette import Directive, Subscription, create_engine
 from tartiflette.types.exceptions.tartiflette import MultipleException
-
-
-@Directive("validateMaxLength", schema_name="test_issue139")
-class ValidateMaxLengthDirective:
-    @staticmethod
-    async def on_argument_execution(
-        directive_args, next_directive, argument_definition, args, ctx, info
-    ):
-        limit = directive_args["limit"]
-        value = await next_directive(argument_definition, args, ctx, info)
-        argument_length = len(value)
-        if argument_length > limit:
-            raise Exception(
-                f"Value of argument < {argument_definition.name} > on field "
-                f"< {info.schema_field.name} > is too long ({argument_length}/"
-                f"{limit})."
-            )
-        return value
-
-
-@Directive("validateChoices", schema_name="test_issue139")
-class ValidateChoicesDirective:
-    @staticmethod
-    async def on_argument_execution(
-        directive_args, next_directive, argument_definition, args, ctx, info
-    ):
-        choices = directive_args["choices"]
-        value = await next_directive(argument_definition, args, ctx, info)
-        if value not in choices:
-            raise Exception(
-                f"Value of argument < {argument_definition.name} > on field "
-                f"< {info.schema_field.name} > is not a valid option "
-                f"< {value} >. Allowed values are {choices}."
-            )
-        return value
-
-
-@Subscription("Subscription.newSearch", schema_name="test_issue139")
-async def subscription_new_search(*_, **__):
-    for i in range(2):
-        yield {"name": f"Human #{i}"}
-        await asyncio.sleep(1)
-
 
 _SDL = """
 directive @validateMaxLength(
@@ -77,7 +34,58 @@ type Subscription {
 """
 
 
-_TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue139")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Directive("validateMaxLength", schema_name="test_issue139")
+    class ValidateMaxLengthDirective:
+        @staticmethod
+        async def on_argument_execution(
+            directive_args,
+            next_directive,
+            argument_definition,
+            args,
+            ctx,
+            info,
+        ):
+            limit = directive_args["limit"]
+            value = await next_directive(argument_definition, args, ctx, info)
+            argument_length = len(value)
+            if argument_length > limit:
+                raise Exception(
+                    f"Value of argument < {argument_definition.name} > on field "
+                    f"< {info.schema_field.name} > is too long ({argument_length}/"
+                    f"{limit})."
+                )
+            return value
+
+    @Directive("validateChoices", schema_name="test_issue139")
+    class ValidateChoicesDirective:
+        @staticmethod
+        async def on_argument_execution(
+            directive_args,
+            next_directive,
+            argument_definition,
+            args,
+            ctx,
+            info,
+        ):
+            choices = directive_args["choices"]
+            value = await next_directive(argument_definition, args, ctx, info)
+            if value not in choices:
+                raise Exception(
+                    f"Value of argument < {argument_definition.name} > on field "
+                    f"< {info.schema_field.name} > is not a valid option "
+                    f"< {value} >. Allowed values are {choices}."
+                )
+            return value
+
+    @Subscription("Subscription.newSearch", schema_name="test_issue139")
+    async def subscription_new_search(*_, **__):
+        for i in range(2):
+            yield {"name": f"Human #{i}"}
+            await asyncio.sleep(1)
+
+    return await create_engine(sdl=_SDL, schema_name="test_issue139")
 
 
 @pytest.mark.asyncio
@@ -114,8 +122,8 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue139")
         )
     ],
 )
-async def test_issue139_query(query, expected):
-    assert await _TTFTT_ENGINE.execute(query) == expected
+async def test_issue139_query(query, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query) == expected
 
 
 @pytest.mark.asyncio
@@ -140,9 +148,11 @@ async def test_issue139_query(query, expected):
         )
     ],
 )
-async def test_issue139_subscription_exceptions(query, exceptions):
+async def test_issue139_subscription_exceptions(
+    query, exceptions, ttftt_engine
+):
     with pytest.raises(MultipleException) as excinfo:
-        async for _ in _TTFTT_ENGINE.subscribe(query):
+        async for _ in ttftt_engine.subscribe(query):
             pass
 
     for exception, expected in zip(excinfo.value.exceptions, exceptions):

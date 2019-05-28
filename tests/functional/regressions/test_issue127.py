@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 _SDL = """
 input RecipeInput {
@@ -82,15 +82,16 @@ type Query {
 """
 
 
-@Resolver("Mutation.updateRecipe", schema_name="test_issue127")
-@Resolver("Mutation.deleteRecipe", schema_name="test_issue127")
-@Resolver("Mutation.createRecipe", schema_name="test_issue127")
-@Resolver("Mutation.patchRecipe", schema_name="test_issue127")
-async def update_recipe(_, args, *__, **kwargs):
-    return args["input"]
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Mutation.updateRecipe", schema_name="test_issue127")
+    @Resolver("Mutation.deleteRecipe", schema_name="test_issue127")
+    @Resolver("Mutation.createRecipe", schema_name="test_issue127")
+    @Resolver("Mutation.patchRecipe", schema_name="test_issue127")
+    async def update_recipe(_, args, *__, **kwargs):
+        return args["input"]
 
-
-_ENGINE = Engine(_SDL, schema_name="test_issue127")
+    return await create_engine(sdl=_SDL, schema_name="test_issue127")
 
 
 @pytest.mark.parametrize(
@@ -238,5 +239,5 @@ _ENGINE = Engine(_SDL, schema_name="test_issue127")
     ],
 )
 @pytest.mark.asyncio
-async def test_issue127(query, variables, expected):
-    assert await _ENGINE.execute(query, variables=variables) == expected
+async def test_issue127(query, variables, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query, variables=variables) == expected
