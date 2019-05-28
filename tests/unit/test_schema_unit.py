@@ -15,7 +15,8 @@ from tartiflette.types.exceptions.tartiflette import (
 )
 
 
-def test_schema_object_get_field_name(clean_registry):
+@pytest.mark.asyncio
+async def test_schema_object_get_field_name(clean_registry):
     schema_sdl = """
     schema {
         query: RootQuery
@@ -60,7 +61,7 @@ def test_schema_object_get_field_name(clean_registry):
     }
     """
 
-    _, schema_sdl = _import_builtins([], schema_sdl, "default")
+    _, schema_sdl = await _import_builtins([], schema_sdl, "default")
     clean_registry.register_sdl("A", schema_sdl)
     generated_schema = SchemaBakery._preheat("A")
 
@@ -164,11 +165,12 @@ def test_schema_object_get_field_name(clean_registry):
         ),
     ],
 )
-def test_schema_validate_named_types(
+@pytest.mark.asyncio
+async def test_schema_validate_named_types(
     full_sdl, expected_error, expected_value, clean_registry
 ):
 
-    _, full_sdl = _import_builtins([], full_sdl, "A")
+    _, full_sdl = await _import_builtins([], full_sdl, "A")
     clean_registry.register_sdl("A", full_sdl)
     generated_schema = SchemaBakery._preheat("A")
 
@@ -333,10 +335,11 @@ def test_schema_validate_named_types(
     ],
     ids=["1", "2", "3", "4", "5", "6", "7"],
 )
-def test_schema_validate_object_follow_interfaces(
+@pytest.mark.asyncio
+async def test_schema_validate_object_follow_interfaces(
     full_sdl, expected_error, expected_value, clean_registry
 ):
-    _, full_sdl = _import_builtins([], full_sdl, "A")
+    _, full_sdl = await _import_builtins([], full_sdl, "A")
     clean_registry.register_sdl("A", full_sdl)
     generated_schema = SchemaBakery._preheat("A")
 
@@ -459,10 +462,11 @@ def test_schema_validate_object_follow_interfaces(
         ),
     ],
 )
-def test_schema_validate_root_types_exist(
+@pytest.mark.asyncio
+async def test_schema_validate_root_types_exist(
     full_sdl, expected_error, expected_value, clean_registry
 ):
-    _, full_sdl = _import_builtins([], full_sdl, "a")
+    _, full_sdl = await _import_builtins([], full_sdl, "a")
     clean_registry.register_sdl("a", full_sdl)
     generated_schema = SchemaBakery._preheat("a")
 
@@ -496,10 +500,11 @@ def test_schema_validate_root_types_exist(
         ),
     ],
 )
-def test_schema_validate_non_empty_object(
+@pytest.mark.asyncio
+async def test_schema_validate_non_empty_object(
     full_sdl, expected_error, expected_value, clean_registry
 ):
-    _, full_sdl = _import_builtins([], full_sdl, "a")
+    _, full_sdl = await _import_builtins([], full_sdl, "a")
     clean_registry.register_sdl("a", full_sdl)
     generated_schema = SchemaBakery._preheat("a")
 
@@ -547,10 +552,11 @@ def test_schema_validate_non_empty_object(
         ),
     ],
 )
-def test_schema_validate_union_is_acceptable(
+@pytest.mark.asyncio
+async def test_schema_validate_union_is_acceptable(
     full_sdl, expected_error, expected_value, clean_registry
 ):
-    _, full_sdl = _import_builtins([], full_sdl, "a")
+    _, full_sdl = await _import_builtins([], full_sdl, "a")
     clean_registry.register_sdl("a", full_sdl)
     generated_schema = SchemaBakery._preheat("a")
 
@@ -561,8 +567,9 @@ def test_schema_validate_union_is_acceptable(
         assert generated_schema.validate() == expected_value
 
 
-def test_schema_bake_schema(clean_registry):
-    _, full_sdl = _import_builtins(
+@pytest.mark.asyncio
+async def test_schema_bake_schema(clean_registry):
+    _, full_sdl = await _import_builtins(
         [],
         """
         type Query {
@@ -577,8 +584,9 @@ def test_schema_bake_schema(clean_registry):
 @pytest.mark.parametrize(
     "type_name,expected", [("Unknown", False), ("User", True)]
 )
-def test_schema_has_type(clean_registry, type_name, expected):
-    _, full_sdl = _import_builtins(
+@pytest.mark.asyncio
+async def test_schema_has_type(clean_registry, type_name, expected):
+    _, full_sdl = await _import_builtins(
         [],
         """
         type User {
