@@ -18,7 +18,7 @@ We expect from each contributor to respect for the [Code of Conduct](./CODE-OF-C
 
 ### Reporting bugs
 
-To report a bug, please [create an issue on github](https://github.com/dailymotion/tartiflette/issues/new) and follow the guidelines below.
+To report a bug, please [create an issue on github](https://github.com/tartiflette/tartiflette/issues/new) and follow the guidelines below.
 
 Please provide the steps to reproduce your problem and, if possible, a full reproducible environment. **As we are working directly with containers, please provide the Dockerfile sample or the Docker image name**
 
@@ -50,12 +50,12 @@ Before coding anything, make sure to:
 
 Before submitting your pull-request, make sure the following is done.
 
-* [ ] Fork [the repository](https://github.com/dailymotion/tartiflette) and create your branch from `master` so that it can be merged easily.
+* [ ] Fork [the repository](https://github.com/tartiflette/tartiflette) and create your branch from `master` so that it can be merged easily.
 * [ ] Update CHANGELOG.md with your change (include reference to the issue & this PR).
 * [ ] Make sure all of the significant new logic is covered by tests.
 * [ ] Make sure all quality checks are green _[(Gazr specification)](https://gazr.io)_.
 
 ## Changelog
 
-All notable changes to this project will be documented in the [CHANGELOG.md](https://github.com/dailymotion/tartiflette/blob/master/CHANGELOG.md) file.
-In your PR you can add your changes to the [next.md](https://github.com/dailymotion/tartiflette/blob/master/changelogs/next.md)
+All notable changes to this project will be documented in the [CHANGELOG.md](https://github.com/tartiflette/tartiflette/blob/master/CHANGELOG.md) file.
+In your PR you can add your changes to the [next.md](https://github.com/tartiflette/tartiflette/blob/master/changelogs/next.md)

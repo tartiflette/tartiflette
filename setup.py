@@ -76,7 +76,7 @@ setup(
     description="GraphQL Engine for Python",
     long_description=_read_file("README.md"),
     long_description_content_type="text/markdown",
-    url="https://github.com/dailymotion/tartiflette",
+    url="https://github.com/tartiflette/tartiflette",
     author="Dailymotion Core API Team",
     author_email="team@tartiflette.io",
     license="MIT",

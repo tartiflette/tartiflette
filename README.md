@@ -90,7 +90,7 @@ apt-get install cmake flex bison
 
 ## Tartiflette over HTTP
 
-Discover our implementation of tartiflette over HTTP called [tartiflette-aiohttp](https://github.com/dailymotion/tartiflette-aiohttp).
+Discover our implementation of tartiflette over HTTP called [tartiflette-aiohttp](https://github.com/tartiflette/tartiflette-aiohttp).
 
 **Overview**
 ```bash
@@ -136,7 +136,7 @@ The content of the documentation is hosted in this repository, to be as close as
 
 ### How to run the website locally?
 
-We built a docker image for the documentation _(dailymotion/tartiflette.io on docker hub)_, which allow us to provide you an easy way to launch the documentation locally, without installing a specific version of node.
+We built a docker image for the documentation _(tartiflette/tartiflette.io on docker hub)_, which allow us to provide you an easy way to launch the documentation locally, without installing a specific version of node.
 
 **prerequisite**:
 - Docker
@@ -151,4 +151,4 @@ Every change you will make in the `/docs` folder will be automatically hot reloa
 
 ## Known issues
 
-* [Schema directives aren't executed](https://github.com/dailymotion/tartiflette/issues/134)
+* [Schema directives aren't executed](https://github.com/tartiflette/tartiflette/issues/134)

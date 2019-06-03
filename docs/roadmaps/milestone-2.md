@@ -20,8 +20,8 @@ This topics list is not frozen, we will iterate on them to improve Tartiflette t
 
 ## Executor
 
-* [ ] [Improve and simplify query parsing and validation](https://github.com/dailymotion/tartiflette/issues/121)
-* [ ] [Improve type resolving #122](https://github.com/dailymotion/tartiflette/issues/122)
+* [ ] [Improve and simplify query parsing and validation](https://github.com/tartiflette/tartiflette/issues/121)
+* [ ] [Improve type resolving #122](https://github.com/tartiflette/tartiflette/issues/122)
 
 ## Continuous integration
 
