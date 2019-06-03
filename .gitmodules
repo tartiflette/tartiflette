@@ -1,3 +1,0 @@
-[submodule "libgraphqlparser"]
-	path = libgraphqlparser
-	url = https://github.com/dailymotion/libgraphqlparser.git
