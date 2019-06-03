@@ -24,7 +24,7 @@ apt-get install cmake flex bison
 
 Are you ready? We are now going to install Tartiflette!
 
-In our tutorial, we want to expose our GraphQL API through HTTP. To build this API easily and quickly, we're going to use the HTTP distribution of Tartiflette called [`tartiflette-aiohttp`](https://github.com/dailymotion/tartiflette-aiohttp).
+In our tutorial, we want to expose our GraphQL API through HTTP. To build this API easily and quickly, we're going to use the HTTP distribution of Tartiflette called [`tartiflette-aiohttp`](https://github.com/tartiflette/tartiflette-aiohttp).
 
 ```bash
 # Create virtualenv

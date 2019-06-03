@@ -61,7 +61,7 @@ pip install tartiflette-aiohttp
 
 ### Use with built-in Tartiflette Engine
 
-The basic and common way to use Tartiflette with `aiohttp`, is to create an `aiohttp` `web.Application` and use the `register_graphql_handlers` helper to bind Tartiflette and `aiohttp` together. `engine_*` parameters will be forwarded to the built-in [tartiflette](https://github.com/dailymotion/tartiflette) engine instance.
+The basic and common way to use Tartiflette with `aiohttp`, is to create an `aiohttp` `web.Application` and use the `register_graphql_handlers` helper to bind Tartiflette and `aiohttp` together. `engine_*` parameters will be forwarded to the built-in [tartiflette](https://github.com/tartiflette/tartiflette) engine instance.
 
 ```python
 from aiohttp import web

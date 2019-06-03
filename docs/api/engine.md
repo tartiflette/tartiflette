@@ -146,7 +146,7 @@ e = Engine(
 
 ### Parameter: `exclude_builtins_scalars`
 
-List of scalars you want to exclude [from the default list](https://github.com/dailymotion/tartiflette/blob/master/tartiflette/scalar/__init__.py). Useful if you want to define the default scalars yourself in the SDL.
+List of scalars you want to exclude [from the default list](https://github.com/tartiflette/tartiflette/blob/master/tartiflette/scalar/__init__.py). Useful if you want to define the default scalars yourself in the SDL.
 
 ```python
 e = Engine(

@@ -23,7 +23,7 @@ Here are the topics we will cover during this _Getting Started Tutorial_.
 * Secure nodes with directives _(Advanced)_.
 * Expose different portions of the schema in the introspection based on context (Dynamic introspection) _(Advanced)_.
 
-The tutorial's end result is available on GitHub at [tartiflette-aiohttp-tutorial](https://github.com/dailymotion/tartiflette-aiohttp-tutorial).
+The tutorial's end result is available on GitHub at [tartiflette-aiohttp-tutorial](https://github.com/tartiflette/tartiflette-aiohttp-tutorial).
 
 ## Prerequisites
 
