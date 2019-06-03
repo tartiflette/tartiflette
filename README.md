@@ -136,7 +136,7 @@ The content of the documentation is hosted in this repository, to be as close as
 
 ### How to run the website locally?
 
-We built a docker image for the documentation _(dailymotion/tartiflette.io on docker hub)_, which allow us to provide you an easy way to launch the documentation locally, without installing a specific version of node.
+We built a docker image for the documentation _(tartiflette/tartiflette.io on docker hub)_, which allow us to provide you an easy way to launch the documentation locally, without installing a specific version of node.
 
 **prerequisite**:
 - Docker
