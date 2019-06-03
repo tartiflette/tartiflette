@@ -1,0 +1,3 @@
+[submodule "libgraphqlparser"]
+	path = libgraphqlparser
+	url = https://github.com/tartiflette/libgraphqlparser.git
