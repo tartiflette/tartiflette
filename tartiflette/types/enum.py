@@ -184,11 +184,20 @@ class GraphQLEnumType(GraphQLType):
         )
 
         # Manage the fact that, val can be inputed as None.
-        if not val:
+        if val is None:
             return rval
 
         # Call Value Directives
         # This is done POST coercion, so VAL exists in map
+        if isinstance(val, list):
+            return [
+                None
+                if raw_item is None
+                else await self._value_map[raw_item].directives[
+                    CoercerWay.INPUT
+                ](result_item, *args, **kwargs)
+                for raw_item, result_item in zip(val, rval)
+            ]
         return await self._value_map[val].directives[CoercerWay.INPUT](
             rval, *args, **kwargs
         )
