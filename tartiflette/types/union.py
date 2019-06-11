@@ -29,6 +29,7 @@ class GraphQLUnionType(GraphQLType):
         self.gql_types = gql_types
         self._possible_types = []
         self._directives = directives
+        self._fields = {}
 
     def __repr__(self) -> str:
         return "{}(name={!r}, gql_types={!r}, description={!r})".format(
@@ -70,3 +71,17 @@ class GraphQLUnionType(GraphQLType):
             ),
             directive_hook="on_introspection",
         )
+
+    def add_field(self, value: "GraphQLField") -> None:
+        if value.name == "__typename":
+            self._fields[value.name] = value
+
+    def find_field(self, name: str) -> "GraphQLField":
+        return self._fields[name]
+
+    def bake_fields(self, custom_default_resolver):
+        for field in self._fields.values():
+            try:
+                field.bake(self._schema, self, custom_default_resolver)
+            except AttributeError:
+                pass

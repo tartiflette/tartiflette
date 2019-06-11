@@ -132,7 +132,7 @@ class GraphQLSchema:
             return self.subscription_type
         return None
 
-    #  Introspection Attribute
+    # Introspection Attribute
     @property
     def queryType(  # pylint: disable=invalid-name
         self
@@ -143,7 +143,7 @@ class GraphQLSchema:
             pass
         return None
 
-    #  Introspection Attribute
+    # Introspection Attribute
     @property
     def subscriptionType(  # pylint: disable=invalid-name
         self
@@ -154,7 +154,7 @@ class GraphQLSchema:
             pass
         return None
 
-    #  Introspection Attribute
+    # Introspection Attribute
     @property
     def mutationType(  # pylint: disable=invalid-name
         self
@@ -165,7 +165,7 @@ class GraphQLSchema:
             pass
         return None
 
-    #  Introspection Attribute
+    # Introspection Attribute
     @property
     def types(self) -> List[GraphQLType]:
         return [
@@ -184,7 +184,7 @@ class GraphQLSchema:
     def gql_types(self) -> Dict[str, GraphQLType]:
         return self._gql_types
 
-    #  Introspection Attribute
+    # Introspection Attribute
     @property
     def directives(self) -> List[GraphQLDirective]:
         return list(self._directives.values())
@@ -524,7 +524,10 @@ class GraphQLSchema:
             directive.bake(self)
 
         for gql_type in self._gql_types.values():
-            if isinstance(gql_type, (GraphQLObjectType, GraphQLInterfaceType)):
+            if isinstance(
+                gql_type,
+                (GraphQLObjectType, GraphQLInterfaceType, GraphQLUnionType),
+            ):
                 gql_type.bake_fields(custom_default_resolver)
 
     def call_onbuild_directives(self) -> None:
