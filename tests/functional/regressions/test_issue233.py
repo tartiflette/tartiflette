@@ -2,8 +2,7 @@ from enum import Enum
 
 import pytest
 
-from tartiflette import Engine, Resolver
-from tartiflette.directive import CommonDirective, Directive
+from tartiflette import Directive, Resolver, create_engine
 
 _SDL = """
 directive @actAsPyEnum(name: String!) on ENUM
@@ -33,56 +32,61 @@ class SecondEnum(Enum):
 _ENUM_MAP = {"FirstEnum": FirstEnum, "SecondEnum": SecondEnum}
 
 
-@Directive("actAsPyEnum", schema_name="test_issue_233")
-class ActAsPyEnumDirective(CommonDirective):
-    @staticmethod
-    async def on_post_input_coercion(
-        directive_args, next_directive, value, argument_definition, ctx, info
-    ):
-        value = await next_directive(value, argument_definition, ctx, info)
-        if value is None:
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Directive("actAsPyEnum", schema_name="test_issue_233")
+    class ActAsPyEnumDirective:
+        @staticmethod
+        async def on_post_input_coercion(
+            directive_args,
+            next_directive,
+            value,
+            argument_definition,
+            ctx,
+            info,
+        ):
+            value = await next_directive(value, argument_definition, ctx, info)
+            if value is None:
+                return value
+
+            try:
+                py_enum = _ENUM_MAP[directive_args["name"]]
+                if isinstance(value, list):
+                    return [
+                        None if item is None else py_enum[item].value
+                        for item in value
+                    ]
+                return py_enum[value].value
+            except Exception:
+                pass
             return value
 
-        try:
-            py_enum = _ENUM_MAP[directive_args["name"]]
-            if isinstance(value, list):
-                return [
-                    None if item is None else py_enum[item].value
-                    for item in value
-                ]
-            return py_enum[value].value
-        except Exception:
-            pass
-        return value
+        @staticmethod
+        async def on_pre_output_coercion(
+            directive_args, next_directive, value, field_definition, ctx, info
+        ):
+            value = await next_directive(value, field_definition, ctx, info)
+            if value is None:
+                return value
 
-    @staticmethod
-    async def on_pre_output_coercion(
-        directive_args, next_directive, value, field_definition, ctx, info
-    ):
-        value = await next_directive(value, field_definition, ctx, info)
-        if value is None:
+            try:
+                py_enum = _ENUM_MAP[directive_args["name"]]
+                if isinstance(value, list):
+                    return [
+                        None if item is None else py_enum(item).name
+                        for item in value
+                    ]
+                return py_enum(value).name
+            except Exception:
+                pass
             return value
 
-        try:
-            py_enum = _ENUM_MAP[directive_args["name"]]
-            if isinstance(value, list):
-                return [
-                    None if item is None else py_enum(item).name
-                    for item in value
-                ]
-            return py_enum(value).name
-        except Exception:
-            pass
-        return value
+    @Resolver("Query.anEnum", schema_name="test_issue_233")
+    @Resolver("Query.listEnum", schema_name="test_issue_233")
+    async def resolve_query_fields(parent_result, args, ctx, info):
+        return args.get("param")
 
-
-@Resolver("Query.anEnum", schema_name="test_issue_233")
-@Resolver("Query.listEnum", schema_name="test_issue_233")
-async def resolve_query_fields(parent_result, args, ctx, info):
-    return args.get("param")
-
-
-_ENGINE = Engine(_SDL, schema_name="test_issue_233")
+    return await create_engine(sdl=_SDL, schema_name="test_issue_233")
 
 
 @pytest.mark.asyncio
@@ -199,5 +203,5 @@ _ENGINE = Engine(_SDL, schema_name="test_issue_233")
         ),
     ],
 )
-async def test_issue_233(query, variables, expected):
-    assert await _ENGINE.execute(query, variables=variables) == expected
+async def test_issue_233(query, variables, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query, variables=variables) == expected
