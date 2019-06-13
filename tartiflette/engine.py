@@ -1,3 +1,5 @@
+import logging
+
 from importlib import import_module, invalidate_caches
 from inspect import isawaitable
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
@@ -18,6 +20,8 @@ from tartiflette.types.exceptions.tartiflette import (
     ImproperlyConfigured,
 )
 from tartiflette.utils.errors import to_graphql_error
+
+logger = logging.getLogger(__name__)
 
 _BUILTINS_MODULES = [
     "tartiflette.directive.builtins.deprecated",
@@ -83,7 +87,14 @@ async def _import_modules(modules, schema_name):
 
 
 class Engine:
-    def __init__(self,) -> None:
+    def __init__(
+        self,
+        sdl = None,
+        schema_name = "default",
+        error_coercer = None,
+        custom_default_resolver = None,
+        modules = None,
+    ) -> None:
         """
         Create an Engine instance
         """
@@ -91,6 +102,37 @@ class Engine:
         self._modules = None
         self._parser = TartifletteRequestParser()
         self._schema = None
+
+        if (
+            sdl
+            or schema_name
+            or error_coercer
+            or custom_default_resolver
+            or modules
+        ):
+            logger.warning(
+                """
+                the tartiflette Engine() API evolved started the 0.11 version.
+
+                The engine creation is now asynchronous, to give the ability for the community to
+                create plugins. From now, please use the `create_engine` method to create an instance
+                of `Engine()`.
+
+                ```python
+                from tartiflette import create_engine
+                
+                engine = await create_engine(
+                    sdl,
+                    schema_name = "default",
+                    error_coercer = None,
+                    custom_default_resolver = None,
+                    modules = None,
+                )
+                ``` 
+                
+                More details on the website: https://tartiflette.io/docs/api/engine#create_engine-prepares-and-cooks-your-engine
+                """
+            )
 
     async def cook(
         self,
