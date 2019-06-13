@@ -1,11 +1,14 @@
 import os
 
-from tartiflette import Engine
+import pytest
+
+from tartiflette import create_engine
 
 
-def test_issue201():
+@pytest.mark.asyncio
+async def test_issue201():
     assert (
-        Engine(
+        await create_engine(
             [f"{os.path.dirname(__file__)}/sdl/issue201.sdl"],
             schema_name="test_issue201",
         )

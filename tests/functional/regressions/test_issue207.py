@@ -1,13 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
-
-
-@Resolver("Query.aField", schema_name="test_issue207")
-async def resolve_query_a_field(parent, args, ctx, info):
-    nb_items = args["nbItems"]
-    return [f"{nb_items}.{i}" for i in range(nb_items)]
-
+from tartiflette import Resolver, create_engine
 
 _SDL = """
 type Query {
@@ -16,7 +9,14 @@ type Query {
 """
 
 
-_TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue207")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.aField", schema_name="test_issue207")
+    async def resolve_query_a_field(parent, args, ctx, info):
+        nb_items = args["nbItems"]
+        return [f"{nb_items}.{i}" for i in range(nb_items)]
+
+    return await create_engine(sdl=_SDL, schema_name="test_issue207")
 
 
 @pytest.mark.asyncio
@@ -61,5 +61,5 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue207")
         ),
     ],
 )
-async def test_issue207(query, variables, expected):
-    assert await _TTFTT_ENGINE.execute(query, variables=variables) == expected
+async def test_issue207(query, variables, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query, variables=variables) == expected

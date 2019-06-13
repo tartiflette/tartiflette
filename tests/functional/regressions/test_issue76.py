@@ -1,45 +1,45 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
+
+_SDL = """
+type UserStatsViews {
+  total: Int
+  K: Int
+  C: Int
+}
+
+type UserStats {
+  views: UserStatsViews
+}
+
+type User {
+  name: String
+  stats: UserStats
+}
+
+type Query {
+  viewer: User
+}
+"""
 
 
-@Resolver("Query.viewer", schema_name="test_issue76_1")
-async def resolver_query_viewer(*_, **__):
-    return {
-        "viewer": {
-            "name": "N1",
-            "stats": {"views": {"total": 1, "K": 2, "C": 3}},
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.viewer", schema_name="test_issue76")
+    async def resolver_query_viewer(*_, **__):
+        return {
+            "viewer": {
+                "name": "N1",
+                "stats": {"views": {"total": 1, "K": 2, "C": 3}},
+            }
         }
-    }
 
-
-_TTFTT_ENGINE = Engine(
-    """
-    type UserStatsViews {
-      total: Int
-      K: Int
-      C: Int
-    }
-
-    type UserStats {
-      views: UserStatsViews
-    }
-
-    type User {
-      name: String
-      stats: UserStats
-    }
-
-    type Query {
-      viewer: User
-    }
-    """,
-    schema_name="test_issue76_1",
-)
+    return await create_engine(sdl=_SDL, schema_name="test_issue76")
 
 
 @pytest.mark.asyncio
-async def test_issue76_raw():
+async def test_issue76_raw(ttftt_engine):
     query = """
     query {
       viewer {
@@ -57,7 +57,7 @@ async def test_issue76_raw():
     }
     """
 
-    results = await _TTFTT_ENGINE.execute(query)
+    results = await ttftt_engine.execute(query)
     assert results == {
         "data": None,
         "errors": [
@@ -86,7 +86,7 @@ async def test_issue76_raw():
 
 
 @pytest.mark.asyncio
-async def test_issue76_fragment():
+async def test_issue76_fragment(ttftt_engine):
     query = """
     fragment UserStatsViewsFields on UserStatsViews {
       total
@@ -116,7 +116,7 @@ async def test_issue76_fragment():
     }
     """
 
-    results = await _TTFTT_ENGINE.execute(query)
+    results = await ttftt_engine.execute(query)
     assert results == {
         "data": None,
         "errors": [
@@ -145,7 +145,7 @@ async def test_issue76_fragment():
 
 
 @pytest.mark.asyncio
-async def test_issue76_another_order():
+async def test_issue76_another_order(ttftt_engine):
     query = """
     query {
       viewer {
@@ -167,7 +167,7 @@ async def test_issue76_another_order():
     }
     """
 
-    results = await _TTFTT_ENGINE.execute(query)
+    results = await ttftt_engine.execute(query)
     assert results == {
         "data": None,
         "errors": [

@@ -4,21 +4,21 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette.resolver.factory import default_error_coercer
+from tartiflette import create_engine
 
 
-def test_engine(clean_registry):
-    from tartiflette.engine import Engine
+@pytest.mark.asyncio
+async def test_engine(clean_registry):
     from tartiflette.schema.registry import SchemaRegistry
 
-    e = Engine("type Query { a:String }")
+    e = await create_engine("type Query { a:String }")
     s = SchemaRegistry.find_schema()
 
     assert e._parser is not None
     assert s is not None
     assert s.name == "default"
 
-    ee = Engine("type Query { a:String }", "Bob")
+    ee = await create_engine("type Query { a:String }", "Bob")
     ss = SchemaRegistry.find_schema("Bob")
 
     assert ee._parser is not None
@@ -30,9 +30,7 @@ def test_engine(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_execute(clean_registry):
-    from tartiflette.engine import Engine
-
-    e = Engine("type Query { a:String }")
+    e = await create_engine("type Query { a:String }")
 
     result = await e.execute("query aquery { a }", operation_name="aquery")
 
@@ -41,9 +39,7 @@ async def test_engine_execute(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_execute_parse_error(clean_registry):
-    from tartiflette.engine import Engine
-
-    e = Engine("type Query { a: String }")
+    e = await create_engine("type Query { a: String }")
 
     assert await e.execute("query { unknownNode1 unknownNode2 }") == {
         "data": None,
@@ -64,13 +60,13 @@ async def test_engine_execute_parse_error(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_execute_custom_error_coercer(clean_registry):
-    from tartiflette.engine import Engine
-
     def custom_error_coercer(exception, error):
         error["message"] = error["message"] + "Custom"
         return error
 
-    e = Engine("type Query { a: String }", error_coercer=custom_error_coercer)
+    e = await create_engine(
+        "type Query { a: String }", error_coercer=custom_error_coercer
+    )
 
     assert await e.execute("query { unknownNode1 unknownNode2 }") == {
         "data": None,
@@ -91,9 +87,7 @@ async def test_engine_execute_custom_error_coercer(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_execute_empty_req_except(clean_registry):
-    from tartiflette.engine import Engine
-
-    e = Engine("type Query { a: String }")
+    e = await create_engine("type Query { a: String }")
 
     assert await e.execute("") == {
         "data": None,
@@ -109,15 +103,13 @@ async def test_engine_execute_empty_req_except(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_execute_syntax_error(clean_registry):
-    from tartiflette.engine import Engine
+    e = await create_engine("type Query { a: String }")
 
-    e = Engine("type Query { a: String }")
-
-    assert await e.execute("query { a { }") == {
+    assert await e.execute("query { a {}") == {
         "data": None,
         "errors": [
             {
-                "message": "1.12: unrecognized character \\xc2",
+                "message": "1.12: syntax error, unexpected }",
                 "path": None,
                 "locations": [],
             }
@@ -127,23 +119,21 @@ async def test_engine_execute_syntax_error(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_execute_unhandled_exception(clean_registry):
-    from tartiflette.engine import Engine
-
-    e = Engine("type Query { a: Ninja } type Ninja { a: String }")
+    e = await create_engine("type Query { a: Ninja } type Ninja { a: String }")
 
     assert (
         await e.execute(
             """
         fragment AFragment on Ninja { a }
         fragment AFragment on Ninja { a }
-        query { a { } }
+        query { a {} }
     """
         )
         == {
             "data": None,
             "errors": [
                 {
-                    "message": "4.20: unrecognized character \\xc2",
+                    "message": "4.20: syntax error, unexpected }",
                     "path": None,
                     "locations": [],
                 }
@@ -154,8 +144,6 @@ async def test_engine_execute_unhandled_exception(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_execute_custom_resolver(clean_registry):
-    from tartiflette.engine import Engine
-
     a = Mock()
 
     async def custom_default_resolver(*args, **kwargs):
@@ -163,7 +151,7 @@ async def test_engine_execute_custom_resolver(clean_registry):
 
         return "customed!"
 
-    e = Engine(
+    e = await create_engine(
         "type Query { a:String }",
         custom_default_resolver=custom_default_resolver,
     )
@@ -178,7 +166,7 @@ async def test_engine_execute_custom_resolver(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_subscribe(clean_registry):
-    from tartiflette import Engine, Subscription, Resolver
+    from tartiflette import Subscription, Resolver
 
     @Subscription("Subscription.counter", schema_name="subscribe_counter")
     async def _subscription_counter_subscription(
@@ -194,12 +182,12 @@ async def test_engine_subscribe(clean_registry):
     async def _subscription_counter_query(parent_result, *_args, **_kwargs):
         return parent_result
 
-    e = Engine(
+    e = await create_engine(
         """
         type Query {
           a: String
         }
-        
+
         type Subscription {
           counter(startAt: Int!): Int!
         }
@@ -215,7 +203,7 @@ async def test_engine_subscribe(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_subscribe_with_default_resolver(clean_registry):
-    from tartiflette import Engine, Subscription, Resolver
+    from tartiflette import Subscription, Resolver
 
     @Subscription("Subscription.counter", schema_name="subscribe_counter")
     async def _subscription_counter_subscription(
@@ -227,7 +215,7 @@ async def test_engine_subscribe_with_default_resolver(clean_registry):
             start_at -= 1
             yield start_at
 
-    e = Engine(
+    e = await create_engine(
         """
         type Query {
           a: String
@@ -248,7 +236,7 @@ async def test_engine_subscribe_with_default_resolver(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_subscribe_with_default_resolver_alias(clean_registry):
-    from tartiflette import Engine, Subscription, Resolver
+    from tartiflette import Subscription, Resolver
 
     @Subscription("Subscription.counter", schema_name="subscribe_counter")
     async def _subscription_counter_subscription(
@@ -260,7 +248,7 @@ async def test_engine_subscribe_with_default_resolver_alias(clean_registry):
             start_at -= 1
             yield start_at
 
-    e = Engine(
+    e = await create_engine(
         """
         type Query {
           a: String

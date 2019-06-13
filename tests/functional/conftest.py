@@ -1,8 +1,9 @@
+import asyncio
 import os
 
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.subscription.subscription import Subscription
 
@@ -22,7 +23,9 @@ _SCHEMAS = {
 }
 
 _TTFTT_ENGINES = {
-    schema_name: Engine(sdl, schema_name=schema_name)
+    schema_name: asyncio.get_event_loop().run_until_complete(
+        create_engine(sdl, schema_name=schema_name)
+    )
     for schema_name, sdl in _SCHEMAS.items()
 }
 
@@ -32,6 +35,13 @@ def clean_registry():
     SchemaRegistry._schemas = {}
     yield SchemaRegistry
     SchemaRegistry._schemas = {}
+
+
+@pytest.yield_fixture(scope="module")
+def event_loop():
+    loop = asyncio.new_event_loop()
+    yield loop
+    loop.close()
 
 
 def _get_ttftt_engine_marker(node):
@@ -104,3 +114,7 @@ def pytest_runtest_setup(item):
 
     # Re-bake engine schema
     _TTFTT_ENGINES[schema_name]._schema.bake()
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "ttftt_engine: choose a test engine")

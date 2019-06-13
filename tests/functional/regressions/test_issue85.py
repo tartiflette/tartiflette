@@ -1,46 +1,46 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
+
+_SDL = """
+interface Sentient {
+  name: String!
+}
+
+interface Pet {
+  name: String!
+}
+
+type Human implements Sentient {
+  name: String!
+}
+
+type Dog implements Pet {
+  name: String!
+  owner: Human
+}
+
+type MutateDogPayload {
+  id: String
+}
+
+type Query {
+  dog: Dog
+}
+
+type Mutation {
+  mutateDog: MutateDogPayload
+}
+"""
 
 
-@Resolver("Query.dog", schema_name="test_issue85")
-async def resolver_query_viewer(*_, **__):
-    return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.dog", schema_name="test_issue85")
+    async def resolver_query_viewer(*_, **__):
+        return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
 
-
-_TTFTT_ENGINE = Engine(
-    """
-    interface Sentient {
-      name: String!
-    }
-    
-    interface Pet {
-      name: String!
-    }
-    
-    type Human implements Sentient {
-      name: String!
-    }
-    
-    type Dog implements Pet {
-      name: String!
-      owner: Human
-    }
-    
-    type MutateDogPayload {
-      id: String
-    }
-    
-    type Query {
-      dog: Dog
-    }
-    
-    type Mutation {
-      mutateDog: MutateDogPayload
-    }
-    """,
-    schema_name="test_issue85",
-)
+    return await create_engine(sdl=_SDL, schema_name="test_issue85")
 
 
 @pytest.mark.asyncio
@@ -54,7 +54,7 @@ _TTFTT_ENGINE = Engine(
             name
           }
         }
-        
+
         query getName {
           dog {
             owner {
@@ -81,7 +81,7 @@ _TTFTT_ENGINE = Engine(
             name
           }
         }
-        
+
         query getName {
           dog {
             owner {
@@ -89,7 +89,7 @@ _TTFTT_ENGINE = Engine(
             }
           }
         }
-        
+
         query getName {
           dog {
             owner {
@@ -119,8 +119,8 @@ _TTFTT_ENGINE = Engine(
         ),
     ],
 )
-async def test_issue85(query, errors):
-    assert await _TTFTT_ENGINE.execute(query) == {
+async def test_issue85(query, errors, ttftt_engine):
+    assert await ttftt_engine.execute(query) == {
         "data": None,
         "errors": errors,
     }

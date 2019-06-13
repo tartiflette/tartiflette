@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 
 @pytest.mark.asyncio
@@ -22,7 +22,7 @@ async def test_tartiflette_execute_object_type_output(clean_registry):
     async def func_field_resolver(*args, **kwargs):
         return {"field1": "Test"}
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -82,7 +82,7 @@ async def test_tartiflette_execute_object_type_advanced(
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -135,7 +135,7 @@ async def test_tartiflette_execute_object_type_unknown_field(clean_registry):
             Post(content=Content(title="Test"), meta_creator="Dailymotion")
         ]
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -160,41 +160,41 @@ async def test_ttftt_object_with_interfaces(clean_registry):
     interface Identifiable {
       id: String!
     }
-    
+
     interface Nameable {
       name: String!
     }
-    
+
     interface Titleable {
       title: String!
     }
-    
+
     interface Subscribeable {
       subscribers: [User!]!
     }
-    
+
     interface Starrable {
       nbOfStars: Int!
     }
-    
+
     interface UniformResourceLocatable {
       url: String!
     }
-    
+
     type User implements Identifiable & Nameable & Subscribeable {
       id: String!
       name: String!
       subscribers: [User!]!
       repositories: [Repository!]!
     }
-    
+
     type Repository implements Identifiable & Titleable & Subscribeable & Starrable {
       id: String!
       title: String!
       subscribers: [User!]!
       nbOfStars: Int!
     }
-    
+
     type Query {
       user(id: Int!): User!
       repository(id: Int!): Repository!
@@ -214,7 +214,9 @@ async def test_ttftt_object_with_interfaces(clean_registry):
             ],
         }
 
-    ttftt_engine = Engine(sdl, schema_name="test_ttftt_object_with_interfaces")
+    ttftt_engine = await create_engine(
+        sdl, schema_name="test_ttftt_object_with_interfaces"
+    )
 
     user_type = ttftt_engine._schema.find_type("User")
     repository_type = ttftt_engine._schema.find_type("Repository")

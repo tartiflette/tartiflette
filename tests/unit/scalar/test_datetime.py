@@ -12,13 +12,13 @@ import pytest
     ],
 )
 def test_scalar_datetime_coerce_output(val, expected):
-    from tartiflette.scalar.datetime import ScalarDateTime
+    from tartiflette.scalar.builtins.datetime import ScalarDateTime
 
     if type(expected) is type and issubclass(expected, Exception):
         with pytest.raises(expected):
-            ScalarDateTime.coerce_output(val)
+            ScalarDateTime().coerce_output(val)
     else:
-        assert ScalarDateTime.coerce_output(val) == expected
+        assert ScalarDateTime().coerce_output(val) == expected
 
 
 @pytest.mark.parametrize(
@@ -30,10 +30,10 @@ def test_scalar_datetime_coerce_output(val, expected):
     ],
 )
 def test_scalar_datetime_coerce_input(val, expected):
-    from tartiflette.scalar.datetime import ScalarDateTime
+    from tartiflette.scalar.builtins.datetime import ScalarDateTime
 
     if type(expected) is type and issubclass(expected, Exception):
         with pytest.raises(expected):
-            ScalarDateTime.coerce_input(val)
+            ScalarDateTime().coerce_input(val)
     else:
-        assert ScalarDateTime.coerce_input(val) == expected
+        assert ScalarDateTime().coerce_input(val) == expected

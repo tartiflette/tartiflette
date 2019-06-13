@@ -12,13 +12,13 @@ import pytest
     ],
 )
 def test_scalar_date_coerce_output(val, expected):
-    from tartiflette.scalar.date import ScalarDate
+    from tartiflette.scalar.builtins.date import ScalarDate
 
     if type(expected) is type and issubclass(expected, Exception):
         with pytest.raises(expected):
-            ScalarDate.coerce_output(val)
+            ScalarDate().coerce_output(val)
     else:
-        assert ScalarDate.coerce_output(val) == expected
+        assert ScalarDate().coerce_output(val) == expected
 
 
 @pytest.mark.parametrize(
@@ -30,10 +30,10 @@ def test_scalar_date_coerce_output(val, expected):
     ],
 )
 def test_scalar_date_coerce_input(val, expected):
-    from tartiflette.scalar.date import ScalarDate
+    from tartiflette.scalar.builtins.date import ScalarDate
 
     if type(expected) is type and issubclass(expected, Exception):
         with pytest.raises(expected):
-            ScalarDate.coerce_input(val)
+            ScalarDate().coerce_input(val)
     else:
-        assert ScalarDate.coerce_input(val) == expected
+        assert ScalarDate().coerce_input(val) == expected

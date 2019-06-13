@@ -15,13 +15,13 @@ import pytest
     ],
 )
 def test_scalar_float_coerce_output(val, expected):
-    from tartiflette.scalar.int import ScalarInt
+    from tartiflette.scalar.builtins.int import ScalarInt
 
     if type(expected) is type and issubclass(expected, Exception):
         with pytest.raises(expected):
-            ScalarInt.coerce_output(val)
+            ScalarInt().coerce_output(val)
     else:
-        assert ScalarInt.coerce_output(val) == expected
+        assert ScalarInt().coerce_output(val) == expected
 
 
 @pytest.mark.parametrize(
@@ -38,10 +38,10 @@ def test_scalar_float_coerce_output(val, expected):
     ],
 )
 def test_scalar_datetime_coerce_input(val, expected):
-    from tartiflette.scalar.int import ScalarInt
+    from tartiflette.scalar.builtins.int import ScalarInt
 
     if type(expected) is type and issubclass(expected, Exception):
         with pytest.raises(expected):
-            ScalarInt.coerce_input(val)
+            ScalarInt().coerce_input(val)
     else:
-        assert ScalarInt.coerce_input(val) == expected
+        assert ScalarInt().coerce_input(val) == expected

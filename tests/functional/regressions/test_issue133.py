@@ -1,112 +1,13 @@
 import logging
 
 from typing import Any, Callable, Dict, Optional
-from unittest.mock import Mock
 
 import pytest
 
-from tartiflette import Directive, Engine, Resolver
-from tartiflette.directive import CommonDirective
+from tartiflette import Directive, Resolver, create_engine
 from tartiflette.utils.arguments import UNDEFINED_VALUE
 
 logger = logging.getLogger(__name__)
-
-
-@Directive("maxLength", schema_name="test_issue133")
-class MaxLengthDirective(CommonDirective):
-    @staticmethod
-    async def on_argument_execution(
-        directive_args: Dict[str, Any],
-        next_directive: Callable,
-        argument_definition: "GraphQLArgument",
-        args: Dict[str, Any],
-        ctx: Optional[Dict[str, Any]],
-        info: "Info",
-    ) -> Any:
-        result = await next_directive(argument_definition, args, ctx, info)
-        if len(result) > directive_args["limit"]:
-            raise Exception(
-                "Value of argument < %s > on field < %s > is too long ("
-                "%s/%s)."
-                % (
-                    argument_definition.name,
-                    info.schema_field.name,
-                    len(result),
-                    directive_args["limit"],
-                )
-            )
-        return result
-
-
-@Directive("validateChoices", schema_name="test_issue133")
-class ValidateChoicesDirective(CommonDirective):
-    @staticmethod
-    async def on_argument_execution(
-        directive_args: Dict[str, Any],
-        next_directive: Callable,
-        argument_definition: "GraphQLArgument",
-        args: Dict[str, Any],
-        ctx: Optional[Dict[str, Any]],
-        info: "Info",
-    ) -> Any:
-        result = await next_directive(argument_definition, args, ctx, info)
-        if result not in directive_args["choices"]:
-            raise Exception(
-                "Value of argument < %s > on field < %s > is invalid. Valid "
-                "options are < %s >."
-                % (
-                    argument_definition.name,
-                    info.schema_field.name,
-                    ", ".join(directive_args["choices"]),
-                )
-            )
-        return result
-
-
-@Directive("debug", schema_name="test_issue133")
-class DebugDirective(CommonDirective):
-    @staticmethod
-    async def on_argument_execution(
-        directive_args: Dict[str, Any],
-        next_directive: Callable,
-        argument_definition: "GraphQLArgument",
-        args: Dict[str, Any],
-        ctx: Optional[Dict[str, Any]],
-        info: "Info",
-    ) -> Any:
-        return await next_directive(argument_definition, args, ctx, info)
-
-
-@Directive("stop", schema_name="test_issue133")
-class StopDirective(CommonDirective):
-    @staticmethod
-    async def on_argument_execution(
-        directive_args: Dict[str, Any],
-        next_directive: Callable,
-        argument_definition: "GraphQLArgument",
-        args: Dict[str, Any],
-        ctx: Optional[Dict[str, Any]],
-        info: "Info",
-    ) -> Any:
-        return UNDEFINED_VALUE
-
-
-@Resolver("Query.search", schema_name="test_issue133")
-async def _query_search_resolver(parent_result, args, *_, **__):
-    return [args["query"]]
-
-
-@Resolver("Query.aField", schema_name="test_issue133")
-async def _query_a_field_resolver(parent_result, args, *_, **__):
-    return "aValue"
-
-
-@Resolver("Query.stopedField", schema_name="test_issue133")
-async def _query_stoped_field_resolver(parent_result, args, *_, **__):
-    return (
-        args.get("stopedArg", {}).get("myInputArg", {}).get("myInputInputArg1")
-    )
-
 
 _SDL = """
 directive @maxLength(
@@ -155,7 +56,100 @@ type Query {
 """
 
 
-_TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue133")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Directive("maxLength", schema_name="test_issue133")
+    class MaxLengthDirective:
+        @staticmethod
+        async def on_argument_execution(
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            argument_definition: "GraphQLArgument",
+            args: Dict[str, Any],
+            ctx: Optional[Dict[str, Any]],
+            info: "Info",
+        ) -> Any:
+            result = await next_directive(argument_definition, args, ctx, info)
+            if len(result) > directive_args["limit"]:
+                raise Exception(
+                    "Value of argument < %s > on field < %s > is too long ("
+                    "%s/%s)."
+                    % (
+                        argument_definition.name,
+                        info.schema_field.name,
+                        len(result),
+                        directive_args["limit"],
+                    )
+                )
+            return result
+
+    @Directive("validateChoices", schema_name="test_issue133")
+    class ValidateChoicesDirective:
+        @staticmethod
+        async def on_argument_execution(
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            argument_definition: "GraphQLArgument",
+            args: Dict[str, Any],
+            ctx: Optional[Dict[str, Any]],
+            info: "Info",
+        ) -> Any:
+            result = await next_directive(argument_definition, args, ctx, info)
+            if result not in directive_args["choices"]:
+                raise Exception(
+                    "Value of argument < %s > on field < %s > is invalid. Valid "
+                    "options are < %s >."
+                    % (
+                        argument_definition.name,
+                        info.schema_field.name,
+                        ", ".join(directive_args["choices"]),
+                    )
+                )
+            return result
+
+    @Directive("debug", schema_name="test_issue133")
+    class DebugDirective:
+        @staticmethod
+        async def on_argument_execution(
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            argument_definition: "GraphQLArgument",
+            args: Dict[str, Any],
+            ctx: Optional[Dict[str, Any]],
+            info: "Info",
+        ) -> Any:
+            return await next_directive(argument_definition, args, ctx, info)
+
+    @Directive("stop", schema_name="test_issue133")
+    class StopDirective:
+        @staticmethod
+        async def on_argument_execution(
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            argument_definition: "GraphQLArgument",
+            args: Dict[str, Any],
+            ctx: Optional[Dict[str, Any]],
+            info: "Info",
+        ) -> Any:
+            return UNDEFINED_VALUE
+
+    @Resolver("Query.search", schema_name="test_issue133")
+    async def _query_search_resolver(parent_result, args, *_, **__):
+        return [args["query"]]
+
+    @Resolver("Query.aField", schema_name="test_issue133")
+    async def _query_a_field_resolver(parent_result, args, *_, **__):
+        return "aValue"
+
+    @Resolver("Query.stopedField", schema_name="test_issue133")
+    async def _query_stoped_field_resolver(parent_result, args, *_, **__):
+        return (
+            args.get("stopedArg", {})
+            .get("myInputArg", {})
+            .get("myInputInputArg1")
+        )
+
+    return await create_engine(sdl=_SDL, schema_name="test_issue133")
 
 
 @pytest.mark.asyncio
@@ -291,5 +285,5 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue133")
         ),
     ],
 )
-async def test_issue133(query, expected):
-    assert await _TTFTT_ENGINE.execute(query) == expected
+async def test_issue133(query, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query) == expected

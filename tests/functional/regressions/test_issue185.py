@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 from tartiflette.scalar.custom_scalar import Scalar
 
 _SDL = """
@@ -33,28 +33,29 @@ type Query {
 """
 
 
-@Scalar("CapitalizedString", schema_name="test_issue185")
-class CapitalizedString:
-    @staticmethod
-    def coerce_output(val) -> str:
-        return str(val)
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Scalar("CapitalizedString", schema_name="test_issue185")
+    class CapitalizedString:
+        @staticmethod
+        def coerce_output(val) -> str:
+            return str(val)
 
-    @staticmethod
-    def coerce_input(val: str) -> str:
-        return val.capitalize()
+        @staticmethod
+        def coerce_input(val: str) -> str:
+            return val.capitalize()
 
+    @Resolver("Query.person", schema_name="test_issue185")
+    async def the_query_person_resolver(_parent_results, args, _ctx, _info):
+        return args
 
-@Resolver("Query.person", schema_name="test_issue185")
-async def the_query_person_resolver(_parent_results, args, _ctx, _info):
-    return args
+    @Resolver("Query.complexPerson", schema_name="test_issue185")
+    async def the_query_complexPerson_resolver(
+        _parent_results, args, _ctx, _info
+    ):
+        return args["details"]
 
-
-@Resolver("Query.complexPerson", schema_name="test_issue185")
-async def the_query_complexPerson_resolver(_parent_results, args, _ctx, _info):
-    return args["details"]
-
-
-_ENGINE = Engine(_SDL, schema_name="test_issue185")
+    return await create_engine(sdl=_SDL, schema_name="test_issue185")
 
 
 @pytest.mark.asyncio
@@ -79,5 +80,5 @@ _ENGINE = Engine(_SDL, schema_name="test_issue185")
         ),
     ],
 )
-async def test_issue185(query, expected):
-    assert await _ENGINE.execute(query) == expected
+async def test_issue185(query, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query) == expected

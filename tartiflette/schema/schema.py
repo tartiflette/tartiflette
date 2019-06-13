@@ -1,3 +1,4 @@
+from inspect import iscoroutinefunction
 from typing import Any, Callable, Dict, List, Optional
 
 from tartiflette.schema.introspection import (
@@ -36,6 +37,15 @@ def _format_schema_error_message(errors: List[str]) -> str:
             result=result, index=index, err=err
         )
     return result
+
+
+_EXPECTED_DIRECTIVE_IMPLEM = [
+    "on_pre_output_coercion",
+    "on_introspection",
+    "on_post_input_coercion",
+    "on_argument_execution",
+    "on_field_execution",
+]
 
 
 class GraphQLSchema:
@@ -297,6 +307,7 @@ class GraphQLSchema:
             self._validate_enum_values_are_unique,
             self._validate_arguments_have_valid_type,
             self._validate_input_type_composed_of_input_type,
+            self._validate_directive_implementation
             # TODO: Validate Field: default value must be of given type
             # TODO: Check all objects have resolvers (at least in parent)
         ]
@@ -484,6 +495,17 @@ class GraphQLSchema:
                         self._validate_type_is_an_input_types(
                             field, f"Field < {typename}.{field.name} >"
                         )
+                    )
+        return errors
+
+    def _validate_directive_implementation(self) -> List[str]:
+        errors = []
+        for directive in self._directives.values():
+            for expected in _EXPECTED_DIRECTIVE_IMPLEM:
+                attr = getattr(directive.implementation, expected, None)
+                if attr and not iscoroutinefunction(attr):
+                    errors.append(
+                        f"Directive {directive.name} Method {expected} is not awaitable"
                     )
         return errors
 

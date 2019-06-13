@@ -15,7 +15,6 @@ Engine(
     schema_name,              # Optional
     error_coercer,            # Optional
     custom_default_resolver,  # Optional
-    exclude_builtins_scalars, # Optional
     modules,                  # Optional
 )
 ```
@@ -92,8 +91,7 @@ engine = tartiflette.Engine(
 2. **schema_name:** Schema used from the **[Schema Registry](/docs/api/schema-registry/)**. _(default: "default")_
 3. **[error_coercer](#parameter-error-coercer):** Coercer used when an error is raised.
 4. **[custom_default_resolver](#parameter-custom-default-resolver):** Use another default resolver. (Useful if you want to override the behavior for resolving a property, e.g. from snake_case to camelCase and vice versa).
-5. **[exclude_builtins_scalars](#parameter-exclude-builtins-scalars):** List of scalars you want to exclude from the default list.
-6. **[modules](#parameter-modules):** list of modules containing your decorated code such as `@Resolver`, `@Subscription`, `@Mutation`, `@Scalar` and `@Directive`.
+5. **[modules](#parameter-modules):** list of modules containing your decorated code such as `@Resolver`, `@Subscription`, `@Scalar` and `@Directive`.
 
 ### Parameter: `error_coercer`
 
@@ -144,17 +142,6 @@ e = Engine(
 )
 ```
 
-### Parameter: `exclude_builtins_scalars`
-
-List of scalars you want to exclude [from the default list](https://github.com/tartiflette/tartiflette/blob/master/tartiflette/scalar/__init__.py). Useful if you want to define the default scalars yourself in the SDL.
-
-```python
-e = Engine(
-    "my_sdl.graphql",
-    exclude_builtins_scalars=["Date", "DateTime"]
-)
-```
-
 ### Parameter: `modules`
 
 list of modules containing your decorated code such as:
@@ -188,5 +175,19 @@ import recipes_manager.directives.non_introspectable
 
 engine = Engine(
     os.path.dirname(os.path.abspath(__file__)) + "/sdl"
+)
+```
+
+#### Giving conf to a module
+
+```python
+engine = Engine(
+    os.path.dirname(os.path.abspath(__file__)) + "/sdl",
+    modules=[
+        "recipes_manager.query_resolvers",
+        "recipes_manager.mutation_resolvers",
+        { "name": "a.module.that.needs.config", "config": {"key": "value"} },
+        { "name": "another.module.that.needs.config", "config": {"key": "value"} }
+    ]
 )
 ```

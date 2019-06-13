@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 _A_BOBY = {
     "repositories": {
@@ -61,62 +61,63 @@ _A_BOBY = {
 }
 
 
-@Resolver("Query.viewer", schema_name="test_issue70")
-async def resolver_query_viewer(*_, **__):
-    return _A_BOBY
+_SDL = """
+type Fleur {
+    e: Float
+    petaleColor: String
+}
+
+type Ninja {
+    c: Int
+    d: Fleur
+}
+
+type RepositoryOwner {
+    login: String
+    bob: Ninja
+}
+
+type Rascal {
+    gigi: String
+    owner: RepositoryOwner
+}
+
+type Repository {
+    name: String
+    owner: RepositoryOwner
+    rascal: Rascal
+}
+
+type RepositoryEdge {
+    node: Repository
+}
+
+type RepositoryConnection {
+    edges: [RepositoryEdge]!
+}
+
+type Viewer {
+    repositories(first: Int = 10): RepositoryConnection
+    rascal: Rascal
+}
+
+type Query {
+    viewer: Viewer
+}
+"""
 
 
-_TTFTT_ENGINE = Engine(
-    """
-        type Fleur {
-            e: Float
-            petaleColor: String
-        }
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.viewer", schema_name="test_issue70")
+    async def resolver_query_viewer(*_, **__):
+        return _A_BOBY
 
-        type Ninja {
-            c: Int
-            d: Fleur
-        }
-
-        type RepositoryOwner {
-            login: String
-            bob: Ninja
-        }
-
-        type Rascal {
-            gigi: String
-            owner: RepositoryOwner
-        }
-
-        type Repository {
-            name: String
-            owner: RepositoryOwner
-            rascal: Rascal
-        }
-
-        type RepositoryEdge {
-            node: Repository
-        }
-
-        type RepositoryConnection {
-            edges: [RepositoryEdge]!
-        }
-
-        type Viewer {
-            repositories(first: Int = 10): RepositoryConnection
-            rascal: Rascal
-        }
-
-        type Query {
-            viewer: Viewer
-        }
-    """,
-    schema_name="test_issue70",
-)
+    return await create_engine(sdl=_SDL, schema_name="test_issue70")
 
 
 @pytest.mark.asyncio
-async def test_issue70_okayquery():
+async def test_issue70_okayquery(ttftt_engine):
     query = """
         fragment OwnerFields on RepositoryOwner {
             login
@@ -185,7 +186,7 @@ async def test_issue70_okayquery():
         }
     """
 
-    results = await _TTFTT_ENGINE.execute(query)
+    results = await ttftt_engine.execute(query)
     assert results == {
         "data": {
             "viewer": {
@@ -262,7 +263,7 @@ async def test_issue70_okayquery():
 
 
 @pytest.mark.asyncio
-async def test_issue70_fragment_in_inline():
+async def test_issue70_fragment_in_inline(ttftt_engine):
     query = """
     fragment OwnerFields on RepositoryOwner {
         login
@@ -329,7 +330,7 @@ async def test_issue70_fragment_in_inline():
     }
 """
 
-    results = await _TTFTT_ENGINE.execute(query)
+    results = await ttftt_engine.execute(query)
     assert results == {
         "data": {
             "viewer": {
@@ -406,7 +407,7 @@ async def test_issue70_fragment_in_inline():
 
 
 @pytest.mark.asyncio
-async def test_issue70_fragment_in_inline_in_fragment():
+async def test_issue70_fragment_in_inline_in_fragment(ttftt_engine):
     query = """
 
     fragment FleurFragment on Fleur {
@@ -441,7 +442,7 @@ async def test_issue70_fragment_in_inline_in_fragment():
     }
 """
 
-    results = await _TTFTT_ENGINE.execute(query)
+    results = await ttftt_engine.execute(query)
     assert results == {
         "data": {
             "viewer": {
@@ -480,7 +481,7 @@ async def test_issue70_fragment_in_inline_in_fragment():
 
 
 @pytest.mark.asyncio
-async def test_issue70_dont_execute_fragment_on_wrong_type():
+async def test_issue70_dont_execute_fragment_on_wrong_type(ttftt_engine):
     query = """
 
     fragment FleurFragment on Rascal {
@@ -515,7 +516,7 @@ async def test_issue70_dont_execute_fragment_on_wrong_type():
     }
 """
 
-    results = await _TTFTT_ENGINE.execute(query)
+    results = await ttftt_engine.execute(query)
     assert results == {
         "data": {
             "viewer": {

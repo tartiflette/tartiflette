@@ -15,20 +15,6 @@ def test_directive_implementation():
     assert a_directive(dontcare) == dontcare
 
 
-def test_directive_implementation_except():
-    from tartiflette.directive.directive import Directive
-    from tartiflette.types.exceptions.tartiflette import NonAwaitableDirective
-
-    class dontcare:
-        def on_field_execution(self, *args, **kwargs):
-            pass
-
-    a_directive = Directive("deprecated", schema_name="Ninja")
-
-    with pytest.raises(NonAwaitableDirective):
-        a_directive(dontcare)
-
-
 def test_directive_bake_except_no_implem():
     from tartiflette.directive.directive import Directive
 

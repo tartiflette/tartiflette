@@ -67,7 +67,7 @@ async def resolve_recipe(parent, args, ctx, info):
 async def resolve_ingredients(parent, args, ctx, info):
     if parent and parent["id"] in INGREDIENTS:
         return INGREDIENTS[parent["id"]]
-    
+
     return None
 
 ```

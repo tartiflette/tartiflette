@@ -67,13 +67,13 @@ GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 async def test_issue21_okayquery(
     query, expected, typee, varis, clean_registry
 ):
-    from tartiflette.engine import Engine
+    from tartiflette import create_engine
 
     @Resolver("Query.a")
     async def a_resolver(_, arguments, __, info: Info):
         return {"iam": info.query_field.name, "args": arguments}
 
-    ttftt = Engine(
+    ttftt = await create_engine(
         """
     type Args{
         xid: %s
@@ -182,13 +182,13 @@ async def test_issue21_okayquery(
     ],
 )
 async def test_issue21_exceptquery(query, expected, varis, clean_registry):
-    from tartiflette.engine import Engine
+    from tartiflette import create_engine
 
     @Resolver("Query.a")
     async def a_resolver(_, arguments, __, info: Info):
         return {"iam": info.query_field.name, "args": arguments}
 
-    ttftt = Engine(
+    ttftt = await create_engine(
         """
     type Args{
         xid: Int

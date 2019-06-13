@@ -1,16 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
-
-
-@Resolver("Query.aList", schema_name="test_issue188")
-async def resolve_query_a_list(_parent, args, _ctx, _info):
-    max_value = args["input"].get("maxValue")
-    return [
-        str(i if max_value is None or i <= max_value else max_value)
-        for i in range(1, args["input"]["limit"] + 1)
-    ]
-
+from tartiflette import Resolver, create_engine
 
 _SDL = """
 input ListInput {
@@ -24,7 +14,17 @@ type Query {
 """
 
 
-_TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue188")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.aList", schema_name="test_issue188")
+    async def resolve_query_a_list(_parent, args, _ctx, _info):
+        max_value = args["input"].get("maxValue")
+        return [
+            str(i if max_value is None or i <= max_value else max_value)
+            for i in range(1, args["input"]["limit"] + 1)
+        ]
+
+    return await create_engine(sdl=_SDL, schema_name="test_issue188")
 
 
 @pytest.mark.asyncio
@@ -65,5 +65,5 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue188")
         ),
     ],
 )
-async def test_issue188(query, data):
-    assert await _TTFTT_ENGINE.execute(query) == data
+async def test_issue188(query, data, ttftt_engine):
+    assert await ttftt_engine.execute(query) == data

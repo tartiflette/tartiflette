@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 _SDL = """
 type A {
@@ -14,24 +14,21 @@ type Query {
 """
 
 
-@Resolver("Query.a", schema_name="test_issue140")
-async def resolver_query_a(*args, **kwargs):
-    return {"b": "mpm", "c": "ppp"}
-
-
-_ENGINE = Engine(
-    _SDL,
-    schema_name="test_issue140",
-    modules=[
-        "tests.functional.test_engine_modules",
-        "tests.functional.test_engine_modules.non_init_resolver",
-    ],
-)
-
-
 @pytest.mark.asyncio
 async def test_issue140():
-    assert await _ENGINE.execute("""query { a { b c } }""") == {
+    @Resolver("Query.a", schema_name="test_issue140")
+    async def resolver_query_a(*args, **kwargs):
+        return {"b": "mpm", "c": "ppp"}
+
+    eng = await create_engine(
+        _SDL,
+        schema_name="test_issue140",
+        modules=[
+            "tests.functional.test_engine_modules",
+            "tests.functional.test_engine_modules.non_init_resolver",
+        ],
+    )
+    assert await eng.execute("""query { a { b c } }""") == {
         "data": {"a": {"b": "A.b", "c": "A.c"}}
     }
 
@@ -39,4 +36,4 @@ async def test_issue140():
 @pytest.mark.asyncio
 async def test_issue140_except():
     with pytest.raises(ImportError):
-        Engine("""a""", modules=["unkn.nown.modules"])
+        await create_engine("""a""", modules=["unkn.nown.modules"])

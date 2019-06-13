@@ -29,6 +29,8 @@ Tartiflette gets most of its extensibility by Directives. A directive will allow
 * `on_build`: To wrap your directive around the build process of the SDL
 * `on_field_execution`: Allows you to wrap the field execution. _(e.g. Access Rights on a specific field, apply a specific rate limit on a field.)_
 * `on_argument_execution`: Allows you to wrap the argument execution. _(e.g. Check the format of an input.)_.
+* `on_pre_output_coercion`: Allows you to hook the execution flow right before a field result value is being coerced (Appears in version `0.10.0`)
+* `on_post_input_coercion`: Allows you to hook the execution flow right after an argument value has beed coerced (Appears in version `0.10.0`)
 * `on_introspection`: During an introspection query, allows you to wrap the schema fields to add metadata _(e.g. add deprecated information)_ to fields or even to remove objects _(e.g. dynamic introspection based on access rights)_.
 
 ### How to declare a new directive?
@@ -37,11 +39,9 @@ Tartiflette gets most of its extensibility by Directives. A directive will allow
 from typing import Any, Callable, Dict, Optional
 
 from tartiflette import Directive
-from tartiflette.directive import CommonDirective
-
 
 @Directive("rateLimiting")
-class RateLimiting(CommonDirective):
+class RateLimiting:
     @staticmethod
     def on_build(_schema: "GraphQLSchema") -> None:
         ######################
@@ -78,6 +78,34 @@ class RateLimiting(CommonDirective):
         ######################
         return await next_directive(argument_definition, args, ctx, info)
 
+    @staticmethod
+    async def on_post_input_coercion(
+        directive_args: Dict[str, Any],
+        next_directive: Callable,
+        value: Any,
+        argument_definition: "GraphQLArgument",
+        ctx: Optional[Dict[str, Any]],
+        info: "Info",
+    ) -> Any:
+        ######################
+        # Add your code here #
+        ######################
+        return await next_directive(value, argument_definition, ctx, info)
+
+
+    @staticmethod
+    async def on_pre_output_coercion(
+        directive_args: Dict[str, Any],
+        next_directive: Callable,
+        value: Any,
+        field_definition: "GraphQLField",
+        ctx: Optional[Dict[str, Any]],
+        info: "Info",
+    ) -> Any:
+        ######################
+        # Add your code here #
+        ######################
+        return await next_directive(value, field_definition, ctx, info)
 
     @staticmethod
     def on_introspection(

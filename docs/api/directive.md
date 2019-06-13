@@ -28,11 +28,11 @@ type Query {
 ```python
 from typing import Any, Callable, Dict, Optional
 
-from tartiflette.directive import Directive, CommonDirective
+from tartiflette.directive import Directive
 
 
 @Directive("myDirective")
-class MyDirective(CommonDirective):
+class MyDirective:
     @staticmethod
     def on_build(schema: "GraphQLSchema") -> None:
         ######################

@@ -1,9 +1,6 @@
-from asyncio import iscoroutinefunction
-
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
     MissingImplementation,
-    NonAwaitableDirective,
     UnknownDirectiveDefinition,
 )
 
@@ -49,12 +46,8 @@ class Directive:
             )
 
     def __call__(self, implementation):
-        if not iscoroutinefunction(implementation.on_field_execution):
-            raise NonAwaitableDirective(
-                "%s is not awaitable" % repr(implementation)
-            )
+        self._implementation = implementation
 
         SchemaRegistry.register_directive(self._schema_name, self)
 
-        self._implementation = implementation
         return implementation

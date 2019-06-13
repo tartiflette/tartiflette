@@ -1,7 +1,6 @@
 import pytest
 
-from tartiflette import Directive, Engine, Resolver
-from tartiflette.directive import CommonDirective
+from tartiflette import Directive, Resolver, create_engine
 
 
 @pytest.mark.asyncio
@@ -26,7 +25,7 @@ async def test_tartiflette_deprecated_execution_directive(clean_registry):
     async def func_field_resolver6(parent, arguments, request_ctx, info):
         return 42
 
-    ttftt = Engine(schema)
+    ttftt = await create_engine(schema)
 
     assert (
         clean_registry.find_schema().find_directive("deprecated") is not None
@@ -80,7 +79,7 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
     async def func_field_resolver6(parent, arguments, request_ctx, info):
         return 42
 
-    ttftt = Engine(schema)
+    ttftt = await create_engine(schema)
 
     assert (
         clean_registry.find_schema().find_directive("deprecated") is not None
@@ -147,7 +146,7 @@ async def test_tartiflette_directive_declaration(clean_registry):
     # Execute directive
 
     @Directive("lol2")
-    class Loled2(CommonDirective):
+    class Loled2:
         @staticmethod
         async def on_field_execution(
             _directive_args, func, pr, args, rctx, info
@@ -169,14 +168,14 @@ async def test_tartiflette_directive_declaration(clean_registry):
         return 42
 
     @Directive("lol")
-    class Loled(CommonDirective):
+    class Loled:
         @staticmethod
         async def on_field_execution(
             _directive_arg, func, pr, args, rctx, info
         ):
             return (await func(pr, args, rctx, info)) + 1
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     assert clean_registry.find_schema().find_directive("lol") is not None
     assert (
@@ -207,7 +206,7 @@ async def test_tartiflette_non_introspectable_execution_directive(
     schema = """
     type Query {
         fieldNormal: Int
-        fieldHiddendToIntrospactable: Int @non_introspectable
+        fieldHiddendToIntrospactable: Int @nonIntrospectable
     }
     """
 
@@ -219,15 +218,15 @@ async def test_tartiflette_non_introspectable_execution_directive(
     async def func_field_resolver5(parent, arguments, request_ctx, info):
         return 42
 
-    ttftt = Engine(schema)
+    ttftt = await create_engine(schema)
 
     assert (
-        clean_registry.find_schema().find_directive("non_introspectable")
+        clean_registry.find_schema().find_directive("nonIntrospectable")
         is not None
     )
     assert (
         clean_registry.find_schema()
-        .find_directive("non_introspectable")
+        .find_directive("nonIntrospectable")
         .implementation
         is not None
     )

@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from tartiflette import Engine
+from tartiflette import create_engine
 from tartiflette.schema import GraphQLSchema
 
 _curr_path = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +12,7 @@ _curr_path = os.path.dirname(os.path.abspath(__file__))
 async def test_tartiflette_engine_initialization_with_sdl_file_list(
     clean_registry
 ):
-    engine = Engine(
+    engine = await create_engine(
         [
             _curr_path + "/data/splitted_sdl/author.sdl",
             _curr_path + "/data/splitted_sdl/blog.sdl",
@@ -43,7 +43,7 @@ async def test_tartiflette_engine_initialization_with_sdl_file_list(
 async def test_tartiflette_engine_initialization_with_sdl_folder(
     path, clean_registry
 ):
-    engine = Engine(path)
+    engine = await create_engine(path)
 
     assert clean_registry.find_schema().find_type("Author") is not None
     assert clean_registry.find_schema().find_type("Blog") is not None
@@ -58,7 +58,9 @@ async def test_tartiflette_engine_initialization_with_sdl_folder(
 async def test_tartiflette_engine_initialization_with_single_sdl_file(
     clean_registry
 ):
-    engine = Engine(_curr_path + "/data/simple_full_sdl/simple_full.sdl")
+    engine = await create_engine(
+        _curr_path + "/data/simple_full_sdl/simple_full.sdl"
+    )
 
     assert clean_registry.find_schema().find_type("Author") is not None
     assert clean_registry.find_schema().find_type("Blog") is not None
@@ -73,7 +75,7 @@ async def test_tartiflette_engine_initialization_with_single_sdl_file(
 async def test_tartiflette_engine_initialization_with_string_schema(
     clean_registry
 ):
-    engine = Engine(
+    engine = await create_engine(
         """
     type Post {
         id: ID!

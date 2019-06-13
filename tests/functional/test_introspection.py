@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, Scalar, create_engine
 
 
 @pytest.mark.asyncio
@@ -25,7 +25,7 @@ async def test_tartiflette_execute_basic_type_introspection_output(
     }
     """
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -181,7 +181,7 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
     }
     """
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -247,177 +247,51 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
                     {
                         "locations": ["FIELD_DEFINITION"],
                         "args": [],
-                        "name": "non_introspectable",
+                        "name": "nonIntrospectable",
                         "description": None,
                     },
                     {
-                        "name": "skip",
-                        "locations": [
-                            "FIELD",
-                            "FRAGMENT_SPREAD",
-                            "INLINE_FRAGMENT",
-                        ],
-                        "args": [
-                            {
-                                "defaultValue": None,
-                                "type": {"name": None, "kind": "NON_NULL"},
-                                "name": "if",
-                                "description": None,
-                            }
-                        ],
-                        "description": None,
-                    },
-                    {
-                        "name": "include",
-                        "locations": [
-                            "FIELD",
-                            "FRAGMENT_SPREAD",
-                            "INLINE_FRAGMENT",
-                        ],
-                        "description": None,
-                        "args": [
-                            {
-                                "name": "if",
-                                "type": {"name": None, "kind": "NON_NULL"},
-                                "description": None,
-                                "defaultValue": None,
-                            }
-                        ],
-                    },
-                ],
-                "mutationType": {"name": "CustomRootMutation"},
-                "queryType": {"name": "CustomRootQuery"},
-            }
-        }
-    } == result
-
-
-@pytest.mark.asyncio
-async def test_tartiflette_execute_schema_introspection_output_exclude_scalars(
-    clean_registry
-):
-    schema_sdl = """
-    schema {
-        query: CustomRootQuery
-        mutation: CustomRootMutation
-        subscription: CustomRootSubscription
-    }
-
-    type CustomRootQuery {
-        test: String
-    }
-
-    type CustomRootMutation {
-        test: Int
-    }
-
-    type CustomRootSubscription {
-        test: String
-    }
-    """
-
-    ttftt = Engine(schema_sdl, exclude_builtins_scalars=["Date", "DateTime"])
-    result = await ttftt.execute(
-        """
-    query Test{
-        __schema {
-            queryType { name }
-            mutationType { name }
-            subscriptionType { name }
-            types {
-                kind
-                name
-            }
-            directives {
-                name
-                description
-                locations
-                args {
-                    name
-                    description
-                    type {
-                        kind
-                        name
-                    }
-                    defaultValue
-                }
-            }
-        }
-    }
-    """,
-        operation_name="Test",
-    )
-    assert {
-        "data": {
-            "__schema": {
-                "mutationType": {"name": "CustomRootMutation"},
-                "directives": [
-                    {
-                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
-                        "args": [
-                            {
-                                "name": "reason",
-                                "defaultValue": "Deprecated",
-                                "description": None,
-                                "type": {"kind": "SCALAR", "name": "String"},
-                            }
-                        ],
-                        "name": "deprecated",
-                        "description": None,
-                    },
-                    {
-                        "name": "non_introspectable",
-                        "description": None,
-                        "args": [],
                         "locations": ["FIELD_DEFINITION"],
+                        "args": [],
+                        "name": "non_introspectable",
+                        "description": None,
                     },
                     {
-                        "locations": [
-                            "FIELD",
-                            "FRAGMENT_SPREAD",
-                            "INLINE_FRAGMENT",
-                        ],
-                        "description": None,
                         "name": "skip",
-                        "args": [
-                            {
-                                "description": None,
-                                "type": {"kind": "NON_NULL", "name": None},
-                                "defaultValue": None,
-                                "name": "if",
-                            }
-                        ],
-                    },
-                    {
-                        "args": [
-                            {
-                                "type": {"kind": "NON_NULL", "name": None},
-                                "defaultValue": None,
-                                "description": None,
-                                "name": "if",
-                            }
-                        ],
                         "locations": [
                             "FIELD",
                             "FRAGMENT_SPREAD",
                             "INLINE_FRAGMENT",
                         ],
-                        "name": "include",
+                        "args": [
+                            {
+                                "defaultValue": None,
+                                "type": {"name": None, "kind": "NON_NULL"},
+                                "name": "if",
+                                "description": None,
+                            }
+                        ],
                         "description": None,
                     },
+                    {
+                        "name": "include",
+                        "locations": [
+                            "FIELD",
+                            "FRAGMENT_SPREAD",
+                            "INLINE_FRAGMENT",
+                        ],
+                        "description": None,
+                        "args": [
+                            {
+                                "name": "if",
+                                "type": {"name": None, "kind": "NON_NULL"},
+                                "description": None,
+                                "defaultValue": None,
+                            }
+                        ],
+                    },
                 ],
-                "types": [
-                    {"kind": "OBJECT", "name": "CustomRootQuery"},
-                    {"name": "CustomRootMutation", "kind": "OBJECT"},
-                    {"kind": "OBJECT", "name": "CustomRootSubscription"},
-                    {"kind": "SCALAR", "name": "Boolean"},
-                    {"name": "Float", "kind": "SCALAR"},
-                    {"kind": "SCALAR", "name": "ID"},
-                    {"kind": "SCALAR", "name": "Int"},
-                    {"name": "String", "kind": "SCALAR"},
-                    {"name": "Time", "kind": "SCALAR"},
-                ],
-                "subscriptionType": {"name": "CustomRootSubscription"},
+                "mutationType": {"name": "CustomRootMutation"},
                 "queryType": {"name": "CustomRootQuery"},
             }
         }
@@ -440,7 +314,7 @@ async def test_tartiflette_execute_schema_introspection_output_introspecting_arg
     }
     """
 
-    ttftt = Engine(schema_sdl, exclude_builtins_scalars=["Date", "DateTime"])
+    ttftt = await create_engine(schema_sdl)
     result = await ttftt.execute(
         """
     query IntrospectionQuery {
@@ -560,6 +434,11 @@ fragment TypeRef on __Type {
                         ],
                         "name": "deprecated",
                         "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
+                    },
+                    {
+                        "name": "nonIntrospectable",
+                        "locations": ["FIELD_DEFINITION"],
+                        "args": [],
                     },
                     {
                         "name": "non_introspectable",
@@ -726,6 +605,24 @@ fragment TypeRef on __Type {
                         "possibleTypes": None,
                         "enumValues": None,
                         "name": "Boolean",
+                    },
+                    {
+                        "name": "Date",
+                        "possibleTypes": None,
+                        "inputFields": None,
+                        "kind": "SCALAR",
+                        "enumValues": None,
+                        "interfaces": None,
+                        "fields": None,
+                    },
+                    {
+                        "name": "DateTime",
+                        "possibleTypes": None,
+                        "inputFields": None,
+                        "kind": "SCALAR",
+                        "enumValues": None,
+                        "interfaces": None,
+                        "fields": None,
                     },
                     {
                         "name": "Float",

@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 
 @pytest.mark.asyncio
@@ -39,7 +39,7 @@ async def test_tartiflette_execute_basic(clean_registry):
         mock_two()
         return 1
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -85,7 +85,7 @@ async def test_tartiflette_nested_resolvers(clean_registry):
     async def func_resolver(parent, arguments, request_ctx, info):
         return "Test"
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -117,7 +117,7 @@ async def test_tartiflette_execute_hello_world(clean_registry):
     async def func_field_resolver(parent, arguments, request_ctx, info):
         return "world"
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """

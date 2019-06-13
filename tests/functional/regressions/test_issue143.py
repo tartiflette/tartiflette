@@ -1,7 +1,6 @@
 import pytest
 
-from tartiflette import Directive, Engine
-from tartiflette.directive import CommonDirective
+from tartiflette import Directive, create_engine
 
 _SDL = """
 directive @lol on FIELD_DEFINITION
@@ -22,20 +21,22 @@ type Query {
 
 
 @Directive("lol", schema_name="test_issue143")
-class Lol(CommonDirective):
+class Lol:
     pass
 
 
 @Directive("ninja", schema_name="test_issue143")
-class Ninja(CommonDirective):
+class Ninja:
     pass
 
 
-_ENGINE = Engine(sdl=_SDL, schema_name="test_issue143")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    return await create_engine(sdl=_SDL, schema_name="test_issue143")
 
 
 @pytest.mark.asyncio
-async def test_issue143():
+async def test_issue143(ttftt_engine):
     query = """query Test{
         __type(name: "R") {
             fields {
@@ -46,7 +47,7 @@ async def test_issue143():
         }
     }"""
 
-    assert await _ENGINE.execute(query) == {
+    assert await ttftt_engine.execute(query) == {
         "data": {
             "__type": {
                 "fields": [

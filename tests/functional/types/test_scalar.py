@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 
 @pytest.mark.asyncio
@@ -19,7 +19,7 @@ async def test_tartiflette_execute_scalar_type_output(clean_registry):
             year=2018, month=4, day=19, hour=14, minute=57, second=38
         )
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -157,7 +157,7 @@ async def test_tartiflette_execute_scalar_type_advanced(
     async def func_field_resolver(*args, **kwargs):
         return resolver_response
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -205,7 +205,7 @@ async def test_tartiflette_declare_custom_scalar(clean_registry):
         def coerce_input(val):
             return val
 
-    ttftt = Engine(sdl)
+    ttftt = await create_engine(sdl)
 
     result = await ttftt.execute(
         query="""

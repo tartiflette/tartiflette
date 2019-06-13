@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 
 @Resolver("Query.viewer", schema_name="test_issue79")
@@ -8,27 +8,29 @@ async def resolver_query_viewer(*_, **__):
     return {"name": "N1"}
 
 
-_TTFTT_ENGINE = Engine(
-    """
-    type User {
-        name: String
-    }
-    
-    type Query {
-        viewer: User
-    }
-    """,
-    schema_name="test_issue79",
-)
+_SDL = """
+type User {
+    name: String
+}
+
+type Query {
+    viewer: User
+}
+"""
+
+
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    return await create_engine(sdl=_SDL, schema_name="test_issue79")
 
 
 @pytest.mark.asyncio
-async def test_issue79():
+async def test_issue79(ttftt_engine):
     query = """
     fragment UnknownFields on UnknownType {
         name
     }
-    
+
     query {
         viewer {
             ...UnknownFields
@@ -36,7 +38,7 @@ async def test_issue79():
     }
     """
 
-    results = await _TTFTT_ENGINE.execute(query)
+    results = await ttftt_engine.execute(query)
 
     assert results == {
         "data": None,

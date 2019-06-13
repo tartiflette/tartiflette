@@ -1,12 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
-
-
-@Resolver("Mutation.addEntry", schema_name="test_issue205")
-async def resolver_mutation_add_entry(parent, args, ctx, info):
-    return {"clientMutationId": args["input"].get("clientMutationId")}
-
+from tartiflette import Resolver, create_engine
 
 _SDL = """
 type Entry {
@@ -43,7 +37,13 @@ type Mutation {
 """
 
 
-_TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue205")
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Mutation.addEntry", schema_name="test_issue205")
+    async def resolver_mutation_add_entry(parent, args, ctx, info):
+        return {"clientMutationId": args["input"].get("clientMutationId")}
+
+    return await create_engine(sdl=_SDL, schema_name="test_issue205")
 
 
 @pytest.mark.asyncio
@@ -90,5 +90,5 @@ _TTFTT_ENGINE = Engine(_SDL, schema_name="test_issue205")
         ),
     ],
 )
-async def test_issue205(query, variables, expected):
-    assert await _TTFTT_ENGINE.execute(query, variables=variables) == expected
+async def test_issue205(query, variables, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query, variables=variables) == expected

@@ -1,4 +1,5 @@
 from importlib import import_module, invalidate_caches
+from inspect import isawaitable
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
 from tartiflette.executors.basic import (
@@ -12,31 +13,91 @@ from tartiflette.resolver.factory import (
 )
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry
-from tartiflette.types.exceptions.tartiflette import GraphQLError
+from tartiflette.types.exceptions.tartiflette import (
+    GraphQLError,
+    ImproperlyConfigured,
+)
 from tartiflette.utils.errors import to_graphql_error
 
+_BUILTINS_MODULES = [
+    "tartiflette.directive.builtins.deprecated",
+    "tartiflette.directive.builtins.non_introspectable",
+    "tartiflette.directive.builtins.skip",
+    "tartiflette.directive.builtins.include",
+    "tartiflette.scalar.builtins.boolean",
+    "tartiflette.scalar.builtins.date",
+    "tartiflette.scalar.builtins.datetime",
+    "tartiflette.scalar.builtins.float",
+    "tartiflette.scalar.builtins.id",
+    "tartiflette.scalar.builtins.int",
+    "tartiflette.scalar.builtins.string",
+    "tartiflette.scalar.builtins.time",
+    "tartiflette.schema.builtins.introspection",
+]
 
-def _import_modules(modules):
-    if modules:
-        invalidate_caches()
-        return [import_module(x) for x in modules]
-    return []
+
+async def _bake_module(module, schema_name, config=None):
+    msdl = module.bake(schema_name, config)
+    if isawaitable(msdl):
+        msdl = await msdl
+
+    return msdl
+
+
+async def _import_builtins(imported_modules, sdl, schema_name):
+    for module in _BUILTINS_MODULES:
+        try:
+            module = import_module(module)
+            sdl = f"{sdl}\n{await _bake_module(module, schema_name)}"
+            imported_modules.append(module)
+        except ImproperlyConfigured:
+            pass
+
+    return imported_modules, sdl
+
+
+async def _import_modules(modules, schema_name):
+    imported_modules = []
+    sdl = ""
+
+    invalidate_caches()
+
+    for module in modules:
+        if not isinstance(module, dict):
+            module = {"name": module, "config": {}}
+
+        config = module["config"]
+        module = import_module(module["name"])
+
+        if callable(getattr(module, "bake", None)):
+            sdl = f"{sdl}\n{await _bake_module(module, schema_name, config) or ''}"
+
+        imported_modules.append(module)
+
+    return await _import_builtins(imported_modules, sdl, schema_name)
 
 
 class Engine:
-    def __init__(
+    def __init__(self,) -> None:
+        """
+        Create an Engine instance
+        """
+        self._error_coercer = None
+        self._modules = None
+        self._parser = TartifletteRequestParser()
+        self._schema = None
+
+    async def cook(
         self,
         sdl: Union[str, List[str]],
-        schema_name: str = "default",
-        error_coercer: Callable[[Exception], dict] = default_error_coercer,
+        error_coercer: Callable[[Exception], dict] = None,
         custom_default_resolver: Optional[Callable] = None,
-        exclude_builtins_scalars: Optional[List[str]] = None,
         modules: Optional[Union[str, List[str]]] = None,
-    ) -> None:
-        """Create an engine by analyzing the SDL and connecting it with the imported Resolver, Mutation,
-        Subscription, Directive and Scalar linking them through the schema_name.
-
-        Then using `await an_engine.execute(query)` will resolve your GQL requests.
+        schema_name: str = "default",
+    ):
+        """
+        Cook the tartiflette, basicly prepare the engine by binding it to given modules using the schema_name as a key.
+        You wont be able to execute a request if the engine wasn't cooked.
 
         Arguments:
             sdl {Union[str, List[str]]} -- The SDL to work with.
@@ -45,21 +106,23 @@ class Engine:
             schema_name {str} -- The name of the SDL (default: {"default"})
             error_coercer {Callable[[Exception, dict], dict]} -- An optional callable in charge of transforming a couple Exception/error into an error dict (default: {default_error_coercer})
             custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
-            exclude_builtins_scalars {Optional[List[str]]} -- An optional list of string containing the names of the builtin scalar you don't want to be automatically included, usually it's Date, DateTime or Time scalars (default: {None})
             modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
         """
+
+        if not modules:
+            modules = []
 
         if isinstance(modules, str):
             modules = [modules]
 
-        self._modules = _import_modules(modules)
-
-        self._error_coercer = error_coercer_factory(error_coercer)
-        self._parser = TartifletteRequestParser()
-        SchemaRegistry.register_sdl(schema_name, sdl, exclude_builtins_scalars)
-        self._schema = SchemaBakery.bake(
-            schema_name, custom_default_resolver, exclude_builtins_scalars
+        self._error_coercer = error_coercer_factory(
+            error_coercer or default_error_coercer
         )
+        self._modules, modules_sdl = await _import_modules(
+            modules, schema_name
+        )
+        SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
+        self._schema = SchemaBakery.bake(schema_name, custom_default_resolver)
 
     async def execute(
         self,

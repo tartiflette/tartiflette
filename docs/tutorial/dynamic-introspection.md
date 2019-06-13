@@ -27,11 +27,10 @@ The idea of the following code is to create a new directive called "@nonIntrospe
 from typing import Any, Callable, Dict, Optional
 
 from tartiflette import Directive
-from tartiflette.directive import CommonDirective
 
 
 @Directive("nonIntrospectable")
-class NonIntrospectable(CommonDirective):
+class NonIntrospectable:
     @staticmethod
     def on_introspection(
         directive_args: Dict[str, Any],

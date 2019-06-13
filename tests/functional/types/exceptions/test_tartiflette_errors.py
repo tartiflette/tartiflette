@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from tartiflette import Engine, Resolver, TartifletteError
+from tartiflette import Resolver, TartifletteError, create_engine
 
 
 @pytest.mark.asyncio
@@ -36,7 +36,7 @@ async def test_tartiflette_execute_nested_error(clean_registry):
             None,
         ]
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """
@@ -95,7 +95,7 @@ async def test_tartiflette_execute_tartifletteerror_custom(clean_registry):
     async def func_field_resolver(*args, **kwargs):
         raise CustomException("my_error", "There is an error")
 
-    ttftt = Engine(schema_sdl)
+    ttftt = await create_engine(schema_sdl)
 
     result = await ttftt.execute(
         """

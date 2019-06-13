@@ -1,10 +1,11 @@
 import pytest
 
-from tartiflette import Engine
+from tartiflette import create_engine
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 
 
-def test_issue160():
+@pytest.mark.asyncio
+async def test_issue160():
     with pytest.raises(
         GraphQLSchemaError,
         match="""
@@ -25,7 +26,7 @@ def test_issue160():
 13: Argument < arg > of Directive < m > is of type < LL > which is not a Scalar, an Enum or an InputObject
 14: Field < N.b > is of type < L > which is not a Scalar, an Enum or an InputObject""",
     ):
-        Engine(
+        await create_engine(
             """
         type R
 

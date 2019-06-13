@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 _SDL = """
 type FirstType {
@@ -21,12 +21,13 @@ type Query {
 """
 
 
-@Resolver("Query.bothTypesField", schema_name="test_issue_235")
-async def resolve_query_both_types_field(*_, **__):
-    return {"_typename": "FirstType", "id": 1, "firstField": "firstField"}
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Resolver("Query.bothTypesField", schema_name="test_issue_235")
+    async def resolve_query_both_types_field(*_, **__):
+        return {"_typename": "FirstType", "id": 1, "firstField": "firstField"}
 
-
-_ENGINE = Engine(_SDL, schema_name="test_issue_235")
+    return await create_engine(_SDL, schema_name="test_issue_235")
 
 
 @pytest.mark.asyncio
@@ -46,7 +47,7 @@ _ENGINE = Engine(_SDL, schema_name="test_issue_235")
                   __typename
                   id
                   secondField
-                } 
+                }
               }
             }
             """,
@@ -67,13 +68,13 @@ _ENGINE = Engine(_SDL, schema_name="test_issue_235")
               id
               firstField
             }
-            
+
             fragment SecondTypeFields on SecondType {
               __typename
               id
               secondField
             }
-            
+
             {
               bothTypesField {
                 ...FirstTypeFields
@@ -103,7 +104,7 @@ _ENGINE = Engine(_SDL, schema_name="test_issue_235")
                 ... on SecondType {
                   id
                   secondField
-                } 
+                }
               }
             }
             """,
@@ -123,12 +124,12 @@ _ENGINE = Engine(_SDL, schema_name="test_issue_235")
               id
               firstField
             }
-            
+
             fragment SecondTypeFields on SecondType {
               id
               secondField
             }
-            
+
             {
               bothTypesField {
                 __typename
@@ -149,5 +150,5 @@ _ENGINE = Engine(_SDL, schema_name="test_issue_235")
         ),
     ],
 )
-async def test_issue_235(query, expected):
-    assert await _ENGINE.execute(query) == expected
+async def test_issue_235(query, expected, ttftt_engine):
+    assert await ttftt_engine.execute(query) == expected

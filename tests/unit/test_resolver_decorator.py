@@ -11,6 +11,8 @@ from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
 
 @pytest.mark.asyncio
 async def test_resolver_decorator(clean_registry):
+    from tartiflette.engine import _import_builtins
+
     schema_sdl = """
     schema {
         query: RootQuery
@@ -66,6 +68,8 @@ async def test_resolver_decorator(clean_registry):
         simpleField: Date
     }
     """
+
+    _, schema_sdl = await _import_builtins([], schema_sdl, "default")
 
     clean_registry.register_sdl("default", schema_sdl)
 
