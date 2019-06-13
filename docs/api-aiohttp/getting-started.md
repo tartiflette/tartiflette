@@ -97,6 +97,7 @@ web.run_app(
   - Can be a path to an SDL
   - Can be an array of paths which contain the SDLs
 * **engine_schema_name**: Name of the schema used by the built-in engine. Useful for advanced use-cases, see [Schema Registry API](/docs/api/schema-registry).
+* **engine_modules**: Modules and Plugins you want to import [within your Engine](/docs/api/engine#parameter-modules).
 * **executor_context**: Context which will be passed to each resolver (as a dict). Very useful for passing handlers to services, functions or data that you want to use in your resolvers.
   - **req**: Request object from `aiohttp`
   - **app**: Application object from `aiohttp`

@@ -24,7 +24,7 @@ The following code sample will create 2 schemas in the `Schema Registry`.
 ```python
 import asyncio
 
-from tartiflette import Engine, Resolver
+from tartiflette import create_engine, Resolver
 
 @Resolver("Query.hello") # Will be assigned to the 'default' Schema
 async def resolver_hello(parent, args, ctx, info):
@@ -37,11 +37,13 @@ async def resolver_hello(parent, args, ctx, info):
 
 
 async def run():
-    tftt_engine = Engine("""
-    type Query {
-        hello(name: String): String
-    }
-    """) # This Engine will be attached to the SDL of the 'default' Schema.
+    tftt_engine = await create_engine(
+        """
+        type Query {
+            hello(name: String): String
+        }
+        """
+    ) # The engine created will be attached to the SDL of the 'default' Schema.
 
     result = await tftt_engine.execute(
         query='query { hello(name: "Chuck") }'
@@ -54,12 +56,14 @@ async def run():
     #     }
     # }
 
-    tftt_proof_of_concept = Engine("""
-    type Query {
-        hello(name: String): String
-    }
-    """,
-    schema_name="proof_of_concept") # This Engine will be attached to the SDL of the 'proof_of_concept' Schema.
+    tftt_proof_of_concept = await create_engine(
+        """
+        type Query {
+            hello(name: String): String
+        }
+        """,
+        schema_name="proof_of_concept"
+    ) # This Engine will be attached to the SDL of the 'proof_of_concept' Schema.
 
     result_poc = await tftt_proof_of_concept.execute(
         query='query { hello(name: "Chuck") }'

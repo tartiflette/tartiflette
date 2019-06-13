@@ -15,9 +15,9 @@ Its parameters are:
 
 ```python
 
-import tartiflette
+from tartiflette import create_engine
 
-engine = tartiflette.Engine(
+engine = await create_engine(
     "myDsl.graphql"
 )
 
