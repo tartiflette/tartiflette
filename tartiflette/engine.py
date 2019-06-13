@@ -89,11 +89,11 @@ async def _import_modules(modules, schema_name):
 class Engine:
     def __init__(
         self,
-        sdl = None,
-        schema_name = "default",
-        error_coercer = None,
-        custom_default_resolver = None,
-        modules = None,
+        sdl=None,
+        schema_name="default",
+        error_coercer=None,
+        custom_default_resolver=None,
+        modules=None,
     ) -> None:
         """
         Create an Engine instance

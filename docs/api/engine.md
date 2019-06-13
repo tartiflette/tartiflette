@@ -4,7 +4,7 @@ title: Engine
 sidebar_label: Engine
 ---
 
-The way to generate an engine is pretty simple, most of the time, you will use the `create_engine` method, expose in `tartiflette` package. This method has all the necessary to build your engine.
+The way to generate an engine is pretty simple, most of the time, you will use the `create_engine` method, expose in `tartiflette` package. This method performs all the necessary task needed to build your engine.
 
 ## `create_engine` prepares and cooks your engine
 
@@ -199,15 +199,15 @@ For those who want to integrate tartiflette in advanced use-cases. You could be 
 
 ### Why owning the cooking (building) process of tartiflette?
 
-The cooking process of tartiflette is equals to a `build` process on another librairies, it will prepare your engine to be executed. Thus, useless to say that an engine instance can't be executed without beeing cooked. The parrallele with a tartiflette meal is so close, you can't eat a tartiflette without cooking it. That's it. 
+The cooking process of tartiflette is equals to a `build` process on another librairies, it will prepare your engine to be executed. Thus, it's useless to say that an engine instance can't be executed without beeing cooked. Like the meal, you can't eat a tartiflette without cooking it first. That's it.
 
-Customise the cooking process is interesting to integrate tartiflette into another librairies, like `aiohttp`, `starlette, `django` and so one.
+Customise the cooking process is interesting to integrate tartiflette into another librairies, like `aiohttp`, `starlette`, `django` and so one.
 
 _For your information_: `tartiflette-aiohttp` has its own flow to manage the cooking process of the Engine. 
 
 ### `cook()` your tartiflette
 
-As specified above, the Engine() needs to be cook() before being executed. here are the sequence to execute a query on an `Engine()` instance.
+As specified above, the Engine() needs to be cook() before being executed. Here are the sequence to execute a query on an `Engine()` instance.
 
 ```python
 from tartiflette import Engine
@@ -244,7 +244,7 @@ async def cook(
         sdl: Union[str, List[str]],
         error_coercer: Callable[[Exception], dict] = None,
         custom_default_resolver: Optional[Callable] = None,
-        modules: Optional[Union[str, List[str]]] = None,
+        modules: Optional[Union[str, List[Union[str, Dict[str, Union[str, Dict[str, str]]]]]]] = None,
         schema_name: str = "default",
     ):
     pass

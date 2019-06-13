@@ -84,7 +84,7 @@ type Query {
 ```python
 from typing import Any, Callable, Dict, Optional
 
-from tartiflette import create_engine, Scalar
+from tartiflette import Scalar, create_engine
 
 @Scalar("Int")
 class ScalarInt:

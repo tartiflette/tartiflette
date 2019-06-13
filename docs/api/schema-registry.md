@@ -24,7 +24,7 @@ The following code sample will create 2 schemas in the `Schema Registry`.
 ```python
 import asyncio
 
-from tartiflette import create_engine, Resolver
+from tartiflette import Resolver, create_engine
 
 @Resolver("Query.hello") # Will be assigned to the 'default' Schema
 async def resolver_hello(parent, args, ctx, info):
