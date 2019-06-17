@@ -48,7 +48,9 @@ async def _import_builtins(imported_modules, sdl, schema_name):
     for module in _BUILTINS_MODULES:
         try:
             module = import_module(module)
-            sdl = f"{sdl}\n{await _bake_module(module, schema_name)}"
+            sdl = "{sdl}\n{msdl}".format(
+                sdl=sdl, msdl=await _bake_module(module, schema_name)
+            )
             imported_modules.append(module)
         except ImproperlyConfigured:
             pass
@@ -70,7 +72,10 @@ async def _import_modules(modules, schema_name):
         module = import_module(module["name"])
 
         if callable(getattr(module, "bake", None)):
-            sdl = f"{sdl}\n{await _bake_module(module, schema_name, config) or ''}"
+            sdl = "{sdl}\n{msdl}".format(
+                sdl=sdl,
+                msdl=await _bake_module(module, schema_name, config) or "",
+            )
 
         imported_modules.append(module)
 
