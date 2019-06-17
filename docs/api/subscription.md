@@ -20,10 +20,9 @@ The parameters that are available on the `subscribe` method of `Engine`.
 * `initial_value`: an initial value given to the resolver of the root type
 
 ```python
+from tartiflette import create_engine
 
-import tartiflette
-
-engine = tartiflette.Engine(
+engine = await create_engine(
     "myDsl.graphql"
 )
 

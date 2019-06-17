@@ -111,7 +111,7 @@ class MyDirective:
         ######################
         # Add your code here #
         ######################
-        return next_directive(introspected_element, ctx, info)
+        return await next_directive(introspected_element, ctx, info)
 ```
 
 ## Execution Flow

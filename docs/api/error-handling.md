@@ -139,6 +139,8 @@ Here is an example of a custom error coercer.
 ```python
 import logging
 
+from tartiflette import create_engine
+
 
 class CustomException(Exception):
     def __init__(self, type_name, message):
@@ -154,7 +156,7 @@ def my_error_coercer(exception, error) -> dict:
     return error
 
 
-e = Engine(
+e = await create_engine(
     "my_sdl.graphql",
     error_coercer=my_error_coercer
 )

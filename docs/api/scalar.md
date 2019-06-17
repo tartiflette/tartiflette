@@ -82,10 +82,9 @@ type Query {
 ```
 
 ```python
-
 from typing import Any, Callable, Dict, Optional
 
-from tartiflette import Scalar
+from tartiflette import Scalar, create_engine
 
 @Scalar("Int")
 class ScalarInt:
@@ -100,7 +99,7 @@ class ScalarInt:
         return val
 
 
-engine = Engine(the_sdl, exclude_builtins_scalars=["Int"])
+engine = await create_engine("your SDL...")
 ```
 
-Then the engine will use your own version of the `Integer Scalar`.
+During the build process of the engine, tartiflette will automaticaly detect that your code has its own implementation of a built-in scalar. It will replace its own implementation by yours.

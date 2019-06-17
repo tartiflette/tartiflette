@@ -2,36 +2,6 @@
 
 ## Added
 
- - [ISSUE-228](https://github.com/dailymotion/tartiflette/issues/228) - Now you can provide configuration to an imported module through the `Engine()` creation API. The `modules` `Engine()` parameter now accepts `dict` values like `{"name": "python.path.to.your.module", "config": {"a_key": "a_value"}}`. So you can mix `string` values with this new `dict` value in the `modules` list to be imported.
-
-Before :
-
-```python
-from tartiflette import Engine
-
-e = Engine(
-    sdl="type aType { aField: String } type Query { anotherField: aType}",
-    schema_name="a_schema_name",
-    modules=["path.to.a.module", "path.to.another.module"]
-)
-```
-
-After:
-```python
-from tartiflette import create_engine
-
-e = await create_engine(
-    sdl="type aType { aField: String } type Query { anotherField: aType}",
-    schema_name="a_schema_name",
-    modules=["path.to.a.module", { "name": "path.to.another.module", "config": {"api_key": "deadc0ffee"}}, "another.module"]
-)
-```
-
 ## Changed
-
- - `@non_introspectable` directive is now renamed to `@nonIntrospectable`, `@non_introspectable` is deprecated, will be removed in 0.12.0
- - `Engine` creation is now done through the `create_engine` factory, which is async.
- - `exclude_builtins_scalars` parameters is removed as it is no more necessary. Now the engine only add missing scalar/directives
-
 
 ## Fixed
