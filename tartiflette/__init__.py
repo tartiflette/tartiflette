@@ -15,7 +15,7 @@ async def create_engine(
     error_coercer: Callable[[Exception], dict] = None,
     custom_default_resolver: Optional[Callable] = None,
     modules: Optional[Union[str, List[str]]] = None,
-) -> None:
+) -> Engine:
     """
     Create an engine by analyzing the SDL and connecting it with the imported Resolver, Mutation,
     Subscription, Directive and Scalar linking them through the schema_name.
@@ -30,6 +30,9 @@ async def create_engine(
         error_coercer {Callable[[Exception, dict], dict]} -- An optional callable in charge of transforming a couple Exception/error into an error dict (default: {default_error_coercer})
         custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
         modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
+
+    Returns:
+        a Cooked Engine instance
     """
     e = Engine()
 
