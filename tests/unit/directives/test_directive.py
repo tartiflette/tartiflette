@@ -67,4 +67,4 @@ def test_directive_bake(clean_registry):
     a_directive(dontcare)
 
     assert a_directive.bake(schema) is None
-    assert directive_internal.implementation == dontcare
+    assert isinstance(directive_internal.implementation, dontcare)
