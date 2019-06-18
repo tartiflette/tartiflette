@@ -16,19 +16,19 @@ Here is the new SDL for the mutation:
 
 ```graphql
 directive @rateLimiting(
-  name: String
-  max_attempts: Int = 5
-  duration: Int = 60
+    name: String
+    max_attempts: Int = 5
+    duration: Int = 60
 ) on FIELD_DEFINITION
 
 type Mutation {
-  updateRecipe(input: RecipeInput!): Recipe @rateLimiting(name: "update_recipe")
+    updateRecipe(input: RecipeInput!): Recipe @rateLimiting(name: "update_recipe")
 }
 
 input RecipeInput {
-  id: Int!
-  name: String
-  cookingTime: Int
+    id: Int!
+    name: String
+    cookingTime: Int
 }
 ```
 
@@ -75,8 +75,8 @@ def rate_limit_check_and_bump(name, max_attempts, duration):
 
 @Directive("rateLimiting")
 class RateLimiting:
-    @staticmethod
     async def on_field_execution(
+        self,
         directive_args: Dict[str, Any],
         next_resolver: Callable,
         parent_result: Optional[Any],
@@ -118,15 +118,15 @@ $ python -m recipes_manager
 
 ```graphql
 mutation {
-  updateRecipe(input: {
-    id: 1,
-    name: "The best Tartiflette by Eric Guelpa",
-    cookingTime: 12
-  }) {
-    id
-    name
-    cookingTime
-  }
+    updateRecipe(input: {
+        id: 1,
+        name: "The best Tartiflette by Eric Guelpa",
+        cookingTime: 12
+    }) {
+        id
+        name
+        cookingTime
+    }
 }
 ```
 

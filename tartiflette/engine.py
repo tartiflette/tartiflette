@@ -120,7 +120,7 @@ class Engine:
 
                 ```python
                 from tartiflette import create_engine
-                
+
                 engine = await create_engine(
                     sdl,
                     schema_name = "default",
@@ -128,8 +128,8 @@ class Engine:
                     custom_default_resolver = None,
                     modules = None,
                 )
-                ``` 
-                
+                ```
+
                 More details on the website: https://tartiflette.io/docs/api/engine#create_engine-prepares-and-cooks-your-engine
                 """
             )

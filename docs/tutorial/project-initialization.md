@@ -42,8 +42,8 @@ Moreover, we are going to create multiple files which will contain our applicati
 * `recipes_manager/mutation_resolvers.py`: Will contain the Mutation resolvers.
 * `recipes_manager/subscription_resolvers.py`: Will contain the Subscription resolvers.
 * `recipes_manager/data.py`: Will contain the data used by the resolvers.
+* `recipes_manager/directives/auth.py`: Will contain the logic of the directive `@auth`
 * `recipes_manager/directives/rate_limiting.py`: Will contain the logic of the directive `@rateLimit`
-* `recipes_manager/directives/non_introspectable.py`: Will contain the logic of the directive `@nonIntrospectable`
 
 
 ```sh
@@ -61,7 +61,7 @@ touch recipes_manager/query_resolvers.py
 touch recipes_manager/mutation_resolvers.py
 touch recipes_manager/subscription_resolvers.py
 touch recipes_manager/data.py
-touch recipes_manager/directives/non_introspectable.py
+touch recipes_manager/directives/auth.py
 touch recipes_manager/directives/rate_limiting.py
 ```
 
@@ -76,7 +76,7 @@ Your tree should look something like this:
     ├── data.py
     ├── directives
     │   ├── __init__.py
-    │   ├── non_introspectable.py
+    │   ├── auth.py
     │   └── rate_limiting.py
     ├── mutation_resolvers.py
     ├── query_resolvers.py

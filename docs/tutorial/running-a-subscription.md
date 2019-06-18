@@ -16,10 +16,10 @@ This fabulous feature will start the countdown based on the `cookingTime` proper
 
 ```graphql
 subscription {
-  launchAndWaitCookingTimer(id: 1) {
-    remainingTime
-    status
-  }
+    launchAndWaitCookingTimer(id: 1) {
+        remainingTime
+        status
+    }
 }
 ```
 

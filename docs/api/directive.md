@@ -17,31 +17,24 @@ Tartiflette bases most of its extensibility on Directives. A directive will allo
 
 ```graphql
 directive @myDirective(
-  name: String = "Chuck"
+    name: String = "Chuck"
 ) on FIELD_DEFINITION
 
 type Query {
-  hello: String @myDirective(name: "Norris")
+    hello: String @myDirective(name: "Norris")
 }
 ```
 
 ```python
 from typing import Any, Callable, Dict, Optional
 
-from tartiflette.directive import Directive
+from tartiflette import Directive
 
 
 @Directive("myDirective")
 class MyDirective:
-    @staticmethod
-    def on_build(schema: "GraphQLSchema") -> None:
-        ######################
-        # Add your code here #
-        ######################
-        pass
-
-    @staticmethod
     async def on_field_execution(
+        self,
         directive_args: Dict[str, Any],
         next_resolver: Callable,
         parent_result: Optional[Any],
@@ -55,8 +48,8 @@ class MyDirective:
         return await next_resolver(parent_result, args, ctx, info)
 
 
-    @staticmethod
     async def on_argument_execution(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",
@@ -70,8 +63,8 @@ class MyDirective:
         return await next_directive(argument_definition, args, ctx, info)
 
 
-    @staticmethod
     async def on_post_input_coercion(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         value: Any,
@@ -85,8 +78,8 @@ class MyDirective:
         return await next_directive(value, argument_definition, ctx, info)
 
 
-    @staticmethod
     async def on_pre_output_coercion(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         value: Any,
@@ -100,8 +93,8 @@ class MyDirective:
         return await next_directive(value, field_definition, ctx, info)
 
 
-    @staticmethod
     async def on_introspection(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         introspected_element: Any,

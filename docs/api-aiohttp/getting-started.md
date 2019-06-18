@@ -114,9 +114,18 @@ from aiohttp import web
 from tartiflette import Resolver, Engine
 from tartiflette_aiohttp import register_graphql_handlers
 
+
 @Resolver("Query.hello")
 async def resolver_hello(parent, args, ctx, info):
     return "hello " + args["name"]
+
+
+class MyEngine(Engine):
+    """
+    Custom version of the Tartiflette Engine
+    Only for advanced use-cases.
+    """
+
 
 sdl = """
     type Query {
@@ -124,7 +133,7 @@ sdl = """
     }
 """
 
-engine = Engine(sdl)
+engine = MyEngine()
 
 ctx = {
     'user_service': user_service
@@ -134,6 +143,7 @@ web.run_app(
     register_graphql_handlers(
         app=web.Application(),
         engine=engine,
+        engine_sdl=sdl,
         executor_context=ctx,
         executor_http_endpoint='/graphql',
         executor_http_methods=['POST', 'GET']
@@ -144,6 +154,13 @@ web.run_app(
 **Parameters**:
 
 * **engine**: an instance of the Tartiflette Engine
+* **engine_sdl**: Contains the [Schema Definition Language](https://graphql.org/learn/schema/)
+  - Can be a string which contains the SDL
+  - Can be an array of strings, which contain the SDLs
+  - Can be a path to an SDL
+  - Can be an array of paths which contain the SDLs
+* **engine_schema_name**: Name of the schema used by the built-in engine. Useful for advanced use-cases, see [Schema Registry API](/docs/api/schema-registry).
+* **engine_modules**: Modules and Plugins you want to import [within your Engine](/docs/api/engine#parameter-modules).
 * **executor_context**: Context which will be passed to each resolver (as a dict). Very useful for passing handlers to services, functions or data that you want to use in your resolvers.
   - **req**: Request object from `aiohttp`
   - **app**: Application object from `aiohttp`

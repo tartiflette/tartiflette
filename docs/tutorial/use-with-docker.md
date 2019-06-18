@@ -25,7 +25,6 @@ ENV PATH="$PATH:/root/.local/bin"
 WORKDIR /usr/src/app
 
 COPY Pipfile /usr/src/app/
-COPY Pipfile.lock /usr/src/app/
 
 ARG parameters=install
 RUN pipenv "${parameters}"

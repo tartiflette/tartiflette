@@ -18,13 +18,13 @@ Compared to the `query` types, the `mutation` types are less complex, you have t
 
 ```graphql
 type Mutation {
-  updateRecipe(input: RecipeInput!): Recipe
+    updateRecipe(input: RecipeInput!): Recipe
 }
 
 input RecipeInput {
-  id: Int!
-  name: String
-  cookingTime: Int
+    id: Int!
+    name: String
+    cookingTime: Int
 }
 ```
 
@@ -44,7 +44,7 @@ from recipes_manager.data import INGREDIENTS, RECIPES
 async def update_recipe(parent, args, ctx, info):
     if not args.get("input"):
         raise Exception("'input' parameter is mandatory")
-    
+
     for index, recipe in enumerate(RECIPES):
         if recipe["id"] == args["input"].get("id"):
             if "name" in args["input"]:

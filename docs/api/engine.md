@@ -15,7 +15,7 @@ The way to generate an engine is pretty simple, most of the time, you will use t
 #### When the `sdl` parameter contains the raw schema
 
 ```python
-from tartiflette import create_engine 
+from tartiflette import create_engine
 
 engine = await create_engine(
     """
@@ -31,7 +31,7 @@ engine = await create_engine(
 The file path specified has to contain the full schema definition language.
 
 ```python
-from tartiflette import create_engine 
+from tartiflette import create_engine
 
 engine = await create_engine(
     "/User/chuck/workspace/mytartiflette/schema.graphql"
@@ -43,7 +43,7 @@ engine = await create_engine(
 Every file will be concatenated, in the order of the provided list.
 
 ```python
-from tartiflette import create_engine 
+from tartiflette import create_engine
 
 engine = await create_engine(
     [
@@ -58,7 +58,7 @@ engine = await create_engine(
 Every file which ends by `.graphql` _(or `.sdl`)_ will be concatenated in lexicographical order.
 
 ```python
-from tartiflette import create_engine 
+from tartiflette import create_engine
 
 engine = await create_engine(
     "/User/chuck/workspace/mytartiflette"
@@ -70,7 +70,7 @@ engine = await create_engine(
 The `create_engine` method provides an advanced interface for initialization. It accepts optional and named parameters.
 
 ```python
-from tartiflette import create_engine 
+from tartiflette import create_engine
 
 engine = await create_engine(
     sdl,
@@ -96,7 +96,7 @@ For instance:
 
 ```python
 import logging
-from tartiflette import create_engine 
+from tartiflette import create_engine
 
 
 class CustomException(Exception):
@@ -124,7 +124,7 @@ e = await create_engine(
 Use another default resolver. It can be useful to override the behavior for resolving a property, from `snake_case` to `camelCase` and vice versa.
 
 ```python
-from tartiflette import create_engine 
+from tartiflette import create_engine
 
 async def my_default_resolver(parent_result, arguments, context, info):
     do_ing_some_thin_gs = 42
@@ -158,8 +158,8 @@ engine = await create_engine(
         "recipes_manager.query_resolvers",
         "recipes_manager.mutation_resolvers",
         "recipes_manager.subscription_resolvers",
+        "recipes_manager.directives.auth",
         "recipes_manager.directives.rate_limiting",
-        "recipes_manager.directives.non_introspectable",
     ]
 )
 ```
@@ -169,8 +169,8 @@ instead of
 import recipes_manager.query_resolvers
 import recipes_manager.mutation_resolvers
 import recipes_manager.subscription_resolvers
+import recipes_manager.directives.auth
 import recipes_manager.directives.rate_limiting
-import recipes_manager.directives.non_introspectable
 
 engine = await create_engine(
     os.path.dirname(os.path.abspath(__file__)) + "/sdl"
@@ -203,7 +203,7 @@ The cooking process of tartiflette is equals to a `build` process on another lib
 
 Customise the cooking process is interesting to integrate tartiflette into another librairies, like `aiohttp`, `starlette`, `django` and so one.
 
-_For your information_: `tartiflette-aiohttp` has its own flow to manage the cooking process of the Engine. 
+_For your information_: `tartiflette-aiohttp` has its own flow to manage the cooking process of the Engine.
 
 ### `cook()` your tartiflette
 
