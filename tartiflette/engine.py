@@ -90,7 +90,7 @@ class Engine:
     def __init__(
         self,
         sdl=None,
-        schema_name="default",
+        schema_name=None,
         error_coercer=None,
         custom_default_resolver=None,
         modules=None,
