@@ -14,15 +14,15 @@ Copy/paste this GraphQL Query to your GraphiQL instance and execute it.
 
 ```graphql
 mutation {
-  updateRecipe(input: {
-    id: 1,
-    name: "The best Tartiflette by Eric Guelpa",
-    cookingTime: 12
-  }) {
-    id
-    name
-    cookingTime
-  }
+    updateRecipe(input: {
+        id: 1,
+        name: "The best Tartiflette by Eric Guelpa",
+        cookingTime: 12
+    }) {
+        id
+        name
+        cookingTime
+    }
 }
 ```
 

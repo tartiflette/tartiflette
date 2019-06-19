@@ -14,11 +14,11 @@ Copy/paste this GraphQL Query to your GraphiQL instance and execute it.
 
 ```graphql
 {
-  recipes {
-    id
-    name
-    cookingTime
-  }
+    recipes {
+        id
+        name
+        cookingTime
+    }
 }
 ```
 
@@ -32,16 +32,16 @@ We will execute a request to retrieve the recipes with all the ingredients.
 
 ```graphql
 query {
-  recipes {
-    id
-    name
-    cookingTime
-    ingredients {
-      name
-      quantity
-      type
+    recipes {
+        id
+        name
+        cookingTime
+        ingredients {
+            name
+            quantity
+            type
+        }
     }
-  }
 }
 ```
 
@@ -53,16 +53,16 @@ Below, a request to select only one recipe, by its `id`.
 
 ```graphql
 {
-  recipe(id: 1) {
-    id
-    name
-    cookingTime
-    ingredients {
-      name
-      quantity
-      type
+    recipe(id: 1) {
+        id
+        name
+        cookingTime
+        ingredients {
+            name
+            quantity
+            type
+        }
     }
-  }
 }
 ```
 

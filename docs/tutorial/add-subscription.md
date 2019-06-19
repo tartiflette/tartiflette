@@ -22,17 +22,17 @@ First, as usual, we define the SDL.
 
 ```graphql
 type Subscription {
-  launchAndWaitCookingTimer(id: Int!): CookingTimer
+    launchAndWaitCookingTimer(id: Int!): CookingTimer
 }
 
 enum CookingStatus {
-  COOKING
-  COOKED
+    COOKING
+    COOKED
 }
 
 type CookingTimer {
-  remainingTime: Int!
-  status: CookingStatus!
+    remainingTime: Int!
+    status: CookingStatus!
 }
 ```
 
@@ -47,27 +47,28 @@ from tartiflette import Subscription
 
 from recipes_manager.data import RECIPES
 
+
 @Subscription("Subscription.launchAndWaitCookingTimer")
 async def on_cooking_time(
     parent_result, args, ctx, info
 ):
-  recipe = [r for r in RECIPES if r["id"] == int(args["id"])]
+    recipe = [r for r in RECIPES if r["id"] == int(args["id"])]
 
-  if not recipe:
-    raise Exception(f"The recipe with the id '{args['id']}' doesn't exist.")
+    if not recipe:
+        raise Exception(f"The recipe with the id '{args['id']}' doesn't exist.")
 
-  for index in range(0, recipe[0]["cookingTime"]):
+    for index in range(0, recipe[0]["cookingTime"]):
+        yield {
+            "remainingTime": recipe[0]["cookingTime"] - index,
+            "status": "COOKING"
+        }
+
+        await asyncio.sleep(1)
+
     yield {
-      "remainingTime": recipe[0]["cookingTime"] - index,
-      "status": "COOKING"
+        "remainingTime": 0,
+        "status": "COOKED"
     }
-            
-    await asyncio.sleep(1)
-    
-  yield {
-    "remainingTime": 0,
-    "status": "COOKED"
-  }
 ```
 
 In case the data `yield`ed is not compliant with the Schema's return type, you can apply a resolver to apply a transformation. See more on the [subscription API page](/docs/api/subscription).
@@ -83,7 +84,7 @@ Remember the **recipes_manager/app.py** file?
     web.run_app(
         register_graphql_handlers(
             app=app,
-            engine=engine,
+            engine_sdl="sdl ...",
             subscription_ws_endpoint="/ws",
             executor_http_endpoint='/graphql',
             executor_http_methods=['POST'],

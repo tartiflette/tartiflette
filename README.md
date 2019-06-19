@@ -38,7 +38,7 @@ Discover Tartiflette with our fabulous tutorial on [https://tartiflette.io/docs/
 ```python
 import asyncio
 
-from tartiflette import Engine, Resolver
+from tartiflette import Resolver, create_engine
 
 @Resolver("Query.hello")
 async def resolver_hello(parent, args, ctx, info):
@@ -46,13 +46,15 @@ async def resolver_hello(parent, args, ctx, info):
 
 
 async def run():
-    tftt_engine = Engine("""
-    type Query {
-        hello(name: String): String
-    }
-    """)
+    engine = await create_engine(
+        """
+        type Query {
+            hello(name: String): String
+        }
+        """
+    )
 
-    result = await tftt_engine.execute(
+    result = await engine.execute(
         query='query { hello(name: "Chuck") }'
     )
 
@@ -125,7 +127,7 @@ web.run_app(
 
 ## Roadmaps
 
-* [Milestone 1 _(Released)_](/docs/roadmaps/milestone-1.md) 
+* [Milestone 1 _(Released)_](/docs/roadmaps/milestone-1.md)
 * [Milestone 2 - **Work in progress**](/docs/roadmaps/milestone-2.md)
 
 ## How to contribute to the documentation?

@@ -10,15 +10,15 @@ Tartiflette includes the `@deprecated` directive, which allows you to define a f
 
 ```graphql
 directive @deprecated(
-  reason: String = "No longer supported"
+    reason: String = "No longer supported"
 ) on FIELD_DEFINITION | ENUM_VALUE
 
 type Recipe {
-  id: Int
-  name: String
-  ingredients: [Ingredient]
-  cookingTime: Int
-  title: String @deprecated(reason: "Use `name` instead.")
+    id: Int
+    name: String
+    ingredients: [Ingredient]
+    cookingTime: Int
+    title: String @deprecated(reason: "Use `name` instead.")
 }
 ```
 
@@ -26,7 +26,6 @@ type Recipe {
 
 Tartiflette gets most of its extensibility by Directives. A directive will allow you to execute some logic at any of the following 4 stages:
 
-* `on_build`: To wrap your directive around the build process of the SDL
 * `on_field_execution`: Allows you to wrap the field execution. _(e.g. Access Rights on a specific field, apply a specific rate limit on a field.)_
 * `on_argument_execution`: Allows you to wrap the argument execution. _(e.g. Check the format of an input.)_.
 * `on_pre_output_coercion`: Allows you to hook the execution flow right before a field result value is being coerced (Appears in version `0.10.0`)
@@ -42,15 +41,8 @@ from tartiflette import Directive
 
 @Directive("rateLimiting")
 class RateLimiting:
-    @staticmethod
-    def on_build(_schema: "GraphQLSchema") -> None:
-        ######################
-        # Add your code here #
-        ######################
-
-
-    @staticmethod
     async def on_field_execution(
+        self,
         directive_args: Dict[str, Any],
         next_resolver: Callable,
         parent_result: Optional[Any],
@@ -64,8 +56,8 @@ class RateLimiting:
         return await next_resolver(parent_result, args, ctx, info)
 
 
-    @staticmethod
     async def on_argument_execution(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         argument_definition: "GraphQLArgument",
@@ -78,8 +70,9 @@ class RateLimiting:
         ######################
         return await next_directive(argument_definition, args, ctx, info)
 
-    @staticmethod
+
     async def on_post_input_coercion(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         value: Any,
@@ -93,8 +86,8 @@ class RateLimiting:
         return await next_directive(value, argument_definition, ctx, info)
 
 
-    @staticmethod
     async def on_pre_output_coercion(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         value: Any,
@@ -107,8 +100,9 @@ class RateLimiting:
         ######################
         return await next_directive(value, field_definition, ctx, info)
 
-    @staticmethod
-    def on_introspection(
+
+    async def on_introspection(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         introspected_element: Any,
@@ -118,7 +112,7 @@ class RateLimiting:
         ######################
         # Add your code here #
         ######################
-        return next_directive(introspected_element)
+        return await next_directive(introspected_element, ctx, info)
 ```
 
 In the next steps, we will implement some specific behavior in this directive.

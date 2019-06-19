@@ -18,27 +18,27 @@ We will start to define the `Query` Schema, first.
 
 ```graphql
 type Query {
-  recipes: [Recipe]
-  recipe(id: Int!): Recipe
+    recipes: [Recipe]
+    recipe(id: Int!): Recipe
 }
 
 enum IngredientType {
-  GRAM
-  LITER
-  UNIT
+    GRAM
+    LITER
+    UNIT
 }
 
 type Ingredient {
-  name: String!
-  quantity: Float!
-  type: IngredientType!
+    name: String!
+    quantity: Float!
+    type: IngredientType!
 }
 
 type Recipe {
-  id: Int
-  name: String
-  ingredients: [Ingredient]
-  cookingTime: Int
+    id: Int
+    name: String
+    ingredients: [Ingredient]
+    cookingTime: Int
 }
 ```
 
@@ -48,31 +48,18 @@ The following file will be in charge of starting the HTTP Server _(`web.run_app`
 
 * `register_graphql_handlers` will attach HTTP handlers to the aiohttp application
   * `app`: The `aiohttp` application (created with `app = web.Application()`)
-  * `engine`: The Tartiflette Engine which will be used by the HTTP Handlers
+  * `engine_sdl`: The Tartiflette Engine which will be used by the HTTP Handlers
+  * `engine_modules`: The modules list which will be loaded by Tartiflette at cooking time _(building process)_
   * `executor_http_endpoint`: Endpoint path where the GraphQL API will be exposed
   * `executor_http_methods`: HTTP methods where the GraphQL API will be exposed _(We recommend to expose it only on `POST`)_
   * `graphiql_enabled`: A [GraphiQL](https://github.com/graphql/graphiql) client to browse the GraphQL, used mostly in for development.
 
 ```python
 import os
+
 from aiohttp import web
 
-from tartiflette import Engine
 from tartiflette_aiohttp import register_graphql_handlers
-
-
-# Tartiflette Engine, the only one :)
-# Will load the SDL files from the ./sdl folder
-engine = Engine(
-    os.path.dirname(os.path.abspath(__file__)) + "/sdl",
-    modules=[
-        "recipes_manager.query_resolvers",
-        "recipes_manager.mutation_resolvers",
-        "recipes_manager.subscription_resolvers",
-        "recipes_manager.directives.rate_limiting",
-        "recipes_manager.directives.non_introspectable",
-    ]
-)
 
 
 def run():
@@ -81,13 +68,20 @@ def run():
     web.run_app(
         register_graphql_handlers(
             app=app,
-            engine=engine,
-            subscription_ws_endpoint="/ws",
+            engine_sdl=os.path.dirname(os.path.abspath(__file__)) + "/sdl",
+            engine_modules=[
+                "recipes_manager.query_resolvers",
+                "recipes_manager.mutation_resolvers",
+                "recipes_manager.subscription_resolvers",
+                "recipes_manager.directives.rate_limiting",
+                "recipes_manager.directives.auth",
+            ],
             executor_http_endpoint='/graphql',
             executor_http_methods=['POST'],
             graphiql_enabled=True
         )
     )
+
 ```
 
 ### **recipes_manager/__main__.py**
