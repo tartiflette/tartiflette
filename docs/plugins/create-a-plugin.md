@@ -1,7 +1,7 @@
 ---
 id: create-a-plugin
 title: Create a plugin
-sidebar_label: Plugins
+sidebar_label: Create a plugin
 ---
 
 ## The easy way
@@ -12,7 +12,7 @@ sidebar_label: Plugins
 
 ![tartiflette cookiecutter](/docs/assets/cookiecutter.png)
 
-  4. A folder is created, everything under it is your new tartiflette plugin. It can directly added to a git repository
+  4. A folder is created, everything under it is your new tartiflette plugin. It can be directly added to a git repository
 
 
 ## The hard way

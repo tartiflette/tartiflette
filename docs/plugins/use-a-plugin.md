@@ -1,12 +1,12 @@
 ---
 id: use-a-plugin
 title: Use a plugin
-sidebar_label: Plugins
+sidebar_label: Use a plugin
 ---
 
 ## Using a plugin.
 
-  1. Simply install it. Best method is using `pip`.
+  1. Simply install it. Best method is using `pip install tartiflette-plugin-time-it`.
   2. Then ask the `create_engine` api to load it like this:
 
 ```python
@@ -15,7 +15,7 @@ engine = await create_engine(
     modules=[
         "tartiflette_plugin_a_plugin",
         {
-            "name": "tartiflette_plugin_another_plugin",
+            "name": "tartiflette_plugin_time_it",
             "config": {
                 "foo": "bar"
             }
@@ -24,4 +24,4 @@ engine = await create_engine(
 )
 ```
 
-Some plugins need config, some don't. Be sure to have a look at their respective documentation.
+> Some plugins need config, some don't. Be sure to have a look at their respective documentation.
