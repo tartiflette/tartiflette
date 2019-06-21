@@ -4,7 +4,7 @@ title: Write your resolvers
 sidebar_label: 5. Write your resolvers
 ---
 
-[Previsouly](/docs/tutorial/create-server), we created our application instance with a [first iteration of our Schema](/docs/tutorial/create-server#recipes-manager-sdl-querygraphql) using the SDL. Now, we're going to bind some data to our Schema, using resolvers, which are in charge of linking the Schema with your application logic.
+[Previously](/docs/tutorial/create-server), we created our application instance with a [first iteration of our Schema](/docs/tutorial/create-server#recipes-manager-sdl-querygraphql) using the SDL. Now, we're going to bind some data to our Schema, using resolvers, which are in charge of linking the Schema with your application logic.
 
 ## What is a resolver?
 
