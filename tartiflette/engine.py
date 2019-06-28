@@ -96,43 +96,15 @@ class Engine:
         modules=None,
     ) -> None:
         """
-        Create an Engine instance
+        Create an uncooked Engine instance
         """
-        self._error_coercer = None
-        self._modules = None
         self._parser = TartifletteRequestParser()
         self._schema = None
-
-        if (
-            sdl
-            or schema_name
-            or error_coercer
-            or custom_default_resolver
-            or modules
-        ):
-            logger.warning(
-                """
-                the tartiflette Engine() API evolved started the 0.11 version.
-
-                The engine creation is now asynchronous, to give the ability for the community to
-                create plugins. From now, please use the `create_engine` method to create an instance
-                of `Engine()`.
-
-                ```python
-                from tartiflette import create_engine
-
-                engine = await create_engine(
-                    sdl,
-                    schema_name = "default",
-                    error_coercer = None,
-                    custom_default_resolver = None,
-                    modules = None,
-                )
-                ```
-
-                More details on the website: https://tartiflette.io/docs/api/engine#create_engine-prepares-and-cooks-your-engine
-                """
-            )
+        self._schema_name = schema_name
+        self._error_coercer = error_coercer
+        self._custome_default_resolver = custom_default_resolver
+        self._modules = modules
+        self._sdl = sdl
 
     async def cook(
         self,
@@ -140,7 +112,7 @@ class Engine:
         error_coercer: Callable[[Exception], dict] = None,
         custom_default_resolver: Optional[Callable] = None,
         modules: Optional[Union[str, List[str]]] = None,
-        schema_name: str = "default",
+        schema_name: str = None,
     ):
         """
         Cook the tartiflette, basicly prepare the engine by binding it to given modules using the schema_name as a key.
@@ -157,18 +129,22 @@ class Engine:
         """
 
         if not modules:
-            modules = []
+            modules = self._modules or []
 
         if isinstance(modules, str):
             modules = [modules]
 
+        schema_name = schema_name or self._schema_name or "default"
+
         self._error_coercer = error_coercer_factory(
-            error_coercer or default_error_coercer
+            error_coercer or self._error_coercer or default_error_coercer
         )
+
         self._modules, modules_sdl = await _import_modules(
             modules, schema_name
         )
-        SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
+
+        SchemaRegistry.register_sdl(schema_name, sdl or self._sdl, modules_sdl)
         self._schema = SchemaBakery.bake(schema_name, custom_default_resolver)
 
     async def execute(
