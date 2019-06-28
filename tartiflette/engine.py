@@ -1,7 +1,7 @@
 import logging
 
 from importlib import import_module, invalidate_caches
-from inspect import isawaitable
+from inspect import isawaitable, iscoroutinefunction
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
 from tartiflette.executors.basic import (
@@ -96,78 +96,68 @@ class Engine:
         modules=None,
     ) -> None:
         """
-        Create an Engine instance
+        Create an uncooked Engine instance
         """
-        self._error_coercer = None
-        self._modules = None
         self._parser = TartifletteRequestParser()
         self._schema = None
-
-        if (
-            sdl
-            or schema_name
-            or error_coercer
-            or custom_default_resolver
-            or modules
-        ):
-            logger.warning(
-                """
-                the tartiflette Engine() API evolved started the 0.11 version.
-
-                The engine creation is now asynchronous, to give the ability for the community to
-                create plugins. From now, please use the `create_engine` method to create an instance
-                of `Engine()`.
-
-                ```python
-                from tartiflette import create_engine
-
-                engine = await create_engine(
-                    sdl,
-                    schema_name = "default",
-                    error_coercer = None,
-                    custom_default_resolver = None,
-                    modules = None,
-                )
-                ```
-
-                More details on the website: https://tartiflette.io/docs/api/engine#create_engine-prepares-and-cooks-your-engine
-                """
-            )
+        self._schema_name = schema_name
+        self._error_coercer = error_coercer
+        self._custom_default_resolver = custom_default_resolver
+        self._modules = modules
+        self._sdl = sdl
 
     async def cook(
         self,
-        sdl: Union[str, List[str]],
+        sdl: Union[str, List[str]] = None,
         error_coercer: Callable[[Exception], dict] = None,
         custom_default_resolver: Optional[Callable] = None,
         modules: Optional[Union[str, List[str]]] = None,
-        schema_name: str = "default",
+        schema_name: str = None,
     ):
         """
         Cook the tartiflette, basicly prepare the engine by binding it to given modules using the schema_name as a key.
         You wont be able to execute a request if the engine wasn't cooked.
 
-        Arguments:
-            sdl {Union[str, List[str]]} -- The SDL to work with.
-
         Keyword Arguments:
+            sdl {Union[str, List[str]]} -- The SDL to work with.
             schema_name {str} -- The name of the SDL (default: {"default"})
             error_coercer {Callable[[Exception, dict], dict]} -- An optional callable in charge of transforming a couple Exception/error into an error dict (default: {default_error_coercer})
             custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
             modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
         """
 
-        if not modules:
-            modules = []
+        if modules is None:
+            modules = self._modules or []
 
         if isinstance(modules, str):
             modules = [modules]
 
-        self._error_coercer = error_coercer_factory(
-            error_coercer or default_error_coercer
+        sdl = sdl or self._sdl
+        if not sdl:
+            raise Exception("Please provide a SDL")
+
+        schema_name = schema_name or self._schema_name or "default"
+
+        custom_default_resolver = (
+            custom_default_resolver or self._custom_default_resolver
         )
+        if custom_default_resolver and not iscoroutinefunction(
+            custom_default_resolver
+        ):
+            raise Exception(
+                f"Given custom_default_resolver "
+                f"{custom_default_resolver} "
+                f"is not a coroutine function"
+            )
+
+        self._error_coercer = error_coercer_factory(
+            error_coercer or self._error_coercer or default_error_coercer
+        )
+
         self._modules, modules_sdl = await _import_modules(
             modules, schema_name
         )
+
         SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
         self._schema = SchemaBakery.bake(schema_name, custom_default_resolver)
 
