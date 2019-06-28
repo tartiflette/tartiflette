@@ -137,13 +137,14 @@ class Engine:
         custom_default_resolver = (
             custom_default_resolver or self._custom_default_resolver
         )
-        if custom_default_resolver:
-            if not iscoroutinefunction(custom_default_resolver):
-                raise Exception(
-                    f"Given custom_default_resolver "
-                    f" {custom_default_resolver} "
-                    f"is not a coroutine function"
-                )
+        if custom_default_resolver and not iscoroutinefunction(
+            custom_default_resolver
+        ):
+            raise Exception(
+                f"Given custom_default_resolver "
+                f" {custom_default_resolver} "
+                f"is not a coroutine function"
+            )
 
         self._error_coercer = error_coercer_factory(
             error_coercer or self._error_coercer or default_error_coercer
