@@ -1,7 +1,7 @@
 import logging
 
 from importlib import import_module, invalidate_caches
-from inspect import isawaitable
+from inspect import isawaitable, iscoroutinefunction
 from typing import Any, AsyncIterable, Callable, Dict, List, Optional, Union
 
 from tartiflette.executors.basic import (
@@ -102,7 +102,7 @@ class Engine:
         self._schema = None
         self._schema_name = schema_name
         self._error_coercer = error_coercer
-        self._custome_default_resolver = custom_default_resolver
+        self._custom_default_resolver = custom_default_resolver
         self._modules = modules
         self._sdl = sdl
 
@@ -133,6 +133,17 @@ class Engine:
             modules = [modules]
 
         schema_name = schema_name or self._schema_name or "default"
+
+        custom_default_resolver = (
+            custom_default_resolver or self._custom_default_resolver
+        )
+        if custom_default_resolver:
+            if not iscoroutinefunction(custom_default_resolver):
+                raise Exception(
+                    f"Given custom_default_resolver "
+                    f" {custom_default_resolver} "
+                    f"is not a coroutine function"
+                )
 
         self._error_coercer = error_coercer_factory(
             error_coercer or self._error_coercer or default_error_coercer
