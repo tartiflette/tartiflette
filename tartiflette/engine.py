@@ -126,11 +126,15 @@ class Engine:
             modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
         """
 
-        if not modules:
+        if modules is None:
             modules = self._modules or []
 
         if isinstance(modules, str):
             modules = [modules]
+
+        sdl = sdl or self._sdl
+        if not sdl:
+            raise Exception("Please provide a SDL")
 
         schema_name = schema_name or self._schema_name or "default"
 
@@ -154,7 +158,7 @@ class Engine:
             modules, schema_name
         )
 
-        SchemaRegistry.register_sdl(schema_name, sdl or self._sdl, modules_sdl)
+        SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
         self._schema = SchemaBakery.bake(schema_name, custom_default_resolver)
 
     async def execute(
