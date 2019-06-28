@@ -270,12 +270,14 @@ async def test_engine_subscribe_with_default_resolver_alias(clean_registry):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("sdl,expected,pass_to", [
-    ('type Query { lol: Int }', 'ok', 'engine'),
-    ('type Query { lol: Int }', 'ok', 'cook'),
-    (None, Exception(), 'None')
-
-])
+@pytest.mark.parametrize(
+    "sdl,expected,pass_to",
+    [
+        ("type Query { lol: Int }", "ok", "engine"),
+        ("type Query { lol: Int }", "ok", "cook"),
+        (None, Exception(), "None"),
+    ],
+)
 async def test_engine_api_sdl(sdl, expected, pass_to, clean_registry):
     from tartiflette import Engine
 
@@ -301,21 +303,25 @@ async def test_engine_api_sdl(sdl, expected, pass_to, clean_registry):
 async def bob():
     pass
 
+
 def boby():
     pass
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("cdr,expected,pass_to", [
-    (bob, 'ok', 'engine'),
-    (bob, 'ok', 'cook'),
-    (boby, Exception(), 'engine'),
-    (boby, Exception(), 'cook'),
-])
+@pytest.mark.parametrize(
+    "cdr,expected,pass_to",
+    [
+        (bob, "ok", "engine"),
+        (bob, "ok", "cook"),
+        (boby, Exception(), "engine"),
+        (boby, Exception(), "cook"),
+    ],
+)
 async def test_engine_api_cdr(cdr, expected, pass_to, clean_registry):
     from tartiflette import Engine
 
-    sdl = 'type Query { lol: Int }'
+    sdl = "type Query { lol: Int }"
 
     if pass_to == "engine":
         e = Engine(sdl, custom_default_resolver=cdr)
