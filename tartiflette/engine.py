@@ -146,7 +146,7 @@ class Engine:
         ):
             raise Exception(
                 f"Given custom_default_resolver "
-                f" {custom_default_resolver} "
+                f"{custom_default_resolver} "
                 f"is not a coroutine function"
             )
 

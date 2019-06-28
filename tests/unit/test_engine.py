@@ -267,3 +267,70 @@ async def test_engine_subscribe_with_default_resolver_alias(clean_registry):
         "subscription { aliasCounter: counter(startAt: 4) }"
     ):
         assert result == {"data": {"aliasCounter": expected_values.pop()}}
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("sdl,expected,pass_to", [
+    ('type Query { lol: Int }', 'ok', 'engine'),
+    ('type Query { lol: Int }', 'ok', 'cook'),
+    (None, Exception(), 'None')
+
+])
+async def test_engine_api_sdl(sdl, expected, pass_to, clean_registry):
+    from tartiflette import Engine
+
+    if pass_to == "engine":
+        e = Engine(sdl)
+    else:
+        e = Engine()
+
+    if isinstance(expected, Exception):
+        with pytest.raises(Exception):
+            if pass_to == "cook":
+                await e.cook(sdl)
+            else:
+                await e.cook()
+    else:
+        if pass_to == "cook":
+            await e.cook(sdl)
+        else:
+            await e.cook()
+        assert e._schema is not None
+
+
+async def bob():
+    pass
+
+def boby():
+    pass
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("cdr,expected,pass_to", [
+    (bob, 'ok', 'engine'),
+    (bob, 'ok', 'cook'),
+    (boby, Exception(), 'engine'),
+    (boby, Exception(), 'cook'),
+])
+async def test_engine_api_cdr(cdr, expected, pass_to, clean_registry):
+    from tartiflette import Engine
+
+    sdl = 'type Query { lol: Int }'
+
+    if pass_to == "engine":
+        e = Engine(sdl, custom_default_resolver=cdr)
+    else:
+        e = Engine()
+
+    if isinstance(expected, Exception):
+        with pytest.raises(Exception):
+            if pass_to == "cook":
+                await e.cook(sdl, custom_default_resolver=cdr)
+            else:
+                await e.cook()
+    else:
+        if pass_to == "cook":
+            await e.cook(sdl, custom_default_resolver=cdr)
+        else:
+            await e.cook()
+        assert e._schema is not None
