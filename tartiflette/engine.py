@@ -108,7 +108,7 @@ class Engine:
 
     async def cook(
         self,
-        sdl: Union[str, List[str]],
+        sdl: Union[str, List[str]] = None,
         error_coercer: Callable[[Exception], dict] = None,
         custom_default_resolver: Optional[Callable] = None,
         modules: Optional[Union[str, List[str]]] = None,
@@ -118,10 +118,8 @@ class Engine:
         Cook the tartiflette, basicly prepare the engine by binding it to given modules using the schema_name as a key.
         You wont be able to execute a request if the engine wasn't cooked.
 
-        Arguments:
-            sdl {Union[str, List[str]]} -- The SDL to work with.
-
         Keyword Arguments:
+            sdl {Union[str, List[str]]} -- The SDL to work with.
             schema_name {str} -- The name of the SDL (default: {"default"})
             error_coercer {Callable[[Exception, dict], dict]} -- An optional callable in charge of transforming a couple Exception/error into an error dict (default: {default_error_coercer})
             custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
