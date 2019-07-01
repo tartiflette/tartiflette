@@ -4,7 +4,7 @@ from functools import partial
 from typing import Any, Callable, Coroutine, Dict, List, Optional, Union
 
 from tartiflette.executors.types import ExecutionContext, Info
-from tartiflette.schema import GraphQLSchema
+from tartiflette.schema.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLError,
     MultipleException,

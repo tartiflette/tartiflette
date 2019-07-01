@@ -4,7 +4,7 @@ from typing import Optional
 
 from lark import Lark, Tree
 
-from tartiflette.schema import GraphQLSchema
+from tartiflette.schema.schema import GraphQLSchema
 from tartiflette.sdl.transformers.cleaning_transformer import (
     CleaningTransformer,
 )

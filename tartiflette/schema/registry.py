@@ -3,7 +3,7 @@ import os
 from glob import glob
 from typing import List, Optional, Union
 
-from tartiflette.schema import GraphQLSchema
+from tartiflette.schema.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import ImproperlyConfigured
 
 

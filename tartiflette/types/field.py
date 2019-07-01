@@ -1,6 +1,6 @@
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from tartiflette.resolver import ResolverExecutorFactory
+from tartiflette.resolver.factory import ResolverExecutorFactory
 from tartiflette.types.helpers import (
     get_directive_instances,
     reduce_type,

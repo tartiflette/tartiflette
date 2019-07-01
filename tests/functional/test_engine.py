@@ -3,7 +3,7 @@ import os
 import pytest
 
 from tartiflette import create_engine
-from tartiflette.schema import GraphQLSchema
+from tartiflette.schema.schema import GraphQLSchema
 
 _curr_path = os.path.dirname(os.path.abspath(__file__))
 
