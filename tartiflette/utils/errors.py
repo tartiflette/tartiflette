@@ -1,4 +1,4 @@
-from tartiflette.types.exceptions.tartiflette import GraphQLError
+from tartiflette.types.exceptions.tartiflette import TartifletteError
 
 
 def is_coercible_exception(exception):
@@ -10,4 +10,6 @@ def is_coercible_exception(exception):
 def to_graphql_error(exception, message=None):
     if is_coercible_exception(exception):
         return exception
-    return GraphQLError(message or str(exception), original_error=exception)
+    return TartifletteError(
+        message or str(exception), original_error=exception
+    )
