@@ -1,7 +1,7 @@
 import os
 
 from functools import partial
-from typing import Optional, Any, Union, Callable
+from typing import Any, Callable, Optional, Union
 
 from cffi import FFI
 

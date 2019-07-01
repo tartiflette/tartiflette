@@ -1,4 +1,4 @@
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock, Mock
 
 _RESOLVER_EXCUTOR = Mock()
 MOCKED_GET_RESOLVER_EXECUTOR = Mock(return_value=_RESOLVER_EXCUTOR)

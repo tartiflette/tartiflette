@@ -1,11 +1,7 @@
-from unittest.mock import patch
-
 import pytest
 
-from tartiflette import Resolver
-from tartiflette.directive import Directive
+from tartiflette import Directive, Resolver, Scalar
 from tartiflette.engine import _import_builtins
-from tartiflette.scalar import Scalar
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (

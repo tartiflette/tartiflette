@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from tartiflette.parser.cffi import LibGraphqlParser
 from tartiflette.parser.visitor import TartifletteVisitor
-from tartiflette.schema import GraphQLSchema
+from tartiflette.schema.schema import GraphQLSchema
 
 
 class TartifletteRequestParser(LibGraphqlParser):

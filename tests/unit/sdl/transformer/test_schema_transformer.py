@@ -5,7 +5,7 @@ import pytest
 from lark.lexer import Token
 from lark.tree import Tree
 
-from tartiflette.schema import GraphQLSchema
+from tartiflette.schema.schema import GraphQLSchema
 from tartiflette.sdl.builder import parse_graphql_sdl_to_ast
 from tartiflette.sdl.transformers.cleaning_transformer import (
     CleaningTransformer,

@@ -27,7 +27,7 @@ from tartiflette.parser.nodes.variable_definition import NodeVariableDefinition
 from tartiflette.parser.visitor.list_value import ListValue
 from tartiflette.parser.visitor.object_value import ObjectValue
 from tartiflette.parser.visitor.visitor_context import InternalVisitorContext
-from tartiflette.schema import GraphQLSchema
+from tartiflette.schema.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
     InvalidType,

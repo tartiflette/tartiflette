@@ -1,7 +1,7 @@
 from typing import Callable, Optional
 
-from tartiflette.schema import GraphQLSchema
 from tartiflette.schema.registry import SchemaRegistry
+from tartiflette.schema.schema import GraphQLSchema
 from tartiflette.sdl.builder import build_graphql_schema_from_sdl
 
 _SCHEMA_OBJECT_IDS = ["directives", "resolvers", "scalars", "subscriptions"]
