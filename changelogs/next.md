@@ -4,6 +4,7 @@
 
 ## Changed
 
+- `engine.cook()` is now a no-op if the engine has already been cooked.
 - Updated dev dependancies
 - Update import using isort.
 - Public classes should be import through `from tartiflette import <>`

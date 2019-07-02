@@ -340,3 +340,15 @@ async def test_engine_api_cdr(cdr, expected, pass_to, clean_registry):
         else:
             await e.cook()
         assert e._schema is not None
+
+
+@pytest.mark.asyncio
+async def test_engine_cook_is_idempotent():
+    from tartiflette import Engine
+
+    sdl = "type Query { lol: Int }"
+
+    engine = Engine(sdl)
+
+    await engine.cook()
+    await engine.cook()
