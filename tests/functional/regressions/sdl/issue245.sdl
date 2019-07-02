@@ -1,0 +1,4 @@
+type Query {
+    "тест"
+    test: Boolean
+}

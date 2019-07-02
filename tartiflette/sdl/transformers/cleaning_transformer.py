@@ -64,14 +64,10 @@ class CleaningTransformer(Transformer_InPlace):
         :return: returns a Tree
         """
         token = find_token_in_ast(tree.children, _DESCRIPTION_TOKENS)
-        cleaned_str = bytes(token.value[1:-1], "utf-8").decode(
-            "unicode-escape"
-        )
+        cleaned_str = token.value[1:-1]
         # TODO: For `LONG_STRING`s, we should remove the indentation spaces
         if token.type == "LONG_STRING":
-            cleaned_str = bytes(token.value[3:-3], "utf-8").decode(
-                "unicode-escape"
-            )
+            cleaned_str = token.value[3:-3]
         return self._add_new_token(
             tree,
             Token(

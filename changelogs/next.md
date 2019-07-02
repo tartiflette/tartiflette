@@ -28,3 +28,5 @@ from tartiflette import (
 - `GrapQLError` is marked as deprecated in favor of `TartifletteError`, importable through `from tartiflette import TartifletteError`
 
 ## Fixed
+
+- ISSUE-245 - Fix a bug in SDL tokenization that was corrupting Unicode.
