@@ -11,7 +11,7 @@ from tartiflette.resolver.factory import (
     error_coercer_factory,
 )
 from tartiflette.types.exceptions.tartiflette import (
-    GraphQLError,
+    TartifletteError,
     UnknownAnonymousdOperation,
     UnknownNamedOperation,
 )
@@ -158,7 +158,7 @@ async def test_executor_basic_execute_custom_resolver(monkeypatch):
     from tartiflette.executors import basic
 
     async def my_execute(_, exec_ctx, *__, **___):
-        exec_ctx.add_error(GraphQLError("My error"))
+        exec_ctx.add_error(TartifletteError("My error"))
 
     def custom_error_coercer(exception, error):
         error["extensions"] = {"code": "custom_error"}

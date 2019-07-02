@@ -16,8 +16,8 @@ from tartiflette.resolver.factory import (
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
-    GraphQLError,
     ImproperlyConfigured,
+    TartifletteError,
 )
 from tartiflette.utils.errors import to_graphql_error
 
@@ -229,7 +229,7 @@ class Engine:
                 query,
                 variables=dict(variables) if variables else variables,
             )
-        except GraphQLError as e:
+        except TartifletteError as e:
             errors = [e]
         except Exception as e:  # pylint: disable=broad-except
             errors = [

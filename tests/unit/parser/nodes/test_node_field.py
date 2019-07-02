@@ -5,8 +5,8 @@ import pytest
 from tartiflette.executors.types import ExecutionContext
 from tartiflette.parser.nodes.field import _add_errors_to_execution_context
 from tartiflette.types.exceptions.tartiflette import (
-    GraphQLError,
     MultipleException,
+    TartifletteError,
 )
 from tartiflette.types.location import Location
 
@@ -392,7 +392,7 @@ async def test_parser_node_nodefield__call__exception():
     assert bool(exectx.errors)
 
     assert exectx.errors[0] is not raw
-    assert isinstance(exectx.errors[0], GraphQLError)
+    assert isinstance(exectx.errors[0], TartifletteError)
     assert exectx.errors[0].coerce_value() == {
         "message": "ninja",
         "path": None,
@@ -447,16 +447,20 @@ async def test_parser_node_nodefield__call__custom_exception():
 @pytest.mark.parametrize(
     "raw_exception,expected_messages,expected_original_errors",
     [
-        (GraphQLError("AGraphQLError"), ["AGraphQLError"], [type(None)]),
+        (
+            TartifletteError("ATartifletteError"),
+            ["ATartifletteError"],
+            [type(None)],
+        ),
         (TypeError("ATypeError"), ["ATypeError"], [TypeError]),
         (
             MultipleException(
                 exceptions=[
-                    GraphQLError("AGraphQLError"),
+                    TartifletteError("ATartifletteError"),
                     TypeError("ATypeError"),
                 ]
             ),
-            ["AGraphQLError", "ATypeError"],
+            ["ATartifletteError", "ATypeError"],
             [type(None), TypeError],
         ),
     ],
@@ -478,6 +482,6 @@ def test_add_errors_to_execution_context(
     for error, expected_message, expected_original_error in zip(
         execution_context.errors, expected_messages, expected_original_errors
     ):
-        assert isinstance(error, GraphQLError)
+        assert isinstance(error, TartifletteError)
         assert error.message == expected_message
         assert type(error.original_error) is expected_original_error

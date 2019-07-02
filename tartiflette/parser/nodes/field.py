@@ -6,9 +6,9 @@ from typing import Any, Callable, Coroutine, Dict, List, Optional, Union
 from tartiflette.executors.types import ExecutionContext, Info
 from tartiflette.schema.schema import GraphQLSchema
 from tartiflette.types.exceptions.tartiflette import (
-    GraphQLError,
     MultipleException,
     SkipExecution,
+    TartifletteError,
 )
 from tartiflette.types.helpers import get_typename
 from tartiflette.types.location import Location
@@ -128,7 +128,7 @@ class NodeField(Node):
         parent_result: Optional[Any] = None,
     ):
         if not self.subscribe:
-            raise GraphQLError(
+            raise TartifletteError(
                 "Can't execute a subscription query on a field which doesn't "
                 "provide a source event stream with < @Subscription >."
             )
@@ -218,7 +218,7 @@ def _add_errors_to_execution_context(
         gql_error = (
             exception
             if is_coercible_exception(exception)
-            else GraphQLError(
+            else TartifletteError(
                 str(exception), path, [location], original_error=exception
             )
         )

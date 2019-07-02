@@ -1,10 +1,9 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
-from tartiflette.types.exceptions import GraphQLError
+from tartiflette import Resolver, TartifletteError, create_engine
 
 
-class CustomError(GraphQLError):
+class CustomError(TartifletteError):
     def __init__(self, message, extensions={}) -> None:
         super().__init__(message=message, extensions=extensions)
 

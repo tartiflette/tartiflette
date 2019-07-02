@@ -6,11 +6,11 @@ from tartiflette.parser.nodes.definition import NodeDefinition
 from tartiflette.parser.nodes.fragment_definition import NodeFragmentDefinition
 from tartiflette.types.exceptions.tartiflette import (
     AlreadyDefined,
-    GraphQLError,
     MissingRequiredArgument,
     MultipleRootNodeOnSubscriptionOperation,
     NotLoneAnonymousOperation,
     NotUniqueOperationName,
+    TartifletteError,
     UndefinedDirectiveArgument,
     UndefinedFieldArgument,
     UniqueArgumentNames,
@@ -589,7 +589,7 @@ def test_parser_visitor__validate_type(a_visitor, an_element):
 
     a_visitor._validate_type("ntm", "a", int, False)
     assert a_visitor.exceptions is not None
-    assert isinstance(a_visitor.exceptions[0], GraphQLError)
+    assert isinstance(a_visitor.exceptions[0], TartifletteError)
     assert a_visitor.continue_child == 0
 
 
@@ -659,7 +659,7 @@ def test_parser_visitor__validate_vars_existing_okay_var_is_list_nok(
 
     assert a_visitor.continue_child == 0
     assert a_visitor.exceptions is not None
-    assert isinstance(a_visitor.exceptions[0], GraphQLError)
+    assert isinstance(a_visitor.exceptions[0], TartifletteError)
 
 
 def test_parser_visitor__validate_vars_existing_okay_var_has_a_dfv(

@@ -53,7 +53,11 @@ class TartifletteError(Exception):
 
 
 class GraphQLError(TartifletteError):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print(
+            "GraphQLError is deprecated, please use TartifletteError instead"
+        )
 
 
 class MultipleException(Exception):
@@ -64,11 +68,11 @@ class MultipleException(Exception):
         self.exceptions = exceptions
 
 
-class ImproperlyConfigured(GraphQLError):
+class ImproperlyConfigured(TartifletteError):
     pass
 
 
-class InvalidValue(GraphQLError):
+class InvalidValue(TartifletteError):
     def __init__(self, value: Any, info: Info) -> None:
         self.value = value
         self.info = info
@@ -91,7 +95,7 @@ class InvalidValue(GraphQLError):
         )
 
 
-class InvalidType(GraphQLError):
+class InvalidType(TartifletteError):
     pass
 
 
@@ -99,11 +103,11 @@ class NullError(InvalidValue):
     pass
 
 
-class GraphQLSchemaError(GraphQLError):
+class GraphQLSchemaError(TartifletteError):
     pass
 
 
-class GraphQLSyntaxError(GraphQLError):
+class GraphQLSyntaxError(TartifletteError):
     pass
 
 
@@ -123,27 +127,27 @@ class NotSubscriptionField(ImproperlyConfigured):
     pass
 
 
-class UnknownSchemaFieldResolver(GraphQLError):
+class UnknownSchemaFieldResolver(TartifletteError):
     pass
 
 
-class UnknownDirectiveDefinition(GraphQLError):
+class UnknownDirectiveDefinition(TartifletteError):
     pass
 
 
-class UnknownScalarDefinition(GraphQLError):
+class UnknownScalarDefinition(TartifletteError):
     pass
 
 
-class UnknownFieldDefinition(GraphQLError):
+class UnknownFieldDefinition(TartifletteError):
     pass
 
 
-class UnknownTypeDefinition(GraphQLError):
+class UnknownTypeDefinition(TartifletteError):
     pass
 
 
-class UnusedFragment(GraphQLError):
+class UnusedFragment(TartifletteError):
     pass
 
 
@@ -151,11 +155,11 @@ class MissingImplementation(ImproperlyConfigured):
     pass
 
 
-class UnexpectedASTNode(GraphQLError):
+class UnexpectedASTNode(TartifletteError):
     pass
 
 
-class InvalidSDL(GraphQLError):
+class InvalidSDL(TartifletteError):
     pass
 
 
@@ -163,65 +167,65 @@ class RedefinedImplementation(InvalidSDL):
     pass
 
 
-class AlreadyDefined(GraphQLError):
+class AlreadyDefined(TartifletteError):
     pass
 
 
-class UndefinedFragment(GraphQLError):
+class UndefinedFragment(TartifletteError):
     pass
 
 
-class NotALeafType(GraphQLError):
+class NotALeafType(TartifletteError):
     pass
 
 
-class NotAnObjectType(GraphQLError):
+class NotAnObjectType(TartifletteError):
     pass
 
 
-class NotUniqueOperationName(GraphQLError):
+class NotUniqueOperationName(TartifletteError):
     pass
 
 
-class NotLoneAnonymousOperation(GraphQLError):
+class NotLoneAnonymousOperation(TartifletteError):
     pass
 
 
-class MultipleRootNodeOnSubscriptionOperation(GraphQLError):
+class MultipleRootNodeOnSubscriptionOperation(TartifletteError):
     pass
 
 
-class UndefinedFieldArgument(GraphQLError):
+class UndefinedFieldArgument(TartifletteError):
     pass
 
 
-class UndefinedDirectiveArgument(GraphQLError):
+class UndefinedDirectiveArgument(TartifletteError):
     pass
 
 
-class MissingRequiredArgument(GraphQLError):
+class MissingRequiredArgument(TartifletteError):
     pass
 
 
-class UniqueArgumentNames(GraphQLError):
+class UniqueArgumentNames(TartifletteError):
     pass
 
 
-class UnknownNamedOperation(GraphQLError):
+class UnknownNamedOperation(TartifletteError):
     pass
 
 
-class UnknownAnonymousdOperation(GraphQLError):
+class UnknownAnonymousdOperation(TartifletteError):
     pass
 
 
-class UnknownVariableException(GraphQLError):
+class UnknownVariableException(TartifletteError):
     def __init__(self, varname: str) -> None:
         # TODO: Unify error messages format
         super().__init__(message="< %s > is not known" % varname)
 
 
-class UnknownGraphQLType(GraphQLError):
+class UnknownGraphQLType(TartifletteError):
     pass
 
 
