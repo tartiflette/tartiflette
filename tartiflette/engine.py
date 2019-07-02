@@ -105,6 +105,7 @@ class Engine:
         self._custom_default_resolver = custom_default_resolver
         self._modules = modules
         self._sdl = sdl
+        self._cooked = False
 
     async def cook(
         self,
@@ -115,8 +116,9 @@ class Engine:
         schema_name: str = None,
     ):
         """
-        Cook the tartiflette, basicly prepare the engine by binding it to given modules using the schema_name as a key.
-        You wont be able to execute a request if the engine wasn't cooked.
+        Cook the tartiflette, i.e. prepare the engine by binding it to given modules using the schema_name as a key.
+        You won't be able to execute a request if the engine hasn't been cooked.
+        Has no effect if the engine has already been cooked.
 
         Keyword Arguments:
             sdl {Union[str, List[str]]} -- The SDL to work with.
@@ -125,6 +127,8 @@ class Engine:
             custom_default_resolver {Optional[Callable]} -- An optional callable that will replace the tartiflette default_resolver (Will be called like a resolver for each UNDECORATED field) (default: {None})
             modules {Optional[Union[str, List[str]]]} -- An optional list of string containing the name of the modules you want the engine to import, usually this modules contains your Resolvers, Directives, Scalar or Subscription code (default: {None})
         """
+        if self._cooked:
+            return
 
         if modules is None:
             modules = self._modules or []
@@ -160,6 +164,8 @@ class Engine:
 
         SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
         self._schema = SchemaBakery.bake(schema_name, custom_default_resolver)
+
+        self._cooked = True
 
     async def execute(
         self,
