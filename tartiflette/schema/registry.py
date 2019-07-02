@@ -82,7 +82,7 @@ class SchemaRegistry:
 
         # Convert SDL files into big schema and parse it
         for filepath in sdl_files_list:
-            with open(filepath, "r") as sdl_file:
+            with open(filepath, mode="r") as sdl_file:
                 full_sdl += "\n" + sdl_file.read()
 
         if modules_sdl:
