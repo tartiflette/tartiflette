@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+- [0.12.x]
+  - [0.12.0](./changelogs/0.12.0.md) - 2019-07-02
 - [0.11.x] Brand new **plugin approach** _(featured at the [GraphQL Conf 2019](https://graphqlconf.org))_
   - [0.11.2](./changelogs/0.11.2.md) - 2019-06-28
   - [0.11.1](./changelogs/0.11.1.md) - 2019-06-18
