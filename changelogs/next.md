@@ -2,6 +2,8 @@
 
 ## Added
 
+- Clean the schema registry using `SchemaRegistry.clean()`. May be useful for testing purposes.
+
 ## Changed
 
 - `engine.cook()` is now a no-op if the engine has already been cooked.

@@ -26,6 +26,6 @@ def mocked_resolver_factory(monkeypatch, fixture_mocked_get_resolver_executor):
 
 @pytest.yield_fixture
 def clean_registry():
-    SchemaRegistry._schemas = {}
+    SchemaRegistry.clean()
     yield SchemaRegistry
-    SchemaRegistry._schemas = {}
+    SchemaRegistry.clean()
