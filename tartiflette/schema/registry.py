@@ -97,7 +97,7 @@ class SchemaRegistry:
     @staticmethod
     def find_schema(schema_name: str = "default") -> GraphQLSchema:
         return SchemaRegistry.find_schema_info(schema_name)["inst"]
-    
+
     @classmethod
     def clean(cls):
         cls._schemas = {}
