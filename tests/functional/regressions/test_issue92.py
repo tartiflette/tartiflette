@@ -181,11 +181,6 @@ async def test_issue92_fragment_inordered(ttftt_engine):
                         "args": [],
                     },
                     {
-                        "name": "non_introspectable",
-                        "locations": ["FIELD_DEFINITION"],
-                        "args": [],
-                    },
-                    {
                         "locations": [
                             "FIELD",
                             "FRAGMENT_SPREAD",

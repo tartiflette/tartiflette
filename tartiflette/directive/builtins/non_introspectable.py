@@ -14,6 +14,7 @@ class NonIntrospectable:
     ) -> None:
         return None
 
+
 def bake(schema_name, _config):
     sdl = """
     directive @nonIntrospectable on FIELD_DEFINITION
