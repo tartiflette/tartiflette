@@ -471,6 +471,15 @@ class TartifletteVisitor(Visitor):
         if is_nullable and a_value is None:
             return
 
+        if not is_nullable and a_value is None:
+            self._add_exception(
+                InvalidType(
+                    "Value can't be null or contain a null value",
+                    path=self._internal_ctx.field_path[:],
+                    locations=[self._internal_ctx.node.location],
+                )
+            )
+
         try:
             if not isinstance(a_value, a_type):
                 self._add_exception(
@@ -505,7 +514,9 @@ class TartifletteVisitor(Visitor):
         a_value = self._vars[name]
 
         if self._internal_ctx.node.is_list:
-            if not isinstance(a_value, list):
+            if not isinstance(a_value, list) and (
+                a_value is not None or (a_value is None and not is_nullable)
+            ):
                 self._add_exception(
                     InvalidType(
                         "Expecting List for < %s > values" % name,
@@ -514,10 +525,15 @@ class TartifletteVisitor(Visitor):
                     )
                 )
                 return
-
-            for val in a_value:
-                self._validate_type(name, val, a_type, is_nullable)
-            return
+            if a_value:
+                for val in a_value:
+                    self._validate_type(
+                        name,
+                        val,
+                        a_type,
+                        self._internal_ctx.node.is_list_item_nullable,
+                    )
+                return
 
         self._validate_type(name, a_value, a_type, is_nullable)
         return
@@ -542,7 +558,10 @@ class TartifletteVisitor(Visitor):
             pass
 
     def _on_non_null_type_in(self, *_args, **_kwargs) -> None:
-        self._internal_ctx.node.is_nullable = False
+        if self._internal_ctx.node.is_list:
+            self._internal_ctx.node.is_list_item_nullable = False
+        else:
+            self._internal_ctx.node.is_nullable = False
 
     def _on_fragment_definition_in(
         self, element: _VisitorElementFragmentDefinition, *_args, **_kwargs

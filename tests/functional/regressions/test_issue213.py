@@ -168,13 +168,15 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Given value for "
-                        "< name > is not "
-                        "type < <class "
-                        "'str'> >",
-                        "locations": [{"column": 20, "line": 2}],
+                        "message": "Value can't be null or contain a null value",
                         "path": None,
-                    }
+                        "locations": [{"line": 2, "column": 20}],
+                    },
+                    {
+                        "message": "Given value for < name > is not type < <class 'str'> >",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 20}],
+                    },
                 ],
             },
         ),

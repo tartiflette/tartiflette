@@ -222,7 +222,7 @@ class UnknownAnonymousdOperation(TartifletteError):
 class UnknownVariableException(TartifletteError):
     def __init__(self, varname: str) -> None:
         # TODO: Unify error messages format
-        super().__init__(message="< %s > is not known" % varname)
+        super().__init__(message="Variable < %s > is not known" % varname)
 
 
 class UnknownGraphQLType(TartifletteError):
