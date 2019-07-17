@@ -630,6 +630,7 @@ def test_parser_visitor__validate_vars_existing_okay_var_is_list(
     a_visitor._internal_ctx.node.var_type = str
     a_visitor._internal_ctx.node.is_list = True
     a_visitor._internal_ctx.node.is_nullable = True
+    a_visitor._internal_ctx.node.is_list_item_nullable = True
 
     a_visitor._vars = {"LOL": ["a_value_1", "a_value_2"]}
 
@@ -752,6 +753,7 @@ def test_parser_visitor__on_list_type_in_nok(a_visitor, an_element):
 
 def test_parser_visitor__on_non_null_type_in(a_visitor, an_element):
     a_visitor._internal_ctx.node = Mock()
+    a_visitor._internal_ctx.node.is_list = False
     a_visitor._on_non_null_type_in(an_element)
     assert a_visitor._internal_ctx.node.is_nullable == False
 
