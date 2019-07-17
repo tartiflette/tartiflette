@@ -112,12 +112,12 @@ async def test_issue21_okayquery(
                 "data": None,
                 "errors": [
                     {
-                        "message": "< xid > is not known",
+                        "message": "Variable < xid > is not known",
                         "locations": [],
                         "path": None,
                     },
                     {
-                        "message": "< xid > is not known",
+                        "message": "Variable < xid > is not known",
                         "locations": [],
                         "path": None,
                     },

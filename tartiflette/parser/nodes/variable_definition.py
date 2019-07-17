@@ -10,3 +10,4 @@ class NodeVariableDefinition(NodeDefinition):
         self.default_value = UNDEFINED_VALUE
         self.is_nullable = True
         self.is_list = False
+        self.is_list_item_nullable = True
