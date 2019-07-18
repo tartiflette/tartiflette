@@ -515,14 +515,8 @@ class TartifletteVisitor(Visitor):
 
         if self._internal_ctx.node.is_list:
             if not isinstance(a_value, list) and a_value is not None:
-                self._add_exception(
-                    InvalidType(
-                        "Expecting List for < %s > values" % name,
-                        path=self._internal_ctx.field_path[:],
-                        locations=[self._internal_ctx.node.location],
-                    )
-                )
-                return
+                a_value = [a_value]
+
             if a_value:
                 for val in a_value:
                     self._validate_type(

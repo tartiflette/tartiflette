@@ -11,11 +11,11 @@ type Query {
 
 @pytest.fixture(scope="module")
 async def ttftt_engine():
-    @Resolver("Query.aField", schema_name="test_issuexxx")
+    @Resolver("Query.aField", schema_name="test_issue263")
     async def resolve_query_sections(parent, args, ctx, info):
         return str(args.get("ids"))
 
-    return await create_engine(sdl=_SDL, schema_name="test_issuexxx")
+    return await create_engine(sdl=_SDL, schema_name="test_issue263")
 
 
 @pytest.mark.asyncio
@@ -173,58 +173,22 @@ async def ttftt_engine():
         (
             "query ($ids: [String]) { aField(ids: $ids) }",
             {"ids": "anId"},
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "Expecting List for < ids > values",
-                        "path": None,
-                        "locations": [{"line": 1, "column": 8}],
-                    }
-                ],
-            },
+            {"data": {"aField": "['anId']"}},
         ),
         (
             "query ($ids: [String!]) { aField(ids: $ids) }",
             {"ids": "anId"},
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "Expecting List for < ids > values",
-                        "path": None,
-                        "locations": [{"line": 1, "column": 8}],
-                    }
-                ],
-            },
+            {"data": {"aField": "['anId']"}},
         ),
         (
             "query ($ids: [String]!) { aField(ids: $ids) }",
             {"ids": "anId"},
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "Expecting List for < ids > values",
-                        "path": None,
-                        "locations": [{"line": 1, "column": 8}],
-                    }
-                ],
-            },
+            {"data": {"aField": "['anId']"}},
         ),
         (
             "query ($ids: [String!]!) { aField(ids: $ids) }",
             {"ids": "anId"},
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "Expecting List for < ids > values",
-                        "path": None,
-                        "locations": [{"line": 1, "column": 8}],
-                    }
-                ],
-            },
+            {"data": {"aField": "['anId']"}},
         ),
         # List with `null` item variable value
         (
@@ -298,5 +262,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issuexxx(ttftt_engine, query, variables, expected):
+async def test_issue263(ttftt_engine, query, variables, expected):
     assert await ttftt_engine.execute(query, variables=variables) == expected
