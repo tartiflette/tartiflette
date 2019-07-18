@@ -644,7 +644,7 @@ def test_parser_visitor__validate_vars_existing_okay_var_is_list(
     ]
 
 
-def test_parser_visitor__validate_vars_existing_okay_var_is_list_nok(
+def test_parser_visitor__validate_vars_existing_okay_var_is_list_ok(
     a_visitor, an_element
 ):
     a_visitor._internal_ctx.node = Mock()
@@ -658,9 +658,8 @@ def test_parser_visitor__validate_vars_existing_okay_var_is_list_nok(
 
     a_visitor._validates_vars()
 
-    assert a_visitor.continue_child == 0
-    assert a_visitor.exceptions is not None
-    assert isinstance(a_visitor.exceptions[0], TartifletteError)
+    assert a_visitor.continue_child == 1
+    assert a_visitor.exceptions == []
 
 
 def test_parser_visitor__validate_vars_existing_okay_var_has_a_dfv(
