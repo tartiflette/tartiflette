@@ -153,8 +153,8 @@ async def test_issue21_okayquery(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Expecting List for < xid > values",
-                        "locations": [{"column": 23, "line": 2}],
+                        "message": "Given value for < xid > is not type < <class 'int'> >",
+                        "locations": [{"line": 2, "column": 23}],
                         "path": None,
                     }
                 ],
