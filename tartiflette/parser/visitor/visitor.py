@@ -517,7 +517,7 @@ class TartifletteVisitor(Visitor):
             if not isinstance(a_value, list) and a_value is not None:
                 a_value = [a_value]
 
-            if a_value:
+            if a_value is not None:
                 for val in a_value:
                     self._validate_type(
                         name,
