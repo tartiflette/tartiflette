@@ -260,6 +260,11 @@ async def ttftt_engine():
             {"ids": ["anId"]},
             {"data": {"aField": "['anId']"}},
         ),
+        (
+            "query ($ids: [String!]) { aField(ids: $ids) }",
+            {"ids": []},
+            {"data": {"aField": "[]"}},
+        ),
     ],
 )
 async def test_issue263(ttftt_engine, query, variables, expected):
