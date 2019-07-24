@@ -9,7 +9,7 @@ from tartiflette.execution.collect import collect_fields
 from tartiflette.execution.context import build_execution_context
 from tartiflette.execution.helpers import get_field_definition
 from tartiflette.execution.types import build_resolve_info
-from tartiflette.types.exceptions.tartiflette import MultipleException
+from tartiflette.utils.errors import extract_exceptions_from_results
 from tartiflette.utils.values import is_invalid_value
 
 __all__ = (
@@ -141,12 +141,7 @@ async def execute_fields(
         return_exceptions=True,
     )
 
-    # TODO: maybe we could do something cleaner here
-    exceptions = MultipleException()
-    for item in results:
-        if isinstance(item, MultipleException):
-            exceptions += item
-
+    exceptions = extract_exceptions_from_results(results)
     if exceptions:
         raise exceptions
 

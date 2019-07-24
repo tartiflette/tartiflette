@@ -5,7 +5,7 @@ from typing import Any, Callable, List
 from tartiflette.coercers.common import Path
 from tartiflette.coercers.outputs.null_coercer import null_coercer_wrapper
 from tartiflette.resolver.factory import complete_value_catching_error
-from tartiflette.types.exceptions.tartiflette import MultipleException
+from tartiflette.utils.errors import extract_exceptions_from_results
 
 __all__ = ("list_coercer",)
 
@@ -61,12 +61,7 @@ async def list_coercer(
         return_exceptions=True,
     )
 
-    # TODO: maybe we could do something cleaner here
-    exceptions = MultipleException()
-    for item in results:
-        if isinstance(item, MultipleException):
-            exceptions += item
-
+    exceptions = extract_exceptions_from_results(results)
     if exceptions:
         raise exceptions
 
