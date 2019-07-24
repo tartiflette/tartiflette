@@ -23,6 +23,16 @@ class ExecutionContext:
     GraphQL request.
     """
 
+    __slots__ = (
+        "schema",
+        "fragments",
+        "operation",
+        "context",
+        "root_value",
+        "variable_values",
+        "errors",
+    )
+
     def __init__(
         self,
         schema: "GraphQLSchema",
@@ -155,7 +165,7 @@ async def build_execution_context(
     variable_values: Dict[str, Any] = {}
     if operation:
         executable_variable_definitions = collect_executable_variable_definitions(
-            schema, operation.variable_definitions or []
+            schema, operation
         )
 
         variable_values, variable_errors = await coerce_variables(

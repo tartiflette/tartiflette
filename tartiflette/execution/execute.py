@@ -7,10 +7,7 @@ from tartiflette.coercers.common import Path
 from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.execution.collect import collect_fields
 from tartiflette.execution.context import build_execution_context
-from tartiflette.execution.helpers import (
-    get_field_definition,
-    get_operation_root_type,
-)
+from tartiflette.execution.helpers import get_field_definition
 from tartiflette.execution.types import build_resolve_info
 from tartiflette.types.exceptions.tartiflette import MultipleException
 from tartiflette.utils.values import is_invalid_value
@@ -176,8 +173,8 @@ async def execute_operation(
     :return: Optional[Dict[str, Any]]
     :rtype: the computed value
     """
-    operation_root_type = get_operation_root_type(
-        execution_context.schema, operation
+    operation_root_type = execution_context.schema.get_operation_root_type(
+        operation
     )
 
     fields = await collect_fields(
@@ -290,8 +287,8 @@ async def create_source_event_stream(
     if errors:
         return await response_builder(errors=errors)
 
-    operation_root_type = get_operation_root_type(
-        schema, execution_context.operation
+    operation_root_type = schema.get_operation_root_type(
+        execution_context.operation
     )
 
     fields = await collect_fields(
