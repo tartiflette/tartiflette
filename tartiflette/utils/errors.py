@@ -161,6 +161,24 @@ def located_error(
     return MultipleException(exceptions=computed_exceptions)
 
 
+def extract_exceptions_from_results(
+    results: List[Any]
+) -> Optional["MultipleException"]:
+    """
+    Extracts and concatenates multiple exceptions instances from the results.
+    :param results: results list to loop over
+    :type results: List[Any]
+    :return: a multiple exceptions instance with all exceptions contained in
+    the result
+    :rtype: Optional[MultipleException]
+    """
+    exceptions = MultipleException()
+    for result in results:
+        if isinstance(result, MultipleException):
+            exceptions += result
+    return exceptions or None
+
+
 async def default_error_coercer(
     exception: Exception, error: Dict[str, Any]
 ) -> Dict[str, Any]:
