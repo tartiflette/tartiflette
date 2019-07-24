@@ -20,6 +20,7 @@ from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.union import GraphQLUnionType
+from tartiflette.utils.errors import graphql_error_from_nodes
 
 __all__ = ("GraphQLSchema",)
 
@@ -84,6 +85,7 @@ class GraphQLSchema:
                 "GraphQLInputObjectType",
             ]
         ] = []
+        self._operation_types: Dict[str, "GraphQLObjectType"] = {}
 
         # Introspection attributes
         self.types: List["GraphQLType"] = []  # pylint: disable=invalid-name
@@ -632,6 +634,26 @@ class GraphQLSchema:
             elif isinstance(type_definition, GraphQLEnumType):
                 await type_definition.bake_enum_values(self)
 
+    def get_operation_root_type(
+        self, operation: "OperationDefinitionNode"
+    ) -> "GraphQLObjectType":
+        """
+        Extracts the root type of the operation from the schema.
+        :param operation: AST operation definition node from which retrieve the
+        root type
+        :type operation: OperationDefinitionNode
+        :return: the GraphQLObjectType instance related to the operation
+        definition
+        :rtype: GraphQLObjectType
+        """
+        try:
+            return self._operation_types[operation.operation_type]
+        except KeyError:
+            raise graphql_error_from_nodes(
+                "Schema is not configured for %ss." % operation.operation_type,
+                nodes=operation,
+            )
+
     async def bake(
         self, custom_default_resolver: Optional[Callable] = None
     ) -> None:
@@ -652,13 +674,18 @@ class GraphQLSchema:
         self._validate()
 
         # Bake introspection attributes
-        self.queryType = self.type_definitions.get(self.query_operation_name)
-        self.mutationType = self.type_definitions.get(
-            self.mutation_operation_name
-        )
-        self.subscriptionType = self.type_definitions.get(
-            self.subscription_operation_name
-        )
+        self._operation_types = {
+            "query": self.type_definitions.get(self.query_operation_name),
+            "mutation": self.type_definitions.get(
+                self.mutation_operation_name
+            ),
+            "subscription": self.type_definitions.get(
+                self.subscription_operation_name
+            ),
+        }
+        self.queryType = self._operation_types["query"]
+        self.mutationType = self._operation_types["mutation"]
+        self.subscriptionType = self._operation_types["subscription"]
         self.directives = list(self._directive_definitions.values())
 
         for type_name, type_definition in self.type_definitions.items():

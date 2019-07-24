@@ -29,7 +29,7 @@ __all__ = (
 )
 
 
-@lru_cache(maxsize=1024)
+@lru_cache(maxsize=512)
 def parse_and_validate_query(
     query: Union[str, bytes]
 ) -> Tuple[Optional["DocumentNode"], Optional[List["TartifletteError"]]]:
@@ -56,26 +56,28 @@ def parse_and_validate_query(
     return document, None
 
 
+@lru_cache(maxsize=512)
 def collect_executable_variable_definitions(
-    schema: "GraphQLSchema",
-    variable_definition_nodes: List["VariableDefinitionNode"],
+    schema: "GraphQLSchema", operation: "OperationDefinitionNode"
 ) -> List["ExecutableVariableDefinition"]:
     """
     Go recursively through all variable definition AST nodes to convert them as
     executable variable definition.
     :param schema: the GraphQLSchema instance linked to the engine
-    :param variable_definition_nodes: the list of variable definition AST to
-    treat
+    :param operation: the AST operation definition node to execute
     :type schema: GraphQLSchema
-    :type variable_definition_nodes: List[VariableDefinitionNode]
+    :type operation: OperationDefinitionNode
     :return: a list of executable variable definition
     :rtype: List[ExecutableVariableDefinition]
     """
+    if not operation.variable_definitions:
+        return []
+
     return [
         variable_definition_node_to_executable(
             schema, variable_definition_node
         )
-        for variable_definition_node in variable_definition_nodes
+        for variable_definition_node in operation.variable_definitions
     ]
 
 

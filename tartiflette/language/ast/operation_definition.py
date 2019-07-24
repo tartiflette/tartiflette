@@ -87,3 +87,12 @@ class OperationDefinitionNode(ExecutableDefinitionNode):
                 self.location,
             )
         )
+
+    def __hash__(self) -> int:
+        """
+        Hash the name of the operation definition as a unique representation of
+        an OperationDefinitionNode in a valid document node.
+        :return: hash of the operation definition
+        :rtype: int
+        """
+        return hash(self.name.value if self.name else None)
