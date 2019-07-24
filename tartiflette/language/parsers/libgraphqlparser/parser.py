@@ -20,9 +20,6 @@ _FFI.cdef(
 struct GraphQLAstNode *graphql_parse_string(
     const char *text, const char **error);
 
-struct GraphQLAstNode *graphql_parse_string_with_experimental_schema_support(
-    const char *text, const char **error);
-
 void graphql_error_free(const char *error);
 
 void graphql_node_free(struct GraphQLAstNode *node);
@@ -100,9 +97,7 @@ def _parse_context_manager(query: Union[str, bytes]) -> ParsedData:
     errors = _FFI.new("char **")
 
     parsed_data = ParsedData(
-        _LIB.graphql_parse_string_with_experimental_schema_support(
-            _FFI.new("char[]", query), errors
-        ),
+        _LIB.graphql_parse_string(_FFI.new("char[]", query), errors),
         _LIB.graphql_node_free,
     )
 
