@@ -660,7 +660,7 @@ _TYPE_INTROSPECTION_QUERY = """
                                 "deprecationReason": None,
                             },
                         ],
-                        "interfaces": None,
+                        "interfaces": [],
                         "possibleTypes": None,
                         "enumValues": None,
                         "inputFields": None,
@@ -910,7 +910,7 @@ _TYPE_INTROSPECTION_QUERY = """
                                 "deprecationReason": None,
                             },
                         ],
-                        "interfaces": None,
+                        "interfaces": [],
                         "possibleTypes": None,
                         "enumValues": None,
                         "inputFields": None,
@@ -1056,7 +1056,7 @@ _TYPE_INTROSPECTION_QUERY = """
                                 "deprecationReason": None,
                             },
                         ],
-                        "interfaces": None,
+                        "interfaces": [],
                         "possibleTypes": None,
                         "enumValues": None,
                         "inputFields": None,
@@ -1149,7 +1149,7 @@ _TYPE_INTROSPECTION_QUERY = """
                                 "deprecationReason": None,
                             },
                         ],
-                        "interfaces": None,
+                        "interfaces": [],
                         "possibleTypes": None,
                         "enumValues": None,
                         "inputFields": None,
@@ -1242,7 +1242,7 @@ _TYPE_INTROSPECTION_QUERY = """
                                 "deprecationReason": None,
                             },
                         ],
-                        "interfaces": None,
+                        "interfaces": [],
                         "possibleTypes": None,
                         "enumValues": None,
                         "inputFields": None,
@@ -1440,7 +1440,7 @@ _TYPE_INTROSPECTION_QUERY = """
                                 "deprecationReason": None,
                             },
                         ],
-                        "interfaces": None,
+                        "interfaces": [],
                         "possibleTypes": None,
                         "enumValues": None,
                         "inputFields": None,
@@ -1598,7 +1598,7 @@ _TYPE_INTROSPECTION_QUERY = """
         ),
     ],
 )
-async def test_introspection_full(engine, type_name, expected):
+async def test_introspection_type(engine, type_name, expected):
     assert (
         await engine.execute(_TYPE_INTROSPECTION_QUERY.format(type_name))
         == expected

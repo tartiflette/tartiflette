@@ -60,9 +60,9 @@ class GraphQLInputObjectType(GraphQLType):
         self.literal_coercer: Optional[Callable] = None
 
         # Introspection attributes
-        self.inputFields: Optional[  # pylint: disable=invalid-name
-            List["GraphQLInputField"]
-        ] = None
+        self.inputFields: List[  # pylint: disable=invalid-name
+            "GraphQLInputField"
+        ] = []
 
     def __eq__(self, other: Any) -> bool:
         """
@@ -138,7 +138,6 @@ class GraphQLInputObjectType(GraphQLType):
         )
 
         if self.input_fields:
-            self.inputFields: List["GraphQLInputField"] = []
             for input_field in self.input_fields.values():
                 input_field.bake(schema)
                 self.inputFields.append(input_field)
