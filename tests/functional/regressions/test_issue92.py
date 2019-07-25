@@ -307,7 +307,7 @@ async def test_issue92_fragment_inordered(ttftt_engine):
                             }
                         ],
                         "inputFields": None,
-                        "interfaces": None,
+                        "interfaces": [],
                         "enumValues": None,
                         "possibleTypes": None,
                     },
@@ -339,7 +339,7 @@ async def test_issue92_fragment_inordered(ttftt_engine):
                             },
                         ],
                         "inputFields": None,
-                        "interfaces": None,
+                        "interfaces": [],
                         "enumValues": None,
                         "possibleTypes": None,
                     },
@@ -360,7 +360,7 @@ async def test_issue92_fragment_inordered(ttftt_engine):
                             }
                         ],
                         "inputFields": None,
-                        "interfaces": None,
+                        "interfaces": [],
                         "enumValues": None,
                         "possibleTypes": None,
                     },

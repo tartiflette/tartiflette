@@ -243,7 +243,7 @@ async def test_ttftt_object_with_interfaces(clean_registry):
     assert len(repository_interfaces) == len(repository_type.interfaces_names)
 
     url_interface = ttftt_engine._schema.find_type("UniformResourceLocatable")
-    assert url_interface.possibleTypes is None
+    assert url_interface.possibleTypes == []
 
     result = await ttftt_engine.execute(
         """

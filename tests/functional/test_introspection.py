@@ -496,7 +496,7 @@ fragment TypeRef on __Type {
                             },
                         ],
                         "inputFields": None,
-                        "interfaces": None,
+                        "interfaces": [],
                         "enumValues": None,
                         "possibleTypes": None,
                     },
@@ -517,7 +517,7 @@ fragment TypeRef on __Type {
                             }
                         ],
                         "inputFields": None,
-                        "interfaces": None,
+                        "interfaces": [],
                         "enumValues": None,
                         "possibleTypes": None,
                     },

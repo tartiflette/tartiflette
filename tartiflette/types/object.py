@@ -55,8 +55,8 @@ class GraphQLObjectType(GraphQLType):
         self.output_coercer: Optional[Callable] = None
 
         # Introspection attributes
-        self.interfaces: Optional[List["GraphQLInterfaceType"]] = None
-        self.fields: Optional[List["GraphQLField"]] = None
+        self.interfaces: List["GraphQLInterfaceType"] = []
+        self.fields: List["GraphQLField"] = []
 
     def __eq__(self, other: Any) -> bool:
         """
@@ -126,7 +126,6 @@ class GraphQLObjectType(GraphQLType):
         :type schema: GraphQLSchema
         """
         if self.interfaces_names:
-            self.interfaces: List["GraphQLInterfaceType"] = []
             for interface_name in self.interfaces_names:
                 interface = schema.find_type(interface_name)
                 self.interfaces.append(interface)
@@ -166,7 +165,6 @@ class GraphQLObjectType(GraphQLType):
         :type custom_default_resolver: Optional[Callable]
         """
         if self.implemented_fields:
-            self.fields: List["GraphQLField"] = []
             for field in self.implemented_fields.values():
                 field.bake(schema, custom_default_resolver)
                 field = await field.on_post_bake()

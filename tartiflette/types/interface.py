@@ -54,7 +54,7 @@ class GraphQLInterfaceType(GraphQLAbstractType):
         self.output_coercer: Optional[Callable] = None
 
         # Introspection attributes
-        self.fields: Optional[List["GraphQLField"]] = None
+        self.fields: List["GraphQLField"] = []
 
     def __eq__(self, other: Any) -> bool:
         """
@@ -100,14 +100,14 @@ class GraphQLInterfaceType(GraphQLAbstractType):
     @property
     def possibleTypes(  # pylint: disable=invalid-name
         self
-    ) -> Optional[List["GraphQLObjectType"]]:
+    ) -> List["GraphQLObjectType"]:
         """
         Returns the list of possible types of the interface which is used by
         the introspection query.
         :return: the list of possible types
-        :rtype: Optional[List[GraphQLObjectType]]
+        :rtype: List[GraphQLObjectType]
         """
-        return self._possible_types or None
+        return self._possible_types
 
     def find_field(self, name: str) -> "GraphQLField":
         """
@@ -180,7 +180,6 @@ class GraphQLInterfaceType(GraphQLAbstractType):
         :type custom_default_resolver: Optional[Callable]
         """
         if self.implemented_fields:
-            self.fields: List["GraphQLField"] = []
             for field in self.implemented_fields.values():
                 field.bake(schema, custom_default_resolver)
                 field = await field.on_post_bake()
