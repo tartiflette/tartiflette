@@ -95,14 +95,14 @@ class GraphQLUnionType(GraphQLAbstractType):
     @property
     def possibleTypes(  # pylint: disable=invalid-name
         self
-    ) -> List["GraphQLType"]:
+    ) -> List["GraphQLObjectType"]:
         """
         Returns the list of possible types of the union which is used by the
         introspection query.
         :return: the list of possible types
-        :rtype: Optional[List[GraphQLObjectType]]
+        :rtype: List[GraphQLObjectType]
         """
-        return self._possible_types or None
+        return self._possible_types
 
     def add_field(self, field: "GraphQLField") -> None:
         """

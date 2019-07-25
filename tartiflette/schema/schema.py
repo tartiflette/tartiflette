@@ -88,7 +88,7 @@ class GraphQLSchema:
         self._operation_types: Dict[str, "GraphQLObjectType"] = {}
 
         # Introspection attributes
-        self.types: List["GraphQLType"] = []  # pylint: disable=invalid-name
+        self.types: List["GraphQLType"] = []
         self.queryType: Optional[  # pylint: disable=invalid-name
             "GraphQLType"
         ] = None
