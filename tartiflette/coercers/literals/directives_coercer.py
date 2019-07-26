@@ -24,7 +24,7 @@ async def literal_directives_coercer(
     :param ctx: context passed to the query execution
     :param coercer: pre-computed coercer to use on the value
     :param directives: the directives to execute
-    :param variables: the variables used in the GraphQL request
+    :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
     :param is_input_field: determines whether or not the node is an InputField
     :type node: Union[ValueNode, VariableNode]

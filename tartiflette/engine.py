@@ -162,9 +162,9 @@ class Engine:
         ] = None,
         custom_default_resolver: Optional[Callable] = None,
         custom_default_type_resolver: Optional[Callable] = None,
-        modules: Optional[Union[str, List[str]]] = None,
+        modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
         schema_name: str = None,
-    ):
+    ) -> None:
         """
         Cook the tartiflette, basically prepare the engine by binding it to
         given modules using the schema_name as a key. You wont be able to
@@ -186,7 +186,7 @@ class Engine:
         :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
         :type custom_default_resolver: Optional[Callable]
         :type custom_default_type_resolver: Optional[Callable]
-        :type modules: Optional[Union[str, List[str]]]
+        :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
         :type schema_name: str
         """
         if self._cooked:
@@ -253,7 +253,7 @@ class Engine:
         :param operation_name: the operation name to execute
         :param context: value that can contain everything you need and that
         will be accessible from the resolvers
-        :param variables: the variables used in the GraphQL request
+        :param variables: the variables provided in the GraphQL request
         :param initial_value: an initial value corresponding to the root type
         being executed
         :type query: Union[str, bytes]
@@ -292,7 +292,7 @@ class Engine:
         :param operation_name: the operation name to execute
         :param context: value that can contain everything you need and that
         will be accessible from the resolvers
-        :param variables: the variables used in the GraphQL request
+        :param variables: the variables provided in the GraphQL request
         :param initial_value: an initial value corresponding to the root type
         being executed
         :type query: Union[str, bytes]

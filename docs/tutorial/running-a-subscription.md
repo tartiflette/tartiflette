@@ -1,7 +1,7 @@
 ---
 id: running-a-subscription
-title: Running a Subscription
-sidebar_label: 10. Running a Subscription
+title: Running a subscription
+sidebar_label: 10. Running a subscription
 ---
 
 The `subscription` will bring real-time capabilities to your applications, and a feeling of reactivity for your clients.
@@ -12,14 +12,13 @@ The response will be auto-updated after each message it receives.
 
 ## Subscribe to the cooking timer
 
-This fabulous feature will start the countdown based on the `cookingTime` property of the targeted recipe.
-
+This fabulous feature will start the countdown based on the `cookingTime` property of the targeted recipe:
 ```graphql
 subscription {
-    launchAndWaitCookingTimer(id: 1) {
-        remainingTime
-        status
-    }
+  launchAndWaitCookingTimer(id: 1) {
+    remainingTime
+    status
+  }
 }
 ```
 

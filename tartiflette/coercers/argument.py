@@ -22,7 +22,7 @@ async def argument_coercer(
     :param argument_definition: the argument definition to treat
     :param node: AST node linked to the argument
     :param argument_node: AST node representing the argument
-    :param variable_values: the variables used in the GraphQL request
+    :param variable_values: the variables provided in the GraphQL request
     :param ctx: context passed to the query execution
     :param directives: the directives to execute
     :type argument_definition: GraphQLArgument

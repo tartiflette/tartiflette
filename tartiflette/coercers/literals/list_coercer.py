@@ -29,7 +29,7 @@ async def list_item_coercer(
     :param is_non_null_item_type: determines whether or not the item is
     nullable
     :param inner_coercer: the pre-computed coercer to use for the item
-    :param variables: the variables used in the GraphQL request
+    :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
     :type item_node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]
@@ -65,7 +65,7 @@ async def list_coercer(
     nullable
     :param inner_coercer: the pre-computed coercer to use on each value in the
     list
-    :param variables: the variables used in the GraphQL request
+    :param variables: the variables provided in the GraphQL request
     :type node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]
     :type is_non_null_item_type: bool

@@ -6,14 +6,14 @@ sidebar_label: 14. Use with Docker
 
 For those who want to use **Tartiflette** within a docker image, you can find a `Dockerfile` sample below.
 
-Create a `Dockerfile` at the root level of your **Recipes Manager GraphQL API**.
+Create a `Dockerfile` at the root level of your **Tartiflette recipes manager**.
 
 This `Dockerfile` includes:
 * pipenv
 * **tartiflette** dependencies `cmake`, `bison` and `flex`
 
 ```dockerfile
-FROM python:3.7.2
+FROM python:3.7.3
 
 RUN apt-get update && apt-get install -y cmake bison flex
 
@@ -26,12 +26,11 @@ WORKDIR /usr/src/app
 
 COPY Pipfile /usr/src/app/
 
-ARG parameters=install
-RUN pipenv "${parameters}"
+RUN pipenv install
 
 COPY . /usr/src/app/
 
 EXPOSE 8080
 
-CMD [ "pipenv", "run", "python", "-m", "recipes_manager" ]
+CMD ["pipenv", "run", "python", "-m", "recipes_manager"]
 ```

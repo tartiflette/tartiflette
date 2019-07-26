@@ -1,21 +1,21 @@
 ---
 id: install-tartiflette
-title: Install Tartiflette package from pipenv
+title: Install Tartiflette package with pipenv
 sidebar_label: 3. Install Tartiflette
 ---
 
-Tartiflette is available on [pypi.org](https://pypi.org/project/tartiflette/) and you can install it through pip or pipenv. In our tutorial, we would rather use "[pipenv](https://docs.pipenv.org/)" as it embeds both the package management and the virtual environment management.
+Tartiflette is available on [pypi.org](https://pypi.org/project/tartiflette/) and you can install it with `pip` or `pipenv`. In this tutorial, we will use [`pipenv`](https://docs.pipenv.org/) as it embeds both the package management and the virtual environment.
 
 ## Installation dependencies
 
-As Tartiflette based its executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*, you'll need these following binaries in your environment to use the library: `cmake`, `bison` and `flex`.
+As Tartiflette based its query parsing on [`libgraphqlparser`](https://github.com/graphql/libgraphqlparser), you will need these following binaries in your environment to use the library: `cmake`, `bison` and `flex`.
 
-*MacOSX*
+**macOS**:
 ```bash
 brew install cmake flex bison
 ```
 
-*Ubuntu*
+**Ubuntu**:
 ```bash
 apt-get install cmake flex bison
 ```
@@ -24,17 +24,17 @@ apt-get install cmake flex bison
 
 Are you ready? We are now going to install Tartiflette!
 
-In our tutorial, we want to expose our GraphQL API through HTTP. To build this API easily and quickly, we're going to use the HTTP distribution of Tartiflette called [`tartiflette-aiohttp`](https://github.com/tartiflette/tartiflette-aiohttp).
+In this tutorial, we want to expose our GraphQL API through HTTP. To build this API easily and quickly, we are going to use an HTTP integration of Tartiflette called [`tartiflette-aiohttp`](https://github.com/tartiflette/tartiflette-aiohttp).
 
 ```bash
-# Create virtualenv
+# Create the virtual environment
 pipenv --python 3.7
 
-# Install Tartiflette
+# Install tartiflette-aiohttp
 pipenv install tartiflette-aiohttp
 
-# Enter into the virtualenv
+# Enter into the virtual environment
 pipenv shell
 ```
 
-It's now time to write your first Tartiflette code, the "Recipes Manager GraphQL API" is coming.
+It is now time to write your first Tartiflette code, the "Tartiflette recipes manager" is coming.
