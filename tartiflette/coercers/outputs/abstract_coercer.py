@@ -93,7 +93,8 @@ async def abstract_coercer(
     """
     # pylint: disable=unused-argument
     type_resolver = abstract_type.get_type_resolver(
-        f"{info.parent_type.name}.{info.field_name}"
+        f"{info.parent_type.name}.{info.field_name}",
+        execution_context.schema.default_type_resolver,
     )
 
     return await complete_object_value(

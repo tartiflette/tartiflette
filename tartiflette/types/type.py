@@ -1,7 +1,5 @@
 from typing import Any, Callable, Dict, Optional, Union
 
-from tartiflette.resolver.default import default_type_resolver
-
 __all__ = ("GraphQLType", "GraphQLWrappingType", "GraphQLAbstractType")
 
 
@@ -107,11 +105,15 @@ class GraphQLAbstractType(GraphQLType):
         """
         self._fields_type_resolvers[field_name] = implementation
 
-    def get_type_resolver(self, field_name: str) -> Callable:
+    def get_type_resolver(
+        self, field_name: str, default_type_resolver: Callable
+    ) -> Callable:
         """
         Returns the appropriate type resolver for the field name.
         :param field_name: field name for which returns the type resolver
+        :param default_type_resolver: TODO:
         :type field_name: str
+        :type default_type_resolver: Callable
         :return: appropriate type resolver for the field name
         :rtype: Callable
         """
