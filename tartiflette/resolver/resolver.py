@@ -5,6 +5,7 @@ from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
     MissingImplementation,
     NonAwaitableResolver,
+    NonCallable,
     UnknownFieldDefinition,
 )
 from tartiflette.types.helpers.definition import get_wrapped_type
@@ -93,6 +94,14 @@ class Resolver:
         ):
             raise NonAwaitableResolver(
                 f"The resolver `{repr(implementation)}` given is not awaitable."
+            )
+
+        if self._type_resolver is not None and not callable(
+            self._type_resolver
+        ):
+            raise NonCallable(
+                "The < type_resolver > parameter of the resolver "
+                f"`{repr(implementation)}` has to be a callable."
             )
 
         SchemaRegistry.register_resolver(self._schema_name, self)

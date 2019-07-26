@@ -143,6 +143,10 @@ class GraphQLSyntaxError(TartifletteError):
     pass
 
 
+class NonCallable(ImproperlyConfigured):
+    pass
+
+
 class NonAwaitableResolver(ImproperlyConfigured):
     pass
 
