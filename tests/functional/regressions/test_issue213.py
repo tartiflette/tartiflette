@@ -16,9 +16,11 @@ async def ttftt_engine():
     async def resolve_query_hello(parent, args, ctx, info):
         return args.get("name")
 
-    @Resolver("Query.bye", schema_name="test_issue213")
-    async def resolve_query_bye(parent, args, ctx, info):
-        return args.get("name")
+    class QueryByResolver:
+        async def __call__(self, parent, args, ctx, info):
+            return args.get("name")
+
+    Resolver("Query.bye", schema_name="test_issue213")(QueryByResolver())
 
     return await create_engine(sdl=_SDL, schema_name="test_issue213")
 

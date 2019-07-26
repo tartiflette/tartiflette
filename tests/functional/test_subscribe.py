@@ -36,11 +36,20 @@ _SEARCHS = [
 @pytest.fixture(scope="module")
 async def ttftt_engine():
     @Subscription("MySubscription.newSearch", schema_name="test_subscribe")
-    @Subscription("MySubscription.customSearch", schema_name="test_subscribe")
     async def subscription_new_search(*_, **__):
         for search in _SEARCHS:
             yield {"newSearch": search}
             await asyncio.sleep(0.01)
+
+    class MySubscriptionCustomSearchSubscriber:
+        async def __call__(self, *_, **__):
+            for search in _SEARCHS:
+                yield {"newSearch": search}
+                await asyncio.sleep(0.01)
+
+    Subscription("MySubscription.customSearch", schema_name="test_subscribe")(
+        MySubscriptionCustomSearchSubscriber()
+    )
 
     @Resolver("MySubscription.customSearch", schema_name="test_subscribe")
     async def resolver_subscription_custom_search(parent, args, ctx, info):
