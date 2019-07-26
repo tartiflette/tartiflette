@@ -1,4 +1,4 @@
-from inspect import iscoroutinefunction
+from inspect import iscoroutinefunction, isfunction
 from typing import Callable, Optional
 
 from tartiflette.schema.registry import SchemaRegistry
@@ -78,7 +78,7 @@ class Resolver:
                 f"Unknown Field Definition {self.name}"
             )
 
-    def __call__(self, resolver: Callable) -> Callable:
+    def __call__(self, implementation: Callable) -> Callable:
         """
         Registers the resolver into the schema.
         :param implementation: implementation of the resolver
@@ -86,11 +86,15 @@ class Resolver:
         :return: the implementation of the resolver
         :rtype: Callable
         """
-        if not iscoroutinefunction(resolver):
+        if not iscoroutinefunction(
+            implementation
+            if isfunction(implementation)
+            else implementation.__call__
+        ):
             raise NonAwaitableResolver(
-                f"The resolver `{repr(resolver)}` given is not awaitable."
+                f"The resolver `{repr(implementation)}` given is not awaitable."
             )
 
         SchemaRegistry.register_resolver(self._schema_name, self)
-        self._implementation = resolver
-        return resolver
+        self._implementation = implementation
+        return implementation
