@@ -13,7 +13,7 @@ Here are the subjects we were working during 2018 and early 2019:
 
 ## Communication and documentation
 
-* [x] Define Open Source guidelines (Contributing, Code of conduct, Issue Template, PR Template).
+* [x] Define Open Source guidelines (contributing, code of conduct, issue template, PR template).
 * [X] (API) Describe the API that will be used by the Tartiflette users.
   * [x] (API) [Engine constructor](https://github.com/tartiflette/tartiflette/blob/master/docs/API.md#engine-initialization)
   * [X] (API) How to declare custom directives in the Engine Constructor.

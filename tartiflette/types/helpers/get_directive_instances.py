@@ -51,7 +51,7 @@ def compute_directive_nodes(
     directives.
     :param schema: the GraphQLSchema instance linked to the engine
     :param directive_nodes: list of AST directive node to compute
-    :param variable_values: the variables used in the GraphQL request
+    :param variable_values: the variables provided in the GraphQL request
     :type schema: GraphQLSchema
     :type directive_nodes: List[DirectiveNode]
     :type variable_values: Optional[Dict[str, Any]]

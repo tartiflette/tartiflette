@@ -20,7 +20,7 @@ async def coerce_arguments(
     Returns the computed values of the arguments.
     :param argument_definitions: the argument definitions to treat
     :param node: the parent AST node of the arguments
-    :param variable_values: the variables used in the GraphQL request
+    :param variable_values: the variables provided in the GraphQL request
     :param ctx: context passed to the query execution
     :type argument_definitions: Dict[str, GraphQLArgument]
     :type node: Union[FieldNode, DirectiveNode]

@@ -41,14 +41,16 @@ class ResolveInfo:
         :param field_nodes: AST nodes related to the resolved field
         :param return_type: GraphQLOutputType instance of the resolved field
         :param parent_type: GraphQLObjectType of the field's parent
-        :param path: the path traveled until this resolver
+        :param path: the path traveled until this field
         :param schema: the GraphQLSchema instance linked to the engine
-        :param fragments: the dictionary of fragment definition AST node
+        :param fragments: a dictionary of fragment definition AST nodes
         contained in the request
-        :param root_value: an initial value corresponding to the root type
+        :param root_value: the initial value corresponding to the root type
         being executed
         :param operation: the AST operation definition node to execute
-        :param variable_values: the variables used in the GraphQL request
+        :param variable_values: the variables provided in the GraphQL request
+        :param is_introspection_context: determines whether or not the resolved
+        field is in a context of an introspection query
         :type field_name: str
         :type field_nodes: List[FieldNodes]
         :type return_type: GraphQLOutputType
@@ -59,6 +61,7 @@ class ResolveInfo:
         :type root_value: Optional[Any]
         :type operation: OperationDefinitionNode
         :type variable_values: Optional[Dict[str, Any]]
+        :type is_introspection_context: bool
         """
         # pylint: disable=too-many-arguments,too-many-locals
         self.field_name = field_name
@@ -89,11 +92,14 @@ def build_resolve_info(
     :param field_nodes: AST nodes related to the resolved field
     :param parent_type: GraphQLObjectType of the field's parent
     :param path: the path traveled until this resolver
+    :param is_introspection_context: determines whether or not the resolved
+    field is in a context of an introspection query
     :type execution_context: ExecutionContext
     :type field_definition: GraphQLField
     :type field_nodes: List[FieldNode]
     :type parent_type: GraphQLObjectType
     :type path: Path
+    :type is_introspection_context: bool
     :return: a ResolveInfo instance
     :rtype: ResolveInfo
     """

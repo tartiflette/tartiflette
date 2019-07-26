@@ -27,7 +27,7 @@ async def create_engine(
     ] = None,
     custom_default_resolver: Optional[Callable] = None,
     custom_default_type_resolver: Optional[Callable] = None,
-    modules: Optional[Union[str, List[str]]] = None,
+    modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
 ) -> "Engine":
     """
     Create an engine by analyzing the SDL and connecting it with the imported
@@ -51,7 +51,7 @@ async def create_engine(
     :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
     :type custom_default_resolver: Optional[Callable]
     :type custom_default_type_resolver: Optional[Callable]
-    :type modules: Optional[Union[str, List[str]]]
+    :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
     :return: a Cooked Engine instance
     :rtype: Engine
 

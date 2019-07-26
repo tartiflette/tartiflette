@@ -4,42 +4,44 @@ title: Subscription
 sidebar_label: Subscription
 ---
 
-Subscription is the third operation available in GraphQL. It brings the [event-based subscriptions](https://graphql.org/blog/subscriptions-in-graphql-and-relay/#event-based-subscriptions) mindset to the Engine.
+Subscription is the third operation type available in GraphQL. It brings the [event-based subscriptions](https://graphql.org/blog/subscriptions-in-graphql-and-relay/#event-based-subscriptions) mindset to the engine.
 
-It's up to you to implement the Event technology you want, like Google Pub/Sub, Nats, Redis ... in our example, we decided to focus purely on the Engine part of the feature.
+It's up to you to implement the event technology you want, like Google Pub/Sub, Nats, Redis... in our example, we decided to focus purely on the engine part of the feature.
 
 ## `Engine`: How to execute a subscription?
 
-The Engine is responsible for executing both the `Query`/`Mutation`s and the `Subscription`'s. The first ones are executed by the `execute` method, where the `Subscription`, is executed by the method named `subscribe`.
+The engine is responsible for executing both the `Query`/`Mutation`s and the `Subscription`'s. The first ones are executed by the `execute` method, where `Subscription`, is executed by the `subscribe` method.
 
-The parameters that are available on the `subscribe` method of `Engine`.
-* `query`: the GraphQL request / query as UTF8-encoded string
-* `operation_name`: the operation name to execute
-* `context`: a dict containing anything you need
-* `variables`: the variables used in the GraphQL request
-* `initial_value`: an initial value given to the resolver of the root type
+The parameters that are available on the `subscribe` method are:
+* `query` _(Union[str, bytes])_: the GraphQL request/query as UTF8-encoded string
+* `operation_name` _(Optional[str])_: the operation name to execute
+* `context` _(Optional[Any])_: value containing anything you could need and which will be available during all the execution process
+* `variables` _(Optional[Dict[str, Any]])_: the variables provided in the GraphQL request
+* `initial_value` _(Optional[Any])_: an initial value which will be forwarded to the resolver of root type (Query/Mutation/Subscription) fields
 
 ```python
 from tartiflette import create_engine
+
 
 engine = await create_engine(
     "myDsl.graphql"
 )
 
-result = engine.subscribe(
-    query="subscription MyLiveVideo($id: String) { videoLive(id: $id) { id viewsNumber } }",
+async for result in engine.subscribe(
+    query="subscription MyLiveVideo($id: String!) { videoLive(id: $id) { id viewsNumber } }",
     operation_name="MyLiveVideo",
     context={
         "mysql_client": MySQLClient(),
-        "auth_info": AuthInfo()
+        "auth_info": AuthInfo(),
     },
-    variables: {
-        "id": "1234"
+    variables={
+        "id": "1234",
     },
-    initial_value: {}
-)
+    initial_value={},
+):
+    pass
 
-# `result` will yield with this kind of values
+# each yield `result` will contains something like
 # {
 #     "data": {
 #         "videoLive": {
@@ -52,7 +54,7 @@ result = engine.subscribe(
 
 ## `@Subscription`: How to subscribe to a field?
 
-In the Tartiflette Engine to subscribe to a field, you simply use the decorator _(@Subscription)_ over a function which returns an async generator. That's all there is to it. For advanced use-cases, take a look at putting a `Resolver` on top of a `Subscription` (see below).
+In the Tartiflette engine, to subscribe to a field, you simply use the decorator `@Subscription` over a callable which returns an `async generator`. That's all there is to it. For advanced use-cases, take a look at putting a `@Resolver` on top of a `Subscription` ([see below](#resolver-manipulating-and-shaping-the-result-of-a-subscription-function)).
 
 ```python
 import asyncio
@@ -61,32 +63,37 @@ from tartiflette import Subscription
 
 from recipes_manager.data import RECIPES
 
+
 @Subscription("Subscription.launchAndWaitCookingTimer")
-async def subscription_cooking_time(
+async def subscribe_subscription_launch_and_wait_cooking_timer(
     parent, args, ctx, info
 ):
-    recipe = [r for r in RECIPES if r["id"] == int(args["id"])]
+    recipe = None
+    for recipe_item in RECIPES:
+      if recipe_item["id"] == args["id"]:
+        recipe = recipe_item
 
     if not recipe:
-        raise Exception(f"The recipe with the id '{args['d']}' doesn't exist.")
+        raise Exception(f"The recipe < {args['id']} > does not exist.")
 
-    for index in range(0, recipe[0]["cookingTime"]):
+    for i in range(recipe["cookingTime"]):
+        yield {
+            "remainingTime": recipe["cookingTime"] - i,
+            "status": "COOKING",
+        }
         await asyncio.sleep(1)
 
-        yield {
-            "remainingTime": recipe[0]["cookingTime"] - index,
-            "status": "COOKING"
-        }
-
     yield {
-        "remainingTime": 0,
-        "status": "COOKED"
+        "launchAndWaitCookingTimer": {
+            "remainingTime": 0,
+            "status": "COOKED",
+        },
     }
 ```
 
 ## `@Resolver`: Manipulating and shaping the result of a `@Subscription` function
 
-In some cases, especially when you use tools like Redis, Google Pub/Sub etc ... the value which will be `yield`ed won't be structured as expected by the Schema. In addition to the `@Subscription` decorator, you can implement a wrapper `@Resolver` to shape the data accordingly to the return type.
+In some cases, especially when you use tools like Redis, Google Pub/Sub etc... the value which will be `yield`ed won't be structured as expected by the schema. In addition to the `@Subscription` decorator, you can implement a `@Resolver` wrapper to shape the data accordingly to the return type.
 
 ```python
 import asyncio
@@ -95,33 +102,35 @@ from tartiflette import Resolver, Subscription
 
 from recipes_manager.data import RECIPES
 
+
 @Resolver("Subscription.launchAndWaitCookingTimer")
-async def resolver_cooking_time(
+async def resolve_subscription_launch_and_wait_cooking_timer(
     parent, args, ctx, info
 ):
     if parent > 0:
         return {
             "remainingTime": parent,
-            "status": "COOKING"
+            "status": "COOKING",
         }
-
     return {
         "remainingTime": 0,
-        "status": "COOKED"
+        "status": "COOKED",
     }
 
 
 @Subscription("Subscription.launchAndWaitCookingTimer")
-async def subscription_cooking_time(
+async def subscribe_subscription_launch_and_wait_cooking_timer(
     parent, args, ctx, info
 ):
-    recipe = [r for r in RECIPES if r["id"] == int(args["id"])]
+    recipe = None
+    for recipe_item in RECIPES:
+      if recipe_item["id"] == args["id"]:
+        recipe = recipe_item
 
     if not recipe:
-        raise Exception(f"The recipe with the id '{args['d']}' doesn't exist.")
+        raise Exception(f"The recipe < {args['id']} > does not exist.")
 
-    for index in range(0, recipe[0]["cookingTime"]):
+    for i in range(recipe["cookingTime"]):
+        yield recipe["cookingTime"] - i
         await asyncio.sleep(1)
-        yield recipe[0]["cookingTime"] - index
-
 ```

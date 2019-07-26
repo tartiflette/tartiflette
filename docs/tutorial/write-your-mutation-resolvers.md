@@ -4,34 +4,33 @@ title: Write your mutation resolvers
 sidebar_label: 7. Write your mutation resolvers
 ---
 
-If you plan to build an application, most of the time, you want to expose mutation endpoints, well known as "PUT", "DELETE" and "POST" in the REST-full world. In the GraphQL world though, all the actions which mutate the data are available behind the `mutation` operation.
+If you plan to build an application, most of the time you will need to provide a way to create, update and delete data over your API. In the REST-full world, this operations are available through some exposed endpoints available on the different `POST`, `PUT`, `PATCH` and `DELETE` HTTP methods. In the GraphQL world, all the actions which mutate the data are available behind the `mutation` operation.
 
-The `mutation` operation type looks like the `query` one but with some features less _(no unions, interfaces, arguments)_.
+The `mutation` operation type looks like the `query` one but with a major difference in the way of being executed. While root fields of a `query` operation are executed and resolved in parallel, in a `mutation` operation, root fields are executed in serial order.
 
-Thus, we will expose a field to update a recipe, either its name or cooking time.
+## Write code
 
-First, here is the SDL
+In our case, we would like to be able to update a recipe. Thus, we will expose a field to update a recipe, either its name or/and cooking time.
 
-## **recipes_manager/sdl/Mutation.graphql**
+First, we will start to define the `Mutation` schema part:
 
-Compared to the `query` types, the `mutation` types are less complex, you have to name them `input` instead of `type`.
+### `recipes_manager/sdl/Mutation.graphql`
 
 ```graphql
-type Mutation {
-    updateRecipe(input: RecipeInput!): Recipe
+input RecipeInput {
+  id: Int!
+  name: String
+  cookingTime: Int
 }
 
-input RecipeInput {
-    id: Int!
-    name: String
-    cookingTime: Int
+type Mutation {
+  updateRecipe(input: RecipeInput!): Recipe!
 }
 ```
 
-## **recipes_manager/mutation_resolvers.py**
+### `recipes_manager/mutation_resolvers.py`
 
-And now the resolver which is in charge of updating the recipe metadata.
-
+And now the resolver which is in charge of updating the recipe metadata:
 ```python
 import collections
 
@@ -41,31 +40,32 @@ from recipes_manager.data import INGREDIENTS, RECIPES
 
 
 @Resolver("Mutation.updateRecipe")
-async def update_recipe(parent, args, ctx, info):
-    if not args.get("input"):
-        raise Exception("'input' parameter is mandatory")
+async def resolve_mutation_update_recipe(parent, args, ctx, info):
+    recipe_id = args["input"]["id"]
+    name = args["input"].get("name")
+    cooking_time = args["input"].get("cookingTime")
+
+    if not (name and cooking_time):
+        raise Exception(
+            "You should provide at least one value for either name or "
+            "cookingTime."
+        )
 
     for index, recipe in enumerate(RECIPES):
-        if recipe["id"] == args["input"].get("id"):
-            if "name" in args["input"]:
-                RECIPES[index]["name"] = args["input"]["name"]
-
-            if "cookingTime" in args["input"]:
-                RECIPES[index]["cookingTime"] = args["input"]["cookingTime"]
-
+        if recipe["id"] == recipe_id:
+            if name:
+                RECIPES[index]["name"] = name
+            if cooking_time:
+                RECIPES[index]["cookingTime"] = cooking_time
             return RECIPES[index]
 
-    raise Exception("The recipe specified is not found.")
-
+    raise Exception(f"The recipe < {recipe_id} > does not exist.")
 ```
 
 ## Launch the app
 
-Your Recipes Manager GraphQL API is now able to mutate data. Launch it with this following command and go to the next step to know how to execute a mutation your GraphQL API.
+Your **Tartiflette recipes manager** is now able to mutate data. Launch it with the following command and go to the next step to find out how to execute a mutation request to your GraphQL API:
 
 ```bash
-$ python -m recipes_manager
-======== Running on http://0.0.0.0:8080 ========
-(Press CTRL+C to quit)
-
+python -m recipes_manager
 ```

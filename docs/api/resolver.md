@@ -4,10 +4,11 @@ title: Resolver
 sidebar_label: Resolver
 ---
 
-The most common way to assign a specific resolver to a Field is to decorate your resolver function with the `@Resolver` decorator. Your function [MUST BE compliant with the function signature](#function-signature) and be `async`.
+The most common way to assign a specific resolver to a field is to decorate your resolver callable with the `@Resolver` decorator. Your function [MUST BE compliant with the function signature](#function-signature) and be `async`.
 
 ```python
 from tartiflette import Resolver
+
 
 @Resolver("Query.hello")
 async def my_hello_resolver(parent, args, context, info):
@@ -21,24 +22,33 @@ Every resolver in Tartiflette accepts four positional arguments:
 _(This signature is highly inspired by the GraphQL.js implementation)_
 
 ```python
-async def my_hello_resolver(parent, args, context, info):
+async def my_hello_resolver(
+    parent: Optional[Any],
+    args: Dict[str, Any],
+    ctx: Optional[Any],
+    info: "ResolveInfo",
+) -> Any:
     pass
 ```
 
-1. **parent:** The result returned by the resolver of the parent field. The `initial_value` of the execution is passed in the case of a top-level Query field.
-2. **args:** A dict which contains the arguments passed for the field. _(in the query)_. e.g. if the field was called with `hello(name: "Chuck")`, the args dict will be equals to `{ "name": "Chuck" }`.
-3. **context:** Dict shared by all resolvers, that can be different for each query. It acts as a container or a state for a specific request.
-4. **info:** This argument CAN BE used for advanced use-cases; but it contains information about the execution state of the query.
+* `parent` _(Optional[Any])_: resolved value returned by the parent resolver field, if the parent is a root type (Query/Mutation/Subscription) the value passed will be the `initial_value` of the execution
+* `args` _(Dict[str, Any])_: a dictionary containing the arguments passed for the field. _(in the query)_. e.g. if the field was called with `hello(name: "Chuck")`, the `args` dictionary will be equals to `{"name": "Chuck"}`
+* `ctx` _(Optional[Any])_: will be the value of the `context` argument provided when calling the `execute` or `subscribe`'s `Engine` method
+* `info` _("ResolveInfo")_: internal Tartiflette object containing information related to the execution and the resolved field. It *CAN BE* used for advanced use-cases ([more detail here](#resolver-info-argument))
 
 ### Resolver `info` argument
 
-The `info` argument contains the query's AST _(Abstract Syntax Tree)_ and other execution details, which can be useful for middlewares and advanced use-cases.
+The `info` argument contains information related to the execution and the resolved field which can be useful for middlewares and advanced use-cases.
 
 Here are the available properties:
-
-- `query_field` tartiflette.parser.NodeField - Contains the information of the field from the query's perspective.
-- `schema_field` tartiflette.types.field.GraphQLField - Contains the information of the field from the schema's perspective (type, default values, and more.)
-- `schema` tartiflette.schema.GraphQLSchema - Contains the GraphQL's server complete schema instance.
-- `path` List[string] - Describes the path in the current query
-- `location` tartiflette.types.location.Location - Describes the location in the query
-- `execution_ctx` tartiflette.executor.types.ExecutionContext - Contains execution values (like `errors`).
+* `field_name` _(str)_: name of the resolved field
+* `field_nodes` _(List["FieldNodes"])_: AST nodes related to the resolved field
+* `return_type` _("GraphQLOutputType")_: GraphQLOutputType instance of the resolved field
+* `parent_type` _("GraphQLObjectType")_: GraphQLObjectType of the field's parent
+* `path` _("Path")_: the path traveled until this field
+* `schema` _("GraphQLSchema")_: the GraphQLSchema instance linked to resolved field
+* `fragments` _(Dict[str, "FragmentDefinitionNode"])_: a dictionary of fragment definition AST nodes contained in the request
+* `root_value` _(Optional[Any])_: the initial value corresponding to provided value at `execute` or `subscribe` method call
+* `operation` _("OperationDefinitionNode")_: the AST operation definition node to execute
+* `variable_values` _(Optional[Dict[str, Any]])_: the variables provided in the GraphQL request
+* `is_introspection` _(bool)_: determines whether or not the resolved field is in a context of an introspection query
