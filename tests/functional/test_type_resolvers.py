@@ -109,6 +109,9 @@ class ThirdType:
         self.thirdFieldA = field_a  # pylint: disable=invalid-name
         self.thirdFieldB = field_b  # pylint: disable=invalid-name
 
+    def __str__(self):
+        return f"ThirdType({dict(_typename='ThirdType')})"
+
 
 class Fourth:
     fourthFieldA = "fourthFieldA"  # pylint: disable=invalid-name
@@ -120,6 +123,139 @@ class UnknownType:
 
     def __str__(self):
         return f"UnknownType({dict(_typename='Unknown')})"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "result,expected",
+    [
+        (
+            First("firstFieldA", 1),
+            {
+                "data": {
+                    "mixed": {
+                        "__typename": "First",
+                        "firstFieldA": "firstFieldA",
+                        "firstFieldB": 1,
+                    }
+                }
+            },
+        ),
+        (
+            {
+                "_typename": "Second",
+                "secondFieldA": "secondFieldA",
+                "secondFieldB": 2,
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Abstract type < Mixed > must resolve to an "
+                        "object type at runtime for field < Query.mixed > "
+                        "with value < {'_typename': 'Second', 'secondFieldA': 'secondFieldA', 'secondFieldB': 2} >, "
+                        "received < dict >. Either the < Mixed > type "
+                        "should implements a < @TypeResolver > or the "
+                        "< Query.mixed > field resolver should implement "
+                        "a `type_resolver` attribute.",
+                        "path": ["mixed"],
+                        "locations": [{"line": 3, "column": 3}],
+                    }
+                ],
+            },
+        ),
+        (
+            {
+                "__typename": "Second",
+                "secondFieldA": "secondFieldA",
+                "secondFieldB": 2,
+            },
+            {
+                "data": {
+                    "mixed": {
+                        "__typename": "Second",
+                        "secondFieldA": "secondFieldA",
+                        "secondFieldB": 2,
+                    }
+                }
+            },
+        ),
+        (
+            ThirdType("thirdFieldA", 3),
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Abstract type < Mixed > must resolve to an "
+                        "object type at runtime for field < Query.mixed > "
+                        "with value < ThirdType({'_typename': 'ThirdType'}) >, "
+                        "received < ThirdType >. Either the < Mixed > type "
+                        "should implements a < @TypeResolver > or the "
+                        "< Query.mixed > field resolver should implement "
+                        "a `type_resolver` attribute.",
+                        "path": ["mixed"],
+                        "locations": [{"line": 3, "column": 3}],
+                    }
+                ],
+            },
+        ),
+        (
+            Fourth(),
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Runtime object type < Fourth > is not a possible type for < Mixed >.",
+                        "path": ["mixed"],
+                        "locations": [{"line": 3, "column": 3}],
+                    }
+                ],
+            },
+        ),
+        (
+            UnknownType(),
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Abstract type < Mixed > must resolve to an "
+                        "object type at runtime for field < Query.mixed > "
+                        "with value < UnknownType({'_typename': 'Unknown'}) >, "
+                        "received < UnknownType >. Either the < Mixed > type "
+                        "should implements a < @TypeResolver > or the "
+                        "< Query.mixed > field resolver should implement "
+                        "a `type_resolver` attribute.",
+                        "path": ["mixed"],
+                        "locations": [{"line": 3, "column": 3}],
+                    }
+                ],
+            },
+        ),
+    ],
+)
+async def test_type_resolvers_default_type_resolver(
+    clean_registry, result, expected
+):
+    def custom_default_type_resolver(result, *args, **kwargs):
+        try:
+            return result["__typename"]
+        except (KeyError, TypeError):
+            pass
+        return result.__class__.__name__
+
+    @Resolver(
+        "Query.mixed", schema_name="test_type_resolvers_default_type_resolver"
+    )
+    async def resolve_query_mixed(parent, args, ctx, info):
+        return result
+
+    engine = await create_engine(
+        _SDL,
+        schema_name="test_type_resolvers_default_type_resolver",
+        custom_default_type_resolver=custom_default_type_resolver,
+    )
+
+    assert await engine.execute(_UNION_QUERY) == expected
 
 
 @pytest.mark.asyncio

@@ -44,18 +44,26 @@ class SchemaBakery:
 
     @staticmethod
     async def bake(
-        schema_name: str, custom_default_resolver: Optional[Callable] = None
+        schema_name: str,
+        custom_default_resolver: Optional[Callable] = None,
+        custom_default_type_resolver: Optional[Callable] = None,
     ) -> "GraphQLSchema":
         """
         Bakes and returns a GraphQLSchema instance.
         :param schema_name: name of the schema to bake
         :param custom_default_resolver: callable that will replace the builtin
         default_resolver (called as resolver for each UNDECORATED field)
+        :param custom_default_type_resolver: callable that will replace the
+        tartiflette `default_type_resolver` (will be called on abstract types
+        to deduct the type of a result)
         :type schema_name: str
         :type custom_default_resolver: Optional[Callable]
+        :type custom_default_type_resolver: Optional[Callable]
         :return: a baked GraphQLSchema instance
         :rtype: GraphQLSchema
         """
         schema = SchemaBakery._preheat(schema_name)
-        await schema.bake(custom_default_resolver)
+        await schema.bake(
+            custom_default_resolver, custom_default_type_resolver
+        )
         return schema

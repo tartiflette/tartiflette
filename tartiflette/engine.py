@@ -138,6 +138,7 @@ class Engine:
         schema_name=None,
         error_coercer=None,
         custom_default_resolver=None,
+        custom_default_type_resolver=None,
         modules=None,
     ) -> None:
         """
@@ -147,6 +148,7 @@ class Engine:
         self._schema_name = schema_name
         self._error_coercer = error_coercer
         self._custom_default_resolver = custom_default_resolver
+        self._custom_default_type_resolver = custom_default_type_resolver
         self._modules = modules
         self._sdl = sdl
         self._cooked = False
@@ -159,6 +161,7 @@ class Engine:
             [Exception, Dict[str, Any]], Dict[str, Any]
         ] = None,
         custom_default_resolver: Optional[Callable] = None,
+        custom_default_type_resolver: Optional[Callable] = None,
         modules: Optional[Union[str, List[str]]] = None,
         schema_name: str = None,
     ):
@@ -172,6 +175,9 @@ class Engine:
         Exception/error into an error dictionary
         :param custom_default_resolver: callable that will replace the builtin
         default_resolver (called as resolver for each UNDECORATED field)
+        :param custom_default_type_resolver: callable that will replace the
+        tartiflette `default_type_resolver` (will be called on abstract types
+        to deduct the type of a result)
         :param modules: list of string containing the name of the modules you
         want the engine to import, usually this modules contains your
         Resolvers, Directives, Scalar or Subscription code
@@ -179,6 +185,7 @@ class Engine:
         :type sdl: Union[str, List[str]]
         :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
         :type custom_default_resolver: Optional[Callable]
+        :type custom_default_type_resolver: Optional[Callable]
         :type modules: Optional[Union[str, List[str]]]
         :type schema_name: str
         """
@@ -219,7 +226,9 @@ class Engine:
 
         SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
         self._schema = await SchemaBakery.bake(
-            schema_name, custom_default_resolver
+            schema_name,
+            custom_default_resolver,
+            custom_default_type_resolver or self._custom_default_type_resolver,
         )
         self._build_response = partial(
             build_response,

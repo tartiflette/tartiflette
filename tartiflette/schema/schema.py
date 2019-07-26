@@ -1,6 +1,7 @@
 from inspect import iscoroutinefunction
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from tartiflette.resolver.default import default_type_resolver
 from tartiflette.schema.introspection import (
     SCHEMA_ROOT_FIELD_DEFINITION,
     TYPENAME_ROOT_FIELD_DEFINITION,
@@ -58,6 +59,8 @@ class GraphQLSchema:
     Contains the complete GraphQL Schema: types, entrypoints and directives.
     """
 
+    # pylint: disable=too-many-instance-attributes
+
     # Introspection attributes
     description = "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations."
 
@@ -67,6 +70,7 @@ class GraphQLSchema:
         :type name: str
         """
         self.name = name
+        self.default_type_resolver: Optional[Callable] = None
 
         # Operation type names
         self.query_operation_name: str = _DEFAULT_QUERY_OPERATION_NAME
@@ -655,15 +659,24 @@ class GraphQLSchema:
             )
 
     async def bake(
-        self, custom_default_resolver: Optional[Callable] = None
+        self,
+        custom_default_resolver: Optional[Callable] = None,
+        custom_default_type_resolver: Optional[Callable] = None,
     ) -> None:
         """
         Bake the final schema (it should not change after this) used for
         execution.
         :param custom_default_resolver: callable that will replace the builtin
         default_resolver
+        :param custom_default_type_resolver: callable that will replace the
+        tartiflette `default_type_resolver` (will be called on abstract types
+        to deduct the type of a result)
         :type custom_default_resolver: Optional[Callable]
+        :type custom_default_type_resolver: Optional[Callable]
         """
+        self.default_type_resolver = (
+            custom_default_type_resolver or default_type_resolver
+        )
         self._inject_introspection_fields()
         try:
             await self._bake_types(custom_default_resolver)
