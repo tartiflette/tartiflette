@@ -26,6 +26,7 @@ async def create_engine(
         [Exception, Dict[str, Any]], Dict[str, Any]
     ] = None,
     custom_default_resolver: Optional[Callable] = None,
+    custom_default_type_resolver: Optional[Callable] = None,
     modules: Optional[Union[str, List[str]]] = None,
 ) -> "Engine":
     """
@@ -39,6 +40,9 @@ async def create_engine(
     :param custom_default_resolver: callable that will replace the tartiflette
     `default_resolver` (Will be called like a resolver for each UNDECORATED
     field)
+    :param custom_default_type_resolver: callable that will replace the
+    tartiflette `default_type_resolver` (will be called on abstract types to
+    deduct the type of a result)
     :param modules: list of string containing the name of the modules you want
     the engine to import, usually this modules contains your Resolvers,
     Directives, Scalar or Subscription code
@@ -46,6 +50,7 @@ async def create_engine(
     :type schema_name: str
     :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
     :type custom_default_resolver: Optional[Callable]
+    :type custom_default_type_resolver: Optional[Callable]
     :type modules: Optional[Union[str, List[str]]]
     :return: a Cooked Engine instance
     :rtype: Engine
@@ -65,6 +70,7 @@ async def create_engine(
         sdl=sdl,
         error_coercer=error_coercer,
         custom_default_resolver=custom_default_resolver,
+        custom_default_type_resolver=custom_default_type_resolver,
         modules=modules,
         schema_name=schema_name,
     )
