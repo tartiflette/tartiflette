@@ -28,7 +28,7 @@ async def input_field_value_coercer(
     :param input_field: the input field to compute
     :param value_node: the value node to compute
     :param ctx: context passed to the query execution
-    :param variables: the variables used in the GraphQL request
+    :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
     :type input_field: GraphQLInputField
     :type value_node: Union[ValueNode, VariableNode, UNDEFINED_VALUE]
@@ -69,7 +69,7 @@ async def input_object_coercer(
     :param ctx: context passed to the query execution
     :param input_object_type: the GraphQLInputObjectType instance of the input
     object
-    :param variables: the variables used in the GraphQL request
+    :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
     :type node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]

@@ -51,7 +51,7 @@ class ExecutionContext:
         will be accessible from the resolvers
         :param root_value: an initial value corresponding to the root type
         being executed
-        :param variable_values: the variables used in the GraphQL request
+        :param variable_values: the variables provided in the GraphQL request
         :type schema: GraphQLSchema
         :type fragments: Dict[str, FragmentDefinitionNode]
         :type operation: OperationDefinitionNode
@@ -119,7 +119,7 @@ async def build_execution_context(
     executed
     :param context: value that can contain everything you need and that will be
     accessible from the resolvers
-    :param raw_variable_values: the variables used in the GraphQL request
+    :param raw_variable_values: the variables provided in the GraphQL request
     :param operation_name: the operation name to execute
     :type schema: GraphQLSchema
     :type document: DocumentNode

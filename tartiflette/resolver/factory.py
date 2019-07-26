@@ -104,6 +104,8 @@ async def resolve_field(
     :param field_definition: GraphQLField instance of the resolved field
     :param resolver: callable to use to resolve the field
     :param output_coercer: callable to use to coerce the resolved field value
+    :param is_introspection_context: determines whether or not the resolved
+    field is in a context of an introspection query
     :type execution_context: ExecutionContext
     :type parent_type: GraphQLObjectType
     :type source: Any
@@ -112,6 +114,7 @@ async def resolve_field(
     :type field_definition: GraphQLField
     :type resolver: Callable
     :type output_coercer: Callable
+    :type is_introspection_context: bool
     :return: the coerced resolved field value
     :rtype: Any
     """

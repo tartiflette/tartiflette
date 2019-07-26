@@ -8,31 +8,29 @@ By default, all the resolvers created using the `@Resolver` decorator, are regis
 
 #### What is the aim of the Schema Registry?
 
-The `Schema Registry` is an advanced use-case of Tartiflette, used by the developers who want to expose multiple Engines from the same codebase.
+The `Schema Registry` is an advanced use-case of Tartiflette, used by the developers who want to expose multiple schema from the same codebase.
 
-The Schema Registry will allow you to assign a `Resolver` to a specific Schema, which you can then choose during the initialization process of the Engine.
+The Schema Registry will allow you to assign a `Resolver` to a specific schema, which you can then choose during the initialization process of the engine.
 
-By default, every `Resolver` is assigned to the `default` schema. Moreover, every Engine is attached to the `default` schema.
+By default, every `Resolver` is assigned to the `default` schema. Moreover, every engine is attached to the `default` schema by default.
 
-#### How to use multiple Schemas and Engines from the same codebase?
+#### How to use multiple schemas and engines from the same codebase?
 
-The following code sample will create 2 schemas in the `Schema Registry`.
-
-- "default"
-- "proof_of_concept"
+The following code sample will create 2 schemas in the `Schema Registry`:
+- default
+- proof_of_concept
 
 ```python
-import asyncio
-
 from tartiflette import Resolver, create_engine
 
-@Resolver("Query.hello") # Will be assigned to the 'default' Schema
-async def resolver_hello(parent, args, ctx, info):
-    return "hello " + args["name"]
+
+@Resolver("Query.hello")  # Will be assigned to the "default" schema
+async def resolve_default_query_hello(parent, args, ctx, info):
+    return "Hello " + args["name"]
 
 
-@Resolver("Query.hello", "proof_of_concept") # Will be assigned to the 'proof_of_concept' Schema
-async def resolver_hello(parent, args, ctx, info):
+@Resolver("Query.hello", schema_name="proof_of_concept")  # Will be assigned to the "proof_of_concept" schema
+async def resolve_proof_of_concept_query_hello(parent, args, ctx, info):
     return "Hey " + args["name"]
 
 
@@ -43,13 +41,10 @@ async def run():
             hello(name: String): String
         }
         """
-    ) # The engine created will be attached to the SDL of the 'default' Schema.
+    )  # The engine created will be attached to the SDL of the "default" schema
 
-    result = await tftt_engine.execute(
-        query='query { hello(name: "Chuck") }'
-    )
-
-    # the result will be
+    result = await tftt_engine.execute("""{ hello(name: "Chuck") }""")
+    # the result will be:
     # {
     #     "data": {
     #         "hello": "Hello Chuck"
@@ -62,14 +57,13 @@ async def run():
             hello(name: String): String
         }
         """,
-        schema_name="proof_of_concept"
-    ) # This Engine will be attached to the SDL of the 'proof_of_concept' Schema.
+        schema_name="proof_of_concept",
+    )  # This engine will be attached to the SDL of the "proof_of_concept" schema
 
     result_poc = await tftt_proof_of_concept.execute(
-        query='query { hello(name: "Chuck") }'
+        """{ hello(name: "Chuck") }"""
     )
-
-    # the `result_poc` will be
+    # the `result_poc` will be:
     # {
     #     "data": {
     #         "hello": "Hey Chuck"

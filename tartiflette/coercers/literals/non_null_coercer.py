@@ -20,7 +20,7 @@ async def non_null_coercer(
     :param node: the AST node to treat
     :param ctx: context passed to the query execution
     :param inner_coercer: the pre-computed coercer to use on the value
-    :param variables: the variables used in the GraphQL request
+    :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
     :type node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]

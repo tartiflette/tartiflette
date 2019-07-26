@@ -13,7 +13,7 @@ def is_missing_variable(
     Determines whether or not the value node is a VariableNode without defined
     value.
     :param value_node: the AST node to treat
-    :param variables: the variables used in the GraphQL request
+    :param variables: the variables provided in the GraphQL request
     :type value_node: Union[ValueNode, VariableNode]
     :type variables: Dict[str, Any]
     :return: whether or not the value node is a VariableNode without defined

@@ -14,7 +14,7 @@ class NonIntrospectableDirective:
         directive_args: Dict[str, Any],
         next_directive: Callable,
         introspected_element: Any,
-        ctx: Optional[Dict[str, Any]],
+        ctx: Optional[Any],
         info: "ResolveInfo",
     ) -> None:
         """
@@ -28,7 +28,7 @@ class NonIntrospectableDirective:
         :type directive_args: Dict[str, Any]
         :type next_directive: Callable
         :type introspected_element: Any
-        :type ctx: Optional[Dict[str, Any]]
+        :type ctx: Optional[Any]
         :type info: ResolveInfo
         :return: the deprecated introspected element
         :rtype: Any

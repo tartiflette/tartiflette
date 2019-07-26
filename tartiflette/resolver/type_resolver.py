@@ -29,7 +29,7 @@ class TypeResolver:
     Use the TypeResolver decorator the following way:
 
         @TypeResolver("Pet")
-        async def resolve_pet_type(result, context, info, abstract_type):
+        def resolve_pet_type(result, context, info, abstract_type):
             return "Cat" if "meowVolume" in result else "Dog"
     """
 

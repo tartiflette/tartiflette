@@ -38,11 +38,14 @@ async def resolve_field(
     :param source: default root value or field parent value
     :param field_nodes: AST nodes related to the resolved field
     :param path: the path traveled until this resolver
+    :param is_introspection_context: determines whether or not the resolved
+    field is in a context of an introspection query
     :type execution_context: ExecutionContext
     :type parent_type: GraphQLObjectType
     :type source: Any
     :type field_nodes: List[FieldNode]
     :type path: Path
+    :type is_introspection_context: bool
     :return: the computed field value
     :rtype: Any
     """
@@ -118,11 +121,14 @@ async def execute_fields(
     :param source_value: default root value or field parent value
     :param path: the path traveled until this resolver
     :param fields: dictionary of collected fields
+    :param is_introspection_context: determines whether or not the resolved
+    field is in a context of an introspection query
     :type execution_context: ExecutionContext
     :type parent_type: GraphQLObjectType
     :type source_value: Any
     :type path: Optional[Path]
     :type fields: Dict[str, List[FieldNode]]
+    :type is_introspection_context: bool
     :return: the computed fields value
     :rtype: Dict[str, Any]
     """
@@ -218,7 +224,7 @@ async def execute(
     executed
     :param context: value that can contain everything you need and that will be
     accessible from the resolvers
-    :param variables: the variables used in the GraphQL request
+    :param variables: the variables provided in the GraphQL request
     :param operation_name: the operation name to execute
     :type schema: GraphQLSchema
     :type document: DocumentNode
@@ -262,7 +268,7 @@ async def create_source_event_stream(
     executed
     :param context: value that can contain everything you need and that will be
     accessible from the resolvers
-    :param variables: the variables used in the GraphQL request
+    :param variables: the variables provided in the GraphQL request
     :param operation_name: the operation name to execute
     :type schema: GraphQLSchema
     :type document: DocumentNode
