@@ -11,6 +11,7 @@ from tartiflette.types.exceptions import TartifletteError
 __all__ = (
     "create_engine",
     "Directive",
+    "Engine",
     "Resolver",
     "TypeResolver",
     "Scalar",
