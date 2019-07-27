@@ -57,7 +57,6 @@ The following file will be in charge of running the HTTP server _(`web.run_app` 
 import os
 
 from aiohttp import web
-
 from tartiflette_aiohttp import register_graphql_handlers
 
 
@@ -89,7 +88,6 @@ This is the entrypoint of our application, we will not go into more details here
 import sys
 
 from recipes_manager.app import run
-
 
 if __name__ == "__main__":
     sys.exit(run())
