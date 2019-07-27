@@ -32,11 +32,9 @@ type Mutation {
 
 And now the resolver which is in charge of updating the recipe metadata:
 ```python
-import collections
-
 from tartiflette import Resolver
 
-from recipes_manager.data import INGREDIENTS, RECIPES
+from recipes_manager.data import RECIPES
 
 
 @Resolver("Mutation.updateRecipe")

@@ -27,7 +27,7 @@ The idea of the following code is to create a new directive called `@auth` which
 * hide fields and/or types from the introspection query
 * restrict the access to fields and/or types
 
-In this following code, we check that the user uses the API endpoint `localhost:8080`, if the user does not use this one, like `127.0.0.1:8080` or another, an error will be thrown.
+In this following code, we check that the user uses the API through the domain `localhost`, if the user does not use this one, like `127.0.0.1` or another, an error will be thrown.
 
 Useless to say that this example is suited for this tutorial and must not be put in a real application.
 
@@ -47,10 +47,10 @@ class Auth:
         ctx: Optional[Any],
         info: "ResolveInfo",
     ) -> Any:
-        # We limit the introspection only if the user comes from `localhost:8080`
-        # This piece of code is built ONLY for tutorial purpose. Do not use this
-        # in real application.
-        if ctx["req"].host != "localhost:8080":
+        # We limit the introspection only if the user comes from `localhost`.
+        # This piece of code is built ONLY for tutorial purpose.
+        # Do not use this in real application.
+        if not ctx["req"].host.startswith("localhost"):
             return None
         return await next_directive(introspected_element, ctx, info)
 
@@ -63,13 +63,13 @@ class Auth:
         ctx: Optional[Any],
         info: "ResolveInfo",
     ) -> Any:
-        # We limit the introspection only if the user comes from `localhost:8080`
-        # This piece of code is built ONLY for tutorial purpose. Do not use this
-        # in real application.
-        if ctx["req"].host != "localhost:8080":
+        # We limit the introspection only if the user comes from `localhost`.
+        # This piece of code is built ONLY for tutorial purpose.
+        # Do not use this in real application.
+        if not ctx["req"].host.startswith("localhost"):
             raise Exception(
-                "You are not allowed to execute this action. Please retry from "
-                "'localhost:8080'"
+                "You are not allowed to execute this action. Please retry "
+                "from 'localhost'"
             )
         return await next_resolver(parent, args, ctx, info)
 ```
@@ -124,6 +124,6 @@ query IntrospectionQuery {
 ```
 
 * without the `@auth(role: "admin")` you **will** see the `updateRecipe` field
-* with the `@auth(role: "admin")` in your schema you **will not** see the `updateRecipe` field if your are not using the `localhost:8080` endpoint
+* with the `@auth(role: "admin")` in your schema you **will not** see the `updateRecipe` field if your are not using the `localhost` domain
 
 ![Auth Directive](/docs/assets/auth-directive.gif)

@@ -40,9 +40,9 @@ This file will contain our implementation of the `@rateLimiting` directive descr
 > Note: This is a pretty simple implementation of rate limiting, built for our tutorial purpose, you should not use this dumb implementation in production.
 
 ```python
-from typing import Any, Callable, Dict, Optional
-
 import time
+
+from typing import Any, Callable, Dict, Optional
 
 from tartiflette import Directive
 
@@ -54,7 +54,7 @@ def rate_limit_new_rule(name, max_attempts, duration):
         "max_attempts": max_attempts,
         "duration": duration,
         "start_time": int(time.time()),
-        "nb_attempts": 1
+        "nb_attempts": 1,
     }
 
 
@@ -65,13 +65,9 @@ def rate_limit_check_and_bump(name, max_attempts, duration):
         rate_limit_new_rule(name, max_attempts, duration)
         return True
 
-    _RATE_LIMIT_RULES[name]["nb_attempts"] = rule["nb_attempts"] + 1
+    _RATE_LIMIT_RULES[name]["nb_attempts"] += 1
 
-    if rule["nb_attempts"] >= rule["max_attempts"]:
-        rate_limit_new_rule(name, max_attempts, duration)
-        return False
-
-    return True
+    return rule["nb_attempts"] <= rule["max_attempts"]
 
 
 @Directive("rateLimiting")

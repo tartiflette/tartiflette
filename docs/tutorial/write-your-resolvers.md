@@ -40,8 +40,6 @@ In our example, we will have 3 different resolvers:
 ### `recipes_manager/query_resolvers.py`
 
 ```python
-import collections
-
 from tartiflette import Resolver
 
 from recipes_manager.data import INGREDIENTS, RECIPES
