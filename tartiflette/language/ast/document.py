@@ -21,7 +21,7 @@ class DocumentNode(Node):
         """
         :param definitions: definitions of the document
         :param location: location of the document in the query/SDL
-        :param hash_id: TODO:
+        :param hash_id: hash of the DocumentNode
         :type definitions: List[DefinitionNode]
         :type location: Optional[Location]
         :type hash_id: Optional[int]

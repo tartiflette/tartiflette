@@ -111,7 +111,8 @@ class GraphQLAbstractType(GraphQLType):
         """
         Returns the appropriate type resolver for the field name.
         :param field_name: field name for which returns the type resolver
-        :param default_type_resolver: TODO:
+        :param default_type_resolver: callable that will be called to deduct
+        the type of a result if no custom one has been defined
         :type field_name: str
         :type default_type_resolver: Callable
         :return: appropriate type resolver for the field name
