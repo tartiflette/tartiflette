@@ -147,6 +147,10 @@ class NonCallable(ImproperlyConfigured):
     pass
 
 
+class NonCoroutine(ImproperlyConfigured):
+    pass
+
+
 class NonAwaitableResolver(ImproperlyConfigured):
     pass
 
