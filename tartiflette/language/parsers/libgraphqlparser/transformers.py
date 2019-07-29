@@ -682,12 +682,16 @@ def _parse_definitions(
     return []
 
 
-def document_from_ast_json(document_ast: dict) -> "DocumentNode":
+def document_from_ast_json(
+    document_ast: dict, query: Union[str, bytes]
+) -> "DocumentNode":
     """
     Creates and returns a DocumentNode instance from a document's JSON AST
     libgraphqlparser representation.
     :param document_ast: document's JSON AST libgraphqlparser representation
+    :param query: query to parse and transform into a DocumentNode
     :type document_ast: dict
+    :type query: Union[str, bytes]
     :return: a DocumentNode instance equivalent to the JSON AST representation
     :rtype: DocumentNode
 
@@ -745,9 +749,15 @@ def document_from_ast_json(document_ast: dict) -> "DocumentNode":
     >>>             },
     >>>         }
     >>>     ],
-    >>> })
+    >>> },
+    >>> '''
+    >>> {
+    >>>   hello
+    >>> }
+    >>> ''')
     """
     return DocumentNode(
         definitions=_parse_definitions(document_ast["definitions"]),
         location=_parse_location(document_ast["loc"]),
+        hash_id=hash(query),
     )

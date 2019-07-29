@@ -147,4 +147,4 @@ def parse_to_document(query: Union[str, bytes]) -> "DocumentNode":
     >>>   }
     >>> }''')
     """
-    return document_from_ast_json(json.loads(_parse_to_json_ast(query)))
+    return document_from_ast_json(json.loads(_parse_to_json_ast(query)), query)
