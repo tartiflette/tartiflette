@@ -58,18 +58,23 @@ def parse_and_validate_query(
 
 @lru_cache(maxsize=512)
 def collect_executable_variable_definitions(
-    schema: "GraphQLSchema", operation: "OperationDefinitionNode"
+    schema: "GraphQLSchema",
+    document: "DocumentNode",
+    operation: "OperationDefinitionNode",
 ) -> List["ExecutableVariableDefinition"]:
     """
     Go recursively through all variable definition AST nodes to convert them as
     executable variable definition.
     :param schema: the GraphQLSchema instance linked to the engine
+    :param document: the DocumentNode instance linked to the GraphQL request
     :param operation: the AST operation definition node to execute
     :type schema: GraphQLSchema
+    :type document: DocumentNode
     :type operation: OperationDefinitionNode
     :return: a list of executable variable definition
     :rtype: List[ExecutableVariableDefinition]
     """
+    # pylint: disable=unused-argument
     if not operation.variable_definitions:
         return []
 
