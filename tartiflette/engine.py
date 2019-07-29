@@ -2,7 +2,7 @@ import logging
 
 from functools import partial
 from importlib import import_module, invalidate_caches
-from inspect import isawaitable, iscoroutinefunction
+from inspect import isawaitable
 from typing import (
     Any,
     AsyncIterable,
@@ -19,7 +19,12 @@ from tartiflette.execution.execute import create_source_event_stream, execute
 from tartiflette.execution.response import build_response
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry
-from tartiflette.types.exceptions.tartiflette import ImproperlyConfigured
+from tartiflette.types.exceptions.tartiflette import (
+    ImproperlyConfigured,
+    NonCallable,
+    NonCoroutine,
+)
+from tartiflette.utils.callables import is_valid_coroutine
 from tartiflette.utils.errors import (
     default_error_coercer,
     error_coercer_factory,
@@ -204,20 +209,36 @@ class Engine:
 
         schema_name = schema_name or self._schema_name or "default"
 
+        custom_error_coercer = error_coercer or self._error_coercer
+        if custom_error_coercer and not is_valid_coroutine(
+            custom_error_coercer
+        ):
+            raise NonCoroutine(
+                "Given < error_coercer > is not a coroutine callable."
+            )
+
         custom_default_resolver = (
             custom_default_resolver or self._custom_default_resolver
         )
-        if custom_default_resolver and not iscoroutinefunction(
+        if custom_default_resolver and not is_valid_coroutine(
             custom_default_resolver
         ):
-            raise Exception(
-                f"Given custom_default_resolver "
-                f"{custom_default_resolver} "
-                f"is not a coroutine function"
+            raise NonCoroutine(
+                "Given < custom_default_resolver > is not a coroutine callable."
+            )
+
+        custom_default_type_resolver = (
+            custom_default_type_resolver or self._custom_default_type_resolver
+        )
+        if custom_default_type_resolver and not callable(
+            custom_default_type_resolver
+        ):
+            raise NonCallable(
+                "Given < custom_default_type_resolver > is not a coroutine callable."
             )
 
         self._error_coercer = error_coercer_factory(
-            error_coercer or self._error_coercer or default_error_coercer
+            custom_error_coercer or default_error_coercer
         )
 
         self._modules, modules_sdl = await _import_modules(
@@ -226,9 +247,7 @@ class Engine:
 
         SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
         self._schema = await SchemaBakery.bake(
-            schema_name,
-            custom_default_resolver,
-            custom_default_type_resolver or self._custom_default_type_resolver,
+            schema_name, custom_default_resolver, custom_default_type_resolver
         )
         self._build_response = partial(
             build_response,

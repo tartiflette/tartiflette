@@ -2,6 +2,7 @@ from functools import partial
 from typing import Any, Callable, Dict, List, Optional
 
 from tartiflette.coercers.arguments import coerce_arguments
+from tartiflette.utils.callables import is_valid_coroutine
 
 __all__ = ("compute_directive_nodes",)
 
@@ -18,7 +19,8 @@ def get_callables(implementation: Any) -> Dict[str, Callable]:
     return {
         key: getattr(implementation, key)
         for key in dir(implementation)
-        if key.startswith("on_") and callable(getattr(implementation, key))
+        if key.startswith("on_")
+        and is_valid_coroutine(getattr(implementation, key))
     }
 
 

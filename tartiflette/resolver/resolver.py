@@ -1,4 +1,3 @@
-from inspect import iscoroutinefunction, isfunction
 from typing import Callable, Optional
 
 from tartiflette.schema.registry import SchemaRegistry
@@ -10,6 +9,7 @@ from tartiflette.types.exceptions.tartiflette import (
 )
 from tartiflette.types.helpers.definition import get_wrapped_type
 from tartiflette.types.helpers.type import get_graphql_type
+from tartiflette.utils.callables import is_valid_coroutine
 
 __all__ = ("Resolver",)
 
@@ -87,11 +87,7 @@ class Resolver:
         :return: the implementation of the resolver
         :rtype: Callable
         """
-        if not iscoroutinefunction(
-            implementation
-            if isfunction(implementation)
-            else implementation.__call__
-        ):
+        if not is_valid_coroutine(implementation):
             raise NonAwaitableResolver(
                 f"The resolver `{repr(implementation)}` given is not awaitable."
             )
