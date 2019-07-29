@@ -1,4 +1,3 @@
-from inspect import iscoroutinefunction
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.resolver.default import default_type_resolver
@@ -21,6 +20,7 @@ from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import GraphQLObjectType
 from tartiflette.types.scalar import GraphQLScalarType
 from tartiflette.types.union import GraphQLUnionType
+from tartiflette.utils.callables import is_valid_coroutine
 from tartiflette.utils.errors import graphql_error_from_nodes
 
 __all__ = ("GraphQLSchema",)
@@ -569,7 +569,7 @@ class GraphQLSchema:
         for directive in self._directive_definitions.values():
             for expected in _IMPLEMENTABLE_DIRECTIVE_HOOKS:
                 attr = getattr(directive.implementation, expected, None)
-                if attr and not iscoroutinefunction(attr):
+                if attr and not is_valid_coroutine(attr):
                     errors.append(
                         f"Directive {directive.name} Method {expected} is not awaitable"
                     )

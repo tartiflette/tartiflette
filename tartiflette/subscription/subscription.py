@@ -1,4 +1,3 @@
-from inspect import isasyncgenfunction, isfunction
 from typing import Callable
 
 from tartiflette.schema.registry import SchemaRegistry
@@ -8,6 +7,7 @@ from tartiflette.types.exceptions.tartiflette import (
     NotSubscriptionField,
     UnknownFieldDefinition,
 )
+from tartiflette.utils.callables import is_valid_async_generator
 
 __all__ = ("Subscription",)
 
@@ -81,11 +81,7 @@ class Subscription:
         :return: the implementation of the subscription generator
         :rtype: Callable
         """
-        if not isasyncgenfunction(
-            implementation
-            if isfunction(implementation)
-            else implementation.__call__
-        ):
+        if not is_valid_async_generator(implementation):
             raise NonAsyncGeneratorSubscription(
                 "The subscription < {} > given is not an awaitable "
                 "generator.".format(repr(implementation))
