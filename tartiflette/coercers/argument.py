@@ -54,22 +54,34 @@ async def argument_coercer(
         value_node = argument_definition.default_value
     elif (not has_value or is_null) and arg_type.is_non_null_type:
         if is_null:
-            raise graphql_error_from_nodes(
-                f"Argument < {name} > of non-null type < {arg_type} > "
-                "must not be null.",
-                nodes=argument_node.value,
+            return CoercionResult(
+                errors=[
+                    graphql_error_from_nodes(
+                        f"Argument < {name} > of non-null type < {arg_type} > "
+                        "must not be null.",
+                        nodes=argument_node.value,
+                    )
+                ]
             )
         if argument_node and isinstance(argument_node.value, VariableNode):
-            raise graphql_error_from_nodes(
-                f"Argument < {name} > of required type < {arg_type} > "
-                f"was provided the variable < ${variable_name} > which "
-                "was not provided a runtime value.",
-                nodes=argument_node.value,
+            return CoercionResult(
+                errors=[
+                    graphql_error_from_nodes(
+                        f"Argument < {name} > of required type < {arg_type} > "
+                        f"was provided the variable < ${variable_name} > "
+                        "which was not provided a runtime value.",
+                        nodes=argument_node.value,
+                    )
+                ]
             )
-        raise graphql_error_from_nodes(
-            f"Argument < {name} > of required type < {arg_type} > was "
-            "not provided.",
-            nodes=node,
+        return CoercionResult(
+            errors=[
+                graphql_error_from_nodes(
+                    f"Argument < {name} > of required type < {arg_type} > was "
+                    "not provided.",
+                    nodes=node,
+                )
+            ]
         )
     elif has_value:
         if isinstance(argument_node.value, NullValueNode):
@@ -91,9 +103,13 @@ async def argument_coercer(
 
     value, errors = coercion_result
     if is_invalid_value(value):
-        raise graphql_error_from_nodes(
-            f"Argument < {name} > has invalid value < {value_node} >.",
-            nodes=argument_node.value,
+        return CoercionResult(
+            errors=[
+                graphql_error_from_nodes(
+                    f"Argument < {name} > has invalid value < {value_node} >.",
+                    nodes=argument_node.value,
+                )
+            ]
         )
     if not directives or errors:
         return coercion_result

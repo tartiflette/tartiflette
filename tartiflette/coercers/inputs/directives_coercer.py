@@ -1,8 +1,11 @@
 from typing import Any, Callable, Optional
 
-from tartiflette.coercers.common import CoercionResult, coercion_error
+from tartiflette.coercers.common import CoercionResult
 from tartiflette.types.exceptions.tartiflette import MultipleException
-from tartiflette.utils.errors import is_coercible_exception
+from tartiflette.utils.errors import (
+    graphql_error_from_nodes,
+    is_coercible_exception,
+)
 
 __all__ = ("input_directives_coercer",)
 
@@ -48,10 +51,9 @@ async def input_directives_coercer(
     except Exception as raw_exception:  # pylint: disable=broad-except
         return CoercionResult(
             errors=[
-                coercion_error(
+                graphql_error_from_nodes(
                     str(raw_exception),
                     node,
-                    path,
                     original_error=(
                         raw_exception
                         if not is_coercible_exception(raw_exception)
