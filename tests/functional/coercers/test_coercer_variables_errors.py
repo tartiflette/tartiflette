@@ -1,5 +1,8 @@
 import pytest
 
+from tartiflette import Directive, Scalar, create_engine
+from tartiflette.scalar.builtins.string import ScalarString
+from tartiflette.types.exceptions.tartiflette import CoercionError
 from tests.functional.coercers.common import (
     resolve_input_object_field,
     resolve_unwrapped_field,
@@ -2135,3 +2138,143 @@ async def test_coercion_input_object_field_variables_errors(
     engine, query, variables, expected
 ):
     assert await engine.execute(query, variables=variables) == expected
+
+
+_SDL = """
+directive @internalCoercionError on INPUT_FIELD_DEFINITION
+directive @customCoercionError on INPUT_FIELD_DEFINITION
+
+scalar FirstErrorScalar @internalCoercionError
+scalar SecondErrorScalar @customCoercionError
+
+input FirstInputField {
+  inputField: String @internalCoercionError
+}
+
+input SecondInputField {
+  inputField: String @customCoercionError
+}
+
+type Query {
+  field(
+    firstInput: FirstInputField
+    secondInput: SecondInputField
+    firstErrorScalar: FirstErrorScalar
+    secondErrorScalar: SecondErrorScalar
+  ): String
+}
+"""
+
+
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    @Directive(
+        "internalCoercionError", schema_name="test_coercion_variables_errors"
+    )
+    class InternalCoercionError:
+        async def on_post_input_coercion(
+            self, directive_args, next_directive, value, ctx
+        ):
+            raise CoercionError("Oopsie")
+
+    @Directive(
+        "customCoercionError", schema_name="test_coercion_variables_errors"
+    )
+    class CustomCoercionError:
+        async def on_post_input_coercion(
+            self, directive_args, next_directive, value, ctx
+        ):
+            raise ValueError("Oopsie")
+
+    @Scalar("FirstErrorScalar", schema_name="test_coercion_variables_errors")
+    @Scalar("SecondErrorScalar", schema_name="test_coercion_variables_errors")
+    class ErrorScalars(ScalarString):
+        pass
+
+    return await create_engine(
+        sdl=_SDL, schema_name="test_coercion_variables_errors"
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "query,variables,expected",
+    [
+        (
+            """
+            query ($firstInput: FirstInputField!) {
+              field(firstInput: $firstInput)
+            }
+            """,
+            {"firstInput": {"inputField": "aValue"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Oopsie",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 20}],
+                    }
+                ],
+            },
+        ),
+        (
+            """
+            query ($secondInput: SecondInputField!) {
+              field(secondInput: $secondInput)
+            }
+            """,
+            {"secondInput": {"inputField": "aValue"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Oopsie",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 20}],
+                    }
+                ],
+            },
+        ),
+        (
+            """
+            query ($firstErrorScalar: FirstErrorScalar) {
+              field(firstErrorScalar: $firstErrorScalar)
+            }
+            """,
+            {"firstErrorScalar": "aValue"},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Oopsie",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 20}],
+                    }
+                ],
+            },
+        ),
+        (
+            """
+            query ($secondErrorScalar: SecondErrorScalar) {
+              field(secondErrorScalar: $secondErrorScalar)
+            }
+            """,
+            {"secondErrorScalar": "aValue"},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Oopsie",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 20}],
+                    }
+                ],
+            },
+        ),
+    ],
+)
+async def test_coercion_variables_errors(
+    ttftt_engine, query, variables, expected
+):
+    assert await ttftt_engine.execute(query, variables=variables) == expected

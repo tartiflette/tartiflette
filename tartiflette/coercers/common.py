@@ -1,6 +1,6 @@
 from typing import Any, Iterable, List, Optional, Union
 
-from tartiflette.types.exceptions.tartiflette import TartifletteError
+from tartiflette.types.exceptions.tartiflette import CoercionError
 
 __all__ = ("Path", "CoercionResult", "coercion_error")
 
@@ -109,9 +109,9 @@ def coercion_error(
     path: Optional["Path"] = None,
     sub_message: Optional[str] = None,
     original_error: Optional[Exception] = None,
-) -> "TartifletteError":
+) -> "CoercionError":
     """
-    Returns a TartifletteError whose message is formatted according to the
+    Returns a CoercionError whose message is formatted according to the
     message, path, and sub-message filled in.
     :param message: the message of the error
     :param node: the AST node linked to the error
@@ -123,10 +123,10 @@ def coercion_error(
     :type path: Optional[Path]
     :type sub_message: Optional[str]
     :type original_error: Optional[Exception]
-    :return: a TartifletteError
-    :rtype: TartifletteError
+    :return: a CoercionError
+    :rtype: CoercionError
     """
-    return TartifletteError(
+    return CoercionError(
         message
         + (" at " + str(path) if path else "")
         + ("; " + sub_message if sub_message else "."),

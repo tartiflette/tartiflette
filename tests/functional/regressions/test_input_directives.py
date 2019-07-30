@@ -358,12 +358,12 @@ async def ttftt_engine():
                 "errors": [
                     {
                         "locations": [{"column": 25, "line": 2}],
-                        "message": "Variable < $input > got invalid value < {'filters': {'groups': ['Group 1', 'Group 2'], 'fields': ['FIELD_1', 'FIELD_2']}} >; on_post_input_coercion error at value.filters.groups.",
+                        "message": "on_post_input_coercion error",
                         "path": None,
                     },
                     {
                         "locations": [{"column": 25, "line": 2}],
-                        "message": "Variable < $input > got invalid value < {'filters': {'groups': ['Group 1', 'Group 2'], 'fields': ['FIELD_1', 'FIELD_2']}} >; on_post_input_coercion error at value.filters.fields.",
+                        "message": "on_post_input_coercion error",
                         "path": None,
                     },
                 ],

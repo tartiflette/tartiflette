@@ -189,3 +189,7 @@ class MissingImplementation(ImproperlyConfigured):
 
 class RedefinedImplementation(TartifletteError):
     pass
+
+
+class CoercionError(TartifletteError):
+    pass
