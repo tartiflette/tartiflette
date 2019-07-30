@@ -4,6 +4,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from tartiflette.coercers.common import CoercionResult
 from tartiflette.constants import UNDEFINED_VALUE
+from tartiflette.types.exceptions.tartiflette import CoercionError
 from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.utils.values import is_invalid_value
 
@@ -78,11 +79,11 @@ async def variable_coercer(
         coerced_value, coerce_errors = await input_coercer(value, ctx)
         if coerce_errors:
             for coerce_error in coerce_errors:
-                # TODO: incase of error raised in directives, message will be added? Is it ok?
-                coerce_error.message = (
-                    f"Variable < ${var_name} > got invalid value "
-                    f"< {value} >; {coerce_error.message}"
-                )
+                if isinstance(coerce_error, CoercionError):
+                    coerce_error.message = (
+                        f"Variable < ${var_name} > got invalid value "
+                        f"< {value} >; {coerce_error.message}"
+                    )
             return CoercionResult(errors=coerce_errors)
         return CoercionResult(value=coerced_value)
 

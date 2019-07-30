@@ -54,27 +54,24 @@ def to_graphql_error(
 
 def graphql_error_from_nodes(
     message: str,
-    nodes: Optional[Union["Node", List["Node"]]] = None,
+    nodes: Union["Node", List["Node"]],
     path: Optional[List[str]] = None,
     original_error: Optional[Exception] = None,
 ) -> "TartifletteError":
     """
-    Returns a TartifletteError linked to a list of AST nodes which make it possible
-    to fill in the location of the error.
+    Returns a TartifletteError linked to a list of AST nodes which make it
+    possible to fill in the location of the error.
     :param message: error message
     :param nodes: AST nodes to link to the error
     :param path: the path where the original exception occurred
     :param original_error: the original raised exception
     :type message: str
-    :type nodes: Optional[Union[Node, List[Node]]]
+    :type nodes: Union[Node, List[Node]]
     :type path: Optional[List[str]]
     :type original_error: Optional[Exception]
     :return: a TartifletteError with locations
     :rtype: TartifletteError
     """
-    if nodes is None:
-        nodes = []
-
     if not isinstance(nodes, list):
         nodes = [nodes]
 
