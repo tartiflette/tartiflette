@@ -467,9 +467,14 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: Boolean) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             {"item": None},
             {
-                "data": {
-                    "listWithDefaultNonNullBooleanField": "SUCCESS-[False-None]"
-                }
+                "data": {"listWithDefaultNonNullBooleanField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [false, $item] >.",
+                        "path": ["listWithDefaultNonNullBooleanField"],
+                        "locations": [{"line": 1, "column": 68}],
+                    }
+                ],
             },
         ),
         (
@@ -485,18 +490,28 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: Boolean = null) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             None,
             {
-                "data": {
-                    "listWithDefaultNonNullBooleanField": "SUCCESS-[False-None]"
-                }
+                "data": {"listWithDefaultNonNullBooleanField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [false, $item] >.",
+                        "path": ["listWithDefaultNonNullBooleanField"],
+                        "locations": [{"line": 1, "column": 75}],
+                    }
+                ],
             },
         ),
         (
             """query ($item: Boolean = null) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             {"item": None},
             {
-                "data": {
-                    "listWithDefaultNonNullBooleanField": "SUCCESS-[False-None]"
-                }
+                "data": {"listWithDefaultNonNullBooleanField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [false, $item] >.",
+                        "path": ["listWithDefaultNonNullBooleanField"],
+                        "locations": [{"line": 1, "column": 75}],
+                    }
+                ],
             },
         ),
         (
@@ -521,9 +536,14 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: Boolean = false) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             {"item": None},
             {
-                "data": {
-                    "listWithDefaultNonNullBooleanField": "SUCCESS-[False-None]"
-                }
+                "data": {"listWithDefaultNonNullBooleanField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [false, $item] >.",
+                        "path": ["listWithDefaultNonNullBooleanField"],
+                        "locations": [{"line": 1, "column": 76}],
+                    }
+                ],
             },
         ),
         (

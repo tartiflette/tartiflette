@@ -418,7 +418,16 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($item: Float) { listNonNullFloatField(param: [23456.789e2, $item]) }""",
             {"item": None},
-            {"data": {"listNonNullFloatField": "SUCCESS-[2345681.9-None]"}},
+            {
+                "data": {"listNonNullFloatField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [23456.789e2, $item] >.",
+                        "path": ["listNonNullFloatField"],
+                        "locations": [{"line": 1, "column": 53}],
+                    }
+                ],
+            },
         ),
         (
             """query ($item: Float) { listNonNullFloatField(param: [23456.789e2, $item]) }""",
@@ -432,12 +441,30 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($item: Float = null) { listNonNullFloatField(param: [23456.789e2, $item]) }""",
             None,
-            {"data": {"listNonNullFloatField": "SUCCESS-[2345681.9-None]"}},
+            {
+                "data": {"listNonNullFloatField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [23456.789e2, $item] >.",
+                        "path": ["listNonNullFloatField"],
+                        "locations": [{"line": 1, "column": 60}],
+                    }
+                ],
+            },
         ),
         (
             """query ($item: Float = null) { listNonNullFloatField(param: [23456.789e2, $item]) }""",
             {"item": None},
-            {"data": {"listNonNullFloatField": "SUCCESS-[2345681.9-None]"}},
+            {
+                "data": {"listNonNullFloatField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [23456.789e2, $item] >.",
+                        "path": ["listNonNullFloatField"],
+                        "locations": [{"line": 1, "column": 60}],
+                    }
+                ],
+            },
         ),
         (
             """query ($item: Float = null) { listNonNullFloatField(param: [23456.789e2, $item]) }""",
@@ -456,7 +483,16 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($item: Float = 456.789e2) { listNonNullFloatField(param: [23456.789e2, $item]) }""",
             {"item": None},
-            {"data": {"listNonNullFloatField": "SUCCESS-[2345681.9-None]"}},
+            {
+                "data": {"listNonNullFloatField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [23456.789e2, $item] >.",
+                        "path": ["listNonNullFloatField"],
+                        "locations": [{"line": 1, "column": 65}],
+                    }
+                ],
+            },
         ),
         (
             """query ($item: Float = 456.789e2) { listNonNullFloatField(param: [23456.789e2, $item]) }""",

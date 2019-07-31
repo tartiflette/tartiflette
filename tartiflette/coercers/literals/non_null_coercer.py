@@ -13,6 +13,7 @@ async def non_null_coercer(
     inner_coercer: Callable,
     variables: Optional[Dict[str, Any]] = None,
     path: Optional["Path"] = None,
+    **kwargs,
 ) -> "CoercionResult":
     """
     Checks if the value is NullValueNode and will raise an error if its the
@@ -30,7 +31,10 @@ async def non_null_coercer(
     :return: the computed value
     :rtype: CoercionResult
     """
+    # pylint: disable=unused-argument
     if isinstance(node, NullValueNode):
         return CoercionResult(value=UNDEFINED_VALUE)
 
-    return await inner_coercer(node, ctx, variables=variables, path=path)
+    return await inner_coercer(
+        node, ctx, variables=variables, path=path, is_non_null_type=True
+    )
