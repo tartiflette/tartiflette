@@ -20,6 +20,7 @@ async def literal_directives_coercer(
     variables: Optional[Dict[str, Any]] = None,
     path: Optional["Path"] = None,
     is_input_field: bool = False,
+    is_non_null_type: bool = False,
 ) -> Any:
     """
     Executes the directives on the coerced value.
@@ -30,6 +31,7 @@ async def literal_directives_coercer(
     :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
     :param is_input_field: determines whether or not the node is an InputField
+    :param is_non_null_type: determines whether or not the value is nullable
     :type node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]
     :type coercer: Callable
@@ -37,11 +39,18 @@ async def literal_directives_coercer(
     :type variables: Optional[Dict[str, Any]]
     :type path: Optional[Path]
     :type is_input_field: bool
+    :type is_non_null_type: bool
     :return: the computed value
     :rtype: Any
     """
     # pylint: disable=too-many-locals
-    coercion_result = await coercer(node, ctx, variables=variables, path=path)
+    coercion_result = await coercer(
+        node,
+        ctx,
+        variables=variables,
+        path=path,
+        is_non_null_type=is_non_null_type,
+    )
 
     if not directives or (
         isinstance(node, VariableNode) and not is_input_field

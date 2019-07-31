@@ -551,9 +551,14 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: MyEnum) { listWithDefaultNonNullEnumField(param: [ENUM_2, $item]) }""",
             {"item": None},
             {
-                "data": {
-                    "listWithDefaultNonNullEnumField": "SUCCESS-[enum_2_2-myenum-None]"
-                }
+                "data": {"listWithDefaultNonNullEnumField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [ENUM_2, $item] >.",
+                        "path": ["listWithDefaultNonNullEnumField"],
+                        "locations": [{"line": 1, "column": 64}],
+                    }
+                ],
             },
         ),
         (
@@ -569,18 +574,28 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: MyEnum = null) { listWithDefaultNonNullEnumField(param: [ENUM_2, $item]) }""",
             None,
             {
-                "data": {
-                    "listWithDefaultNonNullEnumField": "SUCCESS-[enum_2_2-myenum-None]"
-                }
+                "data": {"listWithDefaultNonNullEnumField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [ENUM_2, $item] >.",
+                        "path": ["listWithDefaultNonNullEnumField"],
+                        "locations": [{"line": 1, "column": 71}],
+                    }
+                ],
             },
         ),
         (
             """query ($item: MyEnum = null) { listWithDefaultNonNullEnumField(param: [ENUM_2, $item]) }""",
             {"item": None},
             {
-                "data": {
-                    "listWithDefaultNonNullEnumField": "SUCCESS-[enum_2_2-myenum-None]"
-                }
+                "data": {"listWithDefaultNonNullEnumField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [ENUM_2, $item] >.",
+                        "path": ["listWithDefaultNonNullEnumField"],
+                        "locations": [{"line": 1, "column": 71}],
+                    }
+                ],
             },
         ),
         (
@@ -605,9 +620,14 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: MyEnum = ENUM_4) { listWithDefaultNonNullEnumField(param: [ENUM_2, $item]) }""",
             {"item": None},
             {
-                "data": {
-                    "listWithDefaultNonNullEnumField": "SUCCESS-[enum_2_2-myenum-None]"
-                }
+                "data": {"listWithDefaultNonNullEnumField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [ENUM_2, $item] >.",
+                        "path": ["listWithDefaultNonNullEnumField"],
+                        "locations": [{"line": 1, "column": 73}],
+                    }
+                ],
             },
         ),
         (
