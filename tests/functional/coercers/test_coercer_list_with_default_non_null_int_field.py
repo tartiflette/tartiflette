@@ -418,7 +418,16 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($item: Int) { listWithDefaultNonNullIntField(param: [10, $item]) }""",
             {"item": None},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[13-None]"}},
+            {
+                "data": {"listWithDefaultNonNullIntField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [10, $item] >.",
+                        "path": ["listWithDefaultNonNullIntField"],
+                        "locations": [{"line": 1, "column": 60}],
+                    }
+                ],
+            },
         ),
         (
             """query ($item: Int) { listWithDefaultNonNullIntField(param: [10, $item]) }""",
@@ -428,12 +437,30 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($item: Int = null) { listWithDefaultNonNullIntField(param: [10, $item]) }""",
             None,
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[13-None]"}},
+            {
+                "data": {"listWithDefaultNonNullIntField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [10, $item] >.",
+                        "path": ["listWithDefaultNonNullIntField"],
+                        "locations": [{"line": 1, "column": 67}],
+                    }
+                ],
+            },
         ),
         (
             """query ($item: Int = null) { listWithDefaultNonNullIntField(param: [10, $item]) }""",
             {"item": None},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[13-None]"}},
+            {
+                "data": {"listWithDefaultNonNullIntField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [10, $item] >.",
+                        "path": ["listWithDefaultNonNullIntField"],
+                        "locations": [{"line": 1, "column": 67}],
+                    }
+                ],
+            },
         ),
         (
             """query ($item: Int = null) { listWithDefaultNonNullIntField(param: [10, $item]) }""",
@@ -448,7 +475,16 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($item: Int = 30) { listWithDefaultNonNullIntField(param: [10, $item]) }""",
             {"item": None},
-            {"data": {"listWithDefaultNonNullIntField": "SUCCESS-[13-None]"}},
+            {
+                "data": {"listWithDefaultNonNullIntField": None},
+                "errors": [
+                    {
+                        "message": "Argument < param > has invalid value < [10, $item] >.",
+                        "path": ["listWithDefaultNonNullIntField"],
+                        "locations": [{"line": 1, "column": 65}],
+                    }
+                ],
+            },
         ),
         (
             """query ($item: Int = 30) { listWithDefaultNonNullIntField(param: [10, $item]) }""",

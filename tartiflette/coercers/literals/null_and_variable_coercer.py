@@ -23,8 +23,23 @@ def null_and_variable_coercer_wrapper(coercer: Callable) -> Callable:
         node: "Node",
         ctx: Optional[Any],
         variables: Optional[Dict[str, Any]] = None,
+        is_non_null_type: bool = False,
         **kwargs,
     ) -> "CoercionResult":
+        """
+        Computes the value if null or variable.
+        :param node: the AST node to treat
+        :param ctx: context passed to the query execution
+        :param variables: the variables provided in the GraphQL request
+        :param is_non_null_type: determines whether or not the value is
+        nullable
+        :type node: Union[ValueNode, VariableNode]
+        :type ctx: Optional[Any]
+        :type variables: Optional[Dict[str, Any]]
+        :type is_non_null_type: bool
+        :return: the computed value
+        :rtype: CoercionResult
+        """
         if not node:
             return CoercionResult(value=UNDEFINED_VALUE)
 
@@ -36,12 +51,8 @@ def null_and_variable_coercer_wrapper(coercer: Callable) -> Callable:
                 return CoercionResult(value=UNDEFINED_VALUE)
 
             value = variables.get(node.name.value, UNDEFINED_VALUE)
-            if is_invalid_value(value):
+            if is_invalid_value(value) or (value is None and is_non_null_type):
                 return CoercionResult(value=UNDEFINED_VALUE)
-
-            # TODO: check this
-            # if value is None and schema_type.is_non_null_type:
-            #     return CoercionResult(value=UNDEFINED_VALUE)
             return CoercionResult(value=value)
 
         return await coercer(node, ctx, variables=variables, **kwargs)
