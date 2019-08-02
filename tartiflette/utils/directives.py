@@ -104,6 +104,26 @@ async def default_argument_execution_directive(
     return value
 
 
+async def default_post_input_coercion_directive(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
+    value: Any,
+    *args,
+    **kwargs,
+) -> Any:
+    """
+    Default callable to use to wrap with directives on `on_post_input_coercion`
+    hook name.
+    :param parent_node: the root parent AST node
+    :param value: the coerced value of the argument
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
+    :type value: Any
+    :return: the coerced value of the argument
+    :rtype: Any
+    """
+    # pylint: disable=unused-argument
+    return value
+
+
 async def default_directive_callable(value: Any, *args, **kwargs) -> Any:
     """
     Default callable to use to wrap with directives when the hook doesn't
@@ -118,7 +138,8 @@ async def default_directive_callable(value: Any, *args, **kwargs) -> Any:
 
 
 _HOOK_CALLABLES_MAP = {
-    "on_argument_execution": default_argument_execution_directive
+    "on_argument_execution": default_argument_execution_directive,
+    "on_post_input_coercion": default_post_input_coercion_directive,
 }
 
 

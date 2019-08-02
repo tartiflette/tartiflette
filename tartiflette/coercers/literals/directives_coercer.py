@@ -13,6 +13,7 @@ __all__ = ("literal_directives_coercer",)
 
 
 async def literal_directives_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: Union["ValueNode", "VariableNode"],
     ctx: Optional[Any],
     coercer: Callable,
@@ -24,6 +25,7 @@ async def literal_directives_coercer(
 ) -> Any:
     """
     Executes the directives on the coerced value.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param ctx: context passed to the query execution
     :param coercer: pre-computed coercer to use on the value
@@ -32,6 +34,7 @@ async def literal_directives_coercer(
     :param path: the path traveled until this coercer
     :param is_input_field: determines whether or not the node is an InputField
     :param is_non_null_type: determines whether or not the value is nullable
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]
     :type coercer: Callable
@@ -43,8 +46,9 @@ async def literal_directives_coercer(
     :return: the computed value
     :rtype: Any
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-arguments
     coercion_result = await coercer(
+        parent_node,
         node,
         ctx,
         variables=variables,
@@ -63,7 +67,9 @@ async def literal_directives_coercer(
 
     try:
         return CoercionResult(
-            value=await directives(value, ctx, context_coercer=ctx)
+            value=await directives(
+                parent_node, value, ctx, context_coercer=ctx
+            )
         )
     except Exception as raw_exception:  # pylint: disable=broad-except
         return CoercionResult(

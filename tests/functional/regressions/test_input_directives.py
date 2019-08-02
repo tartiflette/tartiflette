@@ -94,10 +94,11 @@ async def ttftt_engine():
         async def on_post_input_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            parent_node,
             value: Any,
             ctx: Optional[Any],
         ):
-            return await next_directive(value, ctx)
+            return await next_directive(parent_node, value, ctx)
 
         @staticmethod
         async def on_pre_output_coercion(
@@ -126,6 +127,7 @@ async def ttftt_engine():
         async def on_post_input_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            parent_node,
             value: Any,
             ctx: Optional[Any],
         ):

@@ -39,11 +39,14 @@ async def variable_coercer(
     has_value = var_name in raw_variable_values
     value = raw_variable_values.get(var_name, UNDEFINED_VALUE)
     default_value = executable_variable_definition.default_value
+    variable_definition_node = executable_variable_definition.definition
 
     if not has_value and not is_invalid_value(default_value):
         # TODO: we should be able to remove this once the `ValuesOfCorrectType`
         # rule of `validate_document` will be implemented
-        coercion_result = await literal_coercer(default_value, ctx)
+        coercion_result = await literal_coercer(
+            variable_definition_node, default_value, ctx
+        )
         value, _ = coercion_result
         if is_invalid_value(value):
             return CoercionResult(
@@ -70,13 +73,15 @@ async def variable_coercer(
                         f"Variable < ${var_name} > of required type "
                         f"< {var_type} > was not provided."
                     ),
-                    nodes=executable_variable_definition.definition,
+                    nodes=variable_definition_node,
                 )
             ]
         )
 
     if has_value:
-        coerced_value, coerce_errors = await input_coercer(value, ctx)
+        coerced_value, coerce_errors = await input_coercer(
+            variable_definition_node, value, ctx
+        )
         if coerce_errors:
             for coerce_error in coerce_errors:
                 if isinstance(coerce_error, CoercionError):
@@ -106,6 +111,7 @@ async def coerce_variables(
     :return: the computed values of the variables
     :rtype: Tuple[Dict[str, Any], List["TartifletteError"]]
     """
+    # pylint: disable=too-many-locals
     results = await asyncio.gather(
         *[
             executable_variable_definition.coercer(raw_variable_values, ctx)

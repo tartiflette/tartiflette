@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult
 from tartiflette.constants import UNDEFINED_VALUE
@@ -20,6 +20,9 @@ def null_and_variable_coercer_wrapper(coercer: Callable) -> Callable:
     """
 
     async def wrapper(
+        parent_node: Union[
+            "VariableDefinitionNode", "InputValueDefinitionNode"
+        ],
         node: "Node",
         ctx: Optional[Any],
         variables: Optional[Dict[str, Any]] = None,
@@ -28,11 +31,13 @@ def null_and_variable_coercer_wrapper(coercer: Callable) -> Callable:
     ) -> "CoercionResult":
         """
         Computes the value if null or variable.
+        :param parent_node: the root parent AST node
         :param node: the AST node to treat
         :param ctx: context passed to the query execution
         :param variables: the variables provided in the GraphQL request
         :param is_non_null_type: determines whether or not the value is
         nullable
+        :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
         :type node: Union[ValueNode, VariableNode]
         :type ctx: Optional[Any]
         :type variables: Optional[Dict[str, Any]]
@@ -55,6 +60,8 @@ def null_and_variable_coercer_wrapper(coercer: Callable) -> Callable:
                 return CoercionResult(value=UNDEFINED_VALUE)
             return CoercionResult(value=value)
 
-        return await coercer(node, ctx, variables=variables, **kwargs)
+        return await coercer(
+            parent_node, node, ctx, variables=variables, **kwargs
+        )
 
     return wrapper

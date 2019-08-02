@@ -15,6 +15,7 @@ __all__ = ("list_coercer",)
 
 
 async def list_item_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     item_node: Union["ValueNode", "VariableNode"],
     ctx: Optional[Any],
     is_non_null_item_type: bool,
@@ -24,6 +25,7 @@ async def list_item_coercer(
 ) -> Union["CoercionResult", "UNDEFINED_VALUE"]:
     """
     Computes the value of a, item list.
+    :param parent_node: the root parent AST node
     :param item_node: the AST item node to treat
     :param ctx: context passed to the query execution
     :param is_non_null_item_type: determines whether or not the item is
@@ -31,6 +33,7 @@ async def list_item_coercer(
     :param inner_coercer: the pre-computed coercer to use for the item
     :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type item_node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]
     :type is_non_null_item_type: bool
@@ -45,11 +48,14 @@ async def list_item_coercer(
             return UNDEFINED_VALUE
         return CoercionResult(value=None)
 
-    return await inner_coercer(item_node, ctx, variables=variables, path=path)
+    return await inner_coercer(
+        parent_node, item_node, ctx, variables=variables, path=path
+    )
 
 
 @null_and_variable_coercer_wrapper
 async def list_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: Union["ValueNode", "VariableNode"],
     ctx: Optional[Any],
     is_non_null_item_type: bool,
@@ -59,6 +65,7 @@ async def list_coercer(
 ) -> "CoercionResult":
     """
     Computes the value of a list.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param ctx: context passed to the query execution
     :param is_non_null_item_type: determines whether or not the inner value is
@@ -66,6 +73,7 @@ async def list_coercer(
     :param inner_coercer: the pre-computed coercer to use on each value in the
     list
     :param variables: the variables provided in the GraphQL request
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]
     :type is_non_null_item_type: bool
@@ -79,6 +87,7 @@ async def list_coercer(
         results = await asyncio.gather(
             *[
                 list_item_coercer(
+                    parent_node,
                     item_node,
                     ctx,
                     is_non_null_item_type,
@@ -107,7 +116,7 @@ async def list_coercer(
         return CoercionResult(value=coerced_values, errors=errors)
 
     coerced_item_value, coerced_item_errors = await inner_coercer(
-        node, ctx, variables=variables, path=path
+        parent_node, node, ctx, variables=variables, path=path
     )
     if is_invalid_value(coerced_item_value):
         return CoercionResult(value=UNDEFINED_VALUE)

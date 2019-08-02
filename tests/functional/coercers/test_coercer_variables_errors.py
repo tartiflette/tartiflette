@@ -2173,7 +2173,7 @@ async def ttftt_engine():
     )
     class InternalCoercionError:
         async def on_post_input_coercion(
-            self, directive_args, next_directive, value, ctx
+            self, directive_args, next_directive, parent_node, value, ctx
         ):
             raise CoercionError("Oopsie")
 
@@ -2182,7 +2182,7 @@ async def ttftt_engine():
     )
     class CustomCoercionError:
         async def on_post_input_coercion(
-            self, directive_args, next_directive, value, ctx
+            self, directive_args, next_directive, parent_node, value, ctx
         ):
             raise ValueError("Oopsie")
 

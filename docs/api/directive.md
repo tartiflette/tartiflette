@@ -25,7 +25,7 @@ type Query {
 ```
 
 ```python
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Union
 
 from tartiflette import Directive
 
@@ -50,13 +50,14 @@ class MyDirective:
         self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
+        parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
         value: Any,
         ctx: Optional[Any],
     ) -> Any:
         ######################
         # Add your code here #
         ######################
-        return await next_directive(value, ctx)
+        return await next_directive(parent_node, value, ctx)
 
     async def on_field_execution(
         self,
