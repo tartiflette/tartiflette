@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult, coercion_error
 from tartiflette.coercers.inputs.null_coercer import null_coercer_wrapper
@@ -9,6 +9,7 @@ __all__ = ("scalar_coercer",)
 
 @null_coercer_wrapper
 async def scalar_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: "Node",
     value: Any,
     ctx: Optional[Any],
@@ -17,11 +18,13 @@ async def scalar_coercer(
 ) -> "CoercionResult":
     """
     Computes the value of a scalar.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param value: the raw value to compute
     :param ctx: context passed to the query execution
     :param scalar_type: the GraphQLScalarType instance of the scalar
     :param path: the path traveled until this coercer
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Node
     :type value: Any
     :type ctx: Optional[Any]

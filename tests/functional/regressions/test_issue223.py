@@ -77,11 +77,12 @@ async def ttftt_engine():
         async def on_post_input_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            parent_node,
             value: Any,
             ctx: Optional[Any],
         ):
             value["value"] = value["value"] + directive_args["value"]
-            return await next_directive(value, ctx)
+            return await next_directive(parent_node, value, ctx)
 
         @staticmethod
         async def on_pre_output_coercion(
@@ -113,11 +114,12 @@ async def ttftt_engine():
         async def on_post_input_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            parent_node,
             value: Any,
             ctx: Optional[Any],
         ):
             value = MapToValue.my_map.get(value, value)
-            return await next_directive(value, ctx)
+            return await next_directive(parent_node, value, ctx)
 
     @Resolver("Query.test4", schema_name="issue223")
     async def resolver_test4(_pr, _args, _ctx, _info):

@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult
 
@@ -15,11 +15,17 @@ def null_coercer_wrapper(coercer: Callable) -> Callable:
     """
 
     async def wrapper(
-        node: "Node", value: Any, ctx: Optional[Any], **kwargs
+        parent_node: Union[
+            "VariableDefinitionNode", "InputValueDefinitionNode"
+        ],
+        node: "Node",
+        value: Any,
+        ctx: Optional[Any],
+        **kwargs,
     ) -> "CoercionResult":
         if value is None:
             return CoercionResult(value=None)
 
-        return await coercer(node, value, ctx, **kwargs)
+        return await coercer(parent_node, node, value, ctx, **kwargs)
 
     return wrapper

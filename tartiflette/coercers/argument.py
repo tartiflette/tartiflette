@@ -95,7 +95,10 @@ async def argument_coercer(
 
     if value_node:
         coercion_result = await argument_definition.literal_coercer(
-            value_node, ctx, variables=variable_values
+            argument_definition.definition,
+            value_node,
+            ctx,
+            variables=variable_values,
         )
 
     if is_invalid_value(coercion_result):

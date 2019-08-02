@@ -41,10 +41,11 @@ class DebugDirective:
         self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
+        parent_node,
         value: Any,
         ctx: Optional[Any],
     ):
-        result = await next_directive(value, ctx)
+        result = await next_directive(parent_node, value, ctx)
         # print("@idebug:", directive_args.get("message"))
         return result
 
@@ -73,10 +74,11 @@ class LowercaseDirective:
         self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
+        parent_node,
         value: Any,
         ctx: Optional[Any],
     ):
-        result = await next_directive(value, ctx)
+        result = await next_directive(parent_node, value, ctx)
         if isinstance(result, str):
             return result.lower()
         if isinstance(result, list):
@@ -113,10 +115,11 @@ class IncrementDirective:
         self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
+        parent_node,
         value: Any,
         ctx: Optional[Any],
     ):
-        result = await next_directive(value, ctx)
+        result = await next_directive(parent_node, value, ctx)
         if isinstance(result, (int, float)):
             return result + directive_args["step"]
         if isinstance(result, list):
@@ -150,10 +153,11 @@ class ConcatenateDirective:
         self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
+        parent_node,
         value: Any,
         ctx: Optional[Any],
     ):
-        result = await next_directive(value, ctx)
+        result = await next_directive(parent_node, value, ctx)
         return (
             result + directive_args["with"]
             if isinstance(result, str)
@@ -178,10 +182,11 @@ class MapToValueDirective:
         self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
+        parent_node,
         value: Any,
         ctx: Optional[Any],
     ):
-        await next_directive(value, ctx)
+        await next_directive(parent_node, value, ctx)
         return directive_args["newValue"]
 
 

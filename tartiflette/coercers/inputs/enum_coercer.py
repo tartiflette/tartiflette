@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult, coercion_error
 from tartiflette.coercers.inputs.null_coercer import null_coercer_wrapper
@@ -8,6 +8,7 @@ __all__ = ("enum_coercer",)
 
 @null_coercer_wrapper
 async def enum_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: "Node",
     value: Any,
     ctx: Optional[Any],
@@ -16,11 +17,13 @@ async def enum_coercer(
 ) -> "CoercionResult":
     """
     Computes the value of an enum.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param value: the raw value to compute
     :param ctx: context passed to the query execution
     :param enum_type: the GraphQLEnumType instance of the enum
     :param path: the path traveled until this coercer
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Node
     :type value: Any
     :type ctx: Optional[Any]
@@ -31,7 +34,9 @@ async def enum_coercer(
     """
     try:
         enum_value = enum_type.get_value(value)
-        return CoercionResult(value=await enum_value.input_coercer(value, ctx))
+        return CoercionResult(
+            value=await enum_value.input_coercer(parent_node, value, ctx)
+        )
     except Exception:  # pylint: disable=broad-except
         # TODO: try to compute a suggestion list of valid values depending
         # on the invalid value sent and returns it as error sub message

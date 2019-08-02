@@ -8,6 +8,7 @@ __all__ = ("non_null_coercer",)
 
 
 async def non_null_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: Union["ValueNode", "VariableNode"],
     ctx: Optional[Any],
     inner_coercer: Callable,
@@ -18,11 +19,13 @@ async def non_null_coercer(
     """
     Checks if the value is NullValueNode and will raise an error if its the
     case or will try to coerce it.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param ctx: context passed to the query execution
     :param inner_coercer: the pre-computed coercer to use on the value
     :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]
     :type inner_coercer: Callable
@@ -36,5 +39,10 @@ async def non_null_coercer(
         return CoercionResult(value=UNDEFINED_VALUE)
 
     return await inner_coercer(
-        node, ctx, variables=variables, path=path, is_non_null_type=True
+        parent_node,
+        node,
+        ctx,
+        variables=variables,
+        path=path,
+        is_non_null_type=True,
     )

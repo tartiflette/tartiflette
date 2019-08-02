@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult
 from tartiflette.types.exceptions.tartiflette import MultipleException
@@ -11,6 +11,7 @@ __all__ = ("input_directives_coercer",)
 
 
 async def input_directives_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: "Node",
     value: Any,
     ctx: Optional[Any],
@@ -20,12 +21,14 @@ async def input_directives_coercer(
 ) -> "CoercionResult":
     """
     Executes the directives on the coerced value.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param value: the raw value to compute
     :param ctx: context passed to the query execution
     :param coercer: pre-computed coercer to use on the value
     :param directives: the directives to execute
     :param path: the path traveled until this coercer
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Node
     :type value: Any
     :type ctx: Optional[Any]
@@ -35,7 +38,7 @@ async def input_directives_coercer(
     :return: the coercion result
     :rtype: CoercionResult
     """
-    coercion_result = await coercer(node, value, ctx, path=path)
+    coercion_result = await coercer(parent_node, node, value, ctx, path=path)
 
     if not directives:
         return coercion_result
@@ -46,7 +49,9 @@ async def input_directives_coercer(
 
     try:
         return CoercionResult(
-            value=await directives(value, ctx, context_coercer=ctx)
+            value=await directives(
+                parent_node, value, ctx, context_coercer=ctx
+            )
         )
     except Exception as raw_exception:  # pylint: disable=broad-except
         return CoercionResult(

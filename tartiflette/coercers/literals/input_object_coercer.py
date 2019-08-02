@@ -18,6 +18,7 @@ SKIP_FIELD = object()
 
 async def input_field_value_coercer(
     input_field: "GraphQLInputField",
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     value_node: Union["ValueNode", "VariableNode", "UNDEFINED_VALUE"],
     ctx: Optional[Any],
     variables: Optional[Dict[str, Any]],
@@ -26,11 +27,13 @@ async def input_field_value_coercer(
     """
     Computes the value of an input field.
     :param input_field: the input field to compute
+    :param parent_node: the root parent AST node
     :param value_node: the value node to compute
     :param ctx: context passed to the query execution
     :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
     :type input_field: GraphQLInputField
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type value_node: Union[ValueNode, VariableNode, UNDEFINED_VALUE]
     :type ctx: Optional[Any]
     :type variables: Optional[Dict[str, Any]]
@@ -51,12 +54,13 @@ async def input_field_value_coercer(
         input_field_node = value_node.value
 
     return await input_field.literal_coercer(
-        input_field_node, ctx, variables=variables, path=path
+        parent_node, input_field_node, ctx, variables=variables, path=path
     )
 
 
 @null_and_variable_coercer_wrapper
 async def input_object_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: Union["ValueNode", "VariableNode"],
     ctx: Optional[Any],
     input_object_type: "GraphQLInputObjectType",
@@ -65,12 +69,14 @@ async def input_object_coercer(
 ) -> "CoercionResult":
     """
     Computes the value of an input object.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param ctx: context passed to the query execution
     :param input_object_type: the GraphQLInputObjectType instance of the input
     object
     :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Union[ValueNode, VariableNode]
     :type ctx: Optional[Any]
     :type input_object_type: GraphQLInputObjectType
@@ -93,6 +99,7 @@ async def input_object_coercer(
         *[
             input_field_value_coercer(
                 input_field,
+                parent_node,
                 field_nodes.get(input_field_name, UNDEFINED_VALUE),
                 ctx,
                 variables,

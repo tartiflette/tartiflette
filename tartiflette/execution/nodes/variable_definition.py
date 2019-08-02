@@ -36,12 +36,12 @@ class ExecutableVariableDefinition:
         :param graphql_type: the GraphQLType expected for the variable value
         :param default_value: the default value of the variable
         :param coercer: callable to use when coercing the user input value
-        :param definition_node: the variable definition AST node
+        :param definition: the variable definition AST node
         :type name: str
         :type graphql_type: GraphQLType
         :type default_value: Any
         :type coercer: Callable
-        :type definition_node: VariableDefinitionNode
+        :type definition: VariableDefinitionNode
         """
         self.name = name
         self.graphql_type = graphql_type
