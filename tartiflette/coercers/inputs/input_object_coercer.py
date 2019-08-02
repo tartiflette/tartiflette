@@ -11,6 +11,7 @@ __all__ = ("input_object_coercer",)
 
 
 async def input_field_value_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: "Node",
     value: Any,
     ctx: Optional[Any],
@@ -19,11 +20,13 @@ async def input_field_value_coercer(
 ) -> Union["CoercionResult", "UNDEFINED_VALUE"]:
     """
     Computes the value of an input field object.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param value: the raw value to compute
     :param ctx: context passed to the query execution
     :param input_field: the input field to compute
     :param path: the path traveled until this coercer
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Node
     :type value: Any
     :type ctx: Optional[Any]
@@ -35,7 +38,7 @@ async def input_field_value_coercer(
     if is_invalid_value(value):
         if input_field.default_value is not None:
             return await input_field.literal_coercer(
-                input_field.default_value, ctx
+                parent_node, input_field.default_value, ctx
             )
         if input_field.graphql_type.is_non_null_type:
             return CoercionResult(
@@ -49,11 +52,14 @@ async def input_field_value_coercer(
             )
         return UNDEFINED_VALUE
 
-    return await input_field.input_coercer(node, value, ctx, path=path)
+    return await input_field.input_coercer(
+        parent_node, node, value, ctx, path=path
+    )
 
 
 @null_coercer_wrapper
 async def input_object_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: "Node",
     value: Any,
     ctx: Optional[Any],
@@ -62,12 +68,14 @@ async def input_object_coercer(
 ) -> "CoercionResult":
     """
     Computes the value of an input object.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param value: the raw value to compute
     :param ctx: context passed to the query execution
     :param input_object_type: the GraphQLInputObjectType instance of the input
     object
     :param path: the path traveled until this coercer
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Node
     :type value: Any
     :type ctx: Optional[Any]
@@ -93,6 +101,7 @@ async def input_object_coercer(
     results = await asyncio.gather(
         *[
             input_field_value_coercer(
+                parent_node,
                 node,
                 value.get(input_field_name, UNDEFINED_VALUE),
                 ctx,

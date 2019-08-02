@@ -25,6 +25,7 @@ class GraphQLArgument:
         default_value: Optional["ValueNode"] = None,
         description: Optional[str] = None,
         directives: Optional[List["DirectiveNode"]] = None,
+        definition: Optional["InputValueDefinitionNode"] = None,
     ) -> None:
         """
         :param name: name of the argument
@@ -32,16 +33,19 @@ class GraphQLArgument:
         :param default_value: AST node which represents the default value
         :param description: description of the argument
         :param directives: list of directives linked to the argument
+        :param definition: the input value definition AST node
         :type name: str
         :type gql_type: Union[GraphQLList, GraphQLNonNull, str]
         :type default_value: Optional[ValueNode]
         :type description: Optional[str]
         :type directives: Optional[List[DirectiveNode]]
+        :type definition: Optional[InputValueDefinitionNode]
         """
         self.name = name
         self.gql_type = gql_type
         self.default_value = default_value
         self.description = description
+        self.definition = definition
         self.graphql_type: Optional["GraphQLType"] = None
 
         # Directives

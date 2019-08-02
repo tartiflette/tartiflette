@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult, coercion_error
 
@@ -6,6 +6,7 @@ __all__ = ("non_null_coercer",)
 
 
 async def non_null_coercer(
+    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
     node: "Node",
     value: Any,
     ctx: Optional[Any],
@@ -16,12 +17,14 @@ async def non_null_coercer(
     """
     Checks if the value is `None` and will raise an error if its the case or
     will try to coerce it.
+    :param parent_node: the root parent AST node
     :param node: the AST node to treat
     :param value: the raw value to compute
     :param ctx: context passed to the query execution
     :param graphql_type: the schema type of the expected value
     :param inner_coercer: the pre-computed coercer to use on the value
     :param path: the path traveled until this coercer
+    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Node
     :type value: Any
     :type ctx: Optional[Any]
@@ -42,4 +45,4 @@ async def non_null_coercer(
                 )
             ]
         )
-    return await inner_coercer(node, value, ctx, path=path)
+    return await inner_coercer(parent_node, node, value, ctx, path=path)

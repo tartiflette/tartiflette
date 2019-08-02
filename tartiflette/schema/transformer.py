@@ -241,18 +241,20 @@ def parse_input_value_definition(
     if not input_value_definition_node:
         return None
 
-    object_type = (
-        GraphQLArgument if as_argument_definition else GraphQLInputField
-    )
-
-    return object_type(
-        name=parse_name(input_value_definition_node.name, schema),
-        description=parse_name(
+    init_kwargs = {
+        "name": parse_name(input_value_definition_node.name, schema),
+        "description": parse_name(
             input_value_definition_node.description, schema
         ),
-        gql_type=parse_type(input_value_definition_node.type, schema),
-        default_value=input_value_definition_node.default_value,
-        directives=input_value_definition_node.directives,
+        "gql_type": parse_type(input_value_definition_node.type, schema),
+        "default_value": input_value_definition_node.default_value,
+        "directives": input_value_definition_node.directives,
+    }
+
+    if not as_argument_definition:
+        return GraphQLInputField(**init_kwargs)
+    return GraphQLArgument(
+        **init_kwargs, definition=input_value_definition_node
     )
 
 
