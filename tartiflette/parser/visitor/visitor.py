@@ -481,7 +481,10 @@ class TartifletteVisitor(Visitor):
             )
 
         try:
-            if not isinstance(a_value, a_type):
+            # pylint: disable=unidiomatic-typecheck
+            if not (
+                a_type == float and type(a_value) == int
+            ) and not isinstance(a_value, a_type):
                 self._add_exception(
                     InvalidType(
                         "Given value for < %s > is not type < %s >"
