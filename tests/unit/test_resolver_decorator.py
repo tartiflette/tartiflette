@@ -90,7 +90,7 @@ async def test_resolver_decorator(clean_registry):
         def func_default_resolver(*args, **kwargs):
             pass
 
-    generated_schema = SchemaBakery.bake("default")
+    generated_schema = await SchemaBakery.bake("default")
 
     assert (
         generated_schema.get_field_by_name("Test.field").resolver is not None
