@@ -80,6 +80,11 @@ def test_parse_to_json_ast(query, expected):
     assert _parse_to_json_ast(query) == expected
 
 
+@pytest.mark.skip(
+    reason="Should be unskipped when a better validation "
+    "system which doesn't alter the DocumentNode will "
+    "be implemented."
+)
 @pytest.mark.parametrize(
     "sdl,expected",
     [

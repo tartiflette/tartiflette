@@ -176,7 +176,7 @@ def test_lark_to_location_node(line, column, end_line, end_column, expected):
                 children=[Token("INT_VALUE", 10)],
                 meta=_DEFAULT_TREE_META_MOCK,
             ),
-            IntValueNode(value=10, location=_EXPECTED_TREE_LOCATION),
+            IntValueNode(value="10", location=_EXPECTED_TREE_LOCATION),
         )
     ],
 )
@@ -193,7 +193,7 @@ def test_lark_to_int_value_node(tree, expected):
                 children=[Token("FLOAT_VALUE", 10.2)],
                 meta=_DEFAULT_TREE_META_MOCK,
             ),
-            FloatValueNode(value=10.2, location=_EXPECTED_TREE_LOCATION),
+            FloatValueNode(value="10.2", location=_EXPECTED_TREE_LOCATION),
         )
     ],
 )
@@ -227,7 +227,7 @@ def test_lark_to_string_value_node(tree, expected):
                 children=[Token("BOOLEAN_VALUE", True)],
                 meta=_DEFAULT_TREE_META_MOCK,
             ),
-            BooleanValueNode(value=True, location=_EXPECTED_TREE_LOCATION),
+            BooleanValueNode(value="True", location=_EXPECTED_TREE_LOCATION),
         )
     ],
 )
