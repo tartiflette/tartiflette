@@ -11,7 +11,7 @@ import pytest
         ("LOL", AttributeError),
     ],
 )
-def test_scalar_float_coerce_output(val, expected):
+def test_scalar_time_coerce_output(val, expected):
     from tartiflette.scalar.builtins.time import ScalarTime
 
     if type(expected) is type and issubclass(expected, Exception):
@@ -29,7 +29,7 @@ def test_scalar_float_coerce_output(val, expected):
         ("LOL", ValueError),
     ],
 )
-def test_scalar_datetime_coerce_input(val, expected):
+def test_scalar_time_coerce_input(val, expected):
     from tartiflette.scalar.builtins.time import ScalarTime
 
     if type(expected) is type and issubclass(expected, Exception):

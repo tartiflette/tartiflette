@@ -6,11 +6,11 @@ import pytest
 @pytest.mark.asyncio
 async def test_non_introspectable_introspection():
     from tartiflette.directive.builtins.non_introspectable import (
-        NonIntrospectable,
+        NonIntrospectableDirective,
     )
 
     assert (
-        await NonIntrospectable().on_introspection(
+        await NonIntrospectableDirective().on_introspection(
             Mock(), Mock(), Mock(), Mock(), Mock()
         )
         is None

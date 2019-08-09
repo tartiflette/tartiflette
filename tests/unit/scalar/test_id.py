@@ -13,33 +13,33 @@ import pytest
         (False, "False"),
     ],
 )
-def test_scalar_float_coerce_output(val, expected):
-    from tartiflette.scalar.builtins.id import ScalarId
+def test_scalar_id_coerce_output(val, expected):
+    from tartiflette.scalar.builtins.id import ScalarID
 
     if type(expected) is type and issubclass(expected, Exception):
         with pytest.raises(expected):
-            ScalarId().coerce_output(val)
+            ScalarID().coerce_output(val)
     else:
-        assert ScalarId().coerce_output(val) == expected
+        assert ScalarID().coerce_output(val) == expected
 
 
 @pytest.mark.parametrize(
     "val,expected",
     [
         ("3.6", "3.6"),
-        (1, "1"),
-        (None, "None"),
-        (Exception("LOL"), "LOL"),
-        (Exception, "<class 'Exception'>"),
-        (True, "True"),
-        (False, "False"),
+        (1, TypeError),
+        (None, TypeError),
+        (Exception("LOL"), TypeError),
+        (Exception, TypeError),
+        (True, TypeError),
+        (False, TypeError),
     ],
 )
-def test_scalar_datetime_coerce_input(val, expected):
-    from tartiflette.scalar.builtins.id import ScalarId
+def test_scalar_id_coerce_input(val, expected):
+    from tartiflette.scalar.builtins.id import ScalarID
 
     if type(expected) is type and issubclass(expected, Exception):
         with pytest.raises(expected):
-            ScalarId().coerce_input(val)
+            ScalarID().coerce_input(val)
     else:
-        assert ScalarId().coerce_input(val) == expected
+        assert ScalarID().coerce_input(val) == expected
