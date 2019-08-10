@@ -25,7 +25,7 @@ def parse_to_document(sdl: Union[str, bytes]) -> "DocumentNode":
     Returns a DocumentNode instance which represents the SDL after being
     parsed.
     :param sdl: sdl to parse and transform into a DocumentNode
-    :type query: Union[str, bytes]
+    :type sdl: Union[str, bytes]
     :return: a DocumentNode representing the sdl
     :rtype: DocumentNode
 

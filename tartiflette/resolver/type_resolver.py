@@ -71,8 +71,8 @@ class TypeResolver:
     def __call__(self, resolver: Callable) -> Callable:
         """
         Registers the type resolver into the schema.
-        :param implementation: implementation of the type resolver
-        :type implementation: Callable
+        :param resolver: implementation of the type resolver
+        :type resolver: Callable
         :return: the implementation of the type resolver
         :rtype: Callable
         """
