@@ -75,6 +75,7 @@ class TartifletteError(Exception):
         :return: a valid GraphQL error output
         :rtype: Dict[str, Any]
         """
+        # pylint: disable=missing-param-doc
         computed_locations = []
 
         try:
