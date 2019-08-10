@@ -28,11 +28,10 @@ def is_valid_async_generator(generator: AsyncGenerator) -> bool:
     """
     Determines whether or not the filled in parameter is a valid asynchronous
     generator.
-    :param coroutine: object to check
-    :type coroutine: Coroutine
+    :param generator: object to check
+    :type generator: AsyncGenerator
     :return: whether or not the filled in parameter is a valid asynchronous
     generator
-    callable
     :rtype: bool
     """
     return isasyncgenfunction(

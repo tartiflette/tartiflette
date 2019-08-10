@@ -159,8 +159,6 @@ def parse_null_value(
     :param schema: the GraphQLSchema instance linked to the engine
     :type null_value_node: NullValueNode
     :type schema: GraphQLSchema
-    :return: the null value
-    :rtype: None
     """
     # pylint: disable=unused-argument
     return None
