@@ -1,0 +1,29 @@
+name: check and build
+on: [push]
+jobs:
+  build_publish_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: build docker image
+        uses: actions/docker/cli@master
+        with:
+          args: build -t tartiflette .
+      - name: style
+        uses: actions/docker/cli@master
+        with:
+          args: run -i tartiflette make style
+      - name: functional test
+        uses: actions/docker/cli@master
+        with:
+          args: run -i tartiflette make test-functional
+      - name: unit test
+        uses: actions/docker/cli@master
+        with:
+          args: run -i tartiflette make test-unit
+      - name: build and publish to pypi
+        uses: ./.github/actions/pypi/
+        if: github.ref != 'refs/heads/master'
+        env:
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}

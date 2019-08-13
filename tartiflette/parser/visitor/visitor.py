@@ -365,7 +365,7 @@ class TartifletteVisitor(Visitor):
         directives: List[Dict[str, Any]] = None,
         **_kwargs,
     ) -> None:
-        # pylint: disable=too-many-locals
+        # pylint: disable=too-many-locals,too-complex
         type_cond = self._internal_ctx.compute_type_cond(type_cond_depth)
         parent_type = self._get_parent_type(self._internal_ctx.node)
 
