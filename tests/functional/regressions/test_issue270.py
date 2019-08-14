@@ -56,9 +56,9 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "locations": [{"column": 10, "line": 1}],
-                        "message": "Given value for < var > is not type < <class 'float'> >",
+                        "message": "Variable < $var > got invalid value < True >; Expected type < Float >; Float cannot represent non numeric value: < True >",
                         "path": None,
+                        "locations": [{"column": 10, "line": 1}],
                     }
                 ],
             },
