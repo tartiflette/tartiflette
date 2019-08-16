@@ -1,6 +1,6 @@
 import pytest
 
-from tests.functional.reusable.pets.storage import find_object
+from tests.functional.reusable.pets.storage import PETS, find_object
 
 
 async def resolve_query_version(parent, args, ctx, info):
@@ -17,6 +17,10 @@ async def resolve_query_human(parent, args, ctx, info):
 
 async def resolve_query_pet(parent, args, ctx, info):
     return find_object("Pet", args["id"])
+
+
+async def resolve_query_pets(parent, args, ctx, info):
+    return [find_object("Pet", pet.split(".")[1]) for pet in PETS]
 
 
 async def resolve_friends(parent, args, ctx, info):
@@ -274,4 +278,89 @@ async def resolve_friends(parent, args, ctx, info):
     ],
 )
 async def test_pets(engine, query, variables, expected):
+    assert await engine.execute(query, variables=variables) == expected
+
+
+@pytest.mark.asyncio
+@pytest.mark.ttftt_engine(
+    name="pets", resolvers={"MyQuery.pets": resolve_query_pets}
+)
+@pytest.mark.parametrize(
+    "query,variables,expected",
+    [
+        (
+            """
+            query ($petFilters: PetFilters) {
+              pets(filters: $petFilters) { ... on Dog { name } }
+            }
+            """,
+            {"petFilters": {"kind": "DG"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $petFilters > got invalid value < {'kind': 'DG'} >; Expected type < PetKind > at value.kind; Did you mean DOG?",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 20}],
+                    }
+                ],
+            },
+        ),
+        (
+            """
+            query ($petFilters: PetFilters) {
+              pets(filters: $petFilters) { ... on Dog { name } }
+            }
+            """,
+            {"petFilters": {"kind": "CA"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $petFilters > got invalid value < {'kind': 'CA'} >; Expected type < PetKind > at value.kind; Did you mean CAT?",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 20}],
+                    }
+                ],
+            },
+        ),
+        (
+            """
+            query ($petFilters: PetFilters) {
+              pets(filters: $petFilters) { ... on Dog { name } }
+            }
+            """,
+            {"petFilters": {"na": "C"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $petFilters > got invalid value < {'na': 'C'} >; Field < na > is not defined by type < PetFilters >; Did you mean name?",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 20}],
+                    }
+                ],
+            },
+        ),
+        (
+            """
+            query ($petFilters: PetFilters) {
+              pets(filters: $petFilters) { ... on Dog { name } }
+            }
+            """,
+            {"petFilters": {"hasien": True}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $petFilters > got invalid value < {'hasien': True} >; Field < hasien > is not defined by type < PetFilters >; Did you mean hasFriends or hasChildren?",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 20}],
+                    }
+                ],
+            },
+        ),
+    ],
+)
+async def test_pets_errors(engine, query, variables, expected):
     assert await engine.execute(query, variables=variables) == expected

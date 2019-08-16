@@ -206,3 +206,24 @@ def error_coercer_factory(error_coercer: Callable) -> Callable:
         return await error_coercer(exception, error)
 
     return func_wrapper
+
+
+def did_you_mean(suggestion_list: List[str]) -> str:
+    """
+    Returns a message containing a suggestion list.
+    :param suggestion_list: list of suggested values
+    :type suggestion_list: List[str]
+    :return: a message containing a suggestion list
+    :rtype: str
+    """
+    if not suggestion_list:
+        return ""
+    message = "Did you mean"
+    nb_suggestions = len(suggestion_list)
+    if nb_suggestions == 1:
+        return f"{message} {suggestion_list[0]}?"
+    if nb_suggestions == 2:
+        return f"{message} {suggestion_list[0]} or {suggestion_list[1]}?"
+
+    last_suggestion = suggestion_list.pop()
+    return f"{message} {', '.join(suggestion_list)}, or {last_suggestion}?"
