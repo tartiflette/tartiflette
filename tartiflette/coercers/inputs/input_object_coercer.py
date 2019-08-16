@@ -1,10 +1,12 @@
 import asyncio
 
+from difflib import get_close_matches
 from typing import Any, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult, Path, coercion_error
 from tartiflette.coercers.inputs.null_coercer import null_coercer_wrapper
 from tartiflette.constants import UNDEFINED_VALUE
+from tartiflette.utils.errors import did_you_mean
 from tartiflette.utils.values import is_invalid_value
 
 __all__ = ("input_object_coercer",)
@@ -126,15 +128,17 @@ async def input_object_coercer(
 
     for input_field_name in value:
         if input_field_name not in input_fields:
-            # TODO: try to compute a suggestion list of valid input fields
-            # depending on the invalid field name returns it as
-            # error sub message
             errors.append(
                 coercion_error(
                     f"Field < {input_field_name} > is not defined by type "
                     f"< {input_object_type.name} >",
                     node,
                     path,
+                    did_you_mean(
+                        get_close_matches(
+                            input_field_name, input_fields.keys(), n=5
+                        )
+                    ),
                 )
             )
 

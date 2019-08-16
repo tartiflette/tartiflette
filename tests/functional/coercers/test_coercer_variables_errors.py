@@ -360,7 +360,7 @@ async def test_coercion_boolean_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < MyEnum >.",
+                        "message": "Variable < $param > got invalid value < ['ENUM_1'] >; Expected type < MyEnum >; Did you mean ENUM_1, ENUM_4, ENUM_3, or ENUM_2?",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -1255,12 +1255,12 @@ async def test_coercion_string_field_variables_errors(
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid value < {'undefinedField1': 'value1', 'undefinedField2': 'value2'} >; Field < undefinedField1 > is not defined by type < MyInput >.",
+                        "message": "Variable < $param > got invalid value < {'undefinedField1': 'value1', 'undefinedField2': 'value2'} >; Field < undefinedField1 > is not defined by type < MyInput >; Did you mean intField?",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'undefinedField1': 'value1', 'undefinedField2': 'value2'} >; Field < undefinedField2 > is not defined by type < MyInput >.",
+                        "message": "Variable < $param > got invalid value < {'undefinedField1': 'value1', 'undefinedField2': 'value2'} >; Field < undefinedField2 > is not defined by type < MyInput >; Did you mean intField?",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },
@@ -1827,7 +1827,7 @@ async def test_coercion_string_field_variables_errors(
                         "locations": [{"line": 1, "column": 8}],
                     },
                     {
-                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < MyEnum > at value.enumField.",
+                        "message": "Variable < $param > got invalid value < {'booleanField': ['ENUM_1'], 'enumField': ['ENUM_1'], 'floatField': ['ENUM_1'], 'intField': ['ENUM_1'], 'stringField': ['ENUM_1'], 'listBooleanField': ['ENUM_1'], 'listEnumField': ['ENUM_1'], 'listFloatField': ['ENUM_1'], 'listIntField': ['ENUM_1'], 'listStringField': ['ENUM_1']} >; Expected type < MyEnum > at value.enumField; Did you mean ENUM_1, ENUM_4, ENUM_3, or ENUM_2?",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     },

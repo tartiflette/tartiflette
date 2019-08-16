@@ -1,7 +1,9 @@
+from difflib import get_close_matches
 from typing import Any, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult, coercion_error
 from tartiflette.coercers.inputs.null_coercer import null_coercer_wrapper
+from tartiflette.utils.errors import did_you_mean
 
 __all__ = ("enum_coercer",)
 
@@ -38,12 +40,19 @@ async def enum_coercer(
             value=await enum_value.input_coercer(parent_node, value, ctx)
         )
     except Exception:  # pylint: disable=broad-except
-        # TODO: try to compute a suggestion list of valid values depending
-        # on the invalid value sent and returns it as error sub message
         return CoercionResult(
             errors=[
                 coercion_error(
-                    f"Expected type < {enum_type.name} >", node, path
+                    f"Expected type < {enum_type.name} >",
+                    node,
+                    path,
+                    did_you_mean(
+                        get_close_matches(
+                            str(value),
+                            [enum.value for enum in enum_type.values],
+                            n=5,
+                        )
+                    ),
                 )
             ]
         )
