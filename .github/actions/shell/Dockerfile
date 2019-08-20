@@ -29,7 +29,4 @@ RUN apt-get update && \
 	apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
-COPY is_ref.sh /usr/bin/is_ref
-RUN chmod +x /usr/bin/is_ref
-
 CMD ["make", "run"]

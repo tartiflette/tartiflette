@@ -31,11 +31,7 @@ check-format:
 
 .PHONY: style
 style: check-format check-import
-	pylint tartiflette --rcfile=pylintrc
-
-.PHONY: complexity
-complexity:
-	xenon --max-absolute B --max-modules B --max-average A tartiflette
+	pylint tartiflette --rcfile=pylintrc --load-plugins=pylint.extensions.mccabe
 
 .PHONY: test-integration
 test-integration: clean

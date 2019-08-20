@@ -337,6 +337,7 @@ class GraphQLSchema:
         return errors
 
     def _validate_object_follow_interfaces(self) -> List[str]:
+        # pylint: disable=too-complex
         errors = []
         for gql_type in self._gql_types.values():
             try:
