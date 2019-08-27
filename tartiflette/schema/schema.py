@@ -345,6 +345,7 @@ class GraphQLSchema:
         :return: a list of errors
         :rtype: List[str]
         """
+        # pylint: disable=too-complex
         errors = []
         for gql_type in self.type_definitions.values():
             try:

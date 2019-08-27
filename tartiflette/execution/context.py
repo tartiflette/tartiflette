@@ -130,7 +130,7 @@ async def build_execution_context(
     :return: an ExecutionContext instance
     :rtype: Tuple[Optional[ExecutionContext], Optional[List[TartifletteError]]]
     """
-    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-arguments,too-many-locals,too-complex
     errors: List["TartifletteError"] = []
     operation: Optional["OperationDefinitionNode"] = None
     fragments: Dict[str, "FragmentDefinitionNode"] = {}

@@ -34,7 +34,7 @@ async def argument_coercer(
     :return: the computed value
     :rtype: Union["CoercionResult", "UNDEFINED_VALUE"]
     """
-    # pylint: disable=too-many-locals,too-many-branches
+    # pylint: disable=too-many-locals,too-many-branches,too-complex
     name = argument_definition.name
     arg_type = argument_definition.graphql_type
 
