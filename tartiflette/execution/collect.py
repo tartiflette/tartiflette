@@ -207,6 +207,7 @@ async def collect_fields(
     :return: the dictionary of collected fields
     :rtype: Dict[str, List[FieldNode]]
     """
+    # pylint: disable=too-complex
     if fields is None:
         fields: Dict[str, "FieldNode"] = {}
 
