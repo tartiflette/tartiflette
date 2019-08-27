@@ -16,13 +16,13 @@ from tartiflette.coercers.literals.input_object_coercer import (
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLType
+from tartiflette.types.type import GraphQLInputType, GraphQLType
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLInputObjectType",)
 
 
-class GraphQLInputObjectType(GraphQLType):
+class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
     """
     Definition of a GraphQL input object.
     """
@@ -103,9 +103,8 @@ class GraphQLInputObjectType(GraphQLType):
 
     def bake(self, schema: "GraphQLSchema") -> None:
         """
-        Bakes the GraphQLInputObject and computes all the necessary stuff for
-        execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        Bakes the GraphQLInputObject and computes all the necessary stuff for execution.
+        :param schema: the GraphQLSchema schema instance linked to the engine
         :type schema: GraphQLSchema
         """
         # Directives
@@ -137,6 +136,12 @@ class GraphQLInputObjectType(GraphQLType):
             directives=post_input_coercion_directives,
         )
 
+    async def bake_input_fields(self, schema: "GraphQLSchema") -> None:
+        """
+        Bakes input object's input fields.
+        :param schema: the GraphQLSchema instance linked to the engine
+        :type schema: GraphQLSchema
+        """
         if self.input_fields:
             for input_field in self.input_fields.values():
                 input_field.bake(schema)

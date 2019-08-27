@@ -15,12 +15,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListBooleanField }""",
             None,
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [Boolean]! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullListBooleanField >.",
                         "path": ["nonNullListBooleanField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -29,12 +35,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { nonNullListBooleanField(param: null) }""",
             None,
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < [Boolean]! > must not be null.",
                         "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 40}],
+                        "locations": [{"line": 1, "column": 33}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -60,254 +72,254 @@ from tests.functional.coercers.common import resolve_list_field
             {"data": {"nonNullListBooleanField": "SUCCESS-[False-None]"}},
         ),
         (
-            """query ($param: [Boolean]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]!) { nonNullListBooleanField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [Boolean]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 60}],
+                        "message": "Variable < $param > of required type < [Boolean]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Boolean]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]!) { nonNullListBooleanField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Boolean]! > must not be null.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 60}],
+                        "message": "Variable < $param > of non-null type < [Boolean]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Boolean]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]!) { nonNullListBooleanField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Boolean]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]!) { nonNullListBooleanField(param: $param) }""",
             {"param": True},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]!) { nonNullListBooleanField(param: $param) }""",
             {"param": [True]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]!) { nonNullListBooleanField(param: $param) }""",
             {"param": [True, None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True-None]"}},
         ),
         (
-            """query ($param: [Boolean] = null) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = null) { nonNullListBooleanField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Boolean]! > must not be null.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 67}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 29}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Boolean] = null) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = null) { nonNullListBooleanField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Boolean]! > must not be null.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 67}],
+                        "message": "Variable < $param > of non-null type < [Boolean]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Boolean] = null) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = null) { nonNullListBooleanField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Boolean] = null) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = null) { nonNullListBooleanField(param: $param) }""",
             {"param": True},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean] = null) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = null) { nonNullListBooleanField(param: $param) }""",
             {"param": [True]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean] = null) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = null) { nonNullListBooleanField(param: $param) }""",
             {"param": [True, None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True-None]"}},
         ),
         (
-            """query ($param: [Boolean] = [null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [null]) { nonNullListBooleanField(param: $param) }""",
             None,
             {"data": {"nonNullListBooleanField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Boolean] = [null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [null]) { nonNullListBooleanField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Boolean]! > must not be null.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 69}],
+                        "message": "Variable < $param > of non-null type < [Boolean]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Boolean] = [null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [null]) { nonNullListBooleanField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Boolean] = [null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [null]) { nonNullListBooleanField(param: $param) }""",
             {"param": True},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean] = [null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [null]) { nonNullListBooleanField(param: $param) }""",
             {"param": [True]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean] = [null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [null]) { nonNullListBooleanField(param: $param) }""",
             {"param": [True, None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True-None]"}},
         ),
         (
-            """query ($param: [Boolean] = false) { nonNullListBooleanField(param: $param) }""",
-            None,
-            {"data": {"nonNullListBooleanField": "SUCCESS-[False]"}},
-        ),
-        (
-            """query ($param: [Boolean] = false) { nonNullListBooleanField(param: $param) }""",
-            {"param": None},
-            {
-                "data": {"nonNullListBooleanField": None},
-                "errors": [
-                    {
-                        "message": "Argument < param > of non-null type < [Boolean]! > must not be null.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 68}],
-                    }
-                ],
-            },
-        ),
-        (
-            """query ($param: [Boolean] = false) { nonNullListBooleanField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"nonNullListBooleanField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [Boolean] = false) { nonNullListBooleanField(param: $param) }""",
-            {"param": True},
-            {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
-        ),
-        (
-            """query ($param: [Boolean] = false) { nonNullListBooleanField(param: $param) }""",
-            {"param": [True]},
-            {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
-        ),
-        (
-            """query ($param: [Boolean] = false) { nonNullListBooleanField(param: $param) }""",
-            {"param": [True, None]},
-            {"data": {"nonNullListBooleanField": "SUCCESS-[True-None]"}},
-        ),
-        (
-            """query ($param: [Boolean] = [false]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = false) { nonNullListBooleanField(param: $param) }""",
             None,
             {"data": {"nonNullListBooleanField": "SUCCESS-[False]"}},
         ),
         (
-            """query ($param: [Boolean] = [false]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = false) { nonNullListBooleanField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Boolean]! > must not be null.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 70}],
+                        "message": "Variable < $param > of non-null type < [Boolean]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Boolean] = [false]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = false) { nonNullListBooleanField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Boolean] = [false]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = false) { nonNullListBooleanField(param: $param) }""",
             {"param": True},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean] = [false]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = false) { nonNullListBooleanField(param: $param) }""",
             {"param": [True]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean] = [false]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = false) { nonNullListBooleanField(param: $param) }""",
             {"param": [True, None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True-None]"}},
         ),
         (
-            """query ($param: [Boolean] = [false, null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [false]) { nonNullListBooleanField(param: $param) }""",
+            None,
+            {"data": {"nonNullListBooleanField": "SUCCESS-[False]"}},
+        ),
+        (
+            """query ($param: [Boolean]! = [false]) { nonNullListBooleanField(param: $param) }""",
+            {"param": None},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > of non-null type < [Boolean]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [Boolean]! = [false]) { nonNullListBooleanField(param: $param) }""",
+            {"param": [None]},
+            {"data": {"nonNullListBooleanField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [Boolean]! = [false]) { nonNullListBooleanField(param: $param) }""",
+            {"param": True},
+            {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
+        ),
+        (
+            """query ($param: [Boolean]! = [false]) { nonNullListBooleanField(param: $param) }""",
+            {"param": [True]},
+            {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
+        ),
+        (
+            """query ($param: [Boolean]! = [false]) { nonNullListBooleanField(param: $param) }""",
+            {"param": [True, None]},
+            {"data": {"nonNullListBooleanField": "SUCCESS-[True-None]"}},
+        ),
+        (
+            """query ($param: [Boolean]! = [false, null]) { nonNullListBooleanField(param: $param) }""",
             None,
             {"data": {"nonNullListBooleanField": "SUCCESS-[False-None]"}},
         ),
         (
-            """query ($param: [Boolean] = [false, null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [false, null]) { nonNullListBooleanField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Boolean]! > must not be null.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 76}],
+                        "message": "Variable < $param > of non-null type < [Boolean]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Boolean] = [false, null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [false, null]) { nonNullListBooleanField(param: $param) }""",
             {"param": [None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [Boolean] = [false, null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [false, null]) { nonNullListBooleanField(param: $param) }""",
             {"param": True},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean] = [false, null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [false, null]) { nonNullListBooleanField(param: $param) }""",
             {"param": [True]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean] = [false, null]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean]! = [false, null]) { nonNullListBooleanField(param: $param) }""",
             {"param": [True, None]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True-None]"}},
         ),
@@ -360,35 +372,35 @@ from tests.functional.coercers.common import resolve_list_field
             {"data": {"nonNullListBooleanField": "SUCCESS-[True-None]"}},
         ),
         (
-            """query ($param: [Boolean!]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean!]!) { nonNullListBooleanField(param: $param) }""",
             None,
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < [Boolean]! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 61}],
+                        "message": "Variable < $param > of required type < [Boolean!]! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Boolean!]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean!]!) { nonNullListBooleanField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullListBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Boolean]! > must not be null.",
-                        "path": ["nonNullListBooleanField"],
-                        "locations": [{"line": 1, "column": 61}],
+                        "message": "Variable < $param > of non-null type < [Boolean!]! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: [Boolean!]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean!]!) { nonNullListBooleanField(param: $param) }""",
             {"param": [None]},
             {
                 "data": None,
@@ -402,17 +414,17 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [Boolean!]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean!]!) { nonNullListBooleanField(param: $param) }""",
             {"param": True},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean!]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean!]!) { nonNullListBooleanField(param: $param) }""",
             {"param": [True]},
             {"data": {"nonNullListBooleanField": "SUCCESS-[True]"}},
         ),
         (
-            """query ($param: [Boolean!]) { nonNullListBooleanField(param: $param) }""",
+            """query ($param: [Boolean!]!) { nonNullListBooleanField(param: $param) }""",
             {"param": [True, None]},
             {
                 "data": None,

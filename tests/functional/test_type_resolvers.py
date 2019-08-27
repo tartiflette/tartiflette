@@ -234,7 +234,7 @@ class UnknownType:
     ],
 )
 async def test_type_resolvers_default_type_resolver(
-    clean_registry, result, expected
+    random_schema_name, result, expected
 ):
     def custom_default_type_resolver(result, *args, **kwargs):
         try:
@@ -243,15 +243,13 @@ async def test_type_resolvers_default_type_resolver(
             pass
         return result.__class__.__name__
 
-    @Resolver(
-        "Query.mixed", schema_name="test_type_resolvers_default_type_resolver"
-    )
+    @Resolver("Query.mixed", schema_name=random_schema_name)
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
     engine = await create_engine(
         _SDL,
-        schema_name="test_type_resolvers_default_type_resolver",
+        schema_name=random_schema_name,
         custom_default_type_resolver=custom_default_type_resolver,
     )
 
@@ -259,32 +257,34 @@ async def test_type_resolvers_default_type_resolver(
 
 
 @pytest.mark.asyncio
-async def test_type_resolvers_type_resolver_unknown_type():
+async def test_type_resolvers_type_resolver_unknown_type_0():
     with pytest.raises(
         UnknownTypeDefinition, match="Unknown Type Definition < Unknown >."
     ):
         TypeResolver(
             "Unknown",
-            schema_name="test_type_resolvers_type_resolver_unknown_type",
+            schema_name="test_type_resolvers_type_resolver_unknown_type_0",
         )(lambda result, context, info, abstract_type: "Unknown")
 
         await create_engine(
-            _SDL, schema_name="test_type_resolvers_type_resolver_unknown_type"
+            _SDL,
+            schema_name="test_type_resolvers_type_resolver_unknown_type_0",
         )
 
 
 @pytest.mark.asyncio
-async def test_type_resolvers_type_resolver_unknown_type():
+async def test_type_resolvers_type_resolver_unknown_type_1():
     with pytest.raises(
         InvalidType, match="Type < First > is not an abstract type."
     ):
         TypeResolver(
             "First",
-            schema_name="test_type_resolvers_type_resolver_unknown_type",
+            schema_name="test_type_resolvers_type_resolver_unknown_type_1",
         )(lambda result, context, info, abstract_type: "Unknown")
 
         await create_engine(
-            _SDL, schema_name="test_type_resolvers_type_resolver_unknown_type"
+            _SDL,
+            schema_name="test_type_resolvers_type_resolver_unknown_type_1",
         )
 
 
@@ -366,14 +366,14 @@ async def test_type_resolvers_type_resolver_unknown_type():
         ),
     ],
 )
-async def test_union_type_resolvers_default(clean_registry, result, expected):
-    @Resolver("Query.mixed", schema_name="test_union_type_resolvers_default")
+async def test_union_type_resolvers_default(
+    result, expected, random_schema_name
+):
+    @Resolver("Query.mixed", schema_name=random_schema_name)
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(
-        _SDL, schema_name="test_union_type_resolvers_default"
-    )
+    engine = await create_engine(_SDL, schema_name=random_schema_name)
 
     assert await engine.execute(_UNION_QUERY) == expected
 
@@ -452,19 +452,17 @@ async def test_union_type_resolvers_default(clean_registry, result, expected):
     ],
 )
 async def test_union_type_resolvers_field_resolver(
-    clean_registry, result, field_type_resolver, expected
+    result, field_type_resolver, expected, random_schema_name
 ):
     @Resolver(
         "Query.mixed",
         type_resolver=field_type_resolver,
-        schema_name="test_union_type_resolvers_field_resolver",
+        schema_name=random_schema_name,
     )
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(
-        _SDL, schema_name="test_union_type_resolvers_field_resolver"
-    )
+    engine = await create_engine(_SDL, schema_name=random_schema_name)
 
     assert await engine.execute(_UNION_QUERY) == expected
 
@@ -543,21 +541,15 @@ async def test_union_type_resolvers_field_resolver(
     ],
 )
 async def test_union_type_resolvers_type_resolver(
-    clean_registry, type_resolver, result, expected
+    type_resolver, result, expected, random_schema_name
 ):
-    TypeResolver(
-        "Mixed", schema_name="test_union_type_resolvers_type_resolver"
-    )(type_resolver)
+    TypeResolver("Mixed", schema_name=random_schema_name)(type_resolver)
 
-    @Resolver(
-        "Query.mixed", schema_name="test_union_type_resolvers_type_resolver"
-    )
+    @Resolver("Query.mixed", schema_name=random_schema_name)
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(
-        _SDL, schema_name="test_union_type_resolvers_type_resolver"
-    )
+    engine = await create_engine(_SDL, schema_name=random_schema_name)
 
     assert await engine.execute(_UNION_QUERY) == expected
 
@@ -603,17 +595,13 @@ async def test_union_type_resolvers_type_resolver(
     ],
 )
 async def test_interface_type_resolvers_default(
-    clean_registry, result, expected
+    result, expected, random_schema_name
 ):
-    @Resolver(
-        "Query.named", schema_name="test_interface_type_resolvers_default"
-    )
+    @Resolver("Query.named", schema_name=random_schema_name)
     async def resolve_query_named(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(
-        _SDL, schema_name="test_interface_type_resolvers_default"
-    )
+    engine = await create_engine(_SDL, schema_name=random_schema_name)
 
     assert await engine.execute(_INTERFACE_QUERY) == expected
 
@@ -664,19 +652,17 @@ async def test_interface_type_resolvers_default(
     ],
 )
 async def test_interface_type_resolvers_field_resolver(
-    clean_registry, result, field_type_resolver, expected
+    result, field_type_resolver, expected, random_schema_name
 ):
     @Resolver(
         "Query.named",
         type_resolver=field_type_resolver,
-        schema_name="test_interface_type_resolvers_field_resolver",
+        schema_name=random_schema_name,
     )
     async def resolve_query_named(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(
-        _SDL, schema_name="test_interface_type_resolvers_field_resolver"
-    )
+    engine = await create_engine(_SDL, schema_name=random_schema_name)
 
     assert await engine.execute(_INTERFACE_QUERY) == expected
 
@@ -727,21 +713,14 @@ async def test_interface_type_resolvers_field_resolver(
     ],
 )
 async def test_interface_type_resolvers_type_resolver(
-    clean_registry, type_resolver, result, expected
+    type_resolver, result, expected, random_schema_name
 ):
-    TypeResolver(
-        "Named", schema_name="test_interface_type_resolvers_type_resolver"
-    )(type_resolver)
+    TypeResolver("Named", schema_name=random_schema_name)(type_resolver)
 
-    @Resolver(
-        "Query.named",
-        schema_name="test_interface_type_resolvers_type_resolver",
-    )
+    @Resolver("Query.named", schema_name=random_schema_name)
     async def resolve_query_named(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(
-        _SDL, schema_name="test_interface_type_resolvers_type_resolver"
-    )
+    engine = await create_engine(_SDL, schema_name=random_schema_name)
 
     assert await engine.execute(_INTERFACE_QUERY) == expected

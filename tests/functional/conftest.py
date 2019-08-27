@@ -1,6 +1,8 @@
 import asyncio
 import os
 
+from uuid import uuid4
+
 import pytest
 
 from tartiflette import Directive, Resolver, TypeResolver, create_engine
@@ -35,18 +37,16 @@ for schema_name, sdl in _SCHEMAS.items():
     )
 
 
-@pytest.yield_fixture
-def clean_registry():
-    SchemaRegistry._schemas = {}
-    yield SchemaRegistry
-    SchemaRegistry._schemas = {}
-
-
 @pytest.yield_fixture(scope="module")
 def event_loop():
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()
+
+
+@pytest.fixture
+def random_schema_name():
+    return uuid4().hex
 
 
 def _get_ttftt_engine_marker(node):
@@ -153,6 +153,10 @@ def pytest_runtest_setup(item):
         directive.bake(_TTFTT_ENGINES[schema_name]._schema)
 
     # Re-bake engine schema
+    SchemaRegistry.find_schema_info(schema_name=schema_name)[
+        "inst"
+    ] = _TTFTT_ENGINES[schema_name]._schema
+
     loop = asyncio.new_event_loop()
     loop.run_until_complete(_TTFTT_ENGINES[schema_name]._schema.bake())
 

@@ -121,3 +121,15 @@ class GraphQLAbstractType(GraphQLType):
         if field_name in self._fields_type_resolvers:
             return self._fields_type_resolvers[field_name]
         return self.type_resolver or default_type_resolver
+
+
+class GraphQLCompositeType:
+    """
+    Define a GraphQLCompositeType
+    """
+
+
+class GraphQLInputType:
+    """
+    Define a GraphQLInputType
+    """

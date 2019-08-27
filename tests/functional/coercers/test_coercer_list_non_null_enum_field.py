@@ -25,12 +25,18 @@ from tests.functional.coercers.common import resolve_list_field
             """query { listNonNullEnumField(param: [null]) }""",
             None,
             {
-                "data": {"listNonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [null] >.",
+                        "message": "Argument < param > of non-null type < MyEnum! > must not be null.",
                         "path": ["listNonNullEnumField"],
-                        "locations": [{"line": 1, "column": 37}],
+                        "locations": [{"line": 1, "column": 30}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -49,232 +55,168 @@ from tests.functional.coercers.common import resolve_list_field
             """query { listNonNullEnumField(param: [ENUM_2, null]) }""",
             None,
             {
-                "data": {"listNonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [ENUM_2, null] >.",
+                        "message": "Argument < param > of non-null type < MyEnum! > must not be null.",
                         "path": ["listNonNullEnumField"],
-                        "locations": [{"line": 1, "column": 37}],
+                        "locations": [{"line": 1, "column": 30}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
         ),
         (
-            """query ($param: [MyEnum]) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]) { listNonNullEnumField(param: $param) }""",
             None,
             {"data": {"listNonNullEnumField": "SUCCESS"}},
         ),
         (
-            """query ($param: [MyEnum]) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]) { listNonNullEnumField(param: $param) }""",
             {"param": None},
             {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [MyEnum]) { listNonNullEnumField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum]) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]) { listNonNullEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum]) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]) { listNonNullEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
             {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum]) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3", None]},
-            {
-                "data": {
-                    "listNonNullEnumField": "SUCCESS-[enum_3_3-myenum-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [MyEnum] = null) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!] = null) { listNonNullEnumField(param: $param) }""",
             None,
             {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [MyEnum] = null) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!] = null) { listNonNullEnumField(param: $param) }""",
             {"param": None},
             {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
         ),
         (
-            """query ($param: [MyEnum] = null) { listNonNullEnumField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = null) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!] = null) { listNonNullEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = null) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!] = null) { listNonNullEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
             {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum] = null) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3", None]},
-            {
-                "data": {
-                    "listNonNullEnumField": "SUCCESS-[enum_3_3-myenum-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [MyEnum] = [null]) { listNonNullEnumField(param: $param) }""",
-            None,
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [null]) { listNonNullEnumField(param: $param) }""",
-            {"param": None},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [null]) { listNonNullEnumField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [null]) { listNonNullEnumField(param: $param) }""",
-            {"param": "ENUM_3"},
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [null]) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3"]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [null]) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3", None]},
-            {
-                "data": {
-                    "listNonNullEnumField": "SUCCESS-[enum_3_3-myenum-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { listNonNullEnumField(param: $param) }""",
-            None,
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_4_4-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { listNonNullEnumField(param: $param) }""",
-            {"param": None},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { listNonNullEnumField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { listNonNullEnumField(param: $param) }""",
-            {"param": "ENUM_3"},
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3"]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = ENUM_4) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3", None]},
-            {
-                "data": {
-                    "listNonNullEnumField": "SUCCESS-[enum_3_3-myenum-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
-            None,
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_4_4-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
-            {"param": None},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
-            {"param": "ENUM_3"},
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3"]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3", None]},
-            {
-                "data": {
-                    "listNonNullEnumField": "SUCCESS-[enum_3_3-myenum-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
-            None,
-            {
-                "data": {
-                    "listNonNullEnumField": "SUCCESS-[enum_4_4-myenum-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
-            {"param": None},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
-            {"param": "ENUM_3"},
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3"]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3", None]},
-            {
-                "data": {
-                    "listNonNullEnumField": "SUCCESS-[enum_3_3-myenum-None]"
-                }
-            },
-        ),
-        (
-            """query ($param: [MyEnum]!) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!] = [null]) { listNonNullEnumField(param: $param) }""",
             None,
             {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > of required type < [MyEnum]! > was not provided.",
+                        "message": "Variable < $param > got invalid default value < [null] >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 28}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [MyEnum!] = [null]) { listNonNullEnumField(param: $param) }""",
+            {"param": None},
+            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = [null]) { listNonNullEnumField(param: $param) }""",
+            {"param": "ENUM_3"},
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = [null]) { listNonNullEnumField(param: $param) }""",
+            {"param": ["ENUM_3"]},
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = ENUM_4) { listNonNullEnumField(param: $param) }""",
+            None,
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_4_4-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = ENUM_4) { listNonNullEnumField(param: $param) }""",
+            {"param": None},
+            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = ENUM_4) { listNonNullEnumField(param: $param) }""",
+            {"param": "ENUM_3"},
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = ENUM_4) { listNonNullEnumField(param: $param) }""",
+            {"param": ["ENUM_3"]},
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
+            None,
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_4_4-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
+            {"param": None},
+            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
+            {"param": "ENUM_3"},
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = [ENUM_4]) { listNonNullEnumField(param: $param) }""",
+            {"param": ["ENUM_3"]},
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > got invalid default value < [ENUM_4, null] >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 28}],
+                    }
+                ],
+            },
+        ),
+        (
+            """query ($param: [MyEnum!] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
+            {"param": None},
+            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
+            {"param": "ENUM_3"},
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!] = [ENUM_4, null]) { listNonNullEnumField(param: $param) }""",
+            {"param": ["ENUM_3"]},
+            {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+        ),
+        (
+            """query ($param: [MyEnum!]!) { listNonNullEnumField(param: $param) }""",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $param > of required type < [MyEnum!]! > was not provided.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -282,13 +224,13 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum]!) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]!) { listNonNullEnumField(param: $param) }""",
             {"param": None},
             {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > of non-null type < [MyEnum]! > must not be null.",
+                        "message": "Variable < $param > of non-null type < [MyEnum!]! > must not be null.",
                         "path": None,
                         "locations": [{"line": 1, "column": 8}],
                     }
@@ -296,28 +238,14 @@ from tests.functional.coercers.common import resolve_list_field
             },
         ),
         (
-            """query ($param: [MyEnum]!) { listNonNullEnumField(param: $param) }""",
-            {"param": [None]},
-            {"data": {"listNonNullEnumField": "SUCCESS-[None]"}},
-        ),
-        (
-            """query ($param: [MyEnum]!) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]!) { listNonNullEnumField(param: $param) }""",
             {"param": "ENUM_3"},
             {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
         ),
         (
-            """query ($param: [MyEnum]!) { listNonNullEnumField(param: $param) }""",
+            """query ($param: [MyEnum!]!) { listNonNullEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
             {"data": {"listNonNullEnumField": "SUCCESS-[enum_3_3-myenum]"}},
-        ),
-        (
-            """query ($param: [MyEnum]!) { listNonNullEnumField(param: $param) }""",
-            {"param": ["ENUM_3", None]},
-            {
-                "data": {
-                    "listNonNullEnumField": "SUCCESS-[enum_3_3-myenum-None]"
-                }
-            },
         ),
         (
             """query ($param: [MyEnum!]) { listNonNullEnumField(param: $param) }""",

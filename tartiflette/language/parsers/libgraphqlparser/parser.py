@@ -124,12 +124,16 @@ def _parse_to_json_ast(query: Union[str, bytes]) -> bytes:
         return _FFI.string(_LIB.graphql_ast_to_json(parsed))
 
 
-def parse_to_document(query: Union[str, bytes]) -> "DocumentNode":
+def parse_to_document(
+    query: Union[str, bytes], schema: "GraphQLSchema"
+) -> "DocumentNode":
     """
     Returns a DocumentNode instance which represents the query after being
     parsed.
     :param query: query to parse and transform into a DocumentNode
     :type query: Union[str, bytes]
+    :param schema: the GraphQLSchema instance linked to the engine
+    :type schema: GraphQLSchema
     :return: a DocumentNode representing the query
     :rtype: DocumentNode
 
@@ -147,4 +151,6 @@ def parse_to_document(query: Union[str, bytes]) -> "DocumentNode":
     >>>   }
     >>> }''')
     """
-    return document_from_ast_json(json.loads(_parse_to_json_ast(query)), query)
+    return document_from_ast_json(
+        json.loads(_parse_to_json_ast(query)), query, schema
+    )

@@ -8,13 +8,13 @@ from tartiflette.coercers.outputs.directives_coercer import (
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLAbstractType
+from tartiflette.types.type import GraphQLAbstractType, GraphQLCompositeType
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLInterfaceType",)
 
 
-class GraphQLInterfaceType(GraphQLAbstractType):
+class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
     """
     Definition of a GraphQL interface.
     """
@@ -138,6 +138,10 @@ class GraphQLInterfaceType(GraphQLAbstractType):
         :rtype: bool
         """
         return gql_type.name in self._possible_types_set
+
+    @property
+    def possible_types_set(self) -> set:
+        return self._possible_types_set
 
     def bake(self, schema: "GraphQLSchema") -> None:
         """

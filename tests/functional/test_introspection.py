@@ -4,9 +4,7 @@ from tartiflette import create_engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_basic_type_introspection_output(
-    clean_registry
-):
+async def test_tartiflette_execute_basic_type_introspection_output():
     schema_sdl = """
     \"\"\"This is the description\"\"\"
     type Test {
@@ -25,7 +23,10 @@ async def test_tartiflette_execute_basic_type_introspection_output(
     }
     """
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl,
+        schema_name="test_tartiflette_execute_basic_type_introspection_output",
+    )
 
     result = await ttftt.execute(
         """
@@ -160,7 +161,7 @@ async def test_tartiflette_execute_basic_type_introspection_output(
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_schema_introspection_output(clean_registry):
+async def test_tartiflette_execute_schema_introspection_output():
     schema_sdl = """
     schema {
         query: CustomRootQuery
@@ -181,7 +182,10 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
     }
     """
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl,
+        schema_name="test_tartiflette_execute_schema_introspection_output",
+    )
 
     result = await ttftt.execute(
         """
@@ -294,9 +298,7 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_schema_introspection_output_introspecting_args(
-    clean_registry
-):
+async def test_tartiflette_execute_schema_introspection_output_introspecting_args():
     schema_sdl = """
     type lol {
         GGG: String
@@ -309,7 +311,10 @@ async def test_tartiflette_execute_schema_introspection_output_introspecting_arg
     }
     """
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl,
+        schema_name="test_tartiflette_execute_schema_introspection_output_introspecting_args",
+    )
     result = await ttftt.execute(
         """
     query IntrospectionQuery {
@@ -746,7 +751,7 @@ fragment TypeRef on __Type {
     ],
 )
 async def test_introspection_type_enum_values_include_deprecated(
-    clean_registry, include_deprecated, expected
+    include_deprecated, expected, random_schema_name
 ):
     sdl = '''
     """An amazing enum"""
@@ -763,10 +768,7 @@ async def test_introspection_type_enum_values_include_deprecated(
     }
     '''
 
-    engine = await create_engine(
-        sdl,
-        schema_name="test_introspection_type_enum_values_include_deprecated",
-    )
+    engine = await create_engine(sdl, schema_name=random_schema_name)
 
     result = await engine.execute(
         """
@@ -950,7 +952,7 @@ async def test_introspection_type_enum_values_include_deprecated(
     ],
 )
 async def test_introspection_type_fields_include_deprecated(
-    clean_registry, type_name, include_deprecated, expected
+    type_name, include_deprecated, expected, random_schema_name
 ):
     sdl = '''
     """An amazing enum"""
@@ -986,9 +988,7 @@ async def test_introspection_type_fields_include_deprecated(
     }
     '''
 
-    engine = await create_engine(
-        sdl, schema_name="test_introspection_type_fields_include_deprecated"
-    )
+    engine = await create_engine(sdl, schema_name=random_schema_name)
 
     result = await engine.execute(
         """

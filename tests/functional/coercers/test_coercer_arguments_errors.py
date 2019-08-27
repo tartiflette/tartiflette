@@ -21,26 +21,32 @@ from tests.functional.coercers.common import (
             """query { nonNullBooleanField }""",
             None,
             {
-                "data": {"nonNullBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < Boolean! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullBooleanField >.",
                         "path": ["nonNullBooleanField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
         ),
         (
-            """query ($param: Boolean) { nonNullBooleanField(param: $param) }""",
+            """query ($param: Boolean!) { nonNullBooleanField(param: $param) }""",
             None,
             {
-                "data": {"nonNullBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < Boolean! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullBooleanField"],
-                        "locations": [{"line": 1, "column": 54}],
+                        "message": "Variable < $param > of required type < Boolean! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
@@ -49,12 +55,18 @@ from tests.functional.coercers.common import (
             """query { nonNullBooleanField(param: null) }""",
             None,
             {
-                "data": {"nonNullBooleanField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < Boolean! > must not be null.",
                         "path": ["nonNullBooleanField"],
-                        "locations": [{"line": 1, "column": 36}],
+                        "locations": [{"line": 1, "column": 29}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -79,26 +91,32 @@ async def test_coercion_boolean_field_arguments_errors(
             """query { nonNullEnumField }""",
             None,
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyEnum! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullEnumField >.",
                         "path": ["nonNullEnumField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyEnum) { nonNullEnumField(param: $param) }""",
+            """query ($param: MyEnum!) { nonNullEnumField(param: $param) }""",
             None,
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyEnum! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullEnumField"],
-                        "locations": [{"line": 1, "column": 50}],
+                        "message": "Variable < $param > of required type < MyEnum! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
@@ -107,12 +125,18 @@ async def test_coercion_boolean_field_arguments_errors(
             """query { nonNullEnumField(param: null) }""",
             None,
             {
-                "data": {"nonNullEnumField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < MyEnum! > must not be null.",
                         "path": ["nonNullEnumField"],
-                        "locations": [{"line": 1, "column": 33}],
+                        "locations": [{"line": 1, "column": 26}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -137,26 +161,32 @@ async def test_coercion_enum_field_arguments_errors(
             """query { nonNullFloatField }""",
             None,
             {
-                "data": {"nonNullFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < Float! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullFloatField >.",
                         "path": ["nonNullFloatField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
         ),
         (
-            """query ($param: Float) { nonNullFloatField(param: $param) }""",
+            """query ($param: Float!) { nonNullFloatField(param: $param) }""",
             None,
             {
-                "data": {"nonNullFloatField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < Float! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullFloatField"],
-                        "locations": [{"line": 1, "column": 50}],
+                        "message": "Variable < $param > of required type < Float! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
@@ -165,12 +195,18 @@ async def test_coercion_enum_field_arguments_errors(
             """query { nonNullFloatField(param: null) }""",
             None,
             {
-                "data": {"nonNullFloatField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < Float! > must not be null.",
                         "path": ["nonNullFloatField"],
-                        "locations": [{"line": 1, "column": 34}],
+                        "locations": [{"line": 1, "column": 27}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -195,26 +231,32 @@ async def test_coercion_float_field_arguments_errors(
             """query { nonNullIntField }""",
             None,
             {
-                "data": {"nonNullIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < Int! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullIntField >.",
                         "path": ["nonNullIntField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
         ),
         (
-            """query ($param: Int) { nonNullIntField(param: $param) }""",
+            """query ($param: Int!) { nonNullIntField(param: $param) }""",
             None,
             {
-                "data": {"nonNullIntField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < Int! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullIntField"],
-                        "locations": [{"line": 1, "column": 46}],
+                        "message": "Variable < $param > of required type < Int! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
@@ -223,12 +265,18 @@ async def test_coercion_float_field_arguments_errors(
             """query { nonNullIntField(param: null) }""",
             None,
             {
-                "data": {"nonNullIntField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < Int! > must not be null.",
                         "path": ["nonNullIntField"],
-                        "locations": [{"line": 1, "column": 32}],
+                        "locations": [{"line": 1, "column": 25}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -253,26 +301,32 @@ async def test_coercion_int_field_arguments_errors(
             """query { nonNullStringField }""",
             None,
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < String! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullStringField >.",
                         "path": ["nonNullStringField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
         ),
         (
-            """query ($param: String) { nonNullStringField(param: $param) }""",
+            """query ($param: String!) { nonNullStringField(param: $param) }""",
             None,
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < String! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullStringField"],
-                        "locations": [{"line": 1, "column": 52}],
+                        "message": "Variable < $param > of required type < String! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
@@ -281,12 +335,18 @@ async def test_coercion_int_field_arguments_errors(
             """query { nonNullStringField(param: null) }""",
             None,
             {
-                "data": {"nonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < String! > must not be null.",
                         "path": ["nonNullStringField"],
-                        "locations": [{"line": 1, "column": 35}],
+                        "locations": [{"line": 1, "column": 28}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -311,26 +371,32 @@ async def test_coercion_string_field_arguments_errors(
             """query { nonNullInputObjectField }""",
             None,
             {
-                "data": {"nonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyInput! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullInputObjectField >.",
                         "path": ["nonNullInputObjectField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
         ),
         (
-            """query ($param: MyInput) { nonNullInputObjectField(param: $param) }""",
+            """query ($param: MyInput!) { nonNullInputObjectField(param: $param) }""",
             None,
             {
-                "data": {"nonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < MyInput! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 58}],
+                        "message": "Variable < $param > of required type < MyInput! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
@@ -339,12 +405,18 @@ async def test_coercion_string_field_arguments_errors(
             """query { nonNullInputObjectField(param: null) }""",
             None,
             {
-                "data": {"nonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < MyInput! > must not be null.",
                         "path": ["nonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 40}],
+                        "locations": [{"line": 1, "column": 33}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },

@@ -17,12 +17,18 @@ from tests.functional.coercers.common import resolve_input_object_field
             """query { nonNullInnerNonNullInputObjectField }""",
             None,
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < InnerNonNullMyInput! > was not provided.",
+                        "message": "Missing mandatory argument < param > in field < Query.nonNullInnerNonNullInputObjectField >.",
                         "path": ["nonNullInnerNonNullInputObjectField"],
                         "locations": [{"line": 1, "column": 9}],
+                        "extensions": {
+                            "rule": "5.4.2.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "tag": "required-arguments",
+                        },
                     }
                 ],
             },
@@ -31,12 +37,18 @@ from tests.functional.coercers.common import resolve_input_object_field
             """query { nonNullInnerNonNullInputObjectField(param: null) }""",
             None,
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < InnerNonNullMyInput! > must not be null.",
                         "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 52}],
+                        "locations": [{"line": 1, "column": 45}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -45,13 +57,63 @@ from tests.functional.coercers.common import resolve_input_object_field
             """query { nonNullInnerNonNullInputObjectField(param: {}) }""",
             None,
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {} >.",
+                        "message": "Missing non nullable Input Field < booleanField > for Input Object < InnerNonNullMyInput >.",
                         "path": ["nonNullInnerNonNullInputObjectField"],
                         "locations": [{"line": 1, "column": 52}],
-                    }
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < enumField > for Input Object < InnerNonNullMyInput >.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 52}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < floatField > for Input Object < InnerNonNullMyInput >.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 52}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < intField > for Input Object < InnerNonNullMyInput >.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 52}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Missing non nullable Input Field < stringField > for Input Object < InnerNonNullMyInput >.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 1, "column": 52}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
                 ],
             },
         ),
@@ -73,13 +135,63 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             None,
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: null, enumField: null, floatField: null, intField: null, stringField: null, listBooleanField: null, listEnumField: null, listFloatField: null, listIntField: null, listStringField: null} >.",
+                        "message": "Input Field < booleanField > of non-null type < Boolean! > must not be null.",
                         "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 3, "column": 58}],
-                    }
+                        "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < enumField > of non-null type < MyEnum! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 5, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < floatField > of non-null type < Float! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 6, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < intField > of non-null type < Int! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 7, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < stringField > of non-null type < String! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
                 ],
             },
         ),
@@ -101,13 +213,118 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             None,
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: null, enumField: null, floatField: null, intField: null, stringField: null, listBooleanField: [null], listEnumField: [null], listFloatField: [null], listIntField: [null], listStringField: [null]} >.",
+                        "message": "Input Field < booleanField > of non-null type < Boolean! > must not be null.",
                         "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 3, "column": 58}],
-                    }
+                        "locations": [{"line": 4, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < enumField > of non-null type < MyEnum! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 5, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < floatField > of non-null type < Float! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 6, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < intField > of non-null type < Int! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 7, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < stringField > of non-null type < String! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 8, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listBooleanField > of non-null type < Boolean! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 9, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listEnumField > of non-null type < MyEnum! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 10, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listFloatField > of non-null type < Float! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 11, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listIntField > of non-null type < Int! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 12, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listStringField > of non-null type < String! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 13, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
                 ],
             },
         ),
@@ -195,46 +412,96 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             None,
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: false, enumField: ENUM_2, floatField: 23456.789e2, intField: 10, stringField: paramDefaultValue, listBooleanField: [false, null], listEnumField: [ENUM_2, null], listFloatField: [23456.789e2, null], listIntField: [10, null], listStringField: [paramDefaultValue, null]} >.",
+                        "message": "Input Field < listBooleanField > of non-null type < Boolean! > must not be null.",
                         "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 3, "column": 58}],
-                    }
+                        "locations": [{"line": 9, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listEnumField > of non-null type < MyEnum! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 10, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listFloatField > of non-null type < Float! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 11, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listIntField > of non-null type < Int! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 12, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
+                    {
+                        "message": "Input Field < listStringField > of non-null type < String! > must not be null.",
+                        "path": ["nonNullInnerNonNullInputObjectField"],
+                        "locations": [{"line": 13, "column": 17}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
+                    },
                 ],
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput!) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             None,
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of required type < InnerNonNullMyInput! > was provided the variable < $param > which was not provided a runtime value.",
-                        "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 82}],
+                        "message": "Variable < $param > of required type < InnerNonNullMyInput! > was not provided.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput!) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < InnerNonNullMyInput! > must not be null.",
-                        "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 82}],
+                        "message": "Variable < $param > of non-null type < InnerNonNullMyInput! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput!) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {"param": {}},
             {
                 "data": None,
@@ -268,7 +535,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput!) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -315,7 +582,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput!) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -387,7 +654,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput!) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -419,7 +686,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput!) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -451,7 +718,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput!) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -498,35 +765,35 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput! = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             None,
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < InnerNonNullMyInput! > must not be null.",
-                        "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 89}],
+                        "message": "Variable < $param > got invalid default value < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 39}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput! = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {"param": None},
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < InnerNonNullMyInput! > must not be null.",
-                        "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 1, "column": 89}],
+                        "message": "Variable < $param > of non-null type < InnerNonNullMyInput! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 8}],
                     }
                 ],
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput! = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {"param": {}},
             {
                 "data": None,
@@ -560,7 +827,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput! = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -607,7 +874,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput! = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": None,
@@ -679,7 +946,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput! = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -711,7 +978,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput! = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -743,7 +1010,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
         ),
         (
-            """query ($param: InnerNonNullMyInput = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
+            """query ($param: InnerNonNullMyInput! = null) { nonNullInnerNonNullInputObjectField(param: $param) }""",
             {
                 "param": {
                     "booleanField": True,
@@ -791,7 +1058,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -813,14 +1080,14 @@ from tests.functional.coercers.common import resolve_input_object_field
                     {
                         "message": "Variable < $param > got invalid default value < {booleanField: null, enumField: null, floatField: null, intField: null, stringField: null, listBooleanField: null, listEnumField: null, listFloatField: null, listIntField: null, listStringField: null} >.",
                         "path": None,
-                        "locations": [{"line": 2, "column": 45}],
+                        "locations": [{"line": 2, "column": 46}],
                     }
                 ],
             },
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -837,19 +1104,19 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             {"param": None},
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < InnerNonNullMyInput! > must not be null.",
-                        "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 15, "column": 58}],
+                        "message": "Variable < $param > of non-null type < InnerNonNullMyInput! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 15}],
                     }
                 ],
             },
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -898,7 +1165,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -960,7 +1227,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1047,7 +1314,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1094,7 +1361,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1141,7 +1408,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1203,7 +1470,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1225,14 +1492,14 @@ from tests.functional.coercers.common import resolve_input_object_field
                     {
                         "message": "Variable < $param > got invalid default value < {booleanField: null, enumField: null, floatField: null, intField: null, stringField: null, listBooleanField: [null], listEnumField: [null], listFloatField: [null], listIntField: [null], listStringField: [null]} >.",
                         "path": None,
-                        "locations": [{"line": 2, "column": 45}],
+                        "locations": [{"line": 2, "column": 46}],
                     }
                 ],
             },
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1249,19 +1516,19 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             {"param": None},
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < InnerNonNullMyInput! > must not be null.",
-                        "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 15, "column": 58}],
+                        "message": "Variable < $param > of non-null type < InnerNonNullMyInput! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 15}],
                     }
                 ],
             },
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1310,7 +1577,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1372,7 +1639,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1459,7 +1726,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1506,7 +1773,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1553,7 +1820,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: null
                 enumField: null
                 floatField: null
@@ -1615,7 +1882,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -1649,7 +1916,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -1666,19 +1933,19 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             {"param": None},
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < InnerNonNullMyInput! > must not be null.",
-                        "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 15, "column": 58}],
+                        "message": "Variable < $param > of non-null type < InnerNonNullMyInput! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 15}],
                     }
                 ],
             },
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -1727,7 +1994,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -1789,7 +2056,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -1876,7 +2143,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -1923,7 +2190,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -1970,7 +2237,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2032,7 +2299,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2066,7 +2333,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2083,19 +2350,19 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             {"param": None},
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < InnerNonNullMyInput! > must not be null.",
-                        "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 15, "column": 58}],
+                        "message": "Variable < $param > of non-null type < InnerNonNullMyInput! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 15}],
                     }
                 ],
             },
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2144,7 +2411,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2206,7 +2473,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2293,7 +2560,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2340,7 +2607,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2387,7 +2654,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2449,7 +2716,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2471,14 +2738,14 @@ from tests.functional.coercers.common import resolve_input_object_field
                     {
                         "message": "Variable < $param > got invalid default value < {booleanField: false, enumField: ENUM_4, floatField: 456.789e2, intField: 30, stringField: varDefault, listBooleanField: [false, null], listEnumField: [ENUM_4, null], listFloatField: [456.789e2, null], listIntField: [30, null], listStringField: [varDefault, null]} >.",
                         "path": None,
-                        "locations": [{"line": 2, "column": 45}],
+                        "locations": [{"line": 2, "column": 46}],
                     }
                 ],
             },
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2495,19 +2762,19 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             {"param": None},
             {
-                "data": {"nonNullInnerNonNullInputObjectField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < InnerNonNullMyInput! > must not be null.",
-                        "path": ["nonNullInnerNonNullInputObjectField"],
-                        "locations": [{"line": 15, "column": 58}],
+                        "message": "Variable < $param > of non-null type < InnerNonNullMyInput! > must not be null.",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 15}],
                     }
                 ],
             },
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2556,7 +2823,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2618,7 +2885,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2705,7 +2972,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2752,7 +3019,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -2799,7 +3066,7 @@ from tests.functional.coercers.common import resolve_input_object_field
         ),
         (
             """query (
-              $param: InnerNonNullMyInput = {
+              $param: InnerNonNullMyInput! = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2

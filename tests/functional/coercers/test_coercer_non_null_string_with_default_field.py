@@ -24,12 +24,18 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             """query { nonNullStringWithDefaultField(param: null) }""",
             None,
             {
-                "data": {"nonNullStringWithDefaultField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < String! > must not be null.",
                         "path": ["nonNullStringWithDefaultField"],
-                        "locations": [{"line": 1, "column": 46}],
+                        "locations": [{"line": 1, "column": 39}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },

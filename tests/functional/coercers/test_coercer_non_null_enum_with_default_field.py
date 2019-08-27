@@ -24,12 +24,18 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             """query { nonNullEnumWithDefaultField(param: null) }""",
             None,
             {
-                "data": {"nonNullEnumWithDefaultField": None},
+                "data": None,
                 "errors": [
                     {
                         "message": "Argument < param > of non-null type < MyEnum! > must not be null.",
                         "path": ["nonNullEnumWithDefaultField"],
-                        "locations": [{"line": 1, "column": 44}],
+                        "locations": [{"line": 1, "column": 37}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
