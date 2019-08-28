@@ -2,6 +2,19 @@
 
 **Tartiflette** is a GraphQL Server implementation built with **Python 3.6+**.
 
+**Summary**
+
+- [Motivation](#motivation)
+- [Status](#status)
+- [Usage](#usage)
+- [Installation](#installation)
+  - [Installation dependencies](#installation-dependencies)
+- [Tartiflette over HTTP](#tartiflette-over-http)
+- [Roadmaps](#roadmaps)
+- [How to contribute to the documentation?](#how-to-contribute-to-the-documentation)
+  - [How to run the website locally?](#how-to-run-the-website-locally)
+- [Known issues](#known-issues)
+
 ## Motivation
 
 [Read this blogpost about our motivations](https://medium.com/dailymotion/tartiflette-graphql-api-engine-python-open-source-a200c5bbc477)
@@ -23,19 +36,6 @@ We reached the limits of Graphene, we wanted to build something which met certai
 * **Simple is better than complex:** Built with [the Zen of Python](https://www.python.org/dev/peps/pep-0020/#id3) in mind. No over-engineering.
 
 Discover Tartiflette with our fabulous tutorial on [https://tartiflette.io/docs/tutorial/getting-started](https://tartiflette.io/docs/tutorial/getting-started)
-
-**Summary**
-
-- [Motivation](#motivation)
-- [Status](#status)
-- [Usage](#usage)
-- [Installation](#installation)
-  - [Installation dependencies](#installation-dependencies)
-- [Tartiflette over HTTP](#tartiflette-over-http)
-- [Roadmaps](#roadmaps)
-- [How to contribute to the documentation?](#how-to-contribute-to-the-documentation)
-  - [How to run the website locally?](#how-to-run-the-website-locally)
-- [Known issues](#known-issues)
 
 ## Usage
 
