@@ -21,7 +21,7 @@ from tests.functional.coercers.common import resolve_unwrapped_field
             {"data": {"stringField": "SUCCESS-None"}},
         ),
         (
-            """query { stringField(param: "paramDefaultValue) }""",
+            """query { stringField(param: "paramDefaultValue") }""",
             None,
             {
                 "data": {
