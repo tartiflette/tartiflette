@@ -26,11 +26,15 @@ Discover Tartiflette with our fabulous tutorial on [https://tartiflette.io/docs/
 
 **Summary**
 
+- [Motivation](#motivation)
+- [Status](#status)
 - [Usage](#usage)
 - [Installation](#installation)
   - [Installation dependencies](#installation-dependencies)
 - [Tartiflette over HTTP](#tartiflette-over-http)
 - [Roadmaps](#roadmaps)
+- [How to contribute to the documentation?](#how-to-contribute-to-the-documentation)
+  - [How to run the website locally?](#how-to-run-the-website-locally)
 - [Known issues](#known-issues)
 
 ## Usage
@@ -89,6 +93,8 @@ brew install cmake flex bison
 ```bash
 apt-get install cmake flex bison
 ```
+
+Make sure you have `bison` in verions 3
 
 ## Tartiflette over HTTP
 
