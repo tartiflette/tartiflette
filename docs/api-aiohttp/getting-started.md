@@ -4,7 +4,7 @@ title: Getting started with tartiflette-aiohttp
 sidebar_label: Getting started
 ---
 
-**tartiflette-aiohttp** is a wrapper of `aiohttp` which includes the Tartiflette GraphQL Engine. You can take a look at the [Tartiflette API documentation](/docs/api/engine/).
+**tartiflette-aiohttp** is a wrapper of `aiohttp` which includes the Tartiflette GraphQL Engine. You can take a look at the [Tartiflette API documentation](../api/engine.md).
 
 ## Usage
 
@@ -51,7 +51,7 @@ curl -v -d '{"query": "query { hello(name: "Chuck") }"}' -H "Content-Type: appli
 
 `tartiflette-aiohttp` is available on [pypi.org](https://pypi.org/project/tartiflette-aiohttp/).
 
-**WARNING**: Do not forget to install the [tartiflette dependencies beforehand as explained in the tutorial](/docs/tutorial/install-tartiflette/).
+**WARNING**: Do not forget to install the [tartiflette dependencies beforehand as explained in the tutorial](../tutorial/install-tartiflette.md).
 
 ```bash
 pip install tartiflette-aiohttp
@@ -96,8 +96,8 @@ web.run_app(
   - Can be an array of strings, which contain the SDLs
   - Can be a path to an SDL
   - Can be an array of paths which contain the SDLs
-* **engine_schema_name**: Name of the schema used by the built-in engine. Useful for advanced use-cases, see [Schema Registry API](/docs/api/schema-registry).
-* **engine_modules**: Modules and Plugins you want to import [within your Engine](/docs/api/engine#parameter-modules).
+* **engine_schema_name**: Name of the schema used by the built-in engine. Useful for advanced use-cases, see [Schema Registry API](../api/schema-registry.md).
+* **engine_modules**: Modules and Plugins you want to import [within your Engine](../api/engine.md#parameter-modules).
 * **executor_context**: Context which will be passed to each resolver (as a dict). Very useful for passing handlers to services, functions or data that you want to use in your resolvers.
   - **req**: Request object from `aiohttp`
   - **app**: Application object from `aiohttp`
@@ -159,8 +159,8 @@ web.run_app(
   - Can be an array of strings, which contain the SDLs
   - Can be a path to an SDL
   - Can be an array of paths which contain the SDLs
-* **engine_schema_name**: Name of the schema used by the built-in engine. Useful for advanced use-cases, see [Schema Registry API](/docs/api/schema-registry).
-* **engine_modules**: Modules and Plugins you want to import [within your Engine](/docs/api/engine#parameter-modules).
+* **engine_schema_name**: Name of the schema used by the built-in engine. Useful for advanced use-cases, see [Schema Registry API](../api/schema-registry.md).
+* **engine_modules**: Modules and Plugins you want to import [within your Engine](../api/engine.md#parameter-modules).
 * **executor_context**: Context which will be passed to each resolver (as a dict). Very useful for passing handlers to services, functions or data that you want to use in your resolvers.
   - **req**: Request object from `aiohttp`
   - **app**: Application object from `aiohttp`
@@ -172,7 +172,7 @@ web.run_app(
 Tartiflette embeds an easy way to deal with subscriptions. It's as simple as
 adding the `subscription_ws_endpoint` parameter and everything will work out
 of the box with `aiohttp` WebSockets. You can see a full example
-[here](examples/aiohttp/dogs).
+[here](https://github.com/tartiflette/tartiflette-aiohttp/tree/master/examples/aiohttp/dogs).
 
 ### Enable GraphiQL handler
 

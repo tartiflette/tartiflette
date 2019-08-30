@@ -4,7 +4,7 @@ title: Write your resolvers
 sidebar_label: 5. Write your resolvers
 ---
 
-[Previously](/docs/tutorial/create-server), we created our application instance with a [first iteration of our Schema](/docs/tutorial/create-server#recipes-manager-sdl-querygraphql) using the SDL. Now, we're going to bind some data to our Schema, using resolvers, which are in charge of linking the Schema with your application logic.
+[Previously](./create-server.md), we created our application instance with a [first iteration of our Schema](./create-server.md#recipes-manager-sdl-querygraphql) using the SDL. Now, we're going to bind some data to our Schema, using resolvers, which are in charge of linking the Schema with your application logic.
 
 ## What is a resolver?
 
@@ -30,7 +30,7 @@ In this example, the function `resolver_fieldname` will be executed each time th
 
 > Note: by default, the root type name for query operations is `Query` so the full name of the field is `Query.hello`.
 
-If you want to know more about the Resolver part, we suggest taking a look at [the Resolver API documentation](/docs/api/resolver).
+If you want to know more about the Resolver part, we suggest taking a look at [the Resolver API documentation](../api/resolver).
 
 ## Write code
 

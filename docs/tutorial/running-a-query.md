@@ -4,7 +4,7 @@ title: Running a Query
 sidebar_label: 6. Running a Query
 ---
 
-We are going to use what [we developed in the previous step](/docs/tutorial/write-your-resolvers).
+We are going to use what [we developed in the previous step](./write-your-resolvers.md).
 
 To query the **Recipes Manager GraphQL API**, `tartiflette-aiohttp` embeds the GraphiQL client, available at this address [http://localhost:8080/graphiql](http://localhost:8080/graphiql) when your server is live.
 

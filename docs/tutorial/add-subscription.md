@@ -71,7 +71,7 @@ async def on_cooking_time(
     }
 ```
 
-In case the data `yield`ed is not compliant with the Schema's return type, you can apply a resolver to apply a transformation. See more on the [subscription API page](/docs/api/subscription).
+In case the data `yield`ed is not compliant with the Schema's return type, you can apply a resolver to apply a transformation. See more on the [subscription API page](../api/subscription.md).
 
 ## How can we use it?
 

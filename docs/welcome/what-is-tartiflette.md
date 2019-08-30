@@ -26,4 +26,4 @@ If you just landed in the GraphQL world, or if you don't want to deal with the i
 
 For advanced use-cases, you should jump to the API documentation of Tartiflette.
 
-In any case, this is the perfect moment to start [the tutorial](/docs/tutorial) which is based on `tartiflette-aiohttp`.
+In any case, this is the perfect moment to start [the tutorial](../tutorial/getting-started.md) which is based on `tartiflette-aiohttp`.
