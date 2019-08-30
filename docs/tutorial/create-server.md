@@ -4,7 +4,7 @@ title: Create a Tartiflette instance
 sidebar_label: 4. Create a Tartiflette instance
 ---
 
-Make sure you followed the [Project initialization](/docs/tutorial/install-tartiflette) steps.
+Make sure you followed the [Project initialization](./install-tartiflette.md) steps.
 
 To help you with the code to build the "Recipes Manager" application, we'll provide some code blocks. Simply copy-paste the code into the corresponding file which was created at the previous step and which should be empty for now.
 

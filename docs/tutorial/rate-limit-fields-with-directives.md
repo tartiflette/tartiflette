@@ -4,7 +4,7 @@ title: Rate limit your fields with directives
 sidebar_label: 12. Rate limit your fields with directives
 ---
 
-Based [on what we discovered in the previous step](/docs/tutorial/extend-with-directives/), we will extend the capabilities of our GraphQL API with the help of directives.
+Based [on what we discovered in the previous step](./extend-with-directives.md), we will extend the capabilities of our GraphQL API with the help of directives.
 
 In our fabulous **Recipes Manager GraphQL API**, we want to limit the use of the recipe modification by adding a rate limit behavior.
 

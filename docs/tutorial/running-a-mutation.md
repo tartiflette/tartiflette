@@ -4,7 +4,7 @@ title: Running a Mutation
 sidebar_label: 8. Running a Mutation
 ---
 
-We are going to use what [we developed in the previous step](/docs/tutorial/write-your-mutation-resolvers).
+We are going to use what [we developed in the previous step](./write-your-mutation-resolvers.md).
 
 Do not forget to use the embedded GraphiQL client, available at this address [http://localhost:8080/graphiql](http://localhost:8080/graphiql) when your server is running.
 

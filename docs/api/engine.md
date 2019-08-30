@@ -79,7 +79,7 @@ engine = await create_engine(
 ```
 
 1. **sdl:** Schema Definition Language, detailed above.
-2. **schema_name:** Schema used from the **[Schema Registry](/docs/api/schema-registry/)**. _(default: "default")_
+2. **schema_name:** Schema used from the **[Schema Registry](./schema-registry.md)**. _(default: "default")_
 3. **[error_coercer](#parameter-error-coercer):** Coercer used when an error is raised.
 4. **[custom_default_resolver](#parameter-custom-default-resolver):** Use another default resolver. (Useful if you want to override the behavior for resolving a property, e.g. from snake_case to camelCase and vice versa).
 5. **[modules](#parameter-modules):** list of modules containing your decorated code such as `@Resolver`, `@Subscription`, `@Scalar` and `@Directive`.
@@ -92,7 +92,7 @@ For instance:
 * Add a log entry when a third-party exceptions is raised _(e.g pymsql, redis)_.
 * Hide technical message's exception for production environment _(don't expose your internal stack from outside)_
 
-`error_coercer` SHOULDN'T be used for custom functional exception, for this common use-case, please take a look of the [`TartifletteError` and its documentation's page](/docs/api/error-handling/).
+`error_coercer` SHOULDN'T be used for custom functional exception, for this common use-case, please take a look of the [`TartifletteError` and its documentation's page](./error-handling.md).
 
 ```python
 import logging
@@ -147,7 +147,7 @@ Prior creating the `Engine()`, all your code must be decoratored by these follow
 
 Doing it by yourself could be verbose and generate a lot of imports.
 
-Both for your internal code and the plugins management, tartiflette provides a parameters called `modules` which give you the ability to specify all the internal and external code you want to import. In addition to the module, you will be able to specify a configuration, which will be mostly used by the [tartiflette plugin approach](/docs/plugin/introduction).
+Both for your internal code and the plugins management, tartiflette provides a parameters called `modules` which give you the ability to specify all the internal and external code you want to import. In addition to the module, you will be able to specify a configuration, which will be mostly used by the [tartiflette plugin approach](../plugins/introduction.md).
 
 ```python
 from tartiflette import create_engine
@@ -254,4 +254,4 @@ async def cook(
 2. **[error_coercer](#parameter-error-coercer):** Coercer used when an error is raised.
 3. **[custom_default_resolver](#parameter-custom-default-resolver):** Use another default resolver. (Useful if you want to override the behavior for resolving a property, e.g. from snake_case to camelCase and vice versa).
 4. **[modules](#parameter-modules):** list of modules containing your decorated code such as `@Resolver`, `@Subscription`, `@Scalar` and `@Directive`.
-5. **schema_name:** Schema used from the **[Schema Registry](/docs/api/schema-registry/)**. _(default: "default")_
+5. **schema_name:** Schema used from the **[Schema Registry](./schema-registry.md)**. _(default: "default")_
