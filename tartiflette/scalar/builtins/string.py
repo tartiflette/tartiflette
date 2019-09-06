@@ -19,7 +19,18 @@ class ScalarString:
         :rtype: str
         """
         # pylint: disable=no-self-use
-        return str(value)
+        if isinstance(value, str):
+            return value
+
+        if isinstance(value, bool):
+            return "true" if value else "false"
+
+        try:
+            # TODO: maybe we shouldn't accepts None, list, dict, exceptions...
+            return str(value)
+        except Exception:  # pylint: disable=broad-except
+            pass
+        raise TypeError(f"String cannot represent value: < {value} >.")
 
     def coerce_input(self, value: Any) -> str:
         """

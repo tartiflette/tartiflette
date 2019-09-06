@@ -5,8 +5,10 @@ from tartiflette import Scalar
 from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import StringValueNode
 
+from .string import ScalarString
 
-class ScalarTime:
+
+class ScalarTime(ScalarString):
     """
     Built-in scalar which handle time values.
     """
@@ -20,7 +22,11 @@ class ScalarTime:
         :rtype: str
         """
         # pylint: disable=no-self-use
-        return value.isoformat().split("T")[1]
+        try:
+            return value.isoformat().split("T")[1]
+        except Exception:  # pylint: disable=broad-except
+            pass
+        raise TypeError(f"Time cannot represent value: < {value} >.")
 
     def coerce_input(self, value: str) -> datetime:
         """
@@ -31,7 +37,12 @@ class ScalarTime:
         :rtype: datetime
         """
         # pylint: disable=no-self-use
-        return datetime.strptime(value, "%H:%M:%S")
+        try:
+            result = super().coerce_input(value)
+            return datetime.strptime(result, "%H:%M:%S")
+        except Exception:  # pylint: disable=broad-except
+            pass
+        raise TypeError(f"Time cannot represent value: < {value} >.")
 
     def parse_literal(self, ast: "Node") -> Union[datetime, "UNDEFINED_VALUE"]:
         """

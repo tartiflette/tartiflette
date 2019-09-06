@@ -3,9 +3,10 @@ from typing import Any, Dict, Optional, Union
 from tartiflette import Scalar
 from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import IntValueNode
+from tartiflette.utils.values import is_integer
 
-_MAX_INT = 2_147_483_647
 _MIN_INT = -2_147_483_648
+_MAX_INT = 2_147_483_647
 
 
 class ScalarInt:
@@ -22,7 +23,30 @@ class ScalarInt:
         :rtype: int
         """
         # pylint: disable=no-self-use
-        return int(value)
+        if isinstance(value, bool):
+            return int(value)
+
+        try:
+            result = value
+            if value and isinstance(value, str):
+                float_value = float(value)
+                result = int(float_value)
+                if result != float_value:
+                    raise ValueError()
+
+            if not is_integer(result):
+                raise ValueError()
+        except Exception:  # pylint: disable=broad-except
+            raise TypeError(
+                f"Int cannot represent non-integer value: < {value} >."
+            )
+
+        if not _MIN_INT <= result <= _MAX_INT:
+            raise TypeError(
+                "Int cannot represent non 32-bit signed integer value: "
+                f"< {value} >."
+            )
+        return result
 
     def coerce_input(self, value: Any) -> int:
         """
@@ -34,7 +58,7 @@ class ScalarInt:
         """
         # pylint: disable=no-self-use
         # ¯\_(ツ)_/¯ booleans are int: `assert isinstance(True, int) is True`
-        if not isinstance(value, int) or isinstance(value, bool):
+        if not is_integer(value):
             raise TypeError(
                 f"Int cannot represent non-integer value: < {value} >."
             )
@@ -43,7 +67,7 @@ class ScalarInt:
                 "Int cannot represent non 32-bit signed integer value: "
                 f"< {value} >."
             )
-        return value
+        return int(value)
 
     def parse_literal(self, ast: "Node") -> Union[int, "UNDEFINED_VALUE"]:
         """

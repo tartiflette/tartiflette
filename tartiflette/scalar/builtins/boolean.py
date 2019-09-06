@@ -1,3 +1,4 @@
+from math import isfinite
 from typing import Any, Dict, Optional, Union
 
 from tartiflette import Scalar
@@ -19,7 +20,17 @@ class ScalarBoolean:
         :rtype: bool
         """
         # pylint: disable=no-self-use
-        return bool(value)
+        if isinstance(value, bool):
+            return value
+
+        try:
+            if isfinite(value):
+                return bool(value)
+        except Exception:  # pylint: disable=broad-except
+            pass
+        raise TypeError(
+            f"Boolean cannot represent a non boolean value: < {value} >."
+        )
 
     def coerce_input(self, value: Any) -> bool:
         """

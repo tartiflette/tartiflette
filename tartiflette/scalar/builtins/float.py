@@ -20,7 +20,21 @@ class ScalarFloat:
         :rtype: float
         """
         # pylint: disable=no-self-use
-        return float(value)
+        try:
+            result = value
+            if value and isinstance(value, str):
+                result = float(value)
+
+            if not isfinite(result):
+                raise ValueError
+
+            return result if isinstance(result, float) else float(result)
+        except Exception:  # pylint: disable=broad-except
+            pass
+
+        raise TypeError(
+            f"Float cannot represent non numeric value: < {value} >."
+        )
 
     def coerce_input(self, value: Any) -> float:
         """
@@ -32,14 +46,14 @@ class ScalarFloat:
         """
         # pylint: disable=no-self-use
         # ¯\_(ツ)_/¯ booleans are int: `assert isinstance(True, int) is True`
-        if isinstance(value, bool) or not (
-            isinstance(value, int)
-            or (isinstance(value, float) and isfinite(value))
-        ):
-            raise TypeError(
-                f"Float cannot represent non numeric value: < {value} >."
-            )
-        return float(value)
+        try:
+            if not isinstance(value, bool) and isfinite(value):
+                return float(value)
+        except Exception:  # pylint: disable=broad-except
+            pass
+        raise TypeError(
+            f"Float cannot represent non numeric value: < {value} >."
+        )
 
     def parse_literal(self, ast: "Node") -> Union[float, "UNDEFINED_VALUE"]:
         """
