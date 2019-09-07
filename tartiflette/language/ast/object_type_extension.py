@@ -10,12 +10,12 @@ class ObjectTypeExtensionNode(TypeExtensionNode):
     AST node representing a GraphQL object type extension.
     """
 
-    __slots__ = ("name", "interfaces", "directives", "fields", "location")
+    __slots__ = ("name", "interfaces", "directives", "fields", "location", "description")
 
     def __init__(
         self,
         name: "NameNode",
-        interfaces: Optional[List["NamedTypeNode"]] = None,
+        interfaces: Optional[List["NamedTypeNode"]] = [],
         directives: Optional[List["DirectiveNode"]] = None,
         fields: Optional[List["FieldDefinitionNode"]] = None,
         location: Optional["Location"] = None,
@@ -33,10 +33,11 @@ class ObjectTypeExtensionNode(TypeExtensionNode):
         :type location: Optional[Location]
         """
         self.name = name
-        self.interfaces = interfaces
+        self.interfaces = interfaces or []
         self.directives = directives
         self.fields = fields
         self.location = location
+        self.description = None
 
     def __eq__(self, other: Any) -> bool:
         """

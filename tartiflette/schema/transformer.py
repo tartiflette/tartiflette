@@ -385,7 +385,7 @@ def parse_implements_interfaces(
     :rtype: Optional[List[str]]
     """
     if not interfaces_node:
-        return None
+        return []
 
     return [
         parse_named_type(interface_node, schema)
@@ -410,15 +410,17 @@ def parse_object_type_definition(
     """
     if not object_type_definition_node:
         return None
-
+    name = parse_name(object_type_definition_node.name, schema)
+    if schema.has_type(name):
+        return parse_object_type_extension(object_type_definition_node, schema)
     object_type = GraphQLObjectType(
-        name=parse_name(object_type_definition_node.name, schema),
+        name=name,
         description=parse_name(
             object_type_definition_node.description, schema
         ),
         interfaces=parse_implements_interfaces(
             object_type_definition_node.interfaces, schema
-        ),
+        ) or [],
         fields=parse_fields_definition(
             object_type_definition_node.fields, schema
         ),
@@ -431,15 +433,21 @@ def parse_object_type_definition(
 def parse_object_type_extension(
     object_type_extension: ObjectTypeExtensionNode,
     schema: "GraphQLSchema",
-) -> Optional["GraphQLObjectType"]:
+) -> Optional[GraphQLObjectType]:
     if not object_type_extension:
         return None
     name = parse_name(object_type_extension.name, schema)
+    if not schema.has_type(name):
+        return parse_object_type_definition(object_type_extension, schema)
     original_object_type: ObjectTypeExtensionNode = schema.type_definitions[name]
     object_type = GraphQLObjectType(
         name=name,
-        description=original_object_type.description,
-        interfaces=original_object_type.interfaces,
+        description=original_object_type.description or parse_name(
+            object_type_extension.description, schema
+        ),
+        interfaces=(original_object_type.interfaces or []) + (parse_implements_interfaces(
+            object_type_extension.interfaces, schema
+        ) or []),
         fields={
             **original_object_type.implemented_fields,
             **parse_fields_definition(object_type_extension.fields, schema)
