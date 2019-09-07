@@ -1,7 +1,8 @@
 from functools import partial
 from typing import Any, Dict, List, Optional, Union
 
-from tartiflette.language.ast import ListTypeNode, NonNullTypeNode
+
+from tartiflette.language.ast import ListTypeNode, NonNullTypeNode, ObjectTypeExtensionNode
 from tartiflette.language.parsers.lark import parse_to_document
 from tartiflette.schema.schema import GraphQLSchema
 from tartiflette.types.argument import GraphQLArgument
@@ -427,6 +428,29 @@ def parse_object_type_definition(
     return object_type
 
 
+def parse_object_type_extension(
+    object_type_extension: ObjectTypeExtensionNode,
+    schema: "GraphQLSchema",
+) -> Optional["GraphQLObjectType"]:
+    if not object_type_extension:
+        return None
+    name = parse_name(object_type_extension.name, schema)
+    original_object_type: ObjectTypeExtensionNode = schema.type_definitions[name]
+    object_type = GraphQLObjectType(
+        name=name,
+        description=original_object_type.description,
+        interfaces=original_object_type.interfaces,
+        fields={
+            **original_object_type.implemented_fields,
+            **parse_fields_definition(object_type_extension.fields, schema)
+        },
+        directives=original_object_type.directives + object_type_extension.directives,
+    )
+    del schema.type_definitions[name]
+    schema.add_type_definition(object_type)
+    return object_type
+
+
 def parse_field_definition(
     field_definition_node: "FieldDefinitionNode", schema: "GraphQLSchema"
 ) -> Optional["GraphQLField"]:
@@ -759,6 +783,9 @@ _DEFINITION_PARSER_MAPPING = {
     "EnumTypeDefinitionNode": parse_enum_type_definition,
     "InputObjectTypeDefinitionNode": parse_input_object_type_definition,
     "DirectiveDefinitionNode": parse_directive_definition,
+    "ObjectTypeExtensionNode": parse_object_type_extension
+    # TODO high priority InputObjectExtensionNode, EnumTypeExtensionNode, UnionTypeExtensionNode, 
+    # TODO InterfaceTypeExtensionNode, , SchemaExtensionNode, 
 }
 
 
