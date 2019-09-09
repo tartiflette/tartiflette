@@ -2736,7 +2736,7 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid default value < {booleanField: false, enumField: ENUM_4, floatField: 456.789e2, intField: 30, stringField: varDefault, listBooleanField: [false, null], listEnumField: [ENUM_4, null], listFloatField: [456.789e2, null], listIntField: [30, null], listStringField: [varDefault, null]} >.",
+                        "message": 'Variable < $param > got invalid default value < {booleanField: false, enumField: ENUM_4, floatField: 456.789e2, intField: 30, stringField: "varDefault", listBooleanField: [false, null], listEnumField: [ENUM_4, null], listFloatField: [456.789e2, null], listIntField: [30, null], listStringField: ["varDefault", null]} >.',
                         "path": None,
                         "locations": [{"line": 2, "column": 46}],
                     }
@@ -6561,7 +6561,7 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": {"nonNullInnerNonNullInputObjectField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: [paramDefaultValue, $itemStringField]} >.",
+                        "message": 'Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: ["paramDefaultValue", $itemStringField]} >.',
                         "path": ["nonNullInnerNonNullInputObjectField"],
                         "locations": [{"line": 13, "column": 58}],
                     }
@@ -6611,7 +6611,7 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": {"nonNullInnerNonNullInputObjectField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: [paramDefaultValue, $itemStringField]} >.",
+                        "message": 'Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: ["paramDefaultValue", $itemStringField]} >.',
                         "path": ["nonNullInnerNonNullInputObjectField"],
                         "locations": [{"line": 13, "column": 58}],
                     }
@@ -6705,7 +6705,7 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": {"nonNullInnerNonNullInputObjectField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: [paramDefaultValue, $itemStringField]} >.",
+                        "message": 'Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: ["paramDefaultValue", $itemStringField]} >.',
                         "path": ["nonNullInnerNonNullInputObjectField"],
                         "locations": [{"line": 13, "column": 58}],
                     }
@@ -6755,7 +6755,7 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": {"nonNullInnerNonNullInputObjectField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: [paramDefaultValue, $itemStringField]} >.",
+                        "message": 'Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: ["paramDefaultValue", $itemStringField]} >.',
                         "path": ["nonNullInnerNonNullInputObjectField"],
                         "locations": [{"line": 13, "column": 58}],
                     }
@@ -6904,7 +6904,7 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": {"nonNullInnerNonNullInputObjectField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: [paramDefaultValue, $itemStringField]} >.",
+                        "message": 'Argument < param > has invalid value < {booleanField: $booleanField, enumField: $enumField, floatField: $floatField, intField: $intField, stringField: $stringField, listBooleanField: [false, $itemBooleanField], listEnumField: [ENUM_2, $itemEnumField], listFloatField: [23456.789e2, $itemFloatField], listIntField: [10, $itemIntField], listStringField: ["paramDefaultValue", $itemStringField]} >.',
                         "path": ["nonNullInnerNonNullInputObjectField"],
                         "locations": [{"line": 13, "column": 58}],
                     }

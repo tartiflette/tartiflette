@@ -107,7 +107,7 @@ import pytest
                                             "enumValues": None,
                                             "inputFields": None,
                                         },
-                                        "defaultValue": "No longer supported",
+                                        "defaultValue": '"No longer supported"',
                                     }
                                 ],
                             },

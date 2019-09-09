@@ -323,7 +323,7 @@ class StringValueNode(ValueNode):
         :return: a human-readable representation of the value
         :rtype: str
         """
-        return self.value
+        return f'"{self.value}"'
 
 
 class ListValueNode(ValueNode):
@@ -376,7 +376,7 @@ class ListValueNode(ValueNode):
         :return: a human-readable representation of the value
         :rtype: str
         """
-        return "[" + ", ".join([str(value) for value in self.values]) + "]"
+        return f"[{', '.join([str(value) for value in self.values])}]"
 
 
 class ObjectFieldNode(Node):
@@ -492,4 +492,4 @@ class ObjectValueNode(ValueNode):
         :return: a human-readable representation of the value
         :rtype: str
         """
-        return "{" + ", ".join([str(field) for field in self.fields]) + "}"
+        return f"{{{', '.join([str(field) for field in self.fields])}}}"

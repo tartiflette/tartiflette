@@ -509,7 +509,7 @@ async def test_issue92_fragment_inordered(ttftt_engine):
                                     "name": "String",
                                     "ofType": None,
                                 },
-                                "defaultValue": "No longer supported",
+                                "defaultValue": '"No longer supported"',
                             }
                         ],
                     },

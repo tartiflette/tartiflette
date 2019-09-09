@@ -60,6 +60,7 @@ class GraphQLInputField:
 
         # Introspection attributes
         self.type: Union["GraphQLType", Dict[str, Any]] = {}
+        self.defaultValue: Optional[str] = None  # pylint: disable=invalid-name
 
     def __eq__(self, other: Any) -> bool:
         """
@@ -103,19 +104,6 @@ class GraphQLInputField:
         """
         return self.name
 
-    # Introspection attribute
-    @property
-    def defaultValue(  # pylint: disable=invalid-name
-        self
-    ) -> Optional["ValueNode"]:
-        """
-        Returns the default value of the input field which is used by the
-        introspection query.
-        :return: the default value of the argument
-        :rtype: Optional[ValueNode]
-        """
-        return self.default_value
-
     def bake(self, schema: "GraphQLSchema") -> None:
         """
         Bakes the GraphQLInputField and computes all the necessary stuff for
@@ -130,6 +118,10 @@ class GraphQLInputField:
         else:
             self.type["name"] = self.gql_type
             self.type["kind"] = self.graphql_type.kind
+
+        self.defaultValue = (
+            str(self.default_value) if self.default_value is not None else None
+        )
 
         # Directives
         directives_definition = compute_directive_nodes(

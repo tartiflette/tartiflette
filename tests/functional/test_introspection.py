@@ -247,7 +247,7 @@ async def test_tartiflette_execute_schema_introspection_output():
                                 "name": "reason",
                                 "description": "Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax (as specified by [CommonMark](https://commonmark.org/).",
                                 "type": {"kind": "SCALAR", "name": "String"},
-                                "defaultValue": "No longer supported",
+                                "defaultValue": '"No longer supported"',
                             }
                         ],
                     },
@@ -611,7 +611,7 @@ fragment TypeRef on __Type {
                                     "name": "String",
                                     "ofType": None,
                                 },
-                                "defaultValue": "No longer supported",
+                                "defaultValue": '"No longer supported"',
                             }
                         ],
                     },

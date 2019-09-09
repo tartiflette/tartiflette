@@ -336,7 +336,7 @@ async def ttftt_engine():
                 "data": {"stopedField": None},
                 "errors": [
                     {
-                        "message": "Argument < stopedArg > has invalid value < {myInputArg: {myInputInputArg1: VALID, myInputInputArg2: VALID}} >.",
+                        "message": 'Argument < stopedArg > has invalid value < {myInputArg: {myInputInputArg1: "VALID", myInputInputArg2: "VALID"}} >.',
                         "path": ["stopedField"],
                         "locations": [{"line": 3, "column": 38}],
                     }

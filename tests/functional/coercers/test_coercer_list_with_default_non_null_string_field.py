@@ -251,7 +251,7 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid default value < [varDefault, null] >.",
+                        "message": 'Variable < $param > got invalid default value < ["varDefault", null] >.',
                         "path": None,
                         "locations": [{"line": 1, "column": 28}],
                     }
@@ -468,7 +468,7 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": {"listWithDefaultNonNullStringField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [paramDefaultValue, $item] >.",
+                        "message": 'Argument < param > has invalid value < ["paramDefaultValue", $item] >.',
                         "path": ["listWithDefaultNonNullStringField"],
                         "locations": [{"line": 1, "column": 66}],
                     }
@@ -482,7 +482,7 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": {"listWithDefaultNonNullStringField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [paramDefaultValue, $item] >.",
+                        "message": 'Argument < param > has invalid value < ["paramDefaultValue", $item] >.',
                         "path": ["listWithDefaultNonNullStringField"],
                         "locations": [{"line": 1, "column": 66}],
                     }
@@ -505,7 +505,7 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": {"listWithDefaultNonNullStringField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [paramDefaultValue, $item] >.",
+                        "message": 'Argument < param > has invalid value < ["paramDefaultValue", $item] >.',
                         "path": ["listWithDefaultNonNullStringField"],
                         "locations": [{"line": 1, "column": 73}],
                     }
@@ -519,7 +519,7 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": {"listWithDefaultNonNullStringField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [paramDefaultValue, $item] >.",
+                        "message": 'Argument < param > has invalid value < ["paramDefaultValue", $item] >.',
                         "path": ["listWithDefaultNonNullStringField"],
                         "locations": [{"line": 1, "column": 73}],
                     }
@@ -551,7 +551,7 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": {"listWithDefaultNonNullStringField": None},
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [paramDefaultValue, $item] >.",
+                        "message": 'Argument < param > has invalid value < ["paramDefaultValue", $item] >.',
                         "path": ["listWithDefaultNonNullStringField"],
                         "locations": [{"line": 1, "column": 81}],
                     }
