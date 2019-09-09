@@ -133,3 +133,9 @@ class GraphQLInputType:
     """
     Define a GraphQLInputType
     """
+
+
+class GraphQLExtension:
+    """
+    Define a GraphQLExtension
+    """

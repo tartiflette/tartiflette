@@ -6,16 +6,33 @@ from tartiflette.language.parsers.lark import parse_to_document
 from tartiflette.schema.schema import GraphQLSchema
 from tartiflette.types.argument import GraphQLArgument
 from tartiflette.types.directive import GraphQLDirective
-from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumValue
+from tartiflette.types.enum import (
+    GraphQLEnumType,
+    GraphQLEnumTypeExtension,
+    GraphQLEnumValue,
+)
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.input_field import GraphQLInputField
-from tartiflette.types.input_object import GraphQLInputObjectType
-from tartiflette.types.interface import GraphQLInterfaceType
+from tartiflette.types.input_object import (
+    GraphQLInputObjectType,
+    GraphQLInputObjectTypeExtension,
+)
+from tartiflette.types.interface import (
+    GraphQLInterfaceType,
+    GraphQLInterfaceTypeExtension,
+)
 from tartiflette.types.list import GraphQLList
 from tartiflette.types.non_null import GraphQLNonNull
-from tartiflette.types.object import GraphQLObjectType
-from tartiflette.types.scalar import GraphQLScalarType
-from tartiflette.types.union import GraphQLUnionType
+from tartiflette.types.object import (
+    GraphQLObjectType,
+    GraphQLObjectTypeExtension,
+)
+from tartiflette.types.scalar import (
+    GraphQLScalarType,
+    GraphQLScalarTypeExtension,
+)
+from tartiflette.types.schema_extension import GraphQLSchemaExtension
+from tartiflette.types.union import GraphQLUnionType, GraphQLUnionTypeExtension
 
 __all__ = ("schema_from_sdl",)
 
@@ -750,6 +767,129 @@ def parse_directive_definition(
     return directive
 
 
+def parse_enum_type_extension(
+    enum_type_extension_node: "EnumTypeExtensionNode", schema: "GraphQLSchema"
+) -> "GraphQLEnumTypeExtension":
+
+    enum_extension = GraphQLEnumTypeExtension(
+        name=parse_name(enum_type_extension_node.name, schema),
+        directives=enum_type_extension_node.directives,
+        values=parse_enum_values_definition(
+            enum_type_extension_node.values, schema
+        ),
+    )
+
+    schema.add_extension(enum_extension)
+
+    return enum_extension
+
+
+def parse_input_object_type_extension(
+    input_object_type_extension_node: "InputObjectTypeExtensionNode",
+    schema: "GraphQLSchema",
+) -> "GraphQLInputObjectTypeExtension":
+
+    input_object_extenstion = GraphQLInputObjectTypeExtension(
+        name=parse_name(input_object_type_extension_node.name, schema),
+        directives=input_object_type_extension_node.directives,
+        input_fields=parse_input_fields_definition(
+            input_object_type_extension_node.fields, schema
+        ),
+    )
+
+    schema.add_extension(input_object_extenstion)
+
+    return input_object_extenstion
+
+
+def parse_object_type_extension(
+    object_type_extension_node: "ObjectTypeExtensionNode",
+    schema: "GraphQLSchema",
+) -> "GraphQLObjectTypeExtension":
+
+    object_extension = GraphQLObjectTypeExtension(
+        name=parse_name(object_type_extension_node.name, schema),
+        fields=parse_fields_definition(
+            object_type_extension_node.fields, schema
+        ),
+        directives=object_type_extension_node.directives,
+        interfaces=parse_implements_interfaces(
+            object_type_extension_node.interfaces, schema
+        ),
+    )
+
+    schema.add_extension(object_extension)
+
+    return object_extension
+
+
+def parse_interface_type_extension(
+    interface_type_extension_node: "InterfaceTypeExtensionNode",
+    schema: "GraphQLSchema",
+) -> "GraphQLInterfaceTypeExtension":
+
+    interface_extension = GraphQLInterfaceTypeExtension(
+        name=parse_name(interface_type_extension_node.name, schema),
+        fields=parse_fields_definition(
+            interface_type_extension_node.fields, schema
+        ),
+        directives=interface_type_extension_node.directives,
+    )
+
+    schema.add_extension(interface_extension)
+
+    return interface_extension
+
+
+def parse_scalar_type_extension(
+    scalar_type_extension_node: "ScalarTypeExtensionNode",
+    schema: "GraphQLSchema",
+) -> "GraphQLScalarTypeExtension":
+
+    scalar_extension = GraphQLScalarTypeExtension(
+        name=parse_name(scalar_type_extension_node.name, schema),
+        directives=scalar_type_extension_node.directives,
+    )
+
+    schema.add_extension(scalar_extension)
+
+    return scalar_extension
+
+
+def parse_union_type_extension(
+    union_type_extension_node: "UnionTypeExtensionNode",
+    schema: "GraphQLSchema",
+) -> "GraphQLUnionTypeExtension":
+
+    union_extension = GraphQLUnionTypeExtension(
+        name=parse_name(union_type_extension_node.name, schema),
+        directives=union_type_extension_node.directives,
+        types=parse_union_member_types(
+            union_type_extension_node.types, schema
+        ),
+    )
+
+    schema.add_extension(union_extension)
+
+    return union_extension
+
+
+def parse_schema_extension(
+    schema_extension_node: "SchemaExtensionNode", schema: "GraphQLSchema"
+) -> "GraphQLSchemaExtension":
+    schema_extension = GraphQLSchemaExtension(
+        directives=schema_extension_node.directives,
+        operations={
+            x.operation_type: parse_named_type(x.type, schema)
+            for x in schema_extension_node.operation_type_definitions
+        },
+    )
+
+    schema.add_extension(schema_extension)
+
+    return schema_extension
+
+
 _DEFINITION_PARSER_MAPPING = {
     "SchemaDefinitionNode": parse_schema_definition,
     "ScalarTypeDefinitionNode": parse_scalar_type_definition,
@@ -759,6 +899,13 @@ _DEFINITION_PARSER_MAPPING = {
     "EnumTypeDefinitionNode": parse_enum_type_definition,
     "InputObjectTypeDefinitionNode": parse_input_object_type_definition,
     "DirectiveDefinitionNode": parse_directive_definition,
+    "EnumTypeExtensionNode": parse_enum_type_extension,
+    "InputObjectTypeExtensionNode": parse_input_object_type_extension,
+    "ObjectTypeExtensionNode": parse_object_type_extension,
+    "InterfaceTypeExtensionNode": parse_interface_type_extension,
+    "ScalarTypeExtensionNode": parse_scalar_type_extension,
+    "UnionTypeExtensionNode": parse_union_type_extension,
+    "SchemaExtensionNode": parse_schema_extension,
 }
 
 

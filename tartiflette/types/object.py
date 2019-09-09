@@ -8,7 +8,11 @@ from tartiflette.coercers.outputs.object_coercer import object_coercer
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLCompositeType, GraphQLType
+from tartiflette.types.type import (
+    GraphQLCompositeType,
+    GraphQLExtension,
+    GraphQLType,
+)
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLObjectType",)
@@ -177,3 +181,47 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
     @property
     def possible_types_set(self) -> set:
         return self._possible_types_set
+
+
+class GraphQLObjectTypeExtension(GraphQLType, GraphQLExtension):
+    def __init__(self, name, fields, directives, interfaces):
+        self.name = name
+        self.fields = fields or {}
+        self.directives = directives
+        self.interfaces = interfaces or []
+
+    def bake(self, schema):
+        extended = schema.find_type(self.name)
+        extended.directives.extend(self.directives)
+        extended.implemented_fields.update(self.fields)
+        extended.interfaces_names.extend(self.interfaces)
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isintance(other, GraphQLInputObjectTypeExtension)
+            and other.directives == self.directives
+            and other.fields == self.fields
+            and other.name == self.name
+            and other.interfaces == self.interfaces
+        )
+
+    def __repr__(self) -> str:
+        """
+        Returns the representation of a GraphQLType instance.
+        :return: the representation of a GraphQLType instance
+        :rtype: str
+        """
+        return (
+            f"GraphQLObjectTypeExtension("
+            f"name={repr(self.name)}, "
+            f"directives={repr(self.directives)}, "
+            f"fields={repr(self.fields)}, "
+            f"interfaces={repr(self.interfaces)})"
+        )
