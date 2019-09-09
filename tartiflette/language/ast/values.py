@@ -65,7 +65,7 @@ class BooleanValueNode(ValueNode):
         :return: a human-readable representation of the value
         :rtype: str
         """
-        return str(self.value).lower()
+        return "true" if self.value else "false"
 
 
 class EnumValueNode(ValueNode):
