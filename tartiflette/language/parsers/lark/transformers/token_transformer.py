@@ -1,3 +1,5 @@
+import re
+
 from typing import Any, Optional, Union
 
 from lark import Tree, v_args
@@ -8,6 +10,29 @@ __all__ = ("TokenTransformer",)
 
 _STRING_VALUE_TOKEN_TYPE = "STRING_VALUE"
 _ENUM_VALUE_TOKEN_TYPE = "NAME"
+_ESCAPED_UNICODE_REGEX = re.compile(r"\\u[0-9a-fA-F]{4}")
+_STRING_VALUE_ESCAPED_CHARACTER_REPLACEMENTS = {
+    '\\"': '"',
+    "\\\\": "\\",
+    "\\/": "/",
+    "\\b": "\b",
+    "\\f": "\f",
+    "\\n": "\n",
+    "\\r": "\r",
+    "\\t": "\t",
+}
+_ESCAPED_CHARACTER_REGEX = re.compile(
+    "|".join(
+        [
+            re.escape(sub_str)
+            for sub_str in sorted(
+                _STRING_VALUE_ESCAPED_CHARACTER_REPLACEMENTS,
+                key=len,
+                reverse=True,
+            )
+        ]
+    )
+)
 
 
 def _find_token(
@@ -37,6 +62,31 @@ def _find_token(
             if res:
                 return res
     return None
+
+
+def _replace_escaped_unicode(match: "Match") -> str:
+    """
+    Replaces escaped unicode to their unicode character.
+    :param match: matched escaped unicode
+    :type match: Match
+    :return: unicode character
+    :rtype: str
+    """
+    return match.group(0).encode("utf-8").decode("unicode_escape")
+
+
+def _replace_escaped_character(match: "Match") -> str:
+    """
+    Replaces escaped character to their string value.
+    :param match: matched escaped character
+    :type match: Match
+    :return: string value
+    :rtype: str
+    """
+    replacement = _STRING_VALUE_ESCAPED_CHARACTER_REPLACEMENTS.get(
+        match.group(0)
+    )
+    return replacement if replacement is not None else ""
 
 
 def _override_tree_children(tree: "Tree", new_child: Any) -> "Tree":
@@ -115,12 +165,19 @@ class TokenTransformer(Transformer_InPlace):
         """
         # pylint: disable=no-self-use
         token = tree.children[0]
-        slicing = 1 if token.type == "STRING" else 3
+        is_block_string = token.type == "LONG_STRING"
+        slicing = 3 if is_block_string else 1
+        value = token.value[slicing:-slicing]
+        if not is_block_string:
+            value = _ESCAPED_UNICODE_REGEX.sub(_replace_escaped_unicode, value)
+            value = _ESCAPED_CHARACTER_REGEX.sub(
+                _replace_escaped_character, value
+            )
         return _override_tree_children(
             tree,
             Token(
                 "STRING_VALUE",
-                token.value[slicing:-slicing],
+                value,
                 token.pos_in_stream,
                 token.line,
                 token.column,

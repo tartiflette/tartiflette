@@ -1,0 +1,3 @@
+directive @deprecated(
+    reason: String = "No \u05fd supported"
+) on FIELD_DEFINITION

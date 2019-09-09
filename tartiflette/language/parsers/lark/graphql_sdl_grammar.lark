@@ -69,8 +69,9 @@ EXPONENT_INDICATOR: "e"
 EXPONENT_PART: EXPONENT_INDICATOR SIGN? DIGIT+
 INTEGER_PART: NEGATIVE_SIGN? "0"
             | NEGATIVE_SIGN? NON_ZERO_DIGIT DIGIT*
-STRING: /("(?!"").*?(?<!\\)(\\\\)*?")/i
-LONG_STRING: /(""".*?(?<!\\)(\\\\)*?""")/is
+
+STRING: /"([^"\\\u000A\u000D]|(\\(u[0-9a-fA-F]{4}|["\\\/bfnrt])))*"/i
+LONG_STRING.2: /(""".*?(?<!\\)(\\\\)*?""")/is
 TRUE: "true"
 FALSE: "false"
 NULL: "null"
