@@ -19,7 +19,7 @@ from tartiflette.language.ast import (
     FieldDefinitionNode,
     FloatValueNode,
     InputObjectTypeDefinitionNode,
-    InputObjectTypeExtension,
+    InputObjectTypeExtensionNode,
     InputValueDefinitionNode,
     InterfaceTypeDefinitionNode,
     InterfaceTypeExtensionNode,
@@ -2783,7 +2783,7 @@ def test_lark_to_enum_type_extension_node(tree, expected):
                 ],
                 meta=_DEFAULT_TREE_META_MOCK,
             ),
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name=NameNode(
                     value="anInputObjectTypeName",
                     location=_EXPECTED_TREE_LOCATION,
@@ -2835,7 +2835,7 @@ def test_lark_to_enum_type_extension_node(tree, expected):
                 ],
                 meta=_DEFAULT_TREE_META_MOCK,
             ),
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name=NameNode(
                     value="anInputObjectTypeName",
                     location=_EXPECTED_TREE_LOCATION,

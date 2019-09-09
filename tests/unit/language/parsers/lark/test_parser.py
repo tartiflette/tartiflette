@@ -18,7 +18,7 @@ from tartiflette.language.ast import (
     FieldDefinitionNode,
     FloatValueNode,
     InputObjectTypeDefinitionNode,
-    InputObjectTypeExtension,
+    InputObjectTypeExtensionNode,
     InputValueDefinitionNode,
     InterfaceTypeDefinitionNode,
     InterfaceTypeExtensionNode,
@@ -3589,7 +3589,7 @@ def test_parse_without_exception(sdl_file_path):
                             line=87, column=1, line_end=91, column_end=1
                         ),
                     ),
-                    InputObjectTypeExtension(
+                    InputObjectTypeExtensionNode(
                         name=NameNode(
                             value="FilterCharacters",
                             location=Location(
@@ -6097,7 +6097,7 @@ def test_parse_without_exception(sdl_file_path):
                             line=116, column=1, line_end=118, column_end=1
                         ),
                     ),
-                    InputObjectTypeExtension(
+                    InputObjectTypeExtensionNode(
                         name=NameNode(
                             value="InputType",
                             location=Location(
@@ -6178,7 +6178,7 @@ def test_parse_without_exception(sdl_file_path):
                             line=118, column=1, line_end=122, column_end=1
                         ),
                     ),
-                    InputObjectTypeExtension(
+                    InputObjectTypeExtensionNode(
                         name=NameNode(
                             value="InputType",
                             location=Location(

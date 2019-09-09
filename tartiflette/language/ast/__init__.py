@@ -12,7 +12,7 @@ from .fragment_definition import FragmentDefinitionNode
 from .fragment_spread import FragmentSpreadNode
 from .inline_fragment import InlineFragmentNode
 from .input_object_type_definition import InputObjectTypeDefinitionNode
-from .input_object_type_extension import InputObjectTypeExtension
+from .input_object_type_extension import InputObjectTypeExtensionNode
 from .input_value_definition import InputValueDefinitionNode
 from .interface_type_definition import InterfaceTypeDefinitionNode
 from .interface_type_extension import InterfaceTypeExtensionNode
@@ -63,7 +63,7 @@ __all__ = (
     "FragmentSpreadNode",
     "InlineFragmentNode",
     "InputObjectTypeDefinitionNode",
-    "InputObjectTypeExtension",
+    "InputObjectTypeExtensionNode",
     "InputValueDefinitionNode",
     "InterfaceTypeDefinitionNode",
     "InterfaceTypeExtensionNode",

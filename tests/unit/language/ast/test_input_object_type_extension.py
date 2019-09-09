@@ -1,10 +1,10 @@
 import pytest
 
-from tartiflette.language.ast import InputObjectTypeExtension
+from tartiflette.language.ast import InputObjectTypeExtensionNode
 
 
 def test_inputobjecttypeextensionnode__init__():
-    input_object_type_extension_node = InputObjectTypeExtension(
+    input_object_type_extension_node = InputObjectTypeExtensionNode(
         name="inputObjectTypeExtensionName",
         directives="inputObjectTypeExtensionDirectives",
         fields="inputObjectTypeExtensionFields",
@@ -31,7 +31,7 @@ def test_inputobjecttypeextensionnode__init__():
     "input_object_type_extension_node,other,expected",
     [
         (
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
@@ -41,13 +41,13 @@ def test_inputobjecttypeextensionnode__init__():
             False,
         ),
         (
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
                 location="inputObjectTypeExtensionLocation",
             ),
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionNameBis",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
@@ -56,13 +56,13 @@ def test_inputobjecttypeextensionnode__init__():
             False,
         ),
         (
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
                 location="inputObjectTypeExtensionLocation",
             ),
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectivesBis",
                 fields="inputObjectTypeExtensionFields",
@@ -71,13 +71,13 @@ def test_inputobjecttypeextensionnode__init__():
             False,
         ),
         (
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
                 location="inputObjectTypeExtensionLocation",
             ),
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFieldsBis",
@@ -86,13 +86,13 @@ def test_inputobjecttypeextensionnode__init__():
             False,
         ),
         (
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
                 location="inputObjectTypeExtensionLocation",
             ),
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
@@ -101,13 +101,13 @@ def test_inputobjecttypeextensionnode__init__():
             False,
         ),
         (
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
                 location="inputObjectTypeExtensionLocation",
             ),
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
@@ -127,13 +127,13 @@ def test_inputobjecttypeextensionnode__eq__(
     "input_object_type_extension_node,expected",
     [
         (
-            InputObjectTypeExtension(
+            InputObjectTypeExtensionNode(
                 name="inputObjectTypeExtensionName",
                 directives="inputObjectTypeExtensionDirectives",
                 fields="inputObjectTypeExtensionFields",
                 location="inputObjectTypeExtensionLocation",
             ),
-            "InputObjectTypeExtension("
+            "InputObjectTypeExtensionNode("
             "name='inputObjectTypeExtensionName', "
             "directives='inputObjectTypeExtensionDirectives', "
             "fields='inputObjectTypeExtensionFields', "

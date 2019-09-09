@@ -14,7 +14,7 @@ from tartiflette.language.ast import (
     FieldDefinitionNode,
     FloatValueNode,
     InputObjectTypeDefinitionNode,
-    InputObjectTypeExtension,
+    InputObjectTypeExtensionNode,
     InputValueDefinitionNode,
     InterfaceTypeDefinitionNode,
     InterfaceTypeExtensionNode,
@@ -943,15 +943,15 @@ def lark_to_enum_type_extension_node(tree: "Tree") -> "EnumTypeExtensionNode":
 
 def lark_to_input_object_type_extension_node(
     tree: "Tree"
-) -> "InputObjectTypeExtension":
+) -> "InputObjectTypeExtensionNode":
     """
-    Creates and returns an InputObjectTypeExtension instance extracted from the
-    parsing of the tree instance.
+    Creates and returns an InputObjectTypeExtensionNode instance extracted from
+    the parsing of the tree instance.
     :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: an InputObjectTypeExtension instance extracted from the parsing of
-    the tree
-    :rtype: InputObjectTypeExtension
+    :return: an InputObjectTypeExtensionNode instance extracted from the
+    parsing of the tree
+    :rtype: InputObjectTypeExtensionNode
     """
     node_info = _extract_node_info(
         tree.children,
@@ -959,7 +959,7 @@ def lark_to_input_object_type_extension_node(
         types_to_ignore=["EXTEND", "INPUT"],
     )
 
-    return InputObjectTypeExtension(
+    return InputObjectTypeExtensionNode(
         name=node_info["name"],
         directives=node_info.get("directives") or [],
         fields=node_info.get("input_fields_definition") or [],

@@ -877,12 +877,13 @@ class NodeTransformer(Transformer_InPlace):
     def input_object_type_extension(self, tree: "Tree") -> "SchemaNode":
         """
         Creates and returns a SchemaNode instance of type
-        "input_object_type_extension" with an InputObjectTypeExtension instance
+        "input_object_type_extension" with an InputObjectTypeExtensionNode
+        instance
         as value (extracted from the parsing of the tree instance).
         :param tree: the Tree to parse in order to extract the proper node
         :type tree: Tree
         :return: a SchemaNode instance of type "input_object_type_extension"
-        with an InputObjectTypeExtension instance as value
+        with an InputObjectTypeExtensionNode instance as value
         :rtype: SchemaNode
         """
         # pylint: disable=no-self-use
