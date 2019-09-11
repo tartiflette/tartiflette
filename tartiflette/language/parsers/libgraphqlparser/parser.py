@@ -11,14 +11,13 @@ from tartiflette.language.parsers.libgraphqlparser.transformers import (
 )
 from tartiflette.types.exceptions.tartiflette import GraphQLSyntaxError
 
+__all__ = ("parse_to_document",)
+
 # TODO: automatize read from headers files
 _FFI = FFI()
 _FFI.cdef(
     """
 struct GraphQLAstNode *graphql_parse_string(
-    const char *text, const char **error);
-
-struct GraphQLAstNode *graphql_parse_string_with_experimental_schema_support(
     const char *text, const char **error);
 
 void graphql_error_free(const char *error);
@@ -30,13 +29,7 @@ const char *graphql_ast_to_json(const struct GraphQLAstNode *node);
 )
 
 # TODO: use importlib.resource in Python 3.7
-_LIBGRAPHQLPARSER_DIR = os.path.join(
-    os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    ),
-    "parser",
-    "cffi",
-)
+_LIBGRAPHQLPARSER_DIR = os.path.join(os.path.dirname(__file__), "cffi")
 try:
     _LIB = _FFI.dlopen(f"{_LIBGRAPHQLPARSER_DIR}/libgraphqlparser.so")
 except OSError:
@@ -83,7 +76,6 @@ class ParsedData:
         :type exc_type: Optional[Type]
         :type exc_value: Optional[Exception]
         :type traceback: Optional[TracebackType]
-        :rtype: None
         """
         self._destroy_cb(self._c_parsed)
 
@@ -105,9 +97,7 @@ def _parse_context_manager(query: Union[str, bytes]) -> ParsedData:
     errors = _FFI.new("char **")
 
     parsed_data = ParsedData(
-        _LIB.graphql_parse_string_with_experimental_schema_support(
-            _FFI.new("char[]", query), errors
-        ),
+        _LIB.graphql_parse_string(_FFI.new("char[]", query), errors),
         _LIB.graphql_node_free,
     )
 
@@ -134,12 +124,16 @@ def _parse_to_json_ast(query: Union[str, bytes]) -> bytes:
         return _FFI.string(_LIB.graphql_ast_to_json(parsed))
 
 
-def parse_to_document(query: Union[str, bytes]) -> "DocumentNode":
+def parse_to_document(
+    query: Union[str, bytes], schema: "GraphQLSchema"
+) -> "DocumentNode":
     """
     Returns a DocumentNode instance which represents the query after being
     parsed.
     :param query: query to parse and transform into a DocumentNode
     :type query: Union[str, bytes]
+    :param schema: the GraphQLSchema instance linked to the engine
+    :type schema: GraphQLSchema
     :return: a DocumentNode representing the query
     :rtype: DocumentNode
 
@@ -157,4 +151,6 @@ def parse_to_document(query: Union[str, bytes]) -> "DocumentNode":
     >>>   }
     >>> }''')
     """
-    return document_from_ast_json(json.loads(_parse_to_json_ast(query)))
+    return document_from_ast_json(
+        json.loads(_parse_to_json_ast(query)), query, schema
+    )

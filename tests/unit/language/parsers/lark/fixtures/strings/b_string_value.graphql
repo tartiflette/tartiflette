@@ -1,0 +1,3 @@
+directive @deprecated(
+    reason: String = "No \b supported"
+) on FIELD_DEFINITION

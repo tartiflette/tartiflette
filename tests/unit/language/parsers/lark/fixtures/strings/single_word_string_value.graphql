@@ -1,0 +1,3 @@
+directive @deprecated(
+    reason: String = "Deprecated"
+) on FIELD_DEFINITION

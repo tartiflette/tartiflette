@@ -14,7 +14,7 @@ from tartiflette.language.ast import (
     FieldDefinitionNode,
     FloatValueNode,
     InputObjectTypeDefinitionNode,
-    InputObjectTypeExtension,
+    InputObjectTypeExtensionNode,
     InputValueDefinitionNode,
     InterfaceTypeDefinitionNode,
     InterfaceTypeExtensionNode,
@@ -38,6 +38,46 @@ from tartiflette.language.ast import (
     StringValueNode,
     UnionTypeDefinitionNode,
     UnionTypeExtensionNode,
+)
+
+__all__ = (
+    "lark_to_int_value_node",
+    "lark_to_float_value_node",
+    "lark_to_string_value_node",
+    "lark_to_boolean_value_node",
+    "lark_to_null_value_node",
+    "lark_to_enum_value_node",
+    "lark_to_list_value_node",
+    "lark_to_object_field_node",
+    "lark_to_object_value_node",
+    "lark_to_name_node",
+    "lark_to_description_node",
+    "lark_to_named_type_node",
+    "lark_to_argument_node",
+    "lark_to_directive_node",
+    "lark_to_operation_type_definition_node",
+    "lark_to_schema_definition_node",
+    "lark_to_scalar_type_definition_node",
+    "lark_to_list_type_node",
+    "lark_to_non_null_type_node",
+    "lark_to_input_value_definition_node",
+    "lark_to_directive_definition_node",
+    "lark_to_implements_interfaces_node",
+    "lark_to_field_definition_node",
+    "lark_to_object_type_definition_node",
+    "lark_to_interface_type_definition_node",
+    "lark_to_union_type_definition_node",
+    "lark_to_enum_value_definition_node",
+    "lark_to_enum_type_definition_node",
+    "lark_to_input_object_type_definition_node",
+    "lark_to_schema_extension_node",
+    "lark_to_scalar_type_extension_node",
+    "lark_to_object_type_extension_node",
+    "lark_to_interface_type_extension_node",
+    "lark_to_union_type_extension_node",
+    "lark_to_enum_type_extension_node",
+    "lark_to_input_object_type_extension_node",
+    "lark_to_document_node",
 )
 
 
@@ -903,15 +943,15 @@ def lark_to_enum_type_extension_node(tree: "Tree") -> "EnumTypeExtensionNode":
 
 def lark_to_input_object_type_extension_node(
     tree: "Tree"
-) -> "InputObjectTypeExtension":
+) -> "InputObjectTypeExtensionNode":
     """
-    Creates and returns an InputObjectTypeExtension instance extracted from the
-    parsing of the tree instance.
+    Creates and returns an InputObjectTypeExtensionNode instance extracted from
+    the parsing of the tree instance.
     :param tree: the Tree to parse in order to extract the proper node
     :type tree: Tree
-    :return: an InputObjectTypeExtension instance extracted from the parsing of
-    the tree
-    :rtype: InputObjectTypeExtension
+    :return: an InputObjectTypeExtensionNode instance extracted from the
+    parsing of the tree
+    :rtype: InputObjectTypeExtensionNode
     """
     node_info = _extract_node_info(
         tree.children,
@@ -919,7 +959,7 @@ def lark_to_input_object_type_extension_node(
         types_to_ignore=["EXTEND", "INPUT"],
     )
 
-    return InputObjectTypeExtension(
+    return InputObjectTypeExtensionNode(
         name=node_info["name"],
         directives=node_info.get("directives") or [],
         fields=node_info.get("input_fields_definition") or [],

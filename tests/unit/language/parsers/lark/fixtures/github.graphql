@@ -2644,7 +2644,7 @@ type License {
   """The limitations set by the license"""
   limitations: [LicenseRule]!
 
-  """The license full name specified by <https://spdx.org/licenses>"""
+  """The license full name specified by <https://spdx.org/licenses>."""
   name: String!
 
   """Customary short name if applicable (e.g, GPLv3)"""
@@ -2653,10 +2653,10 @@ type License {
   """The permissions set by the license"""
   permissions: [LicenseRule]!
 
-  """Short identifier specified by <https://spdx.org/licenses>"""
+  """Short identifier specified by <https://spdx.org/licenses>."""
   spdxId: String
 
-  """URL to the license on <https://choosealicense.com>"""
+  """URL to the license on <https://choosealicense.com>."""
   url: URI
 }
 

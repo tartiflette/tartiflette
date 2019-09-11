@@ -1,10 +1,13 @@
+from typing import Any, Callable, Dict, Optional
+
 import pytest
 
 from tartiflette import Directive, Resolver, create_engine
+from tartiflette.schema.registry import SchemaRegistry
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_deprecated_execution_directive(clean_registry):
+async def test_tartiflette_deprecated_execution_directive():
     schema = """
     type Query {
         fieldNormal: Int
@@ -13,25 +16,41 @@ async def test_tartiflette_deprecated_execution_directive(clean_registry):
     }
     """
 
-    @Resolver("Query.fieldNormal")
+    @Resolver(
+        "Query.fieldNormal",
+        schema_name="test_tartiflette_deprecated_execution_directive",
+    )
     async def func_field_resolver4(parent, arguments, request_ctx, info):
         return 42
 
-    @Resolver("Query.fieldDeprecatedDefault")
+    @Resolver(
+        "Query.fieldDeprecatedDefault",
+        schema_name="test_tartiflette_deprecated_execution_directive",
+    )
     async def func_field_resolver5(parent, arguments, request_ctx, info):
         return 42
 
-    @Resolver("Query.fieldDeprecatedCustom")
+    @Resolver(
+        "Query.fieldDeprecatedCustom",
+        schema_name="test_tartiflette_deprecated_execution_directive",
+    )
     async def func_field_resolver6(parent, arguments, request_ctx, info):
         return 42
 
-    ttftt = await create_engine(schema)
+    ttftt = await create_engine(
+        schema, schema_name="test_tartiflette_deprecated_execution_directive"
+    )
 
     assert (
-        clean_registry.find_schema().find_directive("deprecated") is not None
+        SchemaRegistry.find_schema(
+            "test_tartiflette_deprecated_execution_directive"
+        ).find_directive("deprecated")
+        is not None
     )
     assert (
-        clean_registry.find_schema()
+        SchemaRegistry.find_schema(
+            "test_tartiflette_deprecated_execution_directive"
+        )
         .find_directive("deprecated")
         .implementation
         is not None
@@ -58,7 +77,7 @@ async def test_tartiflette_deprecated_execution_directive(clean_registry):
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_deprecated_introspection_directive(clean_registry):
+async def test_tartiflette_deprecated_introspection_directive():
     schema = """
     type Query {
         fieldNormal: Int
@@ -67,25 +86,42 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
     }
     """
 
-    @Resolver("Query.fieldNormal")
+    @Resolver(
+        "Query.fieldNormal",
+        schema_name="test_tartiflette_deprecated_introspection_directive",
+    )
     async def func_field_resolver4(parent, arguments, request_ctx, info):
         return 42
 
-    @Resolver("Query.fieldDeprecatedDefault")
+    @Resolver(
+        "Query.fieldDeprecatedDefault",
+        schema_name="test_tartiflette_deprecated_introspection_directive",
+    )
     async def func_field_resolver5(parent, arguments, request_ctx, info):
         return 42
 
-    @Resolver("Query.fieldDeprecatedCustom")
+    @Resolver(
+        "Query.fieldDeprecatedCustom",
+        schema_name="test_tartiflette_deprecated_introspection_directive",
+    )
     async def func_field_resolver6(parent, arguments, request_ctx, info):
         return 42
 
-    ttftt = await create_engine(schema)
+    ttftt = await create_engine(
+        schema,
+        schema_name="test_tartiflette_deprecated_introspection_directive",
+    )
 
     assert (
-        clean_registry.find_schema().find_directive("deprecated") is not None
+        SchemaRegistry.find_schema(
+            "test_tartiflette_deprecated_introspection_directive"
+        ).find_directive("deprecated")
+        is not None
     )
     assert (
-        clean_registry.find_schema()
+        SchemaRegistry.find_schema(
+            "test_tartiflette_deprecated_introspection_directive"
+        )
         .find_directive("deprecated")
         .implementation
         is not None
@@ -95,7 +131,7 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
         """
     query Test{
         __type(name: "Query") {
-            fields {
+            fields(includeDeprecated: true) {
                 name
                 isDeprecated
                 deprecationReason
@@ -111,14 +147,14 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
             "__type": {
                 "fields": [
                     {
-                        "deprecationReason": None,
-                        "isDeprecated": False,
                         "name": "fieldNormal",
+                        "isDeprecated": False,
+                        "deprecationReason": None,
                     },
                     {
-                        "deprecationReason": "Deprecated",
-                        "isDeprecated": True,
                         "name": "fieldDeprecatedDefault",
+                        "isDeprecated": True,
+                        "deprecationReason": "No longer supported",
                     },
                     {
                         "name": "fieldDeprecatedCustom",
@@ -132,7 +168,7 @@ async def test_tartiflette_deprecated_introspection_directive(clean_registry):
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_directive_declaration(clean_registry):
+async def test_tartiflette_directive_declaration():
     schema_sdl = """
     directive @lol on FIELD_DEFINITION
     directive @lol2( value: Int ) on FIELD_DEFINITION
@@ -145,41 +181,69 @@ async def test_tartiflette_directive_declaration(clean_registry):
     """
     # Execute directive
 
-    @Directive("lol2")
+    @Directive("lol2", schema_name="test_tartiflette_directive_declaration")
     class Loled2:
         @staticmethod
         async def on_field_execution(
-            _directive_args, func, pr, args, rctx, info
+            directive_args: Dict[str, Any],
+            next_resolver: Callable,
+            parent: Optional[Any],
+            args: Dict[str, Any],
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
-            return (await func(pr, args, rctx, info)) + int(
-                _directive_args["value"]
+            return (await next_resolver(parent, args, ctx, info)) + int(
+                directive_args["value"]
             )
 
-    @Resolver("Query.fieldLoled1")
+    @Resolver(
+        "Query.fieldLoled1",
+        schema_name="test_tartiflette_directive_declaration",
+    )
     async def func_field_resolver4(_parent, _arguments, _request_ctx, _info):
         return 42
 
-    @Resolver("Query.fieldLoled2")
+    @Resolver(
+        "Query.fieldLoled2",
+        schema_name="test_tartiflette_directive_declaration",
+    )
     async def func_field_resolver5(_parent, _arguments, _request_ctx, _info):
         return 42
 
-    @Resolver("Query.fieldLoled3")
+    @Resolver(
+        "Query.fieldLoled3",
+        schema_name="test_tartiflette_directive_declaration",
+    )
     async def func_field_resolver6(_parent, _arguments, _request_ctx, _info):
         return 42
 
-    @Directive("lol")
+    @Directive("lol", schema_name="test_tartiflette_directive_declaration")
     class Loled:
         @staticmethod
         async def on_field_execution(
-            _directive_arg, func, pr, args, rctx, info
+            directive_args: Dict[str, Any],
+            next_resolver: Callable,
+            parent: Optional[Any],
+            args: Dict[str, Any],
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
-            return (await func(pr, args, rctx, info)) + 1
+            return (await next_resolver(parent, args, ctx, info)) + 1
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl, schema_name="test_tartiflette_directive_declaration"
+    )
 
-    assert clean_registry.find_schema().find_directive("lol") is not None
     assert (
-        clean_registry.find_schema().find_directive("lol").implementation
+        SchemaRegistry.find_schema(
+            "test_tartiflette_directive_declaration"
+        ).find_directive("lol")
+        is not None
+    )
+    assert (
+        SchemaRegistry.find_schema("test_tartiflette_directive_declaration")
+        .find_directive("lol")
+        .implementation
         is not None
     )
 
@@ -200,9 +264,7 @@ async def test_tartiflette_directive_declaration(clean_registry):
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_non_introspectable_execution_directive(
-    clean_registry
-):
+async def test_tartiflette_non_introspectable_execution_directive():
     schema = """
     type Query {
         fieldNormal: Int
@@ -210,22 +272,35 @@ async def test_tartiflette_non_introspectable_execution_directive(
     }
     """
 
-    @Resolver("Query.fieldNormal")
+    @Resolver(
+        "Query.fieldNormal",
+        schema_name="test_tartiflette_non_introspectable_execution_directive",
+    )
     async def func_field_resolver4(parent, arguments, request_ctx, info):
         return 42
 
-    @Resolver("Query.fieldHiddendToIntrospactable")
+    @Resolver(
+        "Query.fieldHiddendToIntrospactable",
+        schema_name="test_tartiflette_non_introspectable_execution_directive",
+    )
     async def func_field_resolver5(parent, arguments, request_ctx, info):
         return 42
 
-    ttftt = await create_engine(schema)
+    ttftt = await create_engine(
+        schema,
+        schema_name="test_tartiflette_non_introspectable_execution_directive",
+    )
 
     assert (
-        clean_registry.find_schema().find_directive("nonIntrospectable")
+        SchemaRegistry.find_schema(
+            "test_tartiflette_non_introspectable_execution_directive"
+        ).find_directive("nonIntrospectable")
         is not None
     )
     assert (
-        clean_registry.find_schema()
+        SchemaRegistry.find_schema(
+            "test_tartiflette_non_introspectable_execution_directive"
+        )
         .find_directive("nonIntrospectable")
         .implementation
         is not None

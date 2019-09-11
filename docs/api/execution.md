@@ -7,34 +7,34 @@ sidebar_label: Execution
 Aside from building the `Engine`, the `execute` method is responsible for executing the GraphQL query coming from the client.
 
 Its parameters are:
-* `query`: The GraphQL Request/Query as UTF8-encoded string _(sent by the client)_
-* `operation_name`: Operation name to execute
-* `context`: A dict containing anything you need to be pass through the execution process
-* `variables`: The variables used in the GraphQL request
-* `initial_value`: An initial value given to the resolver of the root type
+* `query` _(Union[str, bytes])_: the GraphQL request/query as UTF8-encoded string
+* `operation_name` _(Optional[str])_: the operation name to execute
+* `context` _(Optional[Any])_: value containing anything you could need and which will be available during all the execution process
+* `variables` _(Optional[Dict[str, Any]])_: the variables provided in the GraphQL request
+* `initial_value` _(Optional[Any])_: an initial value which will be forwarded to the resolver of root type (Query/Mutation/Subscription) fields
 
 ```python
-
 from tartiflette import create_engine
+
 
 engine = await create_engine(
     "myDsl.graphql"
 )
 
-result = engine.execute(
-    query="query MyVideo($id: String) { video(id: $id) { id title } }",
-    operation_name="hello_world",
+result = await engine.execute(
+    query="query MyVideo($id: String!) { video(id: $id) { id title } }",
+    operation_name="MyVideo",
     context={
         "mysql_client": MySQLClient(),
-        "auth_info": AuthInfo()
+        "auth_info": AuthInfo(),
     },
-    variables: {
-        "id": "1234"
+    variables={
+        "id": "1234",
     },
-    initial_value: {}
+    initial_value={},
 )
 
-# `result` will contain something like
+# `result` will contains something like
 # {
 #     "data": {
 #         "video": {

@@ -1,12 +1,12 @@
 ---
 id: what-is-tartiflette
-title: What is Tartiflette
+title: What is Tartiflette?
 sidebar_label: What is Tartiflette?
 ---
 
 Welcome, glad to see you here.
 
-**Tartiflette** is a GraphQL Engine, built on top of Python 3.6 and above. Focused on building GraphQL APIs using the awesome **Schema Definition Language**.
+**Tartiflette** is a GraphQL engine, built on top of Python 3.6 and above. Focused on building GraphQL APIs using the awesome **Schema Definition Language**.
 
 ## What is GraphQL?
 
@@ -16,14 +16,14 @@ Source: [https://graphql.org/](https://graphql.org/)
 
 ## Can I use a standalone Tartiflette for my project?
 
-Our engine follows the [GraphQL Specification](https://facebook.github.io/graphql/), which doesn't specify any transport layer. You can integrate the Tartiflette Engine wherever you need and use whatever transport layer you want: JSON RPC, gRPC or, obviously, HTTP.
+Our engine follows the [June 2018 GraphQL Specification](https://graphql.github.io/graphql-spec/June2018/), which doesn't specify any transport layer. You can integrate the Tartiflette engine wherever you need and use whatever transport layer you want: JSON RPC, gRPC or, obviously, HTTP.
 
-In addition to the Tartiflette Engine, and based on common integrations of GraphQL, we developed a GraphQL HTTP Library, which uses the awesome `aiohttp` library to expose the Tartiflette Engine through HTTP.
+However, in addition to the Tartiflette engine, and based on common integrations of GraphQL, we developed an HTTP integration of the Tartiflette engine over the awesome `aiohttp` library.
 
-![tartiflette integration into tartiflette-aiohttp](/docs/assets/tartiflette-aiohttp.png)
+![HTTP Tartiflette integration into tartiflette-aiohttp](/docs/assets/tartiflette-aiohttp.png)
 
-If you just landed in the GraphQL world, or if you don't want to deal with the integration of Tartiflette behind an HTTP layer, we suggest the use of `tartiflette-aiohttp`.
+If you are new in the GraphQL world, or if you don't want to deal with the integration of Tartiflette behind an HTTP layer, we suggest the use of `tartiflette-aiohttp`.
 
-For advanced use-cases, you should jump to the API documentation of Tartiflette.
+For advanced use-cases, you should jump to [the API documentation](../api/engine.md) of Tartiflette.
 
 In any case, this is the perfect moment to start [the tutorial](../tutorial/getting-started.md) which is based on `tartiflette-aiohttp`.

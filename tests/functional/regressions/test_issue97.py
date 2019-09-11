@@ -17,9 +17,15 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < notId > on field < dog > of type < Query >.",
-                    "path": None,
+                    "message": "Provided Argument < notId > doesn't exists on field < Query.dog >.",
+                    "path": ["dog"],
                     "locations": [{"line": 3, "column": 19}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 }
             ],
         ),
@@ -35,9 +41,15 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < notId > on field < dog > of type < Query >.",
-                    "path": None,
+                    "message": "Provided Argument < notId > doesn't exists on field < Query.dog >.",
+                    "path": ["dog"],
                     "locations": [{"line": 4, "column": 21}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 }
             ],
         ),
@@ -55,9 +67,15 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < notId > on field < dog > of type < Query >.",
-                    "path": None,
+                    "message": "Provided Argument < notId > doesn't exists on field < Query.dog >.",
+                    "path": ["dog"],
                     "locations": [{"line": 3, "column": 19}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 }
             ],
         ),
@@ -77,9 +95,15 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < notId > on field < dog > of type < Query >.",
-                    "path": None,
+                    "message": "Provided Argument < notId > doesn't exists on field < Query.dog >.",
+                    "path": ["dog"],
                     "locations": [{"line": 4, "column": 21}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 }
             ],
         ),
@@ -94,14 +118,26 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                    "path": None,
+                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 4, "column": 33}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 },
                 {
-                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                    "path": None,
+                    "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                    "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 4, "column": 17}],
+                    "extensions": {
+                        "rule": "5.4.2.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                        "tag": "required-arguments",
+                    },
                 },
             ],
         ),
@@ -117,14 +153,26 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                    "path": None,
+                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 5, "column": 35}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 },
                 {
-                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                    "path": None,
+                    "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                    "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 5, "column": 19}],
+                    "extensions": {
+                        "rule": "5.4.2.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                        "tag": "required-arguments",
+                    },
                 },
             ],
         ),
@@ -142,14 +190,26 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                    "path": None,
+                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 4, "column": 33}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 },
                 {
-                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                    "path": None,
+                    "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                    "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 4, "column": 17}],
+                    "extensions": {
+                        "rule": "5.4.2.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                        "tag": "required-arguments",
+                    },
                 },
             ],
         ),
@@ -169,14 +229,26 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                    "path": None,
+                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 5, "column": 35}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 },
                 {
-                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                    "path": None,
+                    "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                    "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 5, "column": 19}],
+                    "extensions": {
+                        "rule": "5.4.2.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                        "tag": "required-arguments",
+                    },
                 },
             ],
         ),
@@ -202,14 +274,26 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < command > on field < doesKnowCommand > of type < Dog >.",
-                    "path": None,
+                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "path": ["doesKnowCommand"],
                     "locations": [{"line": 4, "column": 33}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 },
                 {
-                    "message": "Missing required < dogCommand > argument on < doesKnowCommand > field.",
-                    "path": None,
+                    "message": "Missing mandatory argument < dogCommand > in field < Dog.doesKnowCommand >.",
+                    "path": ["doesKnowCommand"],
                     "locations": [{"line": 4, "column": 17}],
+                    "extensions": {
+                        "rule": "5.4.2.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                        "tag": "required-arguments",
+                    },
                 },
             ],
         ),
@@ -224,10 +308,30 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < unless > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog"],
                     "locations": [{"line": 3, "column": 31}],
-                }
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["dog"],
+                    "locations": [
+                        {"line": 3, "column": 15},
+                        {"line": 3, "column": 19},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
             ],
         ),
         (
@@ -242,10 +346,30 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < unless > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog"],
                     "locations": [{"line": 4, "column": 33}],
-                }
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["dog"],
+                    "locations": [
+                        {"line": 4, "column": 17},
+                        {"line": 4, "column": 21},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
             ],
         ),
         (
@@ -262,10 +386,30 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < unless > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog"],
                     "locations": [{"line": 3, "column": 31}],
-                }
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["dog"],
+                    "locations": [
+                        {"line": 3, "column": 15},
+                        {"line": 3, "column": 19},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
             ],
         ),
         (
@@ -284,10 +428,30 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < unless > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog"],
                     "locations": [{"line": 4, "column": 33}],
-                }
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["dog"],
+                    "locations": [
+                        {"line": 4, "column": 17},
+                        {"line": 4, "column": 21},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
             ],
         ),
         # Undefined argument on directive on nested node
@@ -301,10 +465,30 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < unless > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 4, "column": 64}],
-                }
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["dog", "isHousetrained"],
+                    "locations": [
+                        {"line": 4, "column": 17},
+                        {"line": 4, "column": 52},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
             ],
         ),
         (
@@ -319,10 +503,30 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < unless > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 5, "column": 66}],
-                }
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["dog", "isHousetrained"],
+                    "locations": [
+                        {"line": 5, "column": 19},
+                        {"line": 5, "column": 54},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
             ],
         ),
         (
@@ -339,10 +543,30 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < unless > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 4, "column": 64}],
-                }
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["dog", "isHousetrained"],
+                    "locations": [
+                        {"line": 4, "column": 17},
+                        {"line": 4, "column": 52},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
             ],
         ),
         (
@@ -361,10 +585,30 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < unless > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 5, "column": 66}],
-                }
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["dog", "isHousetrained"],
+                    "locations": [
+                        {"line": 5, "column": 19},
+                        {"line": 5, "column": 54},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
             ],
         ),
         # Multiple undefined arguments
@@ -378,14 +622,26 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < firstUndefinedArg > on field < dog > of type < Query >.",
-                    "path": None,
+                    "message": "Provided Argument < firstUndefinedArg > doesn't exists on field < Query.dog >.",
+                    "path": ["dog"],
                     "locations": [{"line": 3, "column": 19}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 },
                 {
-                    "message": "Undefined argument < secondUndefinedArg > on field < dog > of type < Query >.",
-                    "path": None,
+                    "message": "Provided Argument < secondUndefinedArg > doesn't exists on field < Query.dog >.",
+                    "path": ["dog"],
                     "locations": [{"line": 3, "column": 41}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 },
             ],
         ),
@@ -399,14 +655,40 @@ import pytest
             """,
             [
                 {
-                    "message": "Undefined argument < firstUndefinedArg > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < firstUndefinedArg > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 4, "column": 64}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
                 },
                 {
-                    "message": "Undefined argument < secondUndefinedArg > on directive < @deprecated >.",
-                    "path": None,
+                    "message": "Provided Argument < secondUndefinedArg > doesn't exists on directive < @deprecated >.",
+                    "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 4, "column": 86}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["dog", "isHousetrained"],
+                    "locations": [
+                        {"line": 4, "column": 17},
+                        {"line": 4, "column": 52},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
                 },
             ],
         ),
@@ -419,10 +701,15 @@ import pytest
             """,
             [
                 {
-                    "message": "field `Query.undefinedField` was not found in "
-                    "GraphQL schema.",
+                    "message": "Field undefinedField doesn't exist on Query",
                     "path": ["undefinedField"],
                     "locations": [{"line": 3, "column": 15}],
+                    "extensions": {
+                        "rule": "5.3.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    },
                 }
             ],
         ),
@@ -434,10 +721,41 @@ import pytest
             """,
             [
                 {
-                    "message": "field `Query.undefinedField` was not found in GraphQL schema.",
+                    "message": "Provided Argument < undefinedArg > doesn't exists on directive < @deprecated >.",
+                    "path": ["undefinedField"],
+                    "locations": [{"line": 3, "column": 42}],
+                    "extensions": {
+                        "rule": "5.4.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Names",
+                        "tag": "argument-names",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["undefinedField"],
+                    "locations": [
+                        {"line": 3, "column": 15},
+                        {"line": 3, "column": 30},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
+                {
+                    "message": "Field undefinedField doesn't exist on Query",
                     "path": ["undefinedField"],
                     "locations": [{"line": 3, "column": 15}],
-                }
+                    "extensions": {
+                        "rule": "5.3.1",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    },
+                },
             ],
         ),
     ],

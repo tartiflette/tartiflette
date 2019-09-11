@@ -16,9 +16,11 @@ async def ttftt_engine():
     async def resolve_query_hello(parent, args, ctx, info):
         return args.get("name")
 
-    @Resolver("Query.bye", schema_name="test_issue213")
-    async def resolve_query_bye(parent, args, ctx, info):
-        return args.get("name")
+    class QueryByResolver:
+        async def __call__(self, parent, args, ctx, info):
+            return args.get("name")
+
+    Resolver("Query.bye", schema_name="test_issue213")(QueryByResolver())
 
     return await create_engine(sdl=_SDL, schema_name="test_issue213")
 
@@ -81,13 +83,18 @@ async def ttftt_engine():
             """,
             None,
             {
-                "data": {"bye": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Invalid value ("
-                        "value: None) for field `bye` of type `String`",
-                        "locations": [{"column": 15, "line": 3}],
+                        "message": "Argument < name > of non-null type < String! > must not be null.",
                         "path": ["bye"],
+                        "locations": [{"line": 3, "column": 19}],
+                        "extensions": {
+                            "rule": "5.6.1",
+                            "spec": "June 2018",
+                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "tag": "values-of-correct-type",
+                        },
                     }
                 ],
             },
@@ -149,10 +156,9 @@ async def ttftt_engine():
                 "data": {"bye": None},
                 "errors": [
                     {
-                        "message": "Invalid value ("
-                        "value: None) for field `bye` of type `String`",
-                        "locations": [{"column": 15, "line": 3}],
+                        "message": "Argument < name > of non-null type < String! > must not be null.",
                         "path": ["bye"],
+                        "locations": [{"line": 3, "column": 25}],
                     }
                 ],
             },
@@ -168,15 +174,10 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Value can't be null or contain a null value",
+                        "message": "Variable < $name > of non-null type < String! > must not be null.",
                         "path": None,
                         "locations": [{"line": 2, "column": 20}],
-                    },
-                    {
-                        "message": "Given value for < name > is not type < <class 'str'> >",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 20}],
-                    },
+                    }
                 ],
             },
         ),

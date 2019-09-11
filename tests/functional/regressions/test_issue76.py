@@ -62,24 +62,48 @@ async def test_issue76_raw(ttftt_engine):
         "data": None,
         "errors": [
             {
-                "message": "field `UserStatsViews.unknownField4` was not found in GraphQL schema.",
+                "message": "Field unknownField4 doesn't exist on UserStatsViews",
                 "path": ["viewer", "stats", "views", "unknownField4"],
                 "locations": [{"line": 8, "column": 13}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
             {
-                "message": "field `UserStats.unknownField3` was not found in GraphQL schema.",
+                "message": "Field unknownField3 doesn't exist on UserStats",
                 "path": ["viewer", "stats", "unknownField3"],
                 "locations": [{"line": 10, "column": 11}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
             {
-                "message": "field `User.unknownField2` was not found in GraphQL schema.",
+                "message": "Field unknownField2 doesn't exist on User",
                 "path": ["viewer", "unknownField2"],
                 "locations": [{"line": 12, "column": 9}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
             {
-                "message": "field `Query.unknownField1` was not found in GraphQL schema.",
+                "message": "Field unknownField1 doesn't exist on Query",
                 "path": ["unknownField1"],
                 "locations": [{"line": 14, "column": 7}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
         ],
     }
@@ -121,24 +145,48 @@ async def test_issue76_fragment(ttftt_engine):
         "data": None,
         "errors": [
             {
-                "message": "field `Query.unknownField1` was not found in GraphQL schema.",
+                "message": "Field unknownField4 doesn't exist on UserStatsViews",
+                "path": ["unknownField4"],
+                "locations": [{"line": 4, "column": 7}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
+            },
+            {
+                "message": "Field unknownField3 doesn't exist on UserStats",
+                "path": ["unknownField3"],
+                "locations": [{"line": 11, "column": 7}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
+            },
+            {
+                "message": "Field unknownField2 doesn't exist on User",
+                "path": ["unknownField2"],
+                "locations": [{"line": 19, "column": 7}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
+            },
+            {
+                "message": "Field unknownField1 doesn't exist on Query",
                 "path": ["unknownField1"],
                 "locations": [{"line": 26, "column": 7}],
-            },
-            {
-                "message": "field `User.unknownField2` was not found in GraphQL schema.",
-                "path": ["viewer", "unknownField2"],
-                "locations": [{"line": 19, "column": 7}],
-            },
-            {
-                "message": "field `UserStats.unknownField3` was not found in GraphQL schema.",
-                "path": ["viewer", "stats", "unknownField3"],
-                "locations": [{"line": 11, "column": 7}],
-            },
-            {
-                "message": "field `UserStatsViews.unknownField4` was not found in GraphQL schema.",
-                "path": ["viewer", "stats", "views", "unknownField4"],
-                "locations": [{"line": 4, "column": 7}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
         ],
     }
@@ -172,24 +220,59 @@ async def test_issue76_another_order(ttftt_engine):
         "data": None,
         "errors": [
             {
-                "message": "field `UserStats.unknownField3` was not found in GraphQL schema.",
+                "message": "Field unknownField3 doesn't exist on UserStats",
                 "path": ["viewer", "stats", "unknownField3"],
                 "locations": [{"line": 6, "column": 11}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
             {
-                "message": "field `UserStatsViews.unknownField4` was not found in GraphQL schema.",
+                "message": "Field unknownField4 doesn't exist on UserStatsViews",
                 "path": ["viewer", "stats", "views", "unknownField4"],
                 "locations": [{"line": 9, "column": 13}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
             {
-                "message": "field `User.unknownField2` was not found in GraphQL schema.",
+                "message": "Field unknownField5 doesn't exist on Root",
+                "path": ["viewer", "unknownField2", "unknownField5"],
+                "locations": [{"line": 15, "column": 13}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
+            },
+            {
+                "message": "Field unknownField2 doesn't exist on User",
                 "path": ["viewer", "unknownField2"],
                 "locations": [{"line": 14, "column": 9}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
             {
-                "message": "field `Query.unknownField1` was not found in GraphQL schema.",
+                "message": "Field unknownField1 doesn't exist on Query",
                 "path": ["unknownField1"],
                 "locations": [{"line": 18, "column": 7}],
+                "extensions": {
+                    "rule": "5.3.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                },
             },
         ],
     }

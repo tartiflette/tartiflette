@@ -1,9 +1,10 @@
 import json
 
+from typing import Any, Callable, Dict, Optional
+
 import pytest
 
 from tartiflette import Directive, Resolver, Scalar, create_engine
-from tartiflette.scalar.builtins.string import ScalarString
 
 _SDL = """
 
@@ -49,7 +50,7 @@ type OKLM @addValue(value: 53) {
 }
 
 type Wahou {
-    wieght: OKLM
+    weight: OKLM
     height: OKLM
 }
 
@@ -68,28 +69,31 @@ type Query {
 async def ttftt_engine():
     @Resolver("Query.test5", schema_name="issue223")
     async def resolver_test5(_pr, _args, _ctx, _info):
-        return {"wieght": {"value": 2}, "height": {"value": 6}}
+        return {"weight": {"value": 2}, "height": {"value": 6}}
 
     @Directive("addValue", schema_name="issue223")
     class AddValue:
         @staticmethod
         async def on_post_input_coercion(
-            directive_args,
-            next_directive,
-            value,
-            argument_definition,
-            ctx,
-            info,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node,
+            value: Any,
+            ctx: Optional[Any],
         ):
             value["value"] = value["value"] + directive_args["value"]
-            return await next_directive(value, argument_definition, ctx, info)
+            return await next_directive(parent_node, value, ctx)
 
         @staticmethod
         async def on_pre_output_coercion(
-            directive_args, next_directive, value, field_definition, ctx, info
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            value: Any,
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
             value["value"] = value["value"] + directive_args["value"]
-            return await next_directive(value, field_definition, ctx, info)
+            return await next_directive(value, ctx, info)
 
     @Directive("mapToValue", schema_name="issue223")
     class MapToValue:
@@ -97,22 +101,25 @@ async def ttftt_engine():
 
         @staticmethod
         async def on_pre_output_coercion(
-            directive_args, next_directive, value, field_definition, ctx, info
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            value: Any,
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
             value = MapToValue.my_map.get(value, value)
-            return await next_directive(value, field_definition, ctx, info)
+            return await next_directive(value, ctx, info)
 
         @staticmethod
         async def on_post_input_coercion(
-            directive_args,
-            next_directive,
-            value,
-            argument_definition,
-            ctx,
-            info,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node,
+            value: Any,
+            ctx: Optional[Any],
         ):
             value = MapToValue.my_map.get(value, value)
-            return await next_directive(value, argument_definition, ctx, info)
+            return await next_directive(parent_node, value, ctx)
 
     @Resolver("Query.test4", schema_name="issue223")
     async def resolver_test4(_pr, _args, _ctx, _info):
@@ -133,35 +140,45 @@ async def ttftt_engine():
         def coerce_input(val):
             return str(val)
 
+        @staticmethod
+        def parse_literal(ast):
+            return ast.value
+
     @Directive("capitalized", schema_name="issue223")
     class Capitalized:
         @staticmethod
         async def on_pre_output_coercion(
-            directive_args, next_directive, value, field_definition, ctx, info
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            value: Any,
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
-            return await next_directive(
-                value.capitalize(), field_definition, ctx, info
-            )
+            return await next_directive(value.capitalize(), ctx, info)
 
     @Directive("lower", schema_name="issue223")
     class Lower:
         @staticmethod
         async def on_pre_output_coercion(
-            directive_args, next_directive, value, field_definition, ctx, info
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            value: Any,
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
-            return await next_directive(
-                value.lower(), field_definition, ctx, info
-            )
+            return await next_directive(value.lower(), ctx, info)
 
     @Directive("upper", schema_name="issue223")
     class Upper:
         @staticmethod
         async def on_pre_output_coercion(
-            directive_args, next_directive, value, field_definition, ctx, info
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            value: Any,
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
-            return await next_directive(
-                value.upper(), field_definition, ctx, info
-            )
+            return await next_directive(value.upper(), ctx, info)
 
     @Resolver("Query.wardrobe", schema_name="issue223")
     async def wardrobe_resolver(_pr, _args, _ctx, _info):
@@ -201,10 +218,10 @@ async def ttftt_engine():
         ),
         ("query { test4 }", {"data": {"test4": "RED"}}),
         (
-            "query { test5 { wieght { value } height { value } } }",
+            "query { test5 { weight { value } height { value } } }",
             {
                 "data": {
-                    "test5": {"wieght": {"value": 55}, "height": {"value": 59}}
+                    "test5": {"weight": {"value": 55}, "height": {"value": 59}}
                 }
             },
         ),

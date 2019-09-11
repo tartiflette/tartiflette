@@ -6,7 +6,7 @@ from tartiflette import Resolver, TartifletteError, create_engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_nested_error(clean_registry):
+async def test_tartiflette_execute_nested_error():
     schema_sdl = """
 
     type Obj {
@@ -22,12 +22,17 @@ async def test_tartiflette_execute_nested_error(clean_registry):
     }
     """
 
-    @Resolver("Query.test")
-    @Resolver("Obj.deep")
+    @Resolver(
+        "Query.test", schema_name="test_tartiflette_execute_nested_error"
+    )
+    @Resolver("Obj.deep", schema_name="test_tartiflette_execute_nested_error")
     async def resolver_x(*_args, **_kwargs):
         return {}
 
-    @Resolver("Nested.lastUpdate")
+    @Resolver(
+        "Nested.lastUpdate",
+        schema_name="test_tartiflette_execute_nested_error",
+    )
     async def func_field_resolver(*args, **kwargs):
         return [
             datetime(
@@ -36,7 +41,9 @@ async def test_tartiflette_execute_nested_error(clean_registry):
             None,
         ]
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl, schema_name="test_tartiflette_execute_nested_error"
+    )
 
     result = await ttftt.execute(
         """
@@ -55,8 +62,8 @@ async def test_tartiflette_execute_nested_error(clean_registry):
         "data": {"test": {"deep": {"lastUpdate": None}}},
         "errors": [
             {
-                "message": "Invalid value (value: None) for field `lastUpdate` of type `[Float!]`",
-                "path": ["test", "deep", "lastUpdate"],
+                "message": "Cannot return null for non-nullable field Nested.lastUpdate.",
+                "path": ["test", "deep", "lastUpdate", 1],
                 "locations": [{"line": 5, "column": 17}],
             }
         ],
@@ -64,7 +71,7 @@ async def test_tartiflette_execute_nested_error(clean_registry):
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_tartifletteerror_custom(clean_registry):
+async def test_tartiflette_execute_tartifletteerror_custom():
     schema_sdl = """
 
     type Obj {
@@ -86,16 +93,28 @@ async def test_tartiflette_execute_tartifletteerror_custom(clean_registry):
             self.code = code
             self.extensions = {"code": code}
 
-    @Resolver("Query.test")
-    @Resolver("Obj.deep")
+    @Resolver(
+        "Query.test",
+        schema_name="test_tartiflette_execute_tartifletteerror_custom",
+    )
+    @Resolver(
+        "Obj.deep",
+        schema_name="test_tartiflette_execute_tartifletteerror_custom",
+    )
     async def resolver_x(*_args, **_kwargs):
         return {}
 
-    @Resolver("Nested.lastUpdate")
+    @Resolver(
+        "Nested.lastUpdate",
+        schema_name="test_tartiflette_execute_tartifletteerror_custom",
+    )
     async def func_field_resolver(*args, **kwargs):
         raise CustomException("my_error", "There is an error")
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl,
+        schema_name="test_tartiflette_execute_tartifletteerror_custom",
+    )
 
     result = await ttftt.execute(
         """

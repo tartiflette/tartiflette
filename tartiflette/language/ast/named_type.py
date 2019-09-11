@@ -2,6 +2,8 @@ from typing import Any, Optional
 
 from tartiflette.language.ast.base import TypeNode
 
+__all__ = ("NamedTypeNode",)
+
 
 class NamedTypeNode(TypeNode):
     """
@@ -32,7 +34,8 @@ class NamedTypeNode(TypeNode):
         """
         return self is other or (
             isinstance(other, NamedTypeNode)
-            and (self.name == other.name and self.location == other.location)
+            and self.name == other.name
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -45,3 +48,11 @@ class NamedTypeNode(TypeNode):
             self.name,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the named type.
+        :return: a human-readable representation of the named type
+        :rtype: str
+        """
+        return str(self.name)

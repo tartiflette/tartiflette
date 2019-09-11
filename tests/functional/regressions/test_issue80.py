@@ -47,6 +47,12 @@ async def test_issue80(ttftt_engine):
                 "message": "Fragment < UserFields > is never used.",
                 "path": None,
                 "locations": [{"line": 2, "column": 5}],
+                "extensions": {
+                    "rule": "5.5.1.4",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragments-Must-Be-Used",
+                    "tag": "fragment-must-be-used",
+                },
             }
         ],
     }

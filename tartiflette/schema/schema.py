@@ -1,33 +1,87 @@
-from inspect import iscoroutinefunction
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Union
 
+from tartiflette.resolver.default import default_type_resolver
 from tartiflette.schema.introspection import (
     SCHEMA_ROOT_FIELD_DEFINITION,
     TYPENAME_ROOT_FIELD_DEFINITION,
     prepare_type_root_field,
 )
-from tartiflette.types.directive import GraphQLDirective
-from tartiflette.types.enum import GraphQLEnumType
+from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumTypeExtension
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
     ImproperlyConfigured,
-    MissingImplementation,
     RedefinedImplementation,
     UnknownSchemaFieldResolver,
 )
-from tartiflette.types.field import GraphQLField
-from tartiflette.types.helpers import reduce_type
-from tartiflette.types.input_object import GraphQLInputObjectType
-from tartiflette.types.interface import GraphQLInterfaceType
+from tartiflette.types.helpers.reduce_type import reduce_type
+from tartiflette.types.input_object import (
+    GraphQLInputObjectType,
+    GraphQLInputObjectTypeExtension,
+)
+from tartiflette.types.interface import (
+    GraphQLInterfaceType,
+    GraphQLInterfaceTypeExtension,
+)
 from tartiflette.types.non_null import GraphQLNonNull
-from tartiflette.types.object import GraphQLObjectType
-from tartiflette.types.scalar import GraphQLScalarType
-from tartiflette.types.type import GraphQLType
-from tartiflette.types.union import GraphQLUnionType
+from tartiflette.types.object import (
+    GraphQLObjectType,
+    GraphQLObjectTypeExtension,
+)
+from tartiflette.types.scalar import (
+    GraphQLScalarType,
+    GraphQLScalarTypeExtension,
+)
+from tartiflette.types.schema_extension import GraphQLSchemaExtension
+from tartiflette.types.union import GraphQLUnionType, GraphQLUnionTypeExtension
+from tartiflette.utils.callables import is_valid_coroutine
+from tartiflette.utils.errors import graphql_error_from_nodes
 
-_DEFAULT_QUERY_TYPE = "Query"
-_DEFAULT_MUTATION_TYPE = "Mutation"
-_DEFAULT_SUBSCRIPTION_TYPE = "Subscription"
+__all__ = ("GraphQLSchema",)
+
+_DEFAULT_QUERY_OPERATION_NAME = "Query"
+_DEFAULT_MUTATION_OPERATION_NAME = "Mutation"
+_DEFAULT_SUBSCRIPTION_OPERATION_NAME = "Subscription"
+
+
+_IMPLEMENTABLE_DIRECTIVE_HOOKS = (
+    "on_post_bake",
+    "on_pre_output_coercion",
+    "on_introspection",
+    "on_post_input_coercion",
+    "on_argument_execution",
+    "on_field_execution",
+    "on_field_collection",
+    "on_fragment_spread_collection",
+    "on_inline_fragment_collection",
+)
+
+
+def _validate_extension(extended, name, ext_type, message):
+    if not extended:
+        return [f"Can't extend a non existing type < {name} >."]
+
+    if not isinstance(extended, ext_type):
+        return [
+            f"Can't extend {message} < {extended.name} >"
+            f" cause it's not an {message}."
+        ]
+
+    return []
+
+
+def _validate_extension_directives(extension, extended, message):
+    errors = []
+
+    extended_dir = [x.name.value for x in extended.directives]
+
+    for directive in extension.directives:
+        if directive.name.value in extended_dir:
+            errors.append(
+                f"Can't add < {directive.name.value} > Directive to < "
+                f"{extension.name} > {message}, cause it's already there."
+            )
+
+    return errors
 
 
 def _format_schema_error_message(errors: List[str]) -> str:
@@ -39,15 +93,6 @@ def _format_schema_error_message(errors: List[str]) -> str:
     return result
 
 
-_EXPECTED_DIRECTIVE_IMPLEM = [
-    "on_pre_output_coercion",
-    "on_introspection",
-    "on_post_input_coercion",
-    "on_argument_execution",
-    "on_field_execution",
-]
-
-
 class GraphQLSchema:
     """
     GraphQL Schema
@@ -55,279 +100,295 @@ class GraphQLSchema:
     Contains the complete GraphQL Schema: types, entrypoints and directives.
     """
 
-    def __init__(
-        self, name: str = "default", description: Optional[str] = None
-    ) -> None:
-        self.description = (
-            description
-            or """A GraphQL Schema contains the complete definition of the GraphQL structure: types, entrypoints (query, mutation, subscription)."""
-        )
+    # pylint: disable=too-many-instance-attributes
 
-        # Schema entry points
-        self._query_type: Optional[str] = _DEFAULT_QUERY_TYPE
-        self._mutation_type: Optional[str] = _DEFAULT_MUTATION_TYPE
-        self._subscription_type: Optional[str] = _DEFAULT_SUBSCRIPTION_TYPE
-        # Types, definitions and implementations
-        self._gql_types: Dict[str, GraphQLType] = {}
-        # Directives
-        self._directives: Dict[str, GraphQLDirective] = {}
-        self._enums: Dict[str, GraphQLEnumType] = {}
-        self._custom_scalars: Dict[str, GraphQLScalarType] = {}
-        self._input_types: List[str] = []
+    # Introspection attributes
+    description = "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations."
+
+    def __init__(self, name: str = "default") -> None:
+        """
+        :param name: name of the schema
+        :type name: str
+        """
         self.name = name
+        self.default_type_resolver: Optional[Callable] = None
 
-    def __repr__(self) -> str:
-        return (
-            "GraphQLSchema(name: {}, query: {}, "
-            "mutation: {}, "
-            "subscription: {}, "
-            "types: {})".format(
-                self.name,
-                self._query_type,
-                self._mutation_type,
-                self.subscription_type,
-                self._gql_types,
-            )
-        )
+        # Operation type names
+        self.query_operation_name: str = _DEFAULT_QUERY_OPERATION_NAME
+        self.mutation_operation_name: str = _DEFAULT_MUTATION_OPERATION_NAME
+        self.subscription_operation_name: str = _DEFAULT_SUBSCRIPTION_OPERATION_NAME
+
+        # Type, directive, enum, scalar & input type definitions
+        self.type_definitions: Dict[str, "GraphQLType"] = {}
+        self._directive_definitions: Dict[str, "GraphQLDirective"] = {}
+        self._scalar_definitions: Dict[str, "GraphQLScalarType"] = {}
+        self._enum_definitions: Dict[str, "GraphQLEnumType"] = {}
+        self._input_types: List[
+            Union[
+                "GraphQLScalarType",
+                "GraphQLEnumType",
+                "GraphQLInputObjectType",
+            ]
+        ] = []
+        self._operation_types: Dict[str, "GraphQLObjectType"] = {}
+
+        # Introspection attributes
+        self.types: List["GraphQLType"] = []
+        self.queryType: Optional[  # pylint: disable=invalid-name
+            "GraphQLType"
+        ] = None
+        self.mutationType: Optional[  # pylint: disable=invalid-name
+            "GraphQLType"
+        ] = None
+        self.subscriptionType: Optional[  # pylint: disable=invalid-name
+            "GraphQLType"
+        ] = None
+        self.directives: List[  # pylint: disable=invalid-name
+            "GraphQLDirective"
+        ] = []
+
+        self.extensions: List["GraphQLExtension"] = []
 
     def __eq__(self, other: Any) -> bool:
-        if not type(self) is type(other):
-            return False
-        if (
-            self._query_type != other.query_type
-            or self._mutation_type != other.mutation_type
-            or self._subscription_type != other.subscription_type
-        ):
-            return False
-        if len(self._gql_types) != len(other.types):
-            return False
-        for key in self._gql_types:
-            try:
-                if self._gql_types[key] != other.gql_types[key]:
-                    return False
-            except KeyError:
-                return False
-        return True
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isinstance(other, GraphQLSchema)
+            and self.name == other.name
+            and self.query_operation_name == other.query_operation_name
+            and self.mutation_operation_name == other.mutation_operation_name
+            and self.subscription_operation_name
+            == other.subscription_operation_name
+            and self.type_definitions == other.type_definitions
+        )
 
-    @property
-    def query_type(self) -> Optional[str]:
-        return self._query_type
+    def __repr__(self) -> str:
+        """
+        Returns the representation of a GraphQLSchema instance.
+        :return: the representation of a GraphQLSchema instance
+        :rtype: str
+        """
+        return "GraphQLSchema(name={!r})".format(self.name)
 
-    @query_type.setter
-    def query_type(self, value: str) -> None:
-        self._query_type = value
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the schema.
+        :return: a human-readable representation of the schema
+        :rtype: str
+        """
+        return self.name
 
-    @property
-    def mutation_type(self) -> Optional[str]:
-        return self._mutation_type
+    def __hash__(self) -> int:
+        """
+        Hash the name of the schema as a unique representation of a
+        GraphQLSchema.
+        :return: hash of the schema name
+        :rtype: int
+        """
+        return hash(self.name)
 
-    @mutation_type.setter
-    def mutation_type(self, value: str) -> None:
-        self._mutation_type = value
-
-    @property
-    def subscription_type(self) -> Optional[str]:
-        return self._subscription_type
-
-    @subscription_type.setter
-    def subscription_type(self, value: str) -> None:
-        self._subscription_type = value
-
-    def get_operation_type(self, operation_name: str) -> Optional[str]:
-        if operation_name == _DEFAULT_QUERY_TYPE:
-            return self.query_type
-        if operation_name == _DEFAULT_MUTATION_TYPE:
-            return self.mutation_type
-        if operation_name == _DEFAULT_SUBSCRIPTION_TYPE:
-            return self.subscription_type
-        return None
-
-    # Introspection Attribute
-    @property
-    def queryType(  # pylint: disable=invalid-name
-        self
-    ) -> Optional[GraphQLType]:
-        try:
-            return self._gql_types[self.query_type]
-        except KeyError:
-            pass
-        return None
-
-    # Introspection Attribute
-    @property
-    def subscriptionType(  # pylint: disable=invalid-name
-        self
-    ) -> Optional[GraphQLType]:
-        try:
-            return self._gql_types[self.subscription_type]
-        except KeyError:
-            pass
-        return None
-
-    # Introspection Attribute
-    @property
-    def mutationType(  # pylint: disable=invalid-name
-        self
-    ) -> Optional[GraphQLType]:
-        try:
-            return self._gql_types[self.mutation_type]
-        except KeyError:
-            pass
-        return None
-
-    # Introspection Attribute
-    @property
-    def types(self) -> List[GraphQLType]:
-        return [
-            self._gql_types[x]
-            for x in self._gql_types
-            if not x.startswith("__")
-        ]
-
-    def find_type(self, name: str) -> GraphQLType:
-        return self._gql_types[name]
-
-    def has_type(self, name: str) -> bool:
-        return name in self._gql_types
-
-    @property
-    def gql_types(self) -> Dict[str, GraphQLType]:
-        return self._gql_types
-
-    # Introspection Attribute
-    @property
-    def directives(self) -> List[GraphQLDirective]:
-        return list(self._directives.values())
-
-    def find_directive(self, name: str) -> GraphQLDirective:
-        return self._directives[name]
-
-    @property
-    def enums(self) -> Dict[str, GraphQLEnumType]:
-        return self._enums
-
-    def find_enum(self, name: str) -> GraphQLEnumType:
-        return self._enums.get(name)
-
-    def find_scalar(self, name: str) -> Optional[GraphQLScalarType]:
-        return self._custom_scalars.get(name)
-
-    def add_directive(self, value: GraphQLDirective) -> None:
-        if self._directives.get(value.name):
-            raise RedefinedImplementation(
-                "new GraphQL directive definition `{}` "
-                "overrides existing directive definition `{}`.".format(
-                    value.name, repr(self._directives.get(value.name))
-                )
-            )
-        self._directives[value.name] = value
-
-    def add_definition(self, value: GraphQLType) -> None:
-        if self._gql_types.get(value.name):
+    def add_type_definition(self, type_definition: "GraphQLType") -> None:
+        """
+        Adds a GraphQLType to the defined type list.
+        :param type_definition: GraphQLType to add
+        :type type_definition: GraphQLType
+        """
+        if type_definition.name in self.type_definitions:
             raise RedefinedImplementation(
                 "new GraphQL type definition `{}` "
                 "overrides existing type definition `{}`.".format(
-                    value.name, repr(self._gql_types.get(value.name))
+                    type_definition.name,
+                    repr(self.type_definitions.get(type_definition.name)),
                 )
             )
-        self._gql_types[value.name] = value
-        if isinstance(value, GraphQLInputObjectType):
-            self._input_types.append(value.name)
+        self.type_definitions[type_definition.name] = type_definition
+        if isinstance(type_definition, GraphQLInputObjectType):
+            self._input_types.append(type_definition.name)
 
-    def add_enum_definition(self, value: GraphQLEnumType) -> None:
-        if self._enums.get(value.name):
+    def has_type(self, name: str) -> bool:
+        """
+        Determines whether or not the name corresponds to a defined type.
+        :param name: name of the type to find
+        :type name: str
+        :return: whether or not the name corresponds to a defined type
+        :rtype: bool
+        """
+        return name in self.type_definitions
+
+    def find_type(self, name: str) -> "GraphQLType":
+        """
+        Returns the defined type corresponding to the name.
+        :param name: name of the type to return
+        :type name: str
+        :return: the defined type
+        :rtype: GraphQLType
+        """
+        return self.type_definitions[name]
+
+    def add_directive_definition(
+        self, directive_definition: "GraphQLDirective"
+    ) -> None:
+        """
+        Adds a GraphQLDirective to the defined directive list.
+        :param directive_definition: GraphQLDirective to add
+        :type directive_definition: GraphQLDirective
+        """
+        if directive_definition.name in self._directive_definitions:
             raise RedefinedImplementation(
-                "new GraphQL enum definition `{}` "
-                "overrides existing enum definition `{}`.".format(
-                    value.name, repr(self._enums.get(value.name))
+                "new GraphQL directive definition `{}` "
+                "overrides existing directive definition `{}`.".format(
+                    directive_definition.name,
+                    repr(
+                        self._directive_definitions.get(
+                            directive_definition.name
+                        )
+                    ),
                 )
             )
-        self._enums[value.name] = value
-        self._input_types.append(value.name)
+        self._directive_definitions[
+            directive_definition.name
+        ] = directive_definition
 
-    def add_custom_scalar_definition(self, value: GraphQLScalarType) -> None:
-        if self._custom_scalars.get(value.name):
+    def has_directive(self, name: str) -> bool:
+        """
+        Determines whether or not the name corresponds to a defined directive.
+        :param name: name of the directive to find
+        :type name: str
+        :return: whether or not the name corresponds to a defined directive
+        :rtype: bool
+        """
+        return name in self._directive_definitions
+
+    def find_directive(self, name: str) -> "GraphQLDirective":
+        """
+        Returns the defined directive corresponding to the name.
+        :param name: name of the directive to return
+        :type name: str
+        :return: the defined directive
+        :rtype: GraphQLDirective
+        """
+        return self._directive_definitions[name]
+
+    def add_scalar_definition(
+        self, scalar_definition: "GraphQLScalarType"
+    ) -> None:
+        """
+        Adds a GraphQLScalarType to the defined scalar list.
+        :param scalar_definition: GraphQLScalarType to add
+        :type scalar_definition: GraphQLScalarType
+        """
+        if scalar_definition.name in self._scalar_definitions:
             raise RedefinedImplementation(
                 "new GraphQL scalar definition `{}` "
                 "overrides existing scalar definition `{}`.".format(
-                    value.name, repr(self._custom_scalars.get(value.name))
+                    scalar_definition.name,
+                    repr(self._scalar_definitions.get(scalar_definition.name)),
                 )
             )
-        self._custom_scalars[value.name] = value
-        self._input_types.append(value.name)
+        self._scalar_definitions[scalar_definition.name] = scalar_definition
+        self._input_types.append(scalar_definition.name)
+        self.add_type_definition(scalar_definition)
 
-    def get_field_by_name(self, name: str) -> GraphQLField:
+    def find_scalar(self, name: str) -> Optional["GraphQLScalarType"]:
+        """
+        Returns the defined scalar corresponding to the name.
+        :param name: name of the scalar to return
+        :type name: str
+        :return: the defined scalar
+        :rtype: GraphQLScalarType
+        """
+        return self._scalar_definitions.get(name)
+
+    def add_enum_definition(self, enum_definition: "GraphQLEnumType") -> None:
+        """
+        Adds a GraphQLScalarType to the defined scalar list.
+        :param enum_definition: GraphQLEnumType to add
+        :type enum_definition: GraphQLEnumType
+        """
+        if enum_definition.name in self._enum_definitions:
+            raise RedefinedImplementation(
+                "new GraphQL enum definition `{}` "
+                "overrides existing enum definition `{}`.".format(
+                    enum_definition.name,
+                    repr(self._enum_definitions.get(enum_definition.name)),
+                )
+            )
+        self._enum_definitions[enum_definition.name] = enum_definition
+        self._input_types.append(enum_definition.name)
+        self.add_type_definition(enum_definition)
+
+    def add_extension(self, extension: "GraphQLExtension") -> None:
+        """TODO
+        """
+
+        self.extensions.append(extension)
+
+    def get_field_by_name(self, name: str) -> "GraphQLField":
+        """
+        Returns the field corresponding to the filled in name.
+        :param name: name of the field with the following format "Parent.field"
+        :type name: str
+        :return: the field corresponding to the filled in name
+        :rtype: GraphQLField
+        """
         try:
-            object_name, field_name = name.split(".")
+            parent_name, field_name = name.split(".")
         except ValueError:
             raise ImproperlyConfigured(
-                "field name must be of the format "
-                "`TypeName.fieldName` got `{}`.".format(name)
+                "field name must be of the format `TypeName.fieldName` got "
+                f"`{name}`."
             )
 
         try:
-            return self._gql_types[object_name].find_field(field_name)
+            return self.type_definitions[parent_name].find_field(field_name)
         except (AttributeError, KeyError):
             raise UnknownSchemaFieldResolver(
-                "field `{}` was not found in GraphQL schema.".format(name)
+                f"field `{name}` was not found in GraphQL schema."
             )
 
-    def bake(self, custom_default_resolver: Optional[Callable] = None) -> None:
+    def _inject_introspection_fields(self) -> None:
         """
-        Bake the final schema (it should not change after this) used for
-        execution.
-
-        :return: None
+        Injects introspection fields to the query type and to defined object
+        and union types.
         """
-        self.inject_introspection()
-        try:
-            self.bake_types(custom_default_resolver)  # Bake types
-            self.call_onbuild_directives()  # Call on_build directive that can modify the schema
-        except Exception:  # Failure here should be collected at validation time. pylint: disable=broad-except
-            pass
-            # TODO Change this when we'll have a better idea on what to do with the on_build kind of directive.
+        query_type = self.type_definitions.get(self.query_operation_name)
+        if not query_type:
+            return
 
-        self.validate()  # Revalidate.
-
-    def validate(self) -> bool:
-        """
-        Check that the given schema is valid.
-
-        :return: bool
-        """
-        # TODO: Optimization: most validation functions iterate over
-        # the schema types: it could be done in one loop.
-        validators = [
-            self._validate_schema_named_types,
-            self._validate_object_follow_interfaces,
-            self._validate_schema_root_types_exist,
-            self._validate_non_empty_object,
-            self._validate_union_is_acceptable,
-            self._validate_all_scalars_have_implementations,
-            self._validate_enum_values_are_unique,
-            self._validate_arguments_have_valid_type,
-            self._validate_input_type_composed_of_input_type,
-            self._validate_directive_implementation
-            # TODO: Validate Field: default value must be of given type
-            # TODO: Check all objects have resolvers (at least in parent)
-        ]
-        errors = []
-        for validator in validators:
-            errors.extend(validator())
-
-        if errors:
-            raise GraphQLSchemaError(
-                message=_format_schema_error_message(errors)
+        query_type.add_field(
+            SCHEMA_ROOT_FIELD_DEFINITION(
+                gql_type=GraphQLNonNull("__Schema", schema=self)
             )
-        return True
+        )
+        query_type.add_field(prepare_type_root_field(self))
+
+        for type_definition in self.type_definitions.values():
+            try:
+                type_definition.add_field(
+                    TYPENAME_ROOT_FIELD_DEFINITION(
+                        gql_type=GraphQLNonNull(gql_type="String", schema=self)
+                    )
+                )
+            except AttributeError:
+                pass
 
     def _validate_schema_named_types(self) -> List[str]:
+        """
+        Validates that all type with fields refers to known GraphQL types.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         errors = []
-        for type_name, gql_type in self._gql_types.items():
+        for type_name, gql_type in self.type_definitions.items():
             try:
-                for field in gql_type.fields:
+                for field in gql_type.implemented_fields.values():
                     reduced_type = reduce_type(field.gql_type)
-                    if str(reduced_type) not in self._gql_types:
+                    if str(reduced_type) not in self.type_definitions:
                         errors.append(
                             f"Field < {type_name}.{field.name} > is Invalid: "
                             f"the given Type < {reduced_type} > does not exist!"
@@ -337,9 +398,15 @@ class GraphQLSchema:
         return errors
 
     def _validate_object_follow_interfaces(self) -> List[str]:
+        """
+        Validates that object types which implements interfaces does follow
+        their implementations.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         # pylint: disable=too-complex
         errors = []
-        for gql_type in self._gql_types.values():
+        for gql_type in self.type_definitions.values():
             try:
                 ifaces_names = gql_type.interfaces_names
             except AttributeError:
@@ -347,7 +414,7 @@ class GraphQLSchema:
 
             for iface_name in ifaces_names:
                 try:
-                    iface_type = self._gql_types[iface_name]
+                    iface_type = self.type_definitions[iface_name]
                     if not isinstance(iface_type, GraphQLInterfaceType):
                         errors.append(
                             f"Type < {gql_type.name} > "
@@ -363,7 +430,7 @@ class GraphQLSchema:
                     )
                     continue
 
-                for iface_field in iface_type.fields:
+                for iface_field in iface_type.implemented_fields.values():
                     try:
                         gql_type_field = gql_type.find_field(iface_field.name)
                     except KeyError:
@@ -381,36 +448,58 @@ class GraphQLSchema:
         return errors
 
     def _validate_schema_root_types_exist(self) -> List[str]:
-        # Check "query" which is the only mandatory root type
+        """
+        Validates that schema operation types are linked to defined types.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         errors = []
-        if self.query_type not in self._gql_types:
-            errors.append(f"Missing Query Type < {self.query_type} >.")
+        # Check "query" which is the only mandatory root type
+        if self.query_operation_name not in self.type_definitions:
+            errors.append(
+                f"Missing Query Type < {self.query_operation_name} >."
+            )
         if (
-            self.mutation_type != "Mutation"
-            and self.mutation_type not in self._gql_types
-        ):
-            errors.append(f"Missing Mutation Type < {self.mutation_type} >.")
-        if (
-            self.subscription_type != "Subscription"
-            and self.subscription_type not in self._gql_types
+            self.mutation_operation_name != "Mutation"
+            and self.mutation_operation_name not in self.type_definitions
         ):
             errors.append(
-                f"Missing Subscription Type < {self.subscription_type} >."
+                f"Missing Mutation Type < {self.mutation_operation_name} >."
+            )
+        if (
+            self.subscription_operation_name != "Subscription"
+            and self.subscription_operation_name not in self.type_definitions
+        ):
+            errors.append(
+                f"Missing Subscription Type < {self.subscription_operation_name} >."
             )
         return errors
 
     def _validate_non_empty_object(self) -> List[str]:
+        """
+        Validates that object types implement at least one fields.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         errors = []
-        for type_name, gql_type in self._gql_types.items():
-            if isinstance(gql_type, GraphQLObjectType) and not gql_type.fields:
+        for type_name, gql_type in self.type_definitions.items():
+            if (
+                isinstance(gql_type, GraphQLObjectType)
+                and not gql_type.implemented_fields.values()
+            ):
                 errors.append(f"Type < {type_name} > has no fields.")
         return errors
 
     def _validate_union_is_acceptable(self) -> List[str]:
+        """
+        Validates that union types are valid.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         errors = []
-        for type_name, gql_type in self._gql_types.items():
+        for type_name, gql_type in self.type_definitions.items():
             if isinstance(gql_type, GraphQLUnionType):
-                for contained_type_name in gql_type.gql_types:
+                for contained_type_name in gql_type.types:
                     if contained_type_name == type_name:
                         errors.append(
                             f"Union Type < {type_name} > contains itself."
@@ -421,12 +510,18 @@ class GraphQLSchema:
         return errors
 
     def _validate_all_scalars_have_implementations(self) -> List[str]:
+        """
+        Validates that defined scalar types provide a proper implementation.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         errors = []
-        for type_name, gql_type in self._gql_types.items():
+        for type_name, gql_type in self.type_definitions.items():
             if isinstance(gql_type, GraphQLScalarType):
                 if (
                     gql_type.coerce_output is None
                     or gql_type.coerce_input is None
+                    or gql_type.parse_literal is None
                 ):
                     errors.append(
                         f"Scalar < {type_name} > "
@@ -435,11 +530,16 @@ class GraphQLSchema:
         return errors
 
     def _validate_enum_values_are_unique(self) -> List[str]:
+        """
+        Validates that enum values are unique for each enum types.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         errors = []
-        for type_name, gql_type in self._gql_types.items():
+        for type_name, gql_type in self.type_definitions.items():
             if isinstance(gql_type, GraphQLEnumType):
                 for value in gql_type.values:
-                    if str(value.value) in self._gql_types:
+                    if str(value.value) in self.type_definitions:
                         errors.append(
                             f"Enum < {type_name} > has a "
                             f"value of < {str(value.value)} > which "
@@ -447,25 +547,18 @@ class GraphQLSchema:
                         )
         return errors
 
-    def _validate_type_is_an_input_types(
-        self, obj, message_prefix
-    ) -> List[str]:
-        errors = []
-        rtype = reduce_type(obj.gql_type)
-        if not rtype in self._input_types:
-            errors.append(
-                f"{message_prefix} is of type "
-                f"< {rtype} > which is not a Scalar, "
-                f"an Enum or an InputObject"
-            )
-        return errors
-
     def _validate_arguments_have_valid_type(self) -> List[str]:
+        """
+        Validates that argument definitions of fields and directives refer to
+        an input type.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         errors = []
-        for gqltype in self._gql_types.values():
+        for gqltype in self.type_definitions.values():
             try:
-                for field in gqltype.fields:
-                    for arg in field.args:
+                for field in gqltype.implemented_fields.values():
+                    for arg in field.arguments.values():
                         errors.extend(
                             self._validate_type_is_an_input_types(
                                 arg,
@@ -475,8 +568,8 @@ class GraphQLSchema:
             except AttributeError:
                 pass
 
-        for directive in self._directives.values():
-            for arg in directive.args:
+        for directive in self._directive_definitions.values():
+            for arg in directive.arguments.values():
                 errors.extend(
                     self._validate_type_is_an_input_types(
                         arg,
@@ -486,12 +579,39 @@ class GraphQLSchema:
 
         return errors
 
+    def _validate_type_is_an_input_types(
+        self, obj: "GraphQLType", message_prefix: str
+    ) -> List[str]:
+        """
+        Validates that the object is a defined input types.
+        :param obj: object to check
+        :param message_prefix: prefix to append to the error message
+        :type obj: GraphQLType
+        :type message_prefix: str
+        :return: a list of errors
+        :rtype: List[str]
+        """
+        rtype = reduce_type(obj.gql_type)
+        if not rtype in self._input_types:
+            return [
+                f"{message_prefix} is of type "
+                f"< {rtype} > which is not a Scalar, "
+                "an Enum or an InputObject"
+            ]
+        return []
+
     def _validate_input_type_composed_of_input_type(self) -> List[str]:
+        """
+        Validates that each input fields of defined input object types refer to
+        an input type.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         errors = []
         for typename in self._input_types:
-            gqltype = self._gql_types[typename]
+            gqltype = self.type_definitions[typename]
             if isinstance(gqltype, GraphQLInputObjectType):
-                for field in gqltype.inputFields:
+                for field in gqltype.input_fields.values():
                     errors.extend(
                         self._validate_type_is_an_input_types(
                             field, f"Field < {typename}.{field.name} >"
@@ -500,64 +620,386 @@ class GraphQLSchema:
         return errors
 
     def _validate_directive_implementation(self) -> List[str]:
+        """
+        Validates that defined directives provide a proper implementation.
+        :return: a list of errors
+        :rtype: List[str]
+        """
         errors = []
-        for directive in self._directives.values():
-            for expected in _EXPECTED_DIRECTIVE_IMPLEM:
+        for directive in self._directive_definitions.values():
+            for expected in _IMPLEMENTABLE_DIRECTIVE_HOOKS:
                 attr = getattr(directive.implementation, expected, None)
-                if attr and not iscoroutinefunction(attr):
+                if attr and not is_valid_coroutine(attr):
                     errors.append(
-                        f"Directive {directive.name} Method {expected} is not awaitable"
+                        f"Directive {directive.name} Method "
+                        f"{expected} is not awaitable"
                     )
         return errors
 
-    def inject_introspection(self) -> None:
-        if self.query_type not in self._gql_types:
-            return
+    def _validate_enum_extensions(self) -> List[str]:
+        errors = []
 
-        self._gql_types[self.query_type].add_field(
-            SCHEMA_ROOT_FIELD_DEFINITION(
-                gql_type=GraphQLNonNull("__Schema", schema=self)
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLEnumTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLEnumType, "ENUM"
             )
-        )
-        self._gql_types[self.query_type].add_field(
-            prepare_type_root_field(self)
-        )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                values = [x.name for x in extended.values]
+                for value in extension.values:
+                    if value.name in values:
+                        errors.append(
+                            f"Can't add < {value.name} > Value "
+                            f"to < {extension.name} > "
+                            f"ENUM, cause value already exists."
+                        )
 
-        for gql_type in self._gql_types.values():
-            try:
-                __typename = TYPENAME_ROOT_FIELD_DEFINITION(
-                    schema=self,
-                    gql_type=GraphQLNonNull(gql_type="String", schema=self),
+                errors.extend(
+                    _validate_extension_directives(extension, extended, "ENUM")
                 )
-                gql_type.add_field(__typename)
-            except AttributeError:
-                pass
 
-    def bake_types(
+        return errors
+
+    def _validate_object_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLObjectTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLObjectType, "TYPE"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                for field in extension.fields:
+                    if field in extended.implemented_fields:
+                        errors.append(
+                            f"Can't add Field < {field} > to "
+                            f"TYPE < {extended.name} > "
+                            f"cause field already exists."
+                        )
+
+                for interface in extension.interfaces:
+                    if interface in extended.interfaces_names:
+                        errors.append(
+                            f"Can't add Interface < {interface} > "
+                            f"to TYPE < {extended.name} > "
+                            f"cause Interface already exists."
+                        )
+
+                errors.extend(
+                    _validate_extension_directives(extension, extended, "TYPE")
+                )
+
+        return errors
+
+    def _validate_union_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLUnionTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLUnionType, "UNION"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                for typ in extension.types:
+                    if typ in extended.types:
+                        errors.append(
+                            f"Can't add PossibleType < {typ} > to "
+                            f"UNION < {extended.name} > "
+                            f"cause PossibleType already exists."
+                        )
+
+                errors.extend(
+                    _validate_extension_directives(
+                        extension, extended, "UNION"
+                    )
+                )
+
+        return errors
+
+    def _validate_input_object_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLInputObjectTypeExtension)
+        ]:
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLInputObjectType, "INPUT"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                errors.extend(
+                    _validate_extension_directives(
+                        extension, extended, "INPUT"
+                    )
+                )
+
+                for ifield in extension.input_fields:
+                    if ifield in extended.input_fields:
+                        errors.append(
+                            f"Can't add Input Field < {ifield} > "
+                            f"to Input Object < {extended.name} > "
+                            f"cause it already exists"
+                        )
+
+        return errors
+
+    def _validate_interface_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLInterfaceTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLInterfaceType, "INTERFACE"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                for field in extension.fields:
+                    if field in extended.implemented_fields:
+                        errors.append(
+                            f"Can't add Field < {field} > to "
+                            f"INTERFACE < {extended.name} > "
+                            f"cause field already exists."
+                        )
+
+                errors.extend(
+                    _validate_extension_directives(
+                        extension, extended, "INTERFACE"
+                    )
+                )
+
+        return errors
+
+    def _validate_scalar_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLScalarTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLScalarType, "SCALAR"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                errors.extend(
+                    _validate_extension_directives(
+                        extension, extended, "SCALAR"
+                    )
+                )
+
+        return errors
+
+    def _validate_schema_extensions(self) -> List[str]:
+        errors = []
+        extended_operations = []
+        for extension in [
+            x for x in self.extensions if isinstance(x, GraphQLSchemaExtension)
+        ]:
+            for operation in extension.operations:
+                op_type = getattr(self, f"{operation}_operation_name")
+                if op_type in extended_operations:
+                    errors.append(
+                        f"Can't extend Schema "
+                        f"Operation < {op_type} >"
+                        f" multiple times"
+                    )
+
+                if self.has_type(op_type):
+                    errors.append(
+                        f"Can't extend Schema with "
+                        f"Operation < {op_type} > "
+                        f"cause type is already defined."
+                    )
+                else:
+                    extended_operations.append(op_type)
+
+        return errors
+
+    def _validate(self) -> bool:
+        """
+        Check that the given schema is valid.
+        :return: a boolean which determines whether or not the schema is valid
+        :rtype: bool
+        """
+        # TODO: Optimization: most validation functions iterate over
+        # the schema types: it could be done in one loop.
+        validators = [
+            self._validate_schema_named_types,
+            self._validate_object_follow_interfaces,
+            self._validate_schema_root_types_exist,
+            self._validate_non_empty_object,
+            self._validate_union_is_acceptable,
+            self._validate_all_scalars_have_implementations,
+            self._validate_enum_values_are_unique,
+            self._validate_arguments_have_valid_type,
+            self._validate_input_type_composed_of_input_type,
+            self._validate_directive_implementation,
+            # TODO: Validate Field: default value must be of given type
+            # TODO: Check all objects have resolvers (at least in parent)
+        ]
+        errors = []
+        for validator in validators:
+            errors.extend(validator())
+
+        if errors:
+            raise GraphQLSchemaError(
+                message=_format_schema_error_message(errors)
+            )
+        return True
+
+    def _validate_extensions(self) -> None:
+        validators = [
+            self._validate_enum_extensions,
+            self._validate_input_object_extensions,
+            self._validate_object_extensions,
+            self._validate_interface_extensions,
+            self._validate_scalar_extensions,
+            self._validate_union_extensions,
+            self._validate_schema_extensions,
+        ]
+        errors = []
+        for validator in validators:
+            errors.extend(validator())
+
+        if errors:
+            raise GraphQLSchemaError(
+                message=_format_schema_error_message(errors)
+            )
+
+    async def _bake_types(
         self, custom_default_resolver: Optional[Callable] = None
     ) -> None:
-        for gql_type in self._custom_scalars.values():
-            gql_type.bake(self)
+        """
+        Bakes types linked to the schema.
+        :param custom_default_resolver: callable that will replace the builtin
+        default_resolver (called as resolver for each UNDECORATED field)
+        :type custom_default_resolver: Optional[Callable]
+        """
+        for scalar_definition in self._scalar_definitions.values():
+            scalar_definition.bake(self)
 
-        for gql_type in self._gql_types.values():
-            if not isinstance(gql_type, GraphQLScalarType):  # Are baked first
-                gql_type.bake(self)
+        for type_definition in self.type_definitions.values():
+            # Scalar types are already baked
+            if not isinstance(type_definition, GraphQLScalarType):
+                type_definition.bake(self)
 
-        for directive in self._directives.values():
-            directive.bake(self)
+        for directive_definition in self._directive_definitions.values():
+            directive_definition.bake(self)
 
-        for gql_type in self._gql_types.values():
+        for type_definition in self.type_definitions.values():
             if isinstance(
-                gql_type,
+                type_definition,
                 (GraphQLObjectType, GraphQLInterfaceType, GraphQLUnionType),
             ):
-                gql_type.bake_fields(custom_default_resolver)
-
-    def call_onbuild_directives(self) -> None:
-        for name, directive in self._directives.items():
-            try:
-                directive.implementation.on_build(self)
-            except AttributeError:
-                raise MissingImplementation(
-                    "directive `{}` is missing an implementation".format(name)
+                await type_definition.bake_fields(
+                    self, custom_default_resolver
                 )
+            elif isinstance(type_definition, GraphQLEnumType):
+                await type_definition.bake_enum_values(self)
+            elif isinstance(type_definition, GraphQLInputObjectType):
+                await type_definition.bake_input_fields(self)
+
+    def get_operation_root_type(
+        self, operation: "OperationDefinitionNode"
+    ) -> "GraphQLObjectType":
+        """
+        Extracts the root type of the operation from the schema.
+        :param operation: AST operation definition node from which retrieve the
+        root type
+        :type operation: OperationDefinitionNode
+        :return: the GraphQLObjectType instance related to the operation
+        definition
+        :rtype: GraphQLObjectType
+        """
+        try:
+            return self._operation_types[operation.operation_type]
+        except KeyError:
+            raise graphql_error_from_nodes(
+                "Schema is not configured for %ss." % operation.operation_type,
+                nodes=operation,
+            )
+
+    def _bake_extensions(self):
+        for extension in self.extensions:
+            extension.bake(self)
+
+    async def bake(
+        self,
+        custom_default_resolver: Optional[Callable] = None,
+        custom_default_type_resolver: Optional[Callable] = None,
+    ) -> None:
+        """
+        Bake the final schema (it should not change after this) used for
+        execution.
+        :param custom_default_resolver: callable that will replace the builtin
+        default_resolver
+        :param custom_default_type_resolver: callable that will replace the
+        tartiflette `default_type_resolver` (will be called on abstract types
+        to deduct the type of a result)
+        :type custom_default_resolver: Optional[Callable]
+        :type custom_default_type_resolver: Optional[Callable]
+        """
+        self.default_type_resolver = (
+            custom_default_type_resolver or default_type_resolver
+        )
+        self._inject_introspection_fields()
+
+        self._validate_extensions()  # Validate this before bake
+        # TODO maybe a pre_bake/post_bake thing
+
+        try:
+            self._bake_extensions()
+            await self._bake_types(custom_default_resolver)
+        except Exception:  # pylint: disable=broad-except
+            # Exceptions should be collected at validation time
+            pass
+
+        self._validate()
+
+        # Bake introspection attributes
+        self._operation_types = {
+            "query": self.type_definitions.get(self.query_operation_name),
+            "mutation": self.type_definitions.get(
+                self.mutation_operation_name
+            ),
+            "subscription": self.type_definitions.get(
+                self.subscription_operation_name
+            ),
+        }
+        self.queryType = self._operation_types["query"]
+        self.mutationType = self._operation_types["mutation"]
+        self.subscriptionType = self._operation_types["subscription"]
+        self.directives = list(self._directive_definitions.values())
+
+        for type_name, type_definition in self.type_definitions.items():
+            if not type_name.startswith("__"):
+                self.types.append(type_definition)

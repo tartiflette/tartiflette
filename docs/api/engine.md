@@ -4,18 +4,19 @@ title: Engine
 sidebar_label: Engine
 ---
 
-The way to generate an engine is pretty simple, most of the time, you will use the `create_engine` method, expose in `tartiflette` package. This method performs all the necessary task needed to build your engine.
+The way to generate a Tartiflette engine is pretty simple, most of the time, you will use the `create_engine` function, exposed in the `tartiflette` package. This function performs all the necessary tasks needed to build your engine.
 
 ## `create_engine` prepares and cooks your engine
 
-`create_engine` is the easiest and quickiest method to instanciate and build an Engine(). Behind the scene, this factory will implement the regular [cooking process](#cook-your-tartiflette).
+`create_engine` is the easiest and quickiest way to instanciate and build a Tartiflette engine. Behind the scene, this factory will implements the regular [cooking process](#cook-your-tartiflette).
 
 ### Using the SDL _(Schema Definition Language)_ parameter with different types
 
-#### When the `sdl` parameter contains the raw schema
+#### When the `sdl` parameter contains the SDL as a raw string
 
 ```python
 from tartiflette import create_engine
+
 
 engine = await create_engine(
     """
@@ -26,131 +27,152 @@ engine = await create_engine(
 )
 ```
 
-#### When the `sdl` parameter targets a file
+#### When the `sdl` parameter contains a path to a file
 
-The file path specified has to contain the full schema definition language.
+The file path specified has to contain the full Schema Definition Language.
 
 ```python
 from tartiflette import create_engine
+
 
 engine = await create_engine(
     "/User/chuck/workspace/mytartiflette/schema.graphql"
 )
 ```
 
-#### When the `sdl` parameter targets a file list
+#### When the `sdl` parameter contains a list of file path
 
 Every file will be concatenated, in the order of the provided list.
 
 ```python
 from tartiflette import create_engine
 
+
 engine = await create_engine(
     [
         "/User/chuck/workspace/mytartiflette/schema_query.graphql",
-        "/User/chuck/workspace/mytartiflette/schema_mutation.graphql"
+        "/User/chuck/workspace/mytartiflette/schema_mutation.graphql",
     ]
 )
 ```
 
-#### When the `sdl` parameter targets a folder
+#### When the `sdl` parameter contains a path to a directory
 
-Every file which ends by `.graphql` _(or `.sdl`)_ will be concatenated in lexicographical order.
+Every file which ends with `.graphql` _(or `.sdl`)_ will be concatenated in lexicographical order.
 
 ```python
 from tartiflette import create_engine
 
-engine = await create_engine(
-    "/User/chuck/workspace/mytartiflette"
-)
+
+engine = await create_engine("/User/chuck/workspace/mytartiflette")
 ```
 
 ### Advanced constructor
 
-The `create_engine` method provides an advanced interface for initialization. It accepts optional and named parameters.
+The `create_engine` function provides an advanced interface for initialization. It accepts multiple parameters:
 
-```python
-from tartiflette import create_engine
-
-engine = await create_engine(
-    sdl,
-    schema_name="default",
-)
-```
-
-1. **sdl:** Schema Definition Language, detailed above.
-2. **schema_name:** Schema used from the **[Schema Registry](./schema-registry.md)**. _(default: "default")_
-3. **[error_coercer](#parameter-error-coercer):** Coercer used when an error is raised.
-4. **[custom_default_resolver](#parameter-custom-default-resolver):** Use another default resolver. (Useful if you want to override the behavior for resolving a property, e.g. from snake_case to camelCase and vice versa).
-5. **[modules](#parameter-modules):** list of modules containing your decorated code such as `@Resolver`, `@Subscription`, `@Scalar` and `@Directive`.
+* `sdl` _(Union[str, List[str]])_: raw SDL, path or list of file path/directory from which retrieve the SDL (more detail above)
+* `schema_name` _(str = "default")_: name of the schema represented by the provided SDL ([more detail here](./schema-registry.md))
+* `error_coercer` _(Callable[[Exception, Dict[str, Any]], Dict[str, Any]])_: callable used to coerced an exception into a GraphQL valid output format ([more detail here](#parameter-error_coercer))
+* `custom_default_resolver` _(Optional[Callable])_: callable used to resolve fields which doesn't implements a dedicated resolver (useful if you want to override the behavior for resolving a field, e.g. from `snake_case` to `camelCase` and vice versa) ([more detail here](#parameter-custom_default_resolver))
+* `custom_default_type_resolver` _(Optional[Callable])_: callable that will replace the tartiflette `default_type_resolver` (will be called on abstract types to deduct the type of a result) ([more detail here](#parameter-custom_default_type_resolver))
+* `modules` _(Optional[Union[str, List[str], List[Dict[str, Any]]]])_: list of string containing the name of the modules you want the engine to import, usually this modules contains your `@Resolvers`, `@Directives`, `@Scalar` or `@Subscription` code ([more detail here](#parameter-modules))
 
 #### Parameter: `error_coercer`
 
-The main objective of the `error_coercer` is to provide you a way to extend the behavior when an exception is raised into tartiflette.
+The main objective of the `error_coercer` is to provide you a way to extend the behavior when an exception is raised into Tartiflette.
 
 For instance:
-* Add a log entry when a third-party exceptions is raised _(e.g pymsql, redis)_.
-* Hide technical message's exception for production environment _(don't expose your internal stack from outside)_
+* add a log entry when a third-party exceptions is raised _(e.g `pymsql`, `redis`)_.
+* hide technical message's exception for production environment _(don't expose your internal stack to the outside world)_
 
-`error_coercer` SHOULDN'T be used for custom functional exception, for this common use-case, please take a look of the [`TartifletteError` and its documentation's page](./error-handling.md).
+`error_coercer` **SHOULDN'T** be used for custom functional exception, for this common use-case, please take a look of the [`TartifletteError` and its documentation's page](./error-handling.md).
 
 ```python
 import logging
+
+from typing import Any, Dict
+
 from tartiflette import create_engine
+
+logger = logging.getLogger(__name__)
 
 
 class CustomException(Exception):
-    def __init__(self, type_name, message):
+    def __init__(self, type_name: str, message: str) -> None:
         self.type = type_name
         self.message = message
 
 
-def my_error_coercer(exception, error) -> dict:
+def my_error_coercer(
+    exception: Exception, error: Dict[str, Any]
+) -> Dict[str, Any]:
     if isinstance(exception, CustomException):
-        logging.error("Unable to reach the Storage host.")
+        logger.error("Unable to reach the Storage host.")
         error["extensions"]["type"] = exception.type
-
     return error
 
 
-e = await create_engine(
+engine = await create_engine(
     "my_sdl.graphql",
-    error_coercer=my_error_coercer
+    error_coercer=my_error_coercer,
 )
 ```
 
 #### Parameter: `custom_default_resolver`
 
-Use another default resolver. It can be useful to override the behavior for resolving a property, from `snake_case` to `camelCase` and vice versa.
+The `custom_default_resolver` parameter is here to provide an easy way to override the default resolver used internaly by Tartiflette during the execution. The default resolver is the resolver which is used for each field which doesn't implements a dedicated resolver (meaning a field which doesn't implement a callable decorated with `@Resolver`). It can be useful to override the behavior for resolving a field, for instance from `snake_case` to `camelCase` and vice versa.
 
 ```python
 from tartiflette import create_engine
 
-async def my_default_resolver(parent_result, arguments, context, info):
+
+async def my_default_resolver(parent, arguments, context, info):
     do_ing_some_thin_gs = 42
     return a_value
 
-e = await create_engine(
+
+engine = await create_engine(
     "my_sdl.graphql",
-    custom_default_resolver=my_default_resolver
+    custom_default_resolver=my_default_resolver,
+)
+```
+
+#### Parameter: `custom_default_type_resolver`
+
+The `custom_default_type_resolver` parameter is here to provide an easy way to override the default type resolver used internaly by Tartiflette during the execution. The default type resolver is the resolver which is used for each abstract field which doesn't implements a dedicated type resolver. It can be useful to override the behavior for resolving the `__typename` of a field.
+
+```python
+from tartiflette import create_engine
+
+
+async def my_default_type_resolver(result, ctx, info, abstract_type):
+    return parent["__typename"]
+
+
+engine = await create_engine(
+    "my_sdl.graphql",
+    custom_default_type_resolver=my_default_type_resolver,
 )
 ```
 
 #### Parameter: `modules`
 
-Prior creating the `Engine()`, all your code must be decoratored by these following ones to be taken into account.
-
+Prior creating the Tartiflette engine, all your code must be decoratored by these following ones to be taken into account:
 * `@Resolver`
+* `@TypeResolver`
 * `@Subscription`
 * `@Scalar`
 * `@Directive`
 
 Doing it by yourself could be verbose and generate a lot of imports.
 
-Both for your internal code and the plugins management, tartiflette provides a parameters called `modules` which give you the ability to specify all the internal and external code you want to import. In addition to the module, you will be able to specify a configuration, which will be mostly used by the [tartiflette plugin approach](../plugins/introduction.md).
+Both for your internal code and the plugins management, Tartiflette provides a `modules` parameter which give you the ability to specify all the internal and external modules you want to import. In addition to the module, you will be able to specify a configuration, which will be mostly used by the [Tartiflette plugin approach](../plugins/introduction.md).
 
+This allow you to have a cleaner code by doing this:
 ```python
 from tartiflette import create_engine
+
 
 engine = await create_engine(
     os.path.dirname(os.path.abspath(__file__)) + "/sdl",
@@ -160,17 +182,18 @@ engine = await create_engine(
         "recipes_manager.subscription_resolvers",
         "recipes_manager.directives.auth",
         "recipes_manager.directives.rate_limiting",
-    ]
+    ],
 )
 ```
 
-instead of
+instead of:
 ```python
 import recipes_manager.query_resolvers
 import recipes_manager.mutation_resolvers
 import recipes_manager.subscription_resolvers
 import recipes_manager.directives.auth
 import recipes_manager.directives.rate_limiting
+
 
 engine = await create_engine(
     os.path.dirname(os.path.abspath(__file__)) + "/sdl"
@@ -179,38 +202,41 @@ engine = await create_engine(
 
 ##### Giving configuration to a module
 
+As explain above, the `modules` parameter can be used to provide a list of modules to import but sometimes you will need to provide some configuration to some modules. In order to do that, instead of providing a simple string which target to the module, you will have to fill in a dictionnary with a `name` parameter which target to the module and a `config` key which will contains the configuration needed by the module:
 ```python
 from tartiflette import create_engine
 
-engine = create_engine(
+
+engine = await create_engine(
     os.path.dirname(os.path.abspath(__file__)) + "/sdl",
     modules=[
         "recipes_manager.query_resolvers",
         "recipes_manager.mutation_resolvers",
-        { "name": "a.module.that.needs.config", "config": {"key": "value"} },
-        { "name": "another.module.that.needs.config", "config": {"key": "value"} }
-    ]
+        {"name": "a.module.that.needs.config", "config": {"key": "value"}},
+        {"name": "b.module.that.needs.config", "config": {"key": "value"}},
+    ],
 )
 ```
 
 ## Advanced instanciation
 
-For those who want to integrate tartiflette in advanced use-cases. You could be interested by owning the process of building an `Engine()`.
+For those who want to integrate Tartiflette in advanced use-cases. You could be interested by owning the process of building an `Engine`.
 
-### Why owning the cooking (building) process of tartiflette?
+### Why owning the cooking (building) process of Tartiflette?
 
-The cooking process of tartiflette is equals to a `build` process on another librairies, it will prepare your engine to be executed. Thus, it's useless to say that an engine instance can't be executed without beeing cooked. Like the meal, you can't eat a tartiflette without cooking it first. That's it.
+The cooking process of Tartiflette is equals to a `build` process on another library, it will prepare your engine to be executed. Thus, it's useless to say that an engine instance can not be executed without beeing cooked. Like the meal, you can not eat a tartiflette without cooking it first. That's it.
 
-Customise the cooking process is interesting to integrate tartiflette into another librairies, like `aiohttp`, `starlette`, `django` and so one.
+Customize the cooking process is interesting to integrate Tartiflette into another library, like `aiohttp`, `starlette`, `django` and so one.
 
-_For your information_: `tartiflette-aiohttp` has its own flow to manage the cooking process of the Engine.
+> Note: `tartiflette-aiohttp` has its own flow to manage the cooking process of the engine.
 
-### `cook()` your tartiflette
+### `cook()` your Tartiflette
 
-As specified above, the Engine() needs to be cook() before being executed. Here are the sequence to execute a query on an `Engine()` instance.
+As specified above, the `Engine` needs to be `cook()` before being executed. Here are the sequence to execute a query on an `Engine` instance.
 
 ```python
 from tartiflette import Engine
+
 
 # 1. Create an instance of the Engine
 engine = Engine()
@@ -225,33 +251,31 @@ await engine.cook(
 )
 
 # 3. Execute a GraphQL Query
-engine.execute(
-    query="query { hello )"
-)
+await engine.execute("query { hello )")
 ```
 
 #### `cook()` interface
 
-The `cook()` method is asynchronous, this *strong choice* will allow us to execute asynchronous tasks during the building process, like:
-
-* Fetching SDL from another API.
-* Fetch third-parties services _(Database structure, Cloud provider objects ...)_
-* Fetch Schema from a Schema Manager.
+The `cook` method is asynchronous, this *strong choice* will allow us to execute asynchronous tasks during the building process, like:
+* fetching SDL from another API
+* fetch third-parties services _(database structure, cloud provider objects ...)_
+* fetch schema from a schema manager
 
 ```python
 async def cook(
-        self,
-        sdl: Union[str, List[str]],
-        error_coercer: Callable[[Exception], dict] = None,
-        custom_default_resolver: Optional[Callable] = None,
-        modules: Optional[Union[str, List[Union[str, Dict[str, Union[str, Dict[str, str]]]]]]] = None,
-        schema_name: str = "default",
-    ):
+    self,
+    sdl: Union[str, List[str]] = None,
+    error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]] = None,
+    custom_default_resolver: Optional[Callable] = None,
+    modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
+    schema_name: str = None,
+) -> None:
     pass
 ```
 
-1. **sdl:** Schema Definition Language, detailed above.
-2. **[error_coercer](#parameter-error-coercer):** Coercer used when an error is raised.
-3. **[custom_default_resolver](#parameter-custom-default-resolver):** Use another default resolver. (Useful if you want to override the behavior for resolving a property, e.g. from snake_case to camelCase and vice versa).
-4. **[modules](#parameter-modules):** list of modules containing your decorated code such as `@Resolver`, `@Subscription`, `@Scalar` and `@Directive`.
-5. **schema_name:** Schema used from the **[Schema Registry](./schema-registry.md)**. _(default: "default")_
+* `sdl` _(Union[str, List[str]])_: raw SDL, path or list of file path/directory from which retrieve the SDL (more detail above)
+* `error_coercer` _(Callable[[Exception, Dict[str, Any]], Dict[str, Any]])_: callable used to coerced an exception into a GraphQL valid output format ([more detail here](#parameter-error_coercer))
+* `custom_default_resolver` _(Optional[Callable])_: callable used to resolve fields which doesn't implements a dedicated resolver (useful if you want to override the behavior for resolving a field, e.g. from `snake_case` to `camelCase` and vice versa) ([more detail here](#parameter-custom_default_resolver))
+* `custom_default_type_resolver` _(Optional[Callable])_: callable that will replace the tartiflette `default_type_resolver` (will be called on abstract types to deduct the type of a result) ([more detail here](#parameter-custom_default_type_resolver))
+* `modules` _(Optional[Union[str, List[str], List[Dict[str, Any]]]])_: list of string containing the name of the modules you want the engine to import, usually this modules contains your `@Resolvers`, `@Directives`, `@Scalar` or `@Subscription` code ([more detail here](#parameter-modules))
+* `schema_name` _(str = "default")_: name of the schema represented by the provided SDL ([more detail here](./schema-registry.md))

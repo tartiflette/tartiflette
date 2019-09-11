@@ -4,17 +4,17 @@ import pytest
 
 
 def test_scalar_custom_scalar_inst():
-    from tartiflette.scalar.custom_scalar import Scalar
+    from tartiflette.scalar.scalar import Scalar
 
     s = Scalar("A")
-    assert s._name == "A"
+    assert s.name == "A"
     assert s._implementation is None
     assert s._schema_name == "default"
 
 
 @pytest.fixture
 def a_scalar():
-    from tartiflette.scalar.custom_scalar import Scalar
+    from tartiflette.scalar.scalar import Scalar
 
     return Scalar("A")
 

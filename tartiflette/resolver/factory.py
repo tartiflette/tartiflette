@@ -1,193 +1,146 @@
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, List, Union
 
-from tartiflette.types.exceptions.tartiflette import SkipExecution
-from tartiflette.types.helpers import wraps_with_directives
-from tartiflette.utils.arguments import coerce_arguments
-from tartiflette.utils.coercer import get_coercer
+from tartiflette.coercers.arguments import coerce_arguments
+from tartiflette.coercers.outputs.common import complete_value_catching_error
+from tartiflette.execution.types import build_resolve_info
+from tartiflette.types.helpers.get_directive_instances import (
+    compute_directive_nodes,
+)
+from tartiflette.utils.directives import (
+    introspection_directives_executor,
+    wraps_with_directives,
+)
+
+__all__ = ("resolve_field",)
 
 
-async def _execute_introspection_directives(
-    elements: List, ctx: Dict[Any, Any], info: "Info"
-) -> list:
-    results = []
-    for element in elements:
-        try:
-            if element.introspection_directives:
-                result = await element.introspection_directives(
-                    element, ctx, info
+async def resolve_field_value_or_error(
+    execution_context: "ExecutionContext",
+    field_definition: "GraphQLField",
+    field_nodes: List["FieldNode"],
+    resolver: Callable,
+    source: Any,
+    info: "ResolveInfo",
+) -> Union[Exception, Any]:
+    """
+    Coerce the field's arguments and then try to resolve the field.
+    :param execution_context: instance of the query execution context
+    :param field_definition: GraphQLField instance of the resolved field
+    :param field_nodes: AST nodes related to the resolved field
+    :param resolver: callable to use to resolve the field
+    :param source: default root value or field parent value
+    :param info: information related to the execution and the resolved field
+    :type execution_context: ExecutionContext
+    :type field_definition: GraphQLField
+    :type field_nodes: List[FieldNode]
+    :type resolver: Callable
+    :type source: Any
+    :type info: ResolveInfo
+    :return: the resolved field value
+    :rtype: Union[Exception, Any]
+    """
+    # pylint: disable=too-many-locals
+    try:
+        computed_directives = []
+        for field_node in field_nodes:
+            computed_directives.extend(
+                compute_directive_nodes(
+                    execution_context.schema,
+                    field_node.directives,
+                    execution_context.variable_values,
                 )
-                if result:
-                    results.append(result)
-            else:
-                results.append(element)
-        except (AttributeError, TypeError):
-            results.append(element)
-    return results
-
-
-def _shall_return_a_list(field_type: Union[str, "GraphQLType"]) -> bool:
-    try:
-        return (
-            field_type.gql_type.is_list
-            if field_type.is_not_null
-            else field_type.is_list
-        )
-    except AttributeError:
-        pass
-    return False
-
-
-class _ResolverExecutor:
-    def __init__(self, func: Callable, schema_field: "GraphQLField") -> None:
-        self._raw_func = func
-        self._directivated_func = func
-        self._schema_field = schema_field
-        self._coercer = get_coercer(schema_field)
-        self._shall_produce_list = _shall_return_a_list(schema_field.gql_type)
-
-    async def _introspection(self, element: Any, ctx, info) -> Optional[Any]:
-        if isinstance(element, list):
-            return await _execute_introspection_directives(element, ctx, info)
-
-        elements = await _execute_introspection_directives(
-            [element], ctx, info
-        )
-        try:
-            return elements[0]
-        except IndexError:
-            pass
-        return None
-
-    async def __call__(
-        self,
-        parent_result: Optional[Any],
-        args: Dict[str, Any],
-        ctx: Optional[Dict[str, Any]],
-        info: "Info",
-        execution_directives: Optional[List[Dict[str, Any]]],
-    ) -> (Any, Any):
-        try:
-            resolver = wraps_with_directives(
-                directives_definition=execution_directives,
-                directive_hook="on_field_execution",
-                func=self._directivated_func,
             )
 
-            result = await resolver(
-                parent_result,
-                await coerce_arguments(
-                    self._schema_field.arguments, args, ctx, info
-                ),
-                ctx,
-                info,
-            )
-
-            if info.execution_ctx.is_introspection:
-                result = await self._introspection(result, ctx, info)
-
-            return (
-                result,
-                await self._coercer(result, self._schema_field, ctx, info),
-            )
-        except SkipExecution as e:
-            raise e
-        except Exception as e:  # pylint: disable=broad-except
-            return e, None
-
-    def update_func(self, func: Callable) -> None:
-        self._raw_func = func
-
-    def update_coercer(self) -> None:
-        self._coercer = get_coercer(self._schema_field)
-
-    def bake(self, custom_default_resolver: Optional[Callable]) -> None:
-        self.update_coercer()
-        if (
-            self._raw_func is default_resolver
-            and custom_default_resolver is not None
-        ):
-            self.update_func(custom_default_resolver)
-
-        if self._schema_field.subscribe and self._raw_func is default_resolver:
-            self._raw_func = default_subscription_resolver(self._raw_func)
-
-        self._directivated_func = wraps_with_directives(
-            directives_definition=self._schema_field.directives,
+        resolver = wraps_with_directives(
+            directives_definition=computed_directives,
             directive_hook="on_field_execution",
-            func=self._raw_func,
+            func=resolver,
+            is_resolver=True,
+            with_default=True,
         )
 
-    @property
-    def schema_field(self) -> "GraphQLField":
-        return self._schema_field
-
-    @property
-    def shall_produce_list(self) -> bool:
-        return self._shall_produce_list
-
-    @property
-    def cant_be_null(self) -> bool:
-        try:
-            return self._schema_field.gql_type.is_not_null
-        except AttributeError:
-            pass
-        return False
-
-    @property
-    def contains_not_null(self) -> bool:
-        try:
-            return self._schema_field.gql_type.contains_not_null
-        except AttributeError:
-            pass
-        return False
-
-
-def default_subscription_resolver(func: Callable):
-    async def func_wrapper(
-        parent_result: Optional[Any],
-        args: Dict[str, Any],
-        ctx: Optional[Dict[str, Any]],
-        info: "Info",
-    ) -> Optional[Any]:
-        return await func(
-            {info.schema_field.name: parent_result}, args, ctx, info
+        result = await resolver(
+            source,
+            await coerce_arguments(
+                field_definition.arguments,
+                field_nodes[0],
+                execution_context.variable_values,
+                execution_context.context,
+            ),
+            execution_context.context,
+            info,
+            context_coercer=execution_context.context,
         )
-
-    return func_wrapper
-
-
-async def default_resolver(
-    parent_result: Optional[Any],
-    _args: Dict[str, Any],
-    _ctx: Optional[Dict[str, Any]],
-    info: "Info",
-) -> Optional[Any]:
-    try:
-        return getattr(parent_result, info.schema_field.name)
-    except AttributeError:
-        pass
-
-    try:
-        return parent_result[info.schema_field.name]
-    except (KeyError, TypeError):
-        pass
-    return None
+        if info.is_introspection:
+            return await introspection_directives_executor(
+                result,
+                execution_context.context,
+                info,
+                context_coercer=execution_context.context,
+            )
+        return result
+    except Exception as e:  # pylint: disable=broad-except
+        return e
 
 
-def default_error_coercer(exception: Exception, error: dict) -> dict:
-    # pylint: disable=unused-argument
-    return error
+async def resolve_field(
+    execution_context: "ExecutionContext",
+    parent_type: "GraphQLObjectType",
+    source: Any,
+    field_nodes: List["FieldNode"],
+    path: "Path",
+    is_introspection_context: bool,
+    field_definition: "GraphQLField",
+    resolver: Callable,
+    output_coercer: Callable,
+) -> Any:
+    """
+    Resolves the field value and coerce it before returning it.
+    :param execution_context: instance of the query execution context
+    :param parent_type: GraphQLObjectType of the field's parent
+    :param source: default root value or field parent value
+    :param field_nodes: AST nodes related to the resolved field
+    :param path: the path traveled until this resolver
+    :param field_definition: GraphQLField instance of the resolved field
+    :param resolver: callable to use to resolve the field
+    :param output_coercer: callable to use to coerce the resolved field value
+    :param is_introspection_context: determines whether or not the resolved
+    field is in a context of an introspection query
+    :type execution_context: ExecutionContext
+    :type parent_type: GraphQLObjectType
+    :type source: Any
+    :type field_nodes: List[FieldNode]
+    :type path: Path
+    :type field_definition: GraphQLField
+    :type resolver: Callable
+    :type output_coercer: Callable
+    :type is_introspection_context: bool
+    :return: the coerced resolved field value
+    :rtype: Any
+    """
+    # pylint: disable=too-many-arguments
+    info = build_resolve_info(
+        execution_context,
+        field_definition,
+        field_nodes,
+        parent_type,
+        path,
+        is_introspection_context,
+    )
 
-
-def error_coercer_factory(error_coercer: Callable) -> dict:
-    def func_wrapper(exception: Exception) -> dict:
-        error = exception.coerce_value()
-        return error_coercer(exception, error)
-
-    return func_wrapper
-
-
-class ResolverExecutorFactory:
-    @staticmethod
-    def get_resolver_executor(func: Callable, field: "GraphQLField"):
-        return _ResolverExecutor(func or default_resolver, field)
+    return await complete_value_catching_error(
+        await resolve_field_value_or_error(
+            execution_context,
+            field_definition,
+            field_nodes,
+            resolver,
+            source,
+            info,
+        ),
+        info,
+        execution_context,
+        field_nodes,
+        path,
+        field_definition.graphql_type,
+        output_coercer,
+    )

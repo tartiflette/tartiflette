@@ -43,6 +43,8 @@ from tartiflette.language.parsers.lark.transformers.converters import (
     lark_to_union_type_extension_node,
 )
 
+__all__ = ("NodeTransformer",)
+
 
 class SchemaNode:
     """
@@ -52,14 +54,17 @@ class SchemaNode:
 
     __slots__ = ("type", "value")
 
-    def __init__(self, type: str, value: Union["Node", List["Node"]]) -> None:
+    def __init__(
+        self,
+        type: str,  # pylint: disable=redefined-builtin
+        value: Union["Node", List["Node"]],
+    ) -> None:
         """
         :param type: type of the schema node
         :param value: value of the schema node
         :type type: str
         :type value: Union[Node, List[Node]]
         """
-        # pylint: disable=redefined-builtin
         self.type = type
         self.value = value
 
@@ -94,7 +99,7 @@ class NodeTransformer(Transformer_InPlace):
 
     # pylint: disable=too-many-public-methods
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.document_node: Optional["DocumentNode"] = None
 
@@ -109,6 +114,7 @@ class NodeTransformer(Transformer_InPlace):
         instance as value
         :rtype: SchemaNode
         """
+        # pylint: disable=no-self-use
         # pylint: disable=no-self-use
         return SchemaNode(type="int_value", value=lark_to_int_value_node(tree))
 
@@ -871,12 +877,13 @@ class NodeTransformer(Transformer_InPlace):
     def input_object_type_extension(self, tree: "Tree") -> "SchemaNode":
         """
         Creates and returns a SchemaNode instance of type
-        "input_object_type_extension" with an InputObjectTypeExtension instance
+        "input_object_type_extension" with an InputObjectTypeExtensionNode
+        instance
         as value (extracted from the parsing of the tree instance).
         :param tree: the Tree to parse in order to extract the proper node
         :type tree: Tree
         :return: a SchemaNode instance of type "input_object_type_extension"
-        with an InputObjectTypeExtension instance as value
+        with an InputObjectTypeExtensionNode instance as value
         :rtype: SchemaNode
         """
         # pylint: disable=no-self-use

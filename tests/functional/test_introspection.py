@@ -1,12 +1,10 @@
 import pytest
 
-from tartiflette import Resolver, Scalar, create_engine
+from tartiflette import create_engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_basic_type_introspection_output(
-    clean_registry
-):
+async def test_tartiflette_execute_basic_type_introspection_output():
     schema_sdl = """
     \"\"\"This is the description\"\"\"
     type Test {
@@ -25,7 +23,10 @@ async def test_tartiflette_execute_basic_type_introspection_output(
     }
     """
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl,
+        schema_name="test_tartiflette_execute_basic_type_introspection_output",
+    )
 
     result = await ttftt.execute(
         """
@@ -160,7 +161,7 @@ async def test_tartiflette_execute_basic_type_introspection_output(
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_schema_introspection_output(clean_registry):
+async def test_tartiflette_execute_schema_introspection_output():
     schema_sdl = """
     schema {
         query: CustomRootQuery
@@ -181,7 +182,10 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
     }
     """
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl,
+        schema_name="test_tartiflette_execute_schema_introspection_output",
+    )
 
     result = await ttftt.execute(
         """
@@ -213,45 +217,49 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
     """,
         operation_name="Test",
     )
+
     assert {
         "data": {
             "__schema": {
+                "queryType": {"name": "CustomRootQuery"},
+                "mutationType": {"name": "CustomRootMutation"},
                 "subscriptionType": {"name": "CustomRootSubscription"},
                 "types": [
-                    {"name": "CustomRootQuery", "kind": "OBJECT"},
+                    {"kind": "OBJECT", "name": "CustomRootQuery"},
                     {"kind": "OBJECT", "name": "CustomRootMutation"},
-                    {"name": "CustomRootSubscription", "kind": "OBJECT"},
-                    {"name": "Boolean", "kind": "SCALAR"},
-                    {"name": "Date", "kind": "SCALAR"},
-                    {"name": "DateTime", "kind": "SCALAR"},
+                    {"kind": "OBJECT", "name": "CustomRootSubscription"},
+                    {"kind": "SCALAR", "name": "Boolean"},
+                    {"kind": "SCALAR", "name": "Date"},
+                    {"kind": "SCALAR", "name": "DateTime"},
                     {"kind": "SCALAR", "name": "Float"},
                     {"kind": "SCALAR", "name": "ID"},
                     {"kind": "SCALAR", "name": "Int"},
                     {"kind": "SCALAR", "name": "String"},
-                    {"name": "Time", "kind": "SCALAR"},
+                    {"kind": "SCALAR", "name": "Time"},
                 ],
                 "directives": [
                     {
-                        "description": None,
-                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
                         "name": "deprecated",
+                        "description": "Marks an element of a GraphQL schema as no longer supported.",
+                        "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
                         "args": [
                             {
                                 "name": "reason",
-                                "defaultValue": "Deprecated",
-                                "type": {"name": "String", "kind": "SCALAR"},
-                                "description": None,
+                                "description": "Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax (as specified by [CommonMark](https://commonmark.org/).",
+                                "type": {"kind": "SCALAR", "name": "String"},
+                                "defaultValue": '"No longer supported"',
                             }
                         ],
                     },
                     {
+                        "name": "nonIntrospectable",
+                        "description": "Directs the executor to hide the element on introspection queries.",
                         "locations": ["FIELD_DEFINITION"],
                         "args": [],
-                        "name": "nonIntrospectable",
-                        "description": None,
                     },
                     {
                         "name": "skip",
+                        "description": "Directs the executor to skip this field or fragment when the `if` argument is true.",
                         "locations": [
                             "FIELD",
                             "FRAGMENT_SPREAD",
@@ -259,43 +267,38 @@ async def test_tartiflette_execute_schema_introspection_output(clean_registry):
                         ],
                         "args": [
                             {
-                                "defaultValue": None,
-                                "type": {"name": None, "kind": "NON_NULL"},
                                 "name": "if",
-                                "description": None,
+                                "description": "Skipped when true.",
+                                "type": {"kind": "NON_NULL", "name": None},
+                                "defaultValue": None,
                             }
                         ],
-                        "description": None,
                     },
                     {
                         "name": "include",
+                        "description": "Directs the executor to include this field or fragment only when the `if` argument is true.",
                         "locations": [
                             "FIELD",
                             "FRAGMENT_SPREAD",
                             "INLINE_FRAGMENT",
                         ],
-                        "description": None,
                         "args": [
                             {
                                 "name": "if",
-                                "type": {"name": None, "kind": "NON_NULL"},
-                                "description": None,
+                                "description": "Included when true.",
+                                "type": {"kind": "NON_NULL", "name": None},
                                 "defaultValue": None,
                             }
                         ],
                     },
                 ],
-                "mutationType": {"name": "CustomRootMutation"},
-                "queryType": {"name": "CustomRootQuery"},
             }
         }
     } == result
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_schema_introspection_output_introspecting_args(
-    clean_registry
-):
+async def test_tartiflette_execute_schema_introspection_output_introspecting_args():
     schema_sdl = """
     type lol {
         GGG: String
@@ -308,7 +311,10 @@ async def test_tartiflette_execute_schema_introspection_output_introspecting_arg
     }
     """
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl,
+        schema_name="test_tartiflette_execute_schema_introspection_output_introspecting_args",
+    )
     result = await ttftt.execute(
         """
     query IntrospectionQuery {
@@ -413,21 +419,201 @@ fragment TypeRef on __Type {
         "data": {
             "__schema": {
                 "queryType": {"name": "Query"},
-                "directives": [
+                "mutationType": None,
+                "subscriptionType": None,
+                "types": [
                     {
-                        "args": [
+                        "kind": "OBJECT",
+                        "name": "lol",
+                        "fields": [
                             {
+                                "name": "GGG",
+                                "args": [],
                                 "type": {
-                                    "ofType": None,
-                                    "name": "String",
                                     "kind": "SCALAR",
+                                    "name": "String",
+                                    "ofType": None,
                                 },
-                                "name": "reason",
-                                "defaultValue": "Deprecated",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            },
+                            {
+                                "name": "GG",
+                                "args": [
+                                    {
+                                        "name": "a",
+                                        "type": {
+                                            "kind": "NON_NULL",
+                                            "name": None,
+                                            "ofType": {
+                                                "kind": "SCALAR",
+                                                "name": "String",
+                                                "ofType": None,
+                                            },
+                                        },
+                                        "defaultValue": None,
+                                    }
+                                ],
+                                "type": {
+                                    "kind": "SCALAR",
+                                    "name": "String",
+                                    "ofType": None,
+                                },
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            },
+                            {
+                                "name": "G",
+                                "args": [
+                                    {
+                                        "name": "a",
+                                        "type": {
+                                            "kind": "NON_NULL",
+                                            "name": None,
+                                            "ofType": {
+                                                "kind": "LIST",
+                                                "name": None,
+                                                "ofType": {
+                                                    "kind": "NON_NULL",
+                                                    "name": None,
+                                                    "ofType": {
+                                                        "kind": "SCALAR",
+                                                        "name": "String",
+                                                        "ofType": None,
+                                                    },
+                                                },
+                                            },
+                                        },
+                                        "defaultValue": None,
+                                    }
+                                ],
+                                "type": {
+                                    "kind": "NON_NULL",
+                                    "name": None,
+                                    "ofType": {
+                                        "kind": "SCALAR",
+                                        "name": "String",
+                                        "ofType": None,
+                                    },
+                                },
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            },
+                        ],
+                        "inputFields": None,
+                        "interfaces": [],
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                    {
+                        "kind": "OBJECT",
+                        "name": "Query",
+                        "fields": [
+                            {
+                                "name": "a",
+                                "args": [],
+                                "type": {
+                                    "kind": "OBJECT",
+                                    "name": "lol",
+                                    "ofType": None,
+                                },
+                                "isDeprecated": False,
+                                "deprecationReason": None,
                             }
                         ],
+                        "inputFields": None,
+                        "interfaces": [],
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                    {
+                        "kind": "SCALAR",
+                        "name": "Boolean",
+                        "fields": None,
+                        "inputFields": None,
+                        "interfaces": None,
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                    {
+                        "kind": "SCALAR",
+                        "name": "Date",
+                        "fields": None,
+                        "inputFields": None,
+                        "interfaces": None,
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                    {
+                        "kind": "SCALAR",
+                        "name": "DateTime",
+                        "fields": None,
+                        "inputFields": None,
+                        "interfaces": None,
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                    {
+                        "kind": "SCALAR",
+                        "name": "Float",
+                        "fields": None,
+                        "inputFields": None,
+                        "interfaces": None,
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                    {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "fields": None,
+                        "inputFields": None,
+                        "interfaces": None,
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                    {
+                        "kind": "SCALAR",
+                        "name": "Int",
+                        "fields": None,
+                        "inputFields": None,
+                        "interfaces": None,
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                    {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "fields": None,
+                        "inputFields": None,
+                        "interfaces": None,
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                    {
+                        "kind": "SCALAR",
+                        "name": "Time",
+                        "fields": None,
+                        "inputFields": None,
+                        "interfaces": None,
+                        "enumValues": None,
+                        "possibleTypes": None,
+                    },
+                ],
+                "directives": [
+                    {
                         "name": "deprecated",
                         "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
+                        "args": [
+                            {
+                                "name": "reason",
+                                "type": {
+                                    "kind": "SCALAR",
+                                    "name": "String",
+                                    "ofType": None,
+                                },
+                                "defaultValue": '"No longer supported"',
+                            }
+                        ],
                     },
                     {
                         "name": "nonIntrospectable",
@@ -435,6 +621,7 @@ fragment TypeRef on __Type {
                         "args": [],
                     },
                     {
+                        "name": "skip",
                         "locations": [
                             "FIELD",
                             "FRAGMENT_SPREAD",
@@ -443,19 +630,18 @@ fragment TypeRef on __Type {
                         "args": [
                             {
                                 "name": "if",
-                                "defaultValue": None,
                                 "type": {
-                                    "name": None,
                                     "kind": "NON_NULL",
+                                    "name": None,
                                     "ofType": {
-                                        "ofType": None,
                                         "kind": "SCALAR",
                                         "name": "Boolean",
+                                        "ofType": None,
                                     },
                                 },
+                                "defaultValue": None,
                             }
                         ],
-                        "name": "skip",
                     },
                     {
                         "name": "include",
@@ -466,201 +652,362 @@ fragment TypeRef on __Type {
                         ],
                         "args": [
                             {
-                                "defaultValue": None,
-                                "type": {
-                                    "ofType": {
-                                        "ofType": None,
-                                        "name": "Boolean",
-                                        "kind": "SCALAR",
-                                    },
-                                    "name": None,
-                                    "kind": "NON_NULL",
-                                },
                                 "name": "if",
-                            }
-                        ],
-                    },
-                ],
-                "types": [
-                    {
-                        "kind": "OBJECT",
-                        "name": "lol",
-                        "enumValues": None,
-                        "possibleTypes": None,
-                        "interfaces": [],
-                        "fields": [
-                            {
-                                "isDeprecated": False,
-                                "deprecationReason": None,
-                                "name": "GGG",
-                                "args": [],
                                 "type": {
-                                    "name": "String",
-                                    "kind": "SCALAR",
-                                    "ofType": None,
-                                },
-                            },
-                            {
-                                "deprecationReason": None,
-                                "name": "GG",
-                                "args": [
-                                    {
-                                        "name": "a",
-                                        "defaultValue": None,
-                                        "type": {
-                                            "kind": "NON_NULL",
-                                            "ofType": {
-                                                "kind": "SCALAR",
-                                                "ofType": None,
-                                                "name": "String",
-                                            },
-                                            "name": None,
-                                        },
-                                    }
-                                ],
-                                "type": {
-                                    "ofType": None,
-                                    "name": "String",
-                                    "kind": "SCALAR",
-                                },
-                                "isDeprecated": False,
-                            },
-                            {
-                                "name": "G",
-                                "args": [
-                                    {
-                                        "defaultValue": None,
-                                        "type": {
-                                            "name": None,
-                                            "kind": "NON_NULL",
-                                            "ofType": {
-                                                "name": None,
-                                                "ofType": {
-                                                    "kind": "NON_NULL",
-                                                    "ofType": {
-                                                        "kind": "SCALAR",
-                                                        "name": "String",
-                                                        "ofType": None,
-                                                    },
-                                                    "name": None,
-                                                },
-                                                "kind": "LIST",
-                                            },
-                                        },
-                                        "name": "a",
-                                    }
-                                ],
-                                "type": {
-                                    "name": None,
                                     "kind": "NON_NULL",
+                                    "name": None,
                                     "ofType": {
-                                        "ofType": None,
-                                        "name": "String",
                                         "kind": "SCALAR",
+                                        "name": "Boolean",
+                                        "ofType": None,
                                     },
                                 },
-                                "isDeprecated": False,
-                                "deprecationReason": None,
-                            },
-                        ],
-                        "inputFields": None,
-                    },
-                    {
-                        "kind": "OBJECT",
-                        "fields": [
-                            {
-                                "type": {
-                                    "kind": "OBJECT",
-                                    "ofType": None,
-                                    "name": "lol",
-                                },
-                                "isDeprecated": False,
-                                "deprecationReason": None,
-                                "args": [],
-                                "name": "a",
+                                "defaultValue": None,
                             }
                         ],
-                        "name": "Query",
-                        "possibleTypes": None,
-                        "enumValues": None,
-                        "interfaces": [],
-                        "inputFields": None,
-                    },
-                    {
-                        "kind": "SCALAR",
-                        "interfaces": None,
-                        "fields": None,
-                        "inputFields": None,
-                        "possibleTypes": None,
-                        "enumValues": None,
-                        "name": "Boolean",
-                    },
-                    {
-                        "name": "Date",
-                        "possibleTypes": None,
-                        "inputFields": None,
-                        "kind": "SCALAR",
-                        "enumValues": None,
-                        "interfaces": None,
-                        "fields": None,
-                    },
-                    {
-                        "name": "DateTime",
-                        "possibleTypes": None,
-                        "inputFields": None,
-                        "kind": "SCALAR",
-                        "enumValues": None,
-                        "interfaces": None,
-                        "fields": None,
-                    },
-                    {
-                        "name": "Float",
-                        "possibleTypes": None,
-                        "inputFields": None,
-                        "kind": "SCALAR",
-                        "enumValues": None,
-                        "interfaces": None,
-                        "fields": None,
-                    },
-                    {
-                        "enumValues": None,
-                        "name": "ID",
-                        "inputFields": None,
-                        "interfaces": None,
-                        "possibleTypes": None,
-                        "fields": None,
-                        "kind": "SCALAR",
-                    },
-                    {
-                        "inputFields": None,
-                        "kind": "SCALAR",
-                        "possibleTypes": None,
-                        "name": "Int",
-                        "interfaces": None,
-                        "enumValues": None,
-                        "fields": None,
-                    },
-                    {
-                        "name": "String",
-                        "possibleTypes": None,
-                        "fields": None,
-                        "interfaces": None,
-                        "kind": "SCALAR",
-                        "enumValues": None,
-                        "inputFields": None,
-                    },
-                    {
-                        "inputFields": None,
-                        "name": "Time",
-                        "kind": "SCALAR",
-                        "enumValues": None,
-                        "interfaces": None,
-                        "fields": None,
-                        "possibleTypes": None,
                     },
                 ],
-                "mutationType": None,
-                "subscriptionType": None,
             }
         }
     } == result
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "include_deprecated,expected",
+    [
+        (
+            "true",
+            {
+                "data": {
+                    "__type": {
+                        "name": "MyEnum",
+                        "kind": "ENUM",
+                        "description": "An amazing enum",
+                        "enumValues": [
+                            {
+                                "name": "ENUM_v1",
+                                "description": "MyEnum.ENUM_v1",
+                                "isDeprecated": True,
+                                "deprecationReason": "Why not?",
+                            },
+                            {
+                                "name": "ENUM_v2",
+                                "description": "MyEnum.ENUM_v2",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            },
+                        ],
+                    }
+                }
+            },
+        ),
+        (
+            "null",
+            {
+                "data": {
+                    "__type": {
+                        "name": "MyEnum",
+                        "kind": "ENUM",
+                        "description": "An amazing enum",
+                        "enumValues": [
+                            {
+                                "name": "ENUM_v1",
+                                "description": "MyEnum.ENUM_v1",
+                                "isDeprecated": True,
+                                "deprecationReason": "Why not?",
+                            },
+                            {
+                                "name": "ENUM_v2",
+                                "description": "MyEnum.ENUM_v2",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            },
+                        ],
+                    }
+                }
+            },
+        ),
+        (
+            "false",
+            {
+                "data": {
+                    "__type": {
+                        "name": "MyEnum",
+                        "kind": "ENUM",
+                        "description": "An amazing enum",
+                        "enumValues": [
+                            {
+                                "name": "ENUM_v2",
+                                "description": "MyEnum.ENUM_v2",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            }
+                        ],
+                    }
+                }
+            },
+        ),
+    ],
+)
+async def test_introspection_type_enum_values_include_deprecated(
+    include_deprecated, expected, random_schema_name
+):
+    sdl = '''
+    """An amazing enum"""
+    enum MyEnum {
+      """MyEnum.ENUM_v1"""
+      ENUM_v1 @deprecated(reason: "Why not?")
+
+      """MyEnum.ENUM_v2"""
+      ENUM_v2
+    }
+
+    type Query {
+      uselessField: [MyEnum]
+    }
+    '''
+
+    engine = await create_engine(sdl, schema_name=random_schema_name)
+
+    result = await engine.execute(
+        """
+        {{
+          __type(name: "MyEnum") {{
+            name
+            kind
+            description
+            enumValues(includeDeprecated: {}) {{
+              name
+              description
+              isDeprecated
+              deprecationReason
+            }}
+          }}
+        }}
+        """.format(
+            include_deprecated
+        )
+    )
+
+    assert result == expected
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "type_name,include_deprecated,expected",
+    [
+        # MyInterface
+        (
+            "MyInterface",
+            "true",
+            {
+                "data": {
+                    "__type": {
+                        "name": "MyInterface",
+                        "kind": "INTERFACE",
+                        "description": "An amazing interface",
+                        "fields": [
+                            {
+                                "name": "firstField",
+                                "description": "MyInterface.firstField",
+                                "isDeprecated": True,
+                                "deprecationReason": "Why not?",
+                            },
+                            {
+                                "name": "secondField",
+                                "description": "MyInterface.secondField",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            },
+                        ],
+                    }
+                }
+            },
+        ),
+        (
+            "MyInterface",
+            "null",
+            {
+                "data": {
+                    "__type": {
+                        "name": "MyInterface",
+                        "kind": "INTERFACE",
+                        "description": "An amazing interface",
+                        "fields": [
+                            {
+                                "name": "firstField",
+                                "description": "MyInterface.firstField",
+                                "isDeprecated": True,
+                                "deprecationReason": "Why not?",
+                            },
+                            {
+                                "name": "secondField",
+                                "description": "MyInterface.secondField",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            },
+                        ],
+                    }
+                }
+            },
+        ),
+        (
+            "MyInterface",
+            "false",
+            {
+                "data": {
+                    "__type": {
+                        "name": "MyInterface",
+                        "kind": "INTERFACE",
+                        "description": "An amazing interface",
+                        "fields": [
+                            {
+                                "name": "secondField",
+                                "description": "MyInterface.secondField",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            }
+                        ],
+                    }
+                }
+            },
+        ),
+        # MyType
+        (
+            "MyType",
+            "true",
+            {
+                "data": {
+                    "__type": {
+                        "name": "MyType",
+                        "kind": "OBJECT",
+                        "description": "An amazing object",
+                        "fields": [
+                            {
+                                "name": "firstField",
+                                "description": "MyType.firstField",
+                                "isDeprecated": True,
+                                "deprecationReason": "Why not?",
+                            },
+                            {
+                                "name": "secondField",
+                                "description": "MyType.secondField",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            },
+                        ],
+                    }
+                }
+            },
+        ),
+        (
+            "MyType",
+            "null",
+            {
+                "data": {
+                    "__type": {
+                        "name": "MyType",
+                        "kind": "OBJECT",
+                        "description": "An amazing object",
+                        "fields": [
+                            {
+                                "name": "firstField",
+                                "description": "MyType.firstField",
+                                "isDeprecated": True,
+                                "deprecationReason": "Why not?",
+                            },
+                            {
+                                "name": "secondField",
+                                "description": "MyType.secondField",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            },
+                        ],
+                    }
+                }
+            },
+        ),
+        (
+            "MyType",
+            "false",
+            {
+                "data": {
+                    "__type": {
+                        "name": "MyType",
+                        "kind": "OBJECT",
+                        "description": "An amazing object",
+                        "fields": [
+                            {
+                                "name": "secondField",
+                                "description": "MyType.secondField",
+                                "isDeprecated": False,
+                                "deprecationReason": None,
+                            }
+                        ],
+                    }
+                }
+            },
+        ),
+    ],
+)
+async def test_introspection_type_fields_include_deprecated(
+    type_name, include_deprecated, expected, random_schema_name
+):
+    sdl = '''
+    """An amazing enum"""
+    enum MyEnum {
+      """MyEnum.ENUM_v1"""
+      ENUM_v1 @deprecated(reason: "Why not?")
+
+      """MyEnum.ENUM_v2"""
+      ENUM_v2
+    }
+
+    """An amazing interface"""
+    interface MyInterface {
+      """MyInterface.firstField"""
+      firstField: String @deprecated(reason: "Why not?")
+
+      """MyInterface.secondField"""
+      secondField: String
+    }
+
+    """An amazing object"""
+    type MyType {
+      """MyType.firstField"""
+      firstField: String @deprecated(reason: "Why not?")
+
+      """MyType.secondField"""
+      secondField: String
+    }
+
+    type Query {
+      uselessField: [MyEnum]
+      aField: MyType
+    }
+    '''
+
+    engine = await create_engine(sdl, schema_name=random_schema_name)
+
+    result = await engine.execute(
+        """
+        {{
+          __type(name: "{}") {{
+            name
+            kind
+            description
+            fields(includeDeprecated: {}) {{
+              name
+              description
+              isDeprecated
+              deprecationReason
+            }}
+          }}
+        }}
+        """.format(
+            type_name, include_deprecated
+        )
+    )
+
+    assert result == expected

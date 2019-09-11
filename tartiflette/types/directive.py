@@ -1,92 +1,83 @@
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
+
+__all__ = ("GraphQLDirective",)
 
 
 class GraphQLDirective:
     """
-    Directive Definition
-
-    A directive definition defines where a directive can be used and
-    its arguments
+    Definition of a GraphQL directive.
     """
-
-    SCHEMA = "SCHEMA"
-    SCALAR = "SCALAR"
-    OBJECT = "OBJECT"
-    FIELD_DEFINITION = "FIELD_DEFINITION"
-    ARGUMENT_DEFINITION = "ARGUMENT_DEFINITION"
-    INTERFACE = "INTERFACE"
-    UNION = "UNION"
-    ENUM = "ENUM"
-    ENUM_VALUE = "ENUM_VALUE"
-    INPUT_OBJECT = "INPUT_OBJECT"
-    INPUT_FIELD_DEFINITION = "INPUT_FIELD_DEFINITION"
-    FIELD = "FIELD"
-    FRAGMENT_SPREAD = "FRAGMENT_SPREAD"
-    INLINE_FRAGMENT = "INLINE_FRAGMENT"
-
-    POSSIBLE_LOCATIONS = [
-        SCHEMA,
-        SCALAR,
-        OBJECT,
-        FIELD_DEFINITION,
-        ARGUMENT_DEFINITION,
-        INTERFACE,
-        UNION,
-        ENUM,
-        ENUM_VALUE,
-        INPUT_OBJECT,
-        INPUT_FIELD_DEFINITION,
-        FIELD,
-        FRAGMENT_SPREAD,
-        INLINE_FRAGMENT,
-    ]
 
     def __init__(
         self,
         name: str,
-        on: List[str],
+        locations: List[str],
         arguments: Optional[Dict[str, "GraphQLArgument"]] = None,
         description: Optional[str] = None,
-        implementation: Optional[Callable] = None,
-        schema=None,
     ) -> None:
+        """
+        :param name: name of the directive
+        :param locations: list of allowed locations for the directive
+        :param arguments: map of arguments linked to the directive
+        :param description: description of the argument
+        :type name: str
+        :type locations: List[str]
+        :type arguments: Optional[Dict[str, GraphQLArgument]]
+        :type description: Optional[str]
+        """
         self.name = name
-        self.where = on
+        self.locations = locations
         self.arguments = arguments or {}
         self.description = description
-        self.implementation = implementation or None
-        self.schema = schema
+        self.implementation = None
+
+        # Introspection attributes
+        self.args: List["GraphQLArgument"] = []
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isinstance(other, GraphQLDirective)
+            and self.name == other.name
+            and self.locations == other.locations
+            and self.arguments == other.arguments
+            and self.description == other.description
+        )
 
     def __repr__(self) -> str:
-        return "{}(name={!r}, on={!r}, arguments={!r}, description={!r})".format(
-            self.__class__.__name__,
-            self.name,
-            self.where,
-            self.arguments,
-            self.description,
+        """
+        Returns the representation of a GraphQLDirective instance.
+        :return: the representation of a GraphQLDirective instance
+        :rtype: str
+        """
+        return (
+            "GraphQLDirective(name={!r}, locations={!r}, arguments={!r}, "
+            "description={!r})".format(
+                self.name, self.locations, self.arguments, self.description
+            )
         )
 
     def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the directive.
+        :return: a human-readable representation of the directive
+        :rtype: str
+        """
         return self.name
 
-    def __eq__(self, other: Any) -> bool:
-        return self is other or (
-            type(self) is type(other)
-            and self.name == other.name
-            and self.where == other.where
-            and self.arguments == other.arguments
-        )
-
-    # Introspection property
-    @property
-    def args(self) -> List["GraphQLArgument"]:
-        return list(self.arguments.values())
-
-    # Introspection Attribute
-    @property
-    def locations(self) -> List[str]:
-        return self.where
-
     def bake(self, schema: "GraphQLSchema") -> None:
-        for arg in self.arguments.values():
-            arg.bake(schema)
+        """
+        Bakes the GraphQLDirective and computes all the necessary stuff for
+        execution.
+        :param schema: the GraphQLSchema instance linked to the engine
+        :type schema: GraphQLSchema
+        """
+        for argument in self.arguments.values():
+            argument.bake(schema)
+            self.args.append(argument)

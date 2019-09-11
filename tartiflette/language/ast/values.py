@@ -2,6 +2,18 @@ from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import Node, ValueNode
 
+__all__ = (
+    "BooleanValueNode",
+    "EnumValueNode",
+    "FloatValueNode",
+    "IntValueNode",
+    "NullValueNode",
+    "StringValueNode",
+    "ListValueNode",
+    "ObjectFieldNode",
+    "ObjectValueNode",
+)
+
 
 class BooleanValueNode(ValueNode):
     """
@@ -32,7 +44,8 @@ class BooleanValueNode(ValueNode):
         """
         return self is other or (
             isinstance(other, BooleanValueNode)
-            and (self.value == other.value and self.location == other.location)
+            and self.value == other.value
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -45,6 +58,14 @@ class BooleanValueNode(ValueNode):
             self.value,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return "true" if self.value else "false"
 
 
 class EnumValueNode(ValueNode):
@@ -76,7 +97,8 @@ class EnumValueNode(ValueNode):
         """
         return self is other or (
             isinstance(other, EnumValueNode)
-            and (self.value == other.value and self.location == other.location)
+            and self.value == other.value
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -89,6 +111,14 @@ class EnumValueNode(ValueNode):
             self.value,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return str(self.value)
 
 
 class FloatValueNode(ValueNode):
@@ -120,7 +150,8 @@ class FloatValueNode(ValueNode):
         """
         return self is other or (
             isinstance(other, FloatValueNode)
-            and (self.value == other.value and self.location == other.location)
+            and self.value == other.value
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -133,6 +164,14 @@ class FloatValueNode(ValueNode):
             self.value,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return str(self.value)
 
 
 class IntValueNode(ValueNode):
@@ -164,7 +203,8 @@ class IntValueNode(ValueNode):
         """
         return self is other or (
             isinstance(other, IntValueNode)
-            and (self.value == other.value and self.location == other.location)
+            and self.value == other.value
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -177,6 +217,14 @@ class IntValueNode(ValueNode):
             self.value,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return str(self.value)
 
 
 class NullValueNode(ValueNode):
@@ -204,7 +252,8 @@ class NullValueNode(ValueNode):
         """
         return self is other or (
             isinstance(other, NullValueNode)
-            and (self.value == other.value and self.location == other.location)
+            and self.value == other.value
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -214,6 +263,14 @@ class NullValueNode(ValueNode):
         :rtype: str
         """
         return "NullValueNode(location=%r)" % self.location
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return "null"
 
 
 class StringValueNode(ValueNode):
@@ -245,7 +302,8 @@ class StringValueNode(ValueNode):
         """
         return self is other or (
             isinstance(other, StringValueNode)
-            and (self.value == other.value and self.location == other.location)
+            and self.value == other.value
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -258,6 +316,14 @@ class StringValueNode(ValueNode):
             self.value,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return f'"{self.value}"'
 
 
 class ListValueNode(ValueNode):
@@ -289,9 +355,8 @@ class ListValueNode(ValueNode):
         """
         return self is other or (
             isinstance(other, ListValueNode)
-            and (
-                self.values == other.values and self.location == other.location
-            )
+            and self.values == other.values
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -304,6 +369,14 @@ class ListValueNode(ValueNode):
             self.values,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return f"[{', '.join([str(value) for value in self.values])}]"
 
 
 class ObjectFieldNode(Node):
@@ -341,11 +414,9 @@ class ObjectFieldNode(Node):
         """
         return self is other or (
             isinstance(other, ObjectFieldNode)
-            and (
-                self.name == other.name
-                and self.value == other.value
-                and self.location == other.location
-            )
+            and self.name == other.name
+            and self.value == other.value
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -359,6 +430,14 @@ class ObjectFieldNode(Node):
             self.value,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return f"{self.name}: {self.value}"
 
 
 class ObjectValueNode(ValueNode):
@@ -392,9 +471,8 @@ class ObjectValueNode(ValueNode):
         """
         return self is other or (
             isinstance(other, ObjectValueNode)
-            and (
-                self.fields == other.fields and self.location == other.location
-            )
+            and self.fields == other.fields
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
@@ -407,3 +485,11 @@ class ObjectValueNode(ValueNode):
             self.fields,
             self.location,
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a human-readable representation of the value.
+        :return: a human-readable representation of the value
+        :rtype: str
+        """
+        return f"{{{', '.join([str(field) for field in self.fields])}}}"

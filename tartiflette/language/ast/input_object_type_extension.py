@@ -2,8 +2,10 @@ from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeExtensionNode
 
+__all__ = ("InputObjectTypeExtensionNode",)
 
-class InputObjectTypeExtension(TypeExtensionNode):
+
+class InputObjectTypeExtensionNode(TypeExtensionNode):
     """
     AST node representing a GraphQL input object type extension.
     """
@@ -42,23 +44,21 @@ class InputObjectTypeExtension(TypeExtensionNode):
         :rtype: bool
         """
         return self is other or (
-            isinstance(other, InputObjectTypeExtension)
-            and (
-                self.name == other.name
-                and self.directives == other.directives
-                and self.fields == other.fields
-                and self.location == other.location
-            )
+            isinstance(other, InputObjectTypeExtensionNode)
+            and self.name == other.name
+            and self.directives == other.directives
+            and self.fields == other.fields
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
         """
-        Returns the representation of an InputObjectTypeExtension instance.
-        :return: the representation of an InputObjectTypeExtension instance
+        Returns the representation of an InputObjectTypeExtensionNode instance.
+        :return: the representation of an InputObjectTypeExtensionNode instance
         :rtype: str
         """
         return (
-            "InputObjectTypeExtension(name=%r, directives=%r, fields=%r, "
+            "InputObjectTypeExtensionNode(name=%r, directives=%r, fields=%r, "
             "location=%r)"
             % (self.name, self.directives, self.fields, self.location)
         )

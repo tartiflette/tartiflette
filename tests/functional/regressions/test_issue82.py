@@ -41,9 +41,15 @@ async def test_issue82(ttftt_engine):
         "data": None,
         "errors": [
             {
-                "message": "Undefined fragment < UndefinedFragment >.",
+                "message": "Unknown Fragment for Spread < UndefinedFragment >.",
                 "path": None,
                 "locations": [{"line": 5, "column": 13}],
+                "extensions": {
+                    "rule": "5.5.2.1",
+                    "spec": "June 2018",
+                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragment-spread-target-defined",
+                    "tag": "fragment-spread-target-defined",
+                },
             }
         ],
     }

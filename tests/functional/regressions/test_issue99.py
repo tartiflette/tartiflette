@@ -17,12 +17,18 @@ import pytest
             """,
             [
                 {
-                    "message": "There can be only one argument named < catCommand >.",
-                    "path": None,
+                    "message": "Can't have multiple arguments named < catCommand >.",
+                    "path": ["cat", "doesKnowCommand"],
                     "locations": [
                         {"line": 5, "column": 33},
                         {"line": 5, "column": 51},
                     ],
+                    "extensions": {
+                        "rule": "5.4.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Uniqueness",
+                        "tag": "argument-uniqueness",
+                    },
                 }
             ],
         ),
@@ -37,21 +43,20 @@ import pytest
             """,
             [
                 {
-                    "message": "There can be only one argument named < catCommand >.",
-                    "path": None,
+                    "message": "Can't have multiple arguments named < catCommand >.",
+                    "path": ["cat", "doesKnowCommand"],
                     "locations": [
                         {"line": 5, "column": 33},
                         {"line": 5, "column": 51},
-                    ],
-                },
-                {
-                    "message": "There can be only one argument named < catCommand >.",
-                    "path": None,
-                    "locations": [
-                        {"line": 5, "column": 33},
                         {"line": 5, "column": 69},
                     ],
-                },
+                    "extensions": {
+                        "rule": "5.4.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Uniqueness",
+                        "tag": "argument-uniqueness",
+                    },
+                }
             ],
         ),
         (
@@ -64,13 +69,33 @@ import pytest
             """,
             [
                 {
-                    "message": "There can be only one argument named < reason >.",
-                    "path": None,
+                    "message": "Can't have multiple arguments named < reason >.",
+                    "path": ["cat", "name"],
                     "locations": [
                         {"line": 4, "column": 34},
                         {"line": 4, "column": 51},
                     ],
-                }
+                    "extensions": {
+                        "rule": "5.4.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Uniqueness",
+                        "tag": "argument-uniqueness",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["cat", "name"],
+                    "locations": [
+                        {"line": 4, "column": 17},
+                        {"line": 4, "column": 22},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
+                },
             ],
         ),
         (
@@ -83,20 +108,33 @@ import pytest
             """,
             [
                 {
-                    "message": "There can be only one argument named < reason >.",
-                    "path": None,
+                    "message": "Can't have multiple arguments named < reason >.",
+                    "path": ["cat", "name"],
                     "locations": [
                         {"line": 4, "column": 34},
                         {"line": 4, "column": 51},
-                    ],
-                },
-                {
-                    "message": "There can be only one argument named < reason >.",
-                    "path": None,
-                    "locations": [
-                        {"line": 4, "column": 34},
                         {"line": 4, "column": 69},
                     ],
+                    "extensions": {
+                        "rule": "5.4.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Argument-Uniqueness",
+                        "tag": "argument-uniqueness",
+                    },
+                },
+                {
+                    "message": "Directive < @deprecated > is not used in a valid location.",
+                    "path": ["cat", "name"],
+                    "locations": [
+                        {"line": 4, "column": 17},
+                        {"line": 4, "column": 22},
+                    ],
+                    "extensions": {
+                        "rule": "5.7.2",
+                        "spec": "June 2018",
+                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                        "tag": "directives-are-in-valid-locations",
+                    },
                 },
             ],
         ),

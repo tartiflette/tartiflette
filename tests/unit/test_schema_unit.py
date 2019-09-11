@@ -172,9 +172,9 @@ async def test_schema_validate_named_types(
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate()
+            generated_schema._validate()
     else:
-        assert generated_schema.validate() == expected_value
+        assert generated_schema._validate() == expected_value
 
 
 @pytest.mark.parametrize(
@@ -342,20 +342,22 @@ async def test_schema_validate_object_follow_interfaces(
     try:
         generated_schema.find_type("Brand").coerce_output = lambda x: x
         generated_schema.find_type("Brand").coerce_input = lambda x: x
+        generated_schema.find_type("Brand").parse_literal = lambda x: x
     except KeyError:
         pass
 
     try:
         generated_schema.find_type("Part").coerce_output = lambda x: x
         generated_schema.find_type("Part").coerce_input = lambda x: x
+        generated_schema.find_type("Part").parse_literal = lambda x: x
     except KeyError:
         pass
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate()
+            generated_schema._validate()
     else:
-        assert generated_schema.validate() == expected_value
+        assert generated_schema._validate() == expected_value
 
 
 @pytest.mark.parametrize(
@@ -468,9 +470,9 @@ async def test_schema_validate_root_types_exist(
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate()
+            generated_schema._validate()
     else:
-        assert generated_schema.validate() == expected_value
+        assert generated_schema._validate() == expected_value
 
 
 @pytest.mark.parametrize(
@@ -506,9 +508,9 @@ async def test_schema_validate_non_empty_object(
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate()
+            generated_schema._validate()
     else:
-        assert generated_schema.validate() == expected_value
+        assert generated_schema._validate() == expected_value
 
 
 @pytest.mark.parametrize(
@@ -558,9 +560,9 @@ async def test_schema_validate_union_is_acceptable(
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema.validate()
+            generated_schema._validate()
     else:
-        assert generated_schema.validate() == expected_value
+        assert generated_schema._validate() == expected_value
 
 
 @pytest.mark.asyncio
@@ -574,7 +576,7 @@ async def test_schema_bake_schema(clean_registry):
         "a",
     )
     clean_registry.register_sdl("a", full_sdl)
-    assert SchemaBakery.bake("a") is not None
+    assert await SchemaBakery.bake("a") is not None
 
 
 @pytest.mark.parametrize(
@@ -596,7 +598,7 @@ async def test_schema_has_type(clean_registry, type_name, expected):
         "a",
     )
     clean_registry.register_sdl("a", full_sdl)
-    schema = SchemaBakery.bake("a")
+    schema = await SchemaBakery.bake("a")
     assert schema.has_type(type_name) is expected
 
 

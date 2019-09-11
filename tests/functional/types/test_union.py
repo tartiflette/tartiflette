@@ -1,7 +1,61 @@
 import pytest
 
 from tartiflette import Resolver, create_engine
-from tartiflette.executors.types import Info
+
+
+@pytest.fixture(scope="module")
+async def ttftt_engine():
+    schema_sdl = """
+    type One {
+        aField: String
+        bField: Int
+    }
+
+    type Two {
+        cField: Int
+        dField: String
+    }
+
+    type Three {
+        eField: Float
+        fField: String
+    }
+
+    union Mixed = One | Two | Three
+
+    type Query {
+        test(choose: Int!): Mixed
+    }
+    """
+
+    @Resolver("Query.test", schema_name="test_union")
+    async def func_field_resolver(
+        parent, arguments, request_ctx, info: "ResolveInfo"
+    ):
+        chosen = arguments.get("choose", 0)
+        if chosen == 1:
+            return {"aField": "aValue", "bField": 1, "_typename": "One"}
+        elif chosen == 2:
+
+            class Lol:
+                def __init__(self, *args, **kwargs):
+                    self._typename = "Two"
+                    self.cField = 2
+                    self.dField = "dValue"
+
+            return Lol()
+        elif chosen == 3:
+
+            class Three:
+                def __init__(self, *args, **kwargs):
+                    self.eField = 3.6
+                    self.fField = "fValue"
+
+            return Three()
+
+        return None
+
+    return await create_engine(schema_sdl, schema_name="test_union")
 
 
 @pytest.mark.asyncio
@@ -115,58 +169,8 @@ from tartiflette.executors.types import Info
     ],
 )
 async def test_tartiflette_execute_union_type_output(
-    query, expected, clean_registry
+    query, expected, ttftt_engine
 ):
-    schema_sdl = """
-    type One {
-        aField: String
-        bField: Int
-    }
-
-    type Two {
-        cField: Int
-        dField: String
-    }
-
-    type Three {
-        eField: Float
-        fField: String
-    }
-
-    union Mixed = One | Two | Three
-
-    type Query {
-        test(choose: Int!): Mixed
-    }
-    """
-
-    @Resolver("Query.test")
-    async def func_field_resolver(parent, arguments, request_ctx, info: Info):
-        chosen = arguments.get("choose", 0)
-        if chosen == 1:
-            return {"aField": "aValue", "bField": 1, "_typename": "One"}
-        elif chosen == 2:
-
-            class Lol:
-                def __init__(self, *args, **kwargs):
-                    self._typename = "Two"
-                    self.cField = 2
-                    self.dField = "dValue"
-
-            return Lol()
-        elif chosen == 3:
-
-            class Three:
-                def __init__(self, *args, **kwargs):
-                    self.eField = 3.6
-                    self.fField = "fValue"
-
-            return Three()
-
-        return None
-
-    ttftt = await create_engine(schema_sdl)
-
-    result = await ttftt.execute(query, operation_name="aquery")
+    result = await ttftt_engine.execute(query, operation_name="aquery")
 
     assert expected == result

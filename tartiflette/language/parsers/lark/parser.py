@@ -9,6 +9,8 @@ from tartiflette.language.parsers.lark.transformers import (
     TokenTransformer,
 )
 
+__all__ = ("parse_to_document",)
+
 _LARK_PARSER = Lark.open(
     os.path.join(os.path.dirname(__file__), "graphql_sdl_grammar.lark"),
     start="document",
@@ -23,7 +25,7 @@ def parse_to_document(sdl: Union[str, bytes]) -> "DocumentNode":
     Returns a DocumentNode instance which represents the SDL after being
     parsed.
     :param sdl: sdl to parse and transform into a DocumentNode
-    :type query: Union[str, bytes]
+    :type sdl: Union[str, bytes]
     :return: a DocumentNode representing the sdl
     :rtype: DocumentNode
 

@@ -2,6 +2,8 @@ from typing import Any, Optional
 
 from tartiflette.language.ast.base import Node
 
+__all__ = ("DescriptionNode",)
+
 
 class DescriptionNode(Node):
     """
@@ -32,7 +34,8 @@ class DescriptionNode(Node):
         """
         return self is other or (
             isinstance(other, DescriptionNode)
-            and (self.value == other.value and self.location == other.location)
+            and self.value == other.value
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:

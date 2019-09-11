@@ -1,7 +1,7 @@
 import pytest
 
 
-async def _query_human_resolver(parent_result, *_args, **__kwargs):
+async def _query_human_resolver(parent, *_args, **__kwargs):
     return None
 
 

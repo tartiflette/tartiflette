@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Any, Callable, Dict, Optional
 
 import pytest
 
@@ -38,14 +39,13 @@ async def ttftt_engine():
     class ActAsPyEnumDirective:
         @staticmethod
         async def on_post_input_coercion(
-            directive_args,
-            next_directive,
-            value,
-            argument_definition,
-            ctx,
-            info,
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            parent_node,
+            value: Any,
+            ctx: Optional[Any],
         ):
-            value = await next_directive(value, argument_definition, ctx, info)
+            value = await next_directive(parent_node, value, ctx)
             if value is None:
                 return value
 
@@ -63,9 +63,13 @@ async def ttftt_engine():
 
         @staticmethod
         async def on_pre_output_coercion(
-            directive_args, next_directive, value, field_definition, ctx, info
+            directive_args: Dict[str, Any],
+            next_directive: Callable,
+            value: Any,
+            ctx: Optional[Any],
+            info: "ResolveInfo",
         ):
-            value = await next_directive(value, field_definition, ctx, info)
+            value = await next_directive(value, ctx, info)
             if value is None:
                 return value
 
@@ -83,7 +87,7 @@ async def ttftt_engine():
 
     @Resolver("Query.anEnum", schema_name="test_issue_233")
     @Resolver("Query.listEnum", schema_name="test_issue_233")
-    async def resolve_query_fields(parent_result, args, ctx, info):
+    async def resolve_query_fields(parent, args, ctx, info):
         return args.get("param")
 
     return await create_engine(sdl=_SDL, schema_name="test_issue_233")
@@ -157,47 +161,47 @@ async def ttftt_engine():
             {"data": {"listEnum": ["V_1", "V_2", None]}},
         ),
         (
-            """query ($param: SecondEnum) { listEnum(param: $param) }""",
+            """query ($param: [SecondEnum]) { listEnum(param: $param) }""",
             None,
             {"data": {"listEnum": None}},
         ),
         (
-            """query ($param: SecondEnum) { listEnum(param: $param) }""",
+            """query ($param: [SecondEnum]) { listEnum(param: $param) }""",
             {"param": None},
             {"data": {"listEnum": None}},
         ),
         (
-            """query ($param: SecondEnum) { listEnum(param: $param) }""",
+            """query ($param: [SecondEnum]) { listEnum(param: $param) }""",
             {"param": [None]},
             {"data": {"listEnum": [None]}},
         ),
         (
-            """query ($param: SecondEnum) { listEnum(param: $param) }""",
+            """query ($param: [SecondEnum]) { listEnum(param: $param) }""",
             {"param": "V_1"},
             {"data": {"listEnum": ["V_1"]}},
         ),
         (
-            """query ($param: SecondEnum) { listEnum(param: $param) }""",
+            """query ($param: [SecondEnum]) { listEnum(param: $param) }""",
             {"param": ["V_1"]},
             {"data": {"listEnum": ["V_1"]}},
         ),
         (
-            """query ($param: SecondEnum) { listEnum(param: $param) }""",
+            """query ($param: [SecondEnum]) { listEnum(param: $param) }""",
             {"param": "V_2"},
             {"data": {"listEnum": ["V_2"]}},
         ),
         (
-            """query ($param: SecondEnum) { listEnum(param: $param) }""",
+            """query ($param: [SecondEnum]) { listEnum(param: $param) }""",
             {"param": ["V_2"]},
             {"data": {"listEnum": ["V_2"]}},
         ),
         (
-            """query ($param: SecondEnum) { listEnum(param: $param) }""",
+            """query ($param: [SecondEnum]) { listEnum(param: $param) }""",
             {"param": ["V_1", "V_2"]},
             {"data": {"listEnum": ["V_1", "V_2"]}},
         ),
         (
-            """query ($param: SecondEnum) { listEnum(param: $param) }""",
+            """query ($param: [SecondEnum]) { listEnum(param: $param) }""",
             {"param": ["V_1", "V_2", None]},
             {"data": {"listEnum": ["V_1", "V_2", None]}},
         ),

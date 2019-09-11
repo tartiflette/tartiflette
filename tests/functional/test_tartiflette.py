@@ -6,7 +6,7 @@ from tartiflette import Resolver, create_engine
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_basic(clean_registry):
+async def test_tartiflette_execute_basic():
     schema_sdl = """
     schema {
         query: RootQuery
@@ -25,21 +25,27 @@ async def test_tartiflette_execute_basic(clean_registry):
     mock_one = Mock()
     mock_two = Mock()
 
-    @Resolver("Test.field")
+    @Resolver("Test.field", schema_name="test_tartiflette_execute_basic")
     async def func_field_resolver(*_args, **_kwargs):
         mock_one()
         return None
 
-    @Resolver("RootQuery.testField")
+    @Resolver(
+        "RootQuery.testField", schema_name="test_tartiflette_execute_basic"
+    )
     async def func_testfield_resolver(*_args, **_kwargs):
         return {}
 
-    @Resolver("RootQuery.defaultField")
+    @Resolver(
+        "RootQuery.defaultField", schema_name="test_tartiflette_execute_basic"
+    )
     async def func_default_query_resolver(*_args, **_kwargs):
         mock_two()
         return 1
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl, schema_name="test_tartiflette_execute_basic"
+    )
 
     result = await ttftt.execute(
         """
@@ -58,7 +64,7 @@ async def test_tartiflette_execute_basic(clean_registry):
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_nested_resolvers(clean_registry):
+async def test_tartiflette_nested_resolvers():
     schema_sdl = """
     type Query {
         rootField: RootType
@@ -73,19 +79,27 @@ async def test_tartiflette_nested_resolvers(clean_registry):
     }
     """
 
-    @Resolver("Query.rootField")
+    @Resolver(
+        "Query.rootField", schema_name="test_tartiflette_nested_resolvers"
+    )
     async def func_resolver(parent, arguments, request_ctx, info):
         return {"nestedField": "Nested ?"}
 
-    @Resolver("RootType.nestedField")
+    @Resolver(
+        "RootType.nestedField", schema_name="test_tartiflette_nested_resolvers"
+    )
     async def func_resolver(parent, arguments, request_ctx, info):
         return {"endField": "Another"}
 
-    @Resolver("NestedType.endField")
+    @Resolver(
+        "NestedType.endField", schema_name="test_tartiflette_nested_resolvers"
+    )
     async def func_resolver(parent, arguments, request_ctx, info):
         return "Test"
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl, schema_name="test_tartiflette_nested_resolvers"
+    )
 
     result = await ttftt.execute(
         """
@@ -106,18 +120,22 @@ async def test_tartiflette_nested_resolvers(clean_registry):
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_hello_world(clean_registry):
+async def test_tartiflette_execute_hello_world():
     schema_sdl = """
     type Query {
         hello: String!
     }
     """
 
-    @Resolver("Query.hello")
+    @Resolver(
+        "Query.hello", schema_name="test_tartiflette_execute_hello_world"
+    )
     async def func_field_resolver(parent, arguments, request_ctx, info):
         return "world"
 
-    ttftt = await create_engine(schema_sdl)
+    ttftt = await create_engine(
+        schema_sdl, schema_name="test_tartiflette_execute_hello_world"
+    )
 
     result = await ttftt.execute(
         """

@@ -1,12 +1,15 @@
-from inspect import isasyncgenfunction
 from typing import Callable
 
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
     MissingImplementation,
     NonAsyncGeneratorSubscription,
+    NotSubscriptionField,
     UnknownFieldDefinition,
 )
+from tartiflette.utils.callables import is_valid_async_generator
+
+__all__ = ("Subscription",)
 
 
 class Subscription:
@@ -33,40 +36,54 @@ class Subscription:
     """
 
     def __init__(self, name: str, schema_name: str = "default") -> None:
-        self._name = name
+        """
+        :param name: name of the subscription field
+        :param schema_name: name of the schema to which link the subscription
+        :type name: str
+        :type schema_name: str
+        """
+        self.name = name
         self._implementation = None
         self._schema_name = schema_name
 
-    @property
-    def name(self) -> str:
-        return self._name
-
     def bake(self, schema: "GraphQLSchema") -> None:
+        """
+        Sets the subscription generator into the schema subscription
+        definition.
+        :param schema: the GraphQLSchema instance linked to the subscription
+        :type schema: GraphQLSchema
+        """
         if not self._implementation:
             raise MissingImplementation(
-                "No implementation given for subscription < %s >" % self._name
+                f"No implementation given for subscription < {self.name} >"
             )
 
         try:
-            field = schema.get_field_by_name(self._name)
+            field = schema.get_field_by_name(self.name)
         except KeyError:
             raise UnknownFieldDefinition(
-                "Unknown Field Definition %s" % self._name
+                f"Unknown Field Definition {self.name}"
             )
 
-        # TODO: check that decorated parent decorated field is the
-        # subscription field
-        # if field.parent_type is not schema.find_type(schema.subscription_type):
-        #     raise NotSubscriptionField(
-        #         "< %s > isn't a subscription field." % self._name
-        #     )
+        parent_type_name = self.name.split(".")[0]
+        if parent_type_name != schema.subscription_operation_name:
+            raise NotSubscriptionField(
+                "Field < %s > isn't a subscription field." % self.name
+            )
 
         field.subscribe = self._implementation
 
     def __call__(self, implementation: Callable) -> Callable:
-        if not isasyncgenfunction(implementation):
+        """
+        Registers the subscription generator into the schema.
+        :param implementation: implementation of the subscription generator
+        :type implementation: Callable
+        :return: the implementation of the subscription generator
+        :rtype: Callable
+        """
+        if not is_valid_async_generator(implementation):
             raise NonAsyncGeneratorSubscription(
-                "The subscription `{}` given is not an awaitable "
+                "The subscription < {} > given is not an awaitable "
                 "generator.".format(repr(implementation))
             )
 

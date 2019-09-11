@@ -2,6 +2,8 @@ from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeExtensionNode
 
+__all__ = ("EnumTypeExtensionNode",)
+
 
 class EnumTypeExtensionNode(TypeExtensionNode):
     """
@@ -42,12 +44,10 @@ class EnumTypeExtensionNode(TypeExtensionNode):
         """
         return self is other or (
             isinstance(other, EnumTypeExtensionNode)
-            and (
-                self.name == other.name
-                and self.directives == other.directives
-                and self.values == other.values
-                and self.location == other.location
-            )
+            and self.name == other.name
+            and self.directives == other.directives
+            and self.values == other.values
+            and self.location == other.location
         )
 
     def __repr__(self) -> str:
