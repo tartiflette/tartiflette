@@ -8,7 +8,12 @@ from tartiflette.coercers.outputs.directives_coercer import (
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLAbstractType, GraphQLCompositeType
+from tartiflette.types.type import (
+    GraphQLAbstractType,
+    GraphQLCompositeType,
+    GraphQLExtension,
+    GraphQLType,
+)
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLInterfaceType",)
@@ -190,3 +195,44 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
 
                 if not field.name.startswith("__"):
                     self.fields.append(field)
+
+
+class GraphQLInterfaceTypeExtension(GraphQLType, GraphQLExtension):
+    def __init__(self, name, directives, fields):
+        self.name = name
+        self.directives = directives
+        self.fields = fields or []
+
+    def bake(self, schema):
+        extended = schema.find_type(self.name)
+
+        extended.directives.extend(self.directives)
+        extended.implemented_fields.update(self.fields)
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isintance(other, GraphQLInterfaceTypeExtension)
+            and other.directives == self.directives
+            and other.fields == self.fields
+            and other.name == self.name
+        )
+
+    def __repr__(self) -> str:
+        """
+        Returns the representation of a GraphQLType instance.
+        :return: the representation of a GraphQLType instance
+        :rtype: str
+        """
+        return (
+            f"GraphQLInterfaceTypeExtension("
+            f"name={repr(self.name)}, "
+            f"directives={repr(self.directives)}, "
+            f"fields={repr(self.fields)})"
+        )

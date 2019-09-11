@@ -8,7 +8,12 @@ from tartiflette.coercers.outputs.directives_coercer import (
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLAbstractType, GraphQLCompositeType
+from tartiflette.types.type import (
+    GraphQLAbstractType,
+    GraphQLCompositeType,
+    GraphQLExtension,
+    GraphQLType,
+)
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLUnionType",)
@@ -185,3 +190,44 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         for field in self._fields.values():
             field.bake(schema, custom_default_resolver)
             await field.on_post_bake()
+
+
+class GraphQLUnionTypeExtension(GraphQLType, GraphQLExtension):
+    def __init__(self, name, directives, types):
+        self.name = name
+        self.directives = directives
+        self.types = types or []
+
+    def bake(self, schema):
+        extended = schema.find_type(self.name)
+
+        extended.directives.extend(self.directives)
+        extended.types.extend(self.types)
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isintance(other, GraphQLUnionTypeExtension)
+            and other.directives == self.directives
+            and other.name == self.name
+            and other.types == self.types
+        )
+
+    def __repr__(self) -> str:
+        """
+        Returns the representation of a GraphQLType instance.
+        :return: the representation of a GraphQLType instance
+        :rtype: str
+        """
+        return (
+            f"GraphQLUnionTypeExtension("
+            f"name={repr(self.name)}, "
+            f"directives={repr(self.directives)}, "
+            f"types={repr(self.types)})"
+        )

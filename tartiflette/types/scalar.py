@@ -20,7 +20,11 @@ from tartiflette.coercers.outputs.scalar_coercer import scalar_coercer
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLInputType, GraphQLType
+from tartiflette.types.type import (
+    GraphQLExtension,
+    GraphQLInputType,
+    GraphQLType,
+)
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLScalarType",)
@@ -138,4 +142,40 @@ class GraphQLScalarType(GraphQLInputType, GraphQLType):
                 directive_hook="on_pre_output_coercion",
                 with_default=True,
             ),
+        )
+
+
+class GraphQLScalarTypeExtension(GraphQLType, GraphQLExtension):
+    def __init__(self, name, directives):
+        self.name = name
+        self.directives = directives
+
+    def bake(self, schema):
+        extended = schema.find_type(self.name)
+        extended.directives.extend(self.directives)
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isintance(other, GraphQLScalarTypeExtension)
+            and other.directives == self.directives
+            and other.name == self.name
+        )
+
+    def __repr__(self) -> str:
+        """
+        Returns the representation of a GraphQLType instance.
+        :return: the representation of a GraphQLType instance
+        :rtype: str
+        """
+        return (
+            f"GraphQLObjectTypeExtension("
+            f"name={repr(self.name)}, "
+            f"directives={repr(self.directives)})"
         )

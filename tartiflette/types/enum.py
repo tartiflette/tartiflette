@@ -20,7 +20,11 @@ from tartiflette.coercers.outputs.enum_coercer import enum_coercer
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLInputType, GraphQLType
+from tartiflette.types.type import (
+    GraphQLExtension,
+    GraphQLInputType,
+    GraphQLType,
+)
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLEnumValue", "GraphQLEnumType")
@@ -297,3 +301,38 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
             enum_value.bake(schema)
             enum_value = await enum_value.on_post_bake()
             self._value_map[enum_value.name] = enum_value
+
+
+class GraphQLEnumTypeExtension(GraphQLType, GraphQLExtension):
+    def __init__(self, name, directives, values):
+        self.name = name
+        self.directives = directives
+        self.values = values or []
+
+    def bake(self, schema):
+        enum = schema.find_type(self.name)
+        enum.directives.extend(self.directives)
+        enum.values.extend(self.values)
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isintance(other, GraphQLEnumTypeExtension)
+            and other.directives == self.directives
+            and other.values == self.values
+            and other.name == self.name
+        )
+
+    def __repr__(self) -> str:
+        """
+        Returns the representation of a GraphQLType instance.
+        :return: the representation of a GraphQLType instance
+        :rtype: str
+        """
+        return f"GraphQLEnumTypeExtension(name={repr(self.name)}, directives={repr(self.directives)}, values={repr(self.values)})"

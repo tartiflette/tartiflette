@@ -16,7 +16,11 @@ from tartiflette.coercers.literals.input_object_coercer import (
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
-from tartiflette.types.type import GraphQLInputType, GraphQLType
+from tartiflette.types.type import (
+    GraphQLExtension,
+    GraphQLInputType,
+    GraphQLType,
+)
 from tartiflette.utils.directives import wraps_with_directives
 
 __all__ = ("GraphQLInputObjectType",)
@@ -146,3 +150,42 @@ class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
             for input_field in self.input_fields.values():
                 input_field.bake(schema)
                 self.inputFields.append(input_field)
+
+
+class GraphQLInputObjectTypeExtension(GraphQLType, GraphQLExtension):
+    def __init__(self, name, input_fields, directives):
+        self.name = name
+        self.input_fields = input_fields or {}
+        self.directives = directives
+
+    def bake(self, schema):
+        extended = schema.find_type(self.name)
+        extended.input_fields.update(self.input_fields)
+        extended.directives.extend(self.directives)
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isintance(other, GraphQLInputObjectTypeExtension)
+            and other.directives == self.directives
+            and other.input_fields == self.input_fields
+            and other.name == self.name
+        )
+
+    def __repr__(self) -> str:
+        """
+        Returns the representation of a GraphQLType instance.
+        :return: the representation of a GraphQLType instance
+        :rtype: str
+        """
+        return (
+            f"GraphQLInputObjectTypeExtension(name={repr(self.name)}, "
+            f"directives={repr(self.directives)}, "
+            f"input_fields={repr(self.input_fields)})"
+        )

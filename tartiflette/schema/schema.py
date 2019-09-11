@@ -6,7 +6,7 @@ from tartiflette.schema.introspection import (
     TYPENAME_ROOT_FIELD_DEFINITION,
     prepare_type_root_field,
 )
-from tartiflette.types.enum import GraphQLEnumType
+from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumTypeExtension
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
     ImproperlyConfigured,
@@ -14,12 +14,25 @@ from tartiflette.types.exceptions.tartiflette import (
     UnknownSchemaFieldResolver,
 )
 from tartiflette.types.helpers.reduce_type import reduce_type
-from tartiflette.types.input_object import GraphQLInputObjectType
-from tartiflette.types.interface import GraphQLInterfaceType
+from tartiflette.types.input_object import (
+    GraphQLInputObjectType,
+    GraphQLInputObjectTypeExtension,
+)
+from tartiflette.types.interface import (
+    GraphQLInterfaceType,
+    GraphQLInterfaceTypeExtension,
+)
 from tartiflette.types.non_null import GraphQLNonNull
-from tartiflette.types.object import GraphQLObjectType
-from tartiflette.types.scalar import GraphQLScalarType
-from tartiflette.types.union import GraphQLUnionType
+from tartiflette.types.object import (
+    GraphQLObjectType,
+    GraphQLObjectTypeExtension,
+)
+from tartiflette.types.scalar import (
+    GraphQLScalarType,
+    GraphQLScalarTypeExtension,
+)
+from tartiflette.types.schema_extension import GraphQLSchemaExtension
+from tartiflette.types.union import GraphQLUnionType, GraphQLUnionTypeExtension
 from tartiflette.utils.callables import is_valid_coroutine
 from tartiflette.utils.errors import graphql_error_from_nodes
 
@@ -41,6 +54,34 @@ _IMPLEMENTABLE_DIRECTIVE_HOOKS = (
     "on_fragment_spread_collection",
     "on_inline_fragment_collection",
 )
+
+
+def _validate_extension(extended, name, ext_type, message):
+    if not extended:
+        return [f"Can't extend a non existing type < {name} >."]
+
+    if not isinstance(extended, ext_type):
+        return [
+            f"Can't extend {message} < {extended.name} >"
+            f" cause it's not an {message}."
+        ]
+
+    return []
+
+
+def _validate_extension_directives(extension, extended, message):
+    errors = []
+
+    extended_dir = [x.name.value for x in extended.directives]
+
+    for directive in extension.directives:
+        if directive.name.value in extended_dir:
+            errors.append(
+                f"Can't add < {directive.name.value} > Directive to < "
+                f"{extension.name} > {message}, cause it's already there."
+            )
+
+    return errors
 
 
 def _format_schema_error_message(errors: List[str]) -> str:
@@ -105,6 +146,8 @@ class GraphQLSchema:
         self.directives: List[  # pylint: disable=invalid-name
             "GraphQLDirective"
         ] = []
+
+        self.extensions: List["GraphQLExtension"] = []
 
     def __eq__(self, other: Any) -> bool:
         """
@@ -278,6 +321,12 @@ class GraphQLSchema:
         self._enum_definitions[enum_definition.name] = enum_definition
         self._input_types.append(enum_definition.name)
         self.add_type_definition(enum_definition)
+
+    def add_extension(self, extension: "GraphQLExtension") -> None:
+        """TODO
+        """
+
+        self.extensions.append(extension)
 
     def get_field_by_name(self, name: str) -> "GraphQLField":
         """
@@ -582,8 +631,217 @@ class GraphQLSchema:
                 attr = getattr(directive.implementation, expected, None)
                 if attr and not is_valid_coroutine(attr):
                     errors.append(
-                        f"Directive {directive.name} Method {expected} is not awaitable"
+                        f"Directive {directive.name} Method "
+                        f"{expected} is not awaitable"
                     )
+        return errors
+
+    def _validate_enum_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLEnumTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLEnumType, "ENUM"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                values = [x.name for x in extended.values]
+                for value in extension.values:
+                    if value.name in values:
+                        errors.append(
+                            f"Can't add < {value.name} > Value "
+                            f"to < {extension.name} > "
+                            f"ENUM, cause value already exists."
+                        )
+
+                errors.extend(
+                    _validate_extension_directives(extension, extended, "ENUM")
+                )
+
+        return errors
+
+    def _validate_object_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLObjectTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLObjectType, "TYPE"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                for field in extension.fields:
+                    if field in extended.implemented_fields:
+                        errors.append(
+                            f"Can't add Field < {field} > to "
+                            f"TYPE < {extended.name} > "
+                            f"cause field already exists."
+                        )
+
+                for interface in extension.interfaces:
+                    if interface in extended.interfaces_names:
+                        errors.append(
+                            f"Can't add Interface < {interface} > "
+                            f"to TYPE < {extended.name} > "
+                            f"cause Interface already exists."
+                        )
+
+                errors.extend(
+                    _validate_extension_directives(extension, extended, "TYPE")
+                )
+
+        return errors
+
+    def _validate_union_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLUnionTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLUnionType, "UNION"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                for typ in extension.types:
+                    if typ in extended.types:
+                        errors.append(
+                            f"Can't add PossibleType < {typ} > to "
+                            f"UNION < {extended.name} > "
+                            f"cause PossibleType already exists."
+                        )
+
+                errors.extend(
+                    _validate_extension_directives(
+                        extension, extended, "UNION"
+                    )
+                )
+
+        return errors
+
+    def _validate_input_object_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLInputObjectTypeExtension)
+        ]:
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLInputObjectType, "INPUT"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                errors.extend(
+                    _validate_extension_directives(
+                        extension, extended, "INPUT"
+                    )
+                )
+
+                for ifield in extension.input_fields:
+                    if ifield in extended.input_fields:
+                        errors.append(
+                            f"Can't add Input Field < {ifield} > "
+                            f"to Input Object < {extended.name} > "
+                            f"cause it already exists"
+                        )
+
+        return errors
+
+    def _validate_interface_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLInterfaceTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLInterfaceType, "INTERFACE"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                for field in extension.fields:
+                    if field in extended.implemented_fields:
+                        errors.append(
+                            f"Can't add Field < {field} > to "
+                            f"INTERFACE < {extended.name} > "
+                            f"cause field already exists."
+                        )
+
+                errors.extend(
+                    _validate_extension_directives(
+                        extension, extended, "INTERFACE"
+                    )
+                )
+
+        return errors
+
+    def _validate_scalar_extensions(self) -> List[str]:
+        errors = []
+
+        for extension in [
+            x
+            for x in self.extensions
+            if isinstance(x, GraphQLScalarTypeExtension)
+        ]:
+
+            extended = self.type_definitions.get(extension.name)
+            ext_errors = _validate_extension(
+                extended, extension.name, GraphQLScalarType, "SCALAR"
+            )
+            errors.extend(ext_errors)
+            if not ext_errors:
+                errors.extend(
+                    _validate_extension_directives(
+                        extension, extended, "SCALAR"
+                    )
+                )
+
+        return errors
+
+    def _validate_schema_extensions(self) -> List[str]:
+        errors = []
+        extended_operations = []
+        for extension in [
+            x for x in self.extensions if isinstance(x, GraphQLSchemaExtension)
+        ]:
+            for operation in extension.operations:
+                op_type = getattr(self, f"{operation}_operation_name")
+                if op_type in extended_operations:
+                    errors.append(
+                        f"Can't extend Schema "
+                        f"Operation < {op_type} >"
+                        f" multiple times"
+                    )
+
+                if self.has_type(op_type):
+                    errors.append(
+                        f"Can't extend Schema with "
+                        f"Operation < {op_type} > "
+                        f"cause type is already defined."
+                    )
+                else:
+                    extended_operations.append(op_type)
+
         return errors
 
     def _validate(self) -> bool:
@@ -604,7 +862,7 @@ class GraphQLSchema:
             self._validate_enum_values_are_unique,
             self._validate_arguments_have_valid_type,
             self._validate_input_type_composed_of_input_type,
-            self._validate_directive_implementation
+            self._validate_directive_implementation,
             # TODO: Validate Field: default value must be of given type
             # TODO: Check all objects have resolvers (at least in parent)
         ]
@@ -617,6 +875,25 @@ class GraphQLSchema:
                 message=_format_schema_error_message(errors)
             )
         return True
+
+    def _validate_extensions(self) -> None:
+        validators = [
+            self._validate_enum_extensions,
+            self._validate_input_object_extensions,
+            self._validate_object_extensions,
+            self._validate_interface_extensions,
+            self._validate_scalar_extensions,
+            self._validate_union_extensions,
+            self._validate_schema_extensions,
+        ]
+        errors = []
+        for validator in validators:
+            errors.extend(validator())
+
+        if errors:
+            raise GraphQLSchemaError(
+                message=_format_schema_error_message(errors)
+            )
 
     async def _bake_types(
         self, custom_default_resolver: Optional[Callable] = None
@@ -671,6 +948,10 @@ class GraphQLSchema:
                 nodes=operation,
             )
 
+    def _bake_extensions(self):
+        for extension in self.extensions:
+            extension.bake(self)
+
     async def bake(
         self,
         custom_default_resolver: Optional[Callable] = None,
@@ -691,7 +972,12 @@ class GraphQLSchema:
             custom_default_type_resolver or default_type_resolver
         )
         self._inject_introspection_fields()
+
+        self._validate_extensions()  # Validate this before bake
+        # TODO maybe a pre_bake/post_bake thing
+
         try:
+            self._bake_extensions()
             await self._bake_types(custom_default_resolver)
         except Exception:  # pylint: disable=broad-except
             # Exceptions should be collected at validation time
