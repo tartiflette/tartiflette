@@ -24,16 +24,16 @@ jobs:
         uses: actions/docker/cli@master
         with:
           args: run -i tartiflette make test-unit
-      - name: build and publish to pypi
-        uses: ./.github/actions/pypi/
-        env:
-          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: build and publish to pypi
+        uses: ./.github/actions/pypi/
+        env:
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       - name: set version and changelog
         uses: ./.github/actions/shell/
         if: github.ref == 'refs/heads/master'
