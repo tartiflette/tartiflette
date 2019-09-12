@@ -519,16 +519,14 @@ class GraphQLSchema:
         """
         errors = []
         for type_name, gql_type in self.type_definitions.items():
-            if isinstance(gql_type, GraphQLScalarType):
-                if (
-                    gql_type.coerce_output is None
-                    or gql_type.coerce_input is None
-                    or gql_type.parse_literal is None
-                ):
-                    errors.append(
-                        f"Scalar < {type_name} > "
-                        f"is missing an implementation"
-                    )
+            if isinstance(gql_type, GraphQLScalarType) and (
+                gql_type.coerce_output is None
+                or gql_type.coerce_input is None
+                or gql_type.parse_literal is None
+            ):
+                errors.append(
+                    f"Scalar < {type_name} > " f"is missing an implementation"
+                )
         return errors
 
     def _validate_enum_values_are_unique(self) -> List[str]:

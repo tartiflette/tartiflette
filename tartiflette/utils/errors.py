@@ -136,30 +136,34 @@ def located_error(
 
         # TODO: this is ugly AF... we should refactor it :D
         is_partial = isinstance(graphql_error.coerce_value, partial)
-        if path and (
-            not hasattr(graphql_error, "path") or not graphql_error.path
-        ):
-            if (
+        if (
+            path
+            and (not hasattr(graphql_error, "path") or not graphql_error.path)
+            and (
                 not is_partial
                 or "path" not in graphql_error.coerce_value.keywords
-            ):
-                graphql_error.coerce_value = partial(
-                    graphql_error.coerce_value, path=path
-                )
-                is_partial = True
-
-        if nodes and (
-            not hasattr(graphql_error, "locations")
-            or not graphql_error.locations
+            )
         ):
-            if (
+            graphql_error.coerce_value = partial(
+                graphql_error.coerce_value, path=path
+            )
+            is_partial = True
+
+        if (
+            nodes
+            and (
+                not hasattr(graphql_error, "locations")
+                or not graphql_error.locations
+            )
+            and (
                 not is_partial
                 or "locations" not in graphql_error.coerce_value.keywords
-            ):
-                graphql_error.coerce_value = partial(
-                    graphql_error.coerce_value,
-                    locations=[node.location for node in nodes],
-                )
+            )
+        ):
+            graphql_error.coerce_value = partial(
+                graphql_error.coerce_value,
+                locations=[node.location for node in nodes],
+            )
 
         computed_exceptions.append(graphql_error)
 

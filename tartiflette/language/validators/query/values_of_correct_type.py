@@ -197,20 +197,18 @@ class ValuesOfCorrectType(June2018ReleaseValidationRule):
         if isinstance(value_node, NullValueNode):
             return errors  # Because it's not non null, null node is okay
 
-        if isinstance(r_argument_schema_type, GraphQLScalarType):
-            if (
-                r_argument_schema_type.parse_literal(value_node)
-                is UNDEFINED_VALUE
-            ):
-                errors.append(
-                    graphql_error_from_nodes(
-                        message=f"Value {value_node.value} is not of correct type {r_argument_schema_type.name}",
-                        nodes=input_field or arg,
-                        extensions=self._extensions,
-                        path=path,
-                    )
+        if isinstance(r_argument_schema_type, GraphQLScalarType) and (
+            r_argument_schema_type.parse_literal(value_node) is UNDEFINED_VALUE
+        ):
+            errors.append(
+                graphql_error_from_nodes(
+                    message=f"Value {value_node.value} is not of correct type {r_argument_schema_type.name}",
+                    nodes=input_field or arg,
+                    extensions=self._extensions,
+                    path=path,
                 )
-                return errors
+            )
+            return errors
 
         if isinstance(r_argument_schema_type, GraphQLInputObjectType):
             errors = self._validate_input_object(
@@ -223,19 +221,20 @@ class ValuesOfCorrectType(June2018ReleaseValidationRule):
             )
             return errors
 
-        if isinstance(r_argument_schema_type, GraphQLEnumType):
-            if value_node.value not in [
-                x.value for x in r_argument_schema_type.values
-            ]:
-                errors.append(
-                    graphql_error_from_nodes(
-                        message=f"Value {value_node.value} is not a valid value for enum {r_argument_schema_type.name}",
-                        nodes=arg,
-                        path=path,
-                        extensions=self._extensions,
-                    )
+        if isinstance(
+            r_argument_schema_type, GraphQLEnumType
+        ) and value_node.value not in [
+            x.value for x in r_argument_schema_type.values
+        ]:
+            errors.append(
+                graphql_error_from_nodes(
+                    message=f"Value {value_node.value} is not a valid value for enum {r_argument_schema_type.name}",
+                    nodes=arg,
+                    path=path,
+                    extensions=self._extensions,
                 )
-                return errors
+            )
+            return errors
 
         return errors
 
