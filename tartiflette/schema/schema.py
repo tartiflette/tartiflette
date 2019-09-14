@@ -6,6 +6,7 @@ from tartiflette.schema.introspection import (
     TYPENAME_ROOT_FIELD_DEFINITION,
     prepare_type_root_field,
 )
+from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.enum import GraphQLEnumType, GraphQLEnumTypeExtension
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,
@@ -483,10 +484,11 @@ class GraphQLSchema:
         """
         errors = []
         for type_name, gql_type in self.type_definitions.items():
-            if (
-                isinstance(gql_type, GraphQLObjectType)
-                and not gql_type.implemented_fields.values()
-            ):
+            if isinstance(gql_type, GraphQLObjectType) and not [
+                field_name
+                for field_name in gql_type.implemented_fields
+                if not field_name.startswith("__")
+            ]:
                 errors.append(f"Type < {type_name} > has no fields.")
         return errors
 
@@ -978,6 +980,13 @@ class GraphQLSchema:
 
         try:
             self._bake_extensions()
+        except Exception:  # pylint: disable=broad-except
+            # Exceptions should be collected at validation time
+            pass
+
+        SchemaRegistry.bake_registered_objects(self)
+
+        try:
             await self._bake_types(custom_default_resolver)
         except Exception:  # pylint: disable=broad-except
             # Exceptions should be collected at validation time

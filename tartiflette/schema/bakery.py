@@ -5,14 +5,6 @@ from tartiflette.schema.transformer import schema_from_sdl
 
 __all__ = ("SchemaBakery",)
 
-_SCHEMA_OBJECT_IDS = [
-    "directives",
-    "resolvers",
-    "type_resolvers",
-    "scalars",
-    "subscriptions",
-]
-
 
 class SchemaBakery:
     """
@@ -31,15 +23,8 @@ class SchemaBakery:
         """
         schema_info = SchemaRegistry.find_schema_info(schema_name)
         sdl = schema_info["sdl"]
-
         schema = schema_from_sdl(sdl, schema_name=schema_name)
-
-        for object_ids in _SCHEMA_OBJECT_IDS:
-            for obj in schema_info.get(object_ids, {}).values():
-                obj.bake(schema)
-
         schema_info["inst"] = schema
-
         return schema
 
     @staticmethod

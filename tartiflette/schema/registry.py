@@ -7,6 +7,14 @@ from tartiflette.types.exceptions.tartiflette import ImproperlyConfigured
 
 __all__ = ("SchemaRegistry",)
 
+_SCHEMA_OBJECT_IDS = [
+    "directives",
+    "resolvers",
+    "type_resolvers",
+    "scalars",
+    "subscriptions",
+]
+
 
 class SchemaRegistry:
     """
@@ -211,6 +219,13 @@ class SchemaRegistry:
         :rtype: GraphQLSchema
         """
         return SchemaRegistry.find_schema_info(schema_name)["inst"]
+
+    @staticmethod
+    def bake_registered_objects(schema: "GraphQLSchema"):
+        schema_info = SchemaRegistry._schemas[schema.name]
+        for object_id in _SCHEMA_OBJECT_IDS:
+            for obj in schema_info.get(object_id, {}).values():
+                obj.bake(schema)
 
     @classmethod
     def clean(cls) -> None:
