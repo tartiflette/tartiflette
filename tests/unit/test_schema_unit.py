@@ -85,7 +85,7 @@ async def test_schema_object_get_field_name(clean_registry):
 
 
 @pytest.mark.parametrize(
-    "full_sdl,expected_error,expected_value",
+    "full_sdl,expected_error",
     [
         # Happy path
         (
@@ -104,7 +104,6 @@ async def test_schema_object_get_field_name(clean_registry):
         }
         """,
             False,
-            True,
         ),
         (
             """
@@ -114,7 +113,6 @@ async def test_schema_object_get_field_name(clean_registry):
         }
         """,
             False,
-            True,
         ),
         (
             """
@@ -123,7 +121,6 @@ async def test_schema_object_get_field_name(clean_registry):
         }
         """,
             False,
-            True,
         ),
         (
             """
@@ -143,7 +140,6 @@ async def test_schema_object_get_field_name(clean_registry):
         }
         """,
             False,
-            True,
         ),
         # Sad path
         (
@@ -157,13 +153,12 @@ async def test_schema_object_get_field_name(clean_registry):
         }
         """,
             True,
-            False,
         ),
     ],
 )
 @pytest.mark.asyncio
 async def test_schema_validate_named_types(
-    full_sdl, expected_error, expected_value, clean_registry
+    full_sdl, expected_error, clean_registry
 ):
 
     _, full_sdl = await _import_builtins([], full_sdl, "A")
@@ -172,13 +167,13 @@ async def test_schema_validate_named_types(
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema._validate()
+            await generated_schema.bake()
     else:
-        assert generated_schema._validate() == expected_value
+        await generated_schema.bake()
 
 
 @pytest.mark.parametrize(
-    "full_sdl,expected_error,expected_value",
+    "full_sdl,expected_error",
     [
         # Happy path
         (
@@ -200,7 +195,6 @@ async def test_schema_validate_named_types(
         }
         """,
             False,
-            True,
         ),
         (
             """
@@ -223,7 +217,6 @@ async def test_schema_validate_named_types(
         }
         """,
             False,
-            True,
         ),
         (
             """
@@ -249,7 +242,6 @@ async def test_schema_validate_named_types(
         }
         """,
             False,
-            True,
         ),
         # Sad path
         (
@@ -273,7 +265,6 @@ async def test_schema_validate_named_types(
         }
         """,
             True,
-            False,
         ),
         (
             """
@@ -288,7 +279,6 @@ async def test_schema_validate_named_types(
         }
         """,
             True,
-            False,
         ),
         (
             """
@@ -303,7 +293,6 @@ async def test_schema_validate_named_types(
         }
         """,
             True,
-            False,
         ),
         (
             """
@@ -326,14 +315,13 @@ async def test_schema_validate_named_types(
         }
         """,
             True,
-            False,
         ),
     ],
     ids=["1", "2", "3", "4", "5", "6", "7"],
 )
 @pytest.mark.asyncio
 async def test_schema_validate_object_follow_interfaces(
-    full_sdl, expected_error, expected_value, clean_registry
+    full_sdl, expected_error, clean_registry
 ):
     _, full_sdl = await _import_builtins([], full_sdl, "A")
     clean_registry.register_sdl("A", full_sdl)
@@ -355,13 +343,13 @@ async def test_schema_validate_object_follow_interfaces(
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema._validate()
+            await generated_schema.bake()
     else:
-        assert generated_schema._validate() == expected_value
+        await generated_schema.bake()
 
 
 @pytest.mark.parametrize(
-    "full_sdl,expected_error,expected_value",
+    "full_sdl,expected_error",
     [
         # Happy path
         (
@@ -371,7 +359,6 @@ async def test_schema_validate_object_follow_interfaces(
         }
         """,
             False,
-            True,
         ),
         (
             """
@@ -392,7 +379,6 @@ async def test_schema_validate_object_follow_interfaces(
         }
         """,
             False,
-            True,
         ),
         # Sad path
         (
@@ -402,7 +388,6 @@ async def test_schema_validate_object_follow_interfaces(
         }
         """,
             True,
-            False,
         ),
         (
             """
@@ -420,7 +405,6 @@ async def test_schema_validate_object_follow_interfaces(
         }
         """,
             True,
-            False,
         ),
         (
             """
@@ -438,7 +422,6 @@ async def test_schema_validate_object_follow_interfaces(
         }
         """,
             True,
-            False,
         ),
         (
             """
@@ -456,13 +439,12 @@ async def test_schema_validate_object_follow_interfaces(
         }
         """,
             True,
-            False,
         ),
     ],
 )
 @pytest.mark.asyncio
 async def test_schema_validate_root_types_exist(
-    full_sdl, expected_error, expected_value, clean_registry
+    full_sdl, expected_error, clean_registry
 ):
     _, full_sdl = await _import_builtins([], full_sdl, "a")
     clean_registry.register_sdl("a", full_sdl)
@@ -470,13 +452,13 @@ async def test_schema_validate_root_types_exist(
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema._validate()
+            await generated_schema.bake()
     else:
-        assert generated_schema._validate() == expected_value
+        await generated_schema.bake()
 
 
 @pytest.mark.parametrize(
-    "full_sdl,expected_error,expected_value",
+    "full_sdl,expected_error",
     [
         # Happy path
         (
@@ -486,21 +468,20 @@ async def test_schema_validate_root_types_exist(
         }
         """,
             False,
-            True,
         ),
         # Sad path
         (
             """
+        type Foo
         type Query
         """,
             True,
-            False,
         ),
     ],
 )
 @pytest.mark.asyncio
 async def test_schema_validate_non_empty_object(
-    full_sdl, expected_error, expected_value, clean_registry
+    full_sdl, expected_error, clean_registry
 ):
     _, full_sdl = await _import_builtins([], full_sdl, "a")
     clean_registry.register_sdl("a", full_sdl)
@@ -508,13 +489,13 @@ async def test_schema_validate_non_empty_object(
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema._validate()
+            await generated_schema.bake()
     else:
-        assert generated_schema._validate() == expected_value
+        await generated_schema.bake()
 
 
 @pytest.mark.parametrize(
-    "full_sdl,expected_error,expected_value",
+    "full_sdl,expected_error",
     [
         # Happy path
         (
@@ -534,7 +515,6 @@ async def test_schema_validate_non_empty_object(
         union Test = Something | Else
         """,
             False,
-            True,
         ),
         # Sad path
         (
@@ -546,13 +526,12 @@ async def test_schema_validate_non_empty_object(
         union Test = Test | Test
         """,
             True,
-            False,
         ),
     ],
 )
 @pytest.mark.asyncio
 async def test_schema_validate_union_is_acceptable(
-    full_sdl, expected_error, expected_value, clean_registry
+    full_sdl, expected_error, clean_registry
 ):
     _, full_sdl = await _import_builtins([], full_sdl, "a")
     clean_registry.register_sdl("a", full_sdl)
@@ -560,9 +539,9 @@ async def test_schema_validate_union_is_acceptable(
 
     if expected_error:
         with pytest.raises(GraphQLSchemaError):
-            generated_schema._validate()
+            await generated_schema.bake()
     else:
-        assert generated_schema._validate() == expected_value
+        await generated_schema.bake()
 
 
 @pytest.mark.asyncio
