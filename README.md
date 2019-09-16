@@ -14,6 +14,7 @@
 - [How to contribute to the documentation?](#how-to-contribute-to-the-documentation)
   - [How to run the website locally?](#how-to-run-the-website-locally)
 - [Known issues](#known-issues)
+- [Badges](#badges)
 
 ## Motivation
 
@@ -160,3 +161,6 @@ Every change you will make in the `/docs` folder will be automatically hot reloa
 ## Known issues
 
 * [Schema directives aren't executed](https://github.com/tartiflette/tartiflette/issues/134)
+
+## Badges
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=tartiflette_tartiflette)](https://sonarcloud.io/dashboard?id=tartiflette_tartiflette)
