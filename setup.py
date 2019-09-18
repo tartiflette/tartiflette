@@ -60,7 +60,7 @@ _TEST_REQUIRE = [
 
 _BENCHMARK_REQUIRE = ["pytest-benchmark==3.2.2"]
 
-_VERSION = "1.0.0rc2"
+_VERSION = "1.0.0rc3"
 
 _PACKAGES = find_packages(exclude=["tests*"])
 

@@ -98,6 +98,7 @@ class NodeTransformer(Transformer_InPlace):
     """
 
     # pylint: disable=too-many-public-methods
+    # pylint: disable=no-self-use
 
     def __init__(self) -> None:
         super().__init__()
@@ -114,8 +115,6 @@ class NodeTransformer(Transformer_InPlace):
         instance as value
         :rtype: SchemaNode
         """
-        # pylint: disable=no-self-use
-        # pylint: disable=no-self-use
         return SchemaNode(type="int_value", value=lark_to_int_value_node(tree))
 
     def float_value(self, tree: "Tree") -> "SchemaNode":

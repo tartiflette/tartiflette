@@ -123,7 +123,7 @@ def _extract_node_info(
         elif child.type in types_to_list:
             info[types_to_list[child.type]].append(child)
         elif child.type in types_to_ignore:
-            pass
+            continue
         else:
             raise UnexpectedASTNode(
                 "Unexpected AST node `{}`, type `{}`".format(
