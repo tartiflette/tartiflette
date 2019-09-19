@@ -164,3 +164,5 @@ Every change you will make in the `/docs` folder will be automatically hot reloa
 
 ## Badges
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=tartiflette_tartiflette)](https://sonarcloud.io/dashboard?id=tartiflette_tartiflette)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/context:python)
