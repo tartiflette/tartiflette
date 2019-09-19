@@ -54,6 +54,7 @@ from typing import Any, Union
 
 from tartiflette import Scalar
 from tartiflette.constants import UNDEFINED_VALUE
+from tartiflette.language.ast import StringValueNode
 
 
 @Scalar("CapitalizedString")
