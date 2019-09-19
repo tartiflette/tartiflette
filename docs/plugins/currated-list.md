@@ -6,9 +6,11 @@ sidebar_label: Plugin Index
 
 ## Plugin list
 
-| Plugin name | Description                                               | Github URL                                                |
-| ----------- | --------------------------------------------------------- | --------------------------------------------------------- |
-| time-it     | Allows you to time a field execution method by logging it | [tartiflette-plugin-time-it](https://github.com/tartiflette/tartiflette-plugin-time-it) |
+| Plugin name | Description                                               | Github URL                                                                              | State       |
+| ----------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------- |
+| scalars     | A Scalar Collection ready to use                          | [tartiflette-plugin-scalars](https://github.com/tartiflette/tartiflette-plugin-scalars) | Stable      |
+| time-it     | Allows you to time a field execution method by logging it | [tartiflette-plugin-time-it](https://github.com/tartiflette/tartiflette-plugin-time-it) | In Progress |
+
 
 ## How can I add my own?
 
