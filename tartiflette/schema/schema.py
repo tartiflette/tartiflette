@@ -14,6 +14,9 @@ from tartiflette.types.exceptions.tartiflette import (
     RedefinedImplementation,
     UnknownSchemaFieldResolver,
 )
+from tartiflette.types.helpers.get_directive_instances import (
+    compute_directive_nodes,
+)
 from tartiflette.types.helpers.reduce_type import reduce_type
 from tartiflette.types.input_object import (
     GraphQLInputObjectType,
@@ -34,7 +37,11 @@ from tartiflette.types.scalar import (
 )
 from tartiflette.types.schema_extension import GraphQLSchemaExtension
 from tartiflette.types.union import GraphQLUnionType, GraphQLUnionTypeExtension
-from tartiflette.utils.callables import is_valid_coroutine
+from tartiflette.utils.callables import (
+    is_valid_async_generator,
+    is_valid_coroutine,
+)
+from tartiflette.utils.directives import wraps_with_directives
 from tartiflette.utils.errors import graphql_error_from_nodes
 
 __all__ = ("GraphQLSchema",)
@@ -44,7 +51,7 @@ _DEFAULT_MUTATION_OPERATION_NAME = "Mutation"
 _DEFAULT_SUBSCRIPTION_OPERATION_NAME = "Subscription"
 
 
-_IMPLEMENTABLE_DIRECTIVE_HOOKS = (
+_IMPLEMENTABLE_DIRECTIVE_FUNCTION_HOOKS = (
     "on_post_bake",
     "on_pre_output_coercion",
     "on_introspection",
@@ -54,7 +61,10 @@ _IMPLEMENTABLE_DIRECTIVE_HOOKS = (
     "on_field_collection",
     "on_fragment_spread_collection",
     "on_inline_fragment_collection",
+    "on_schema_execution",
 )
+
+_IMPLEMENTABLE_DIRECTIVE_GENERATOR_HOOKS = ("on_schema_subscription",)
 
 
 def _validate_extension(extended, name, ext_type, message):
@@ -149,6 +159,12 @@ class GraphQLSchema:
         ] = []
 
         self.extensions: List["GraphQLExtension"] = []
+        self._schema_directives: List["DirectiveNode"] = []
+
+    def add_schema_directives(
+        self, directives_instances: List["DirectiveNode"]
+    ) -> None:
+        self._schema_directives.extend(directives_instances)
 
     def __eq__(self, other: Any) -> bool:
         """
@@ -627,13 +643,22 @@ class GraphQLSchema:
         """
         errors = []
         for directive in self._directive_definitions.values():
-            for expected in _IMPLEMENTABLE_DIRECTIVE_HOOKS:
+            for expected in _IMPLEMENTABLE_DIRECTIVE_FUNCTION_HOOKS:
                 attr = getattr(directive.implementation, expected, None)
                 if attr and not is_valid_coroutine(attr):
                     errors.append(
                         f"Directive {directive.name} Method "
-                        f"{expected} is not awaitable"
+                        f"{expected} is not awaitable."
                     )
+
+            for expected in _IMPLEMENTABLE_DIRECTIVE_GENERATOR_HOOKS:
+                attr = getattr(directive.implementation, expected, None)
+                if attr and not is_valid_async_generator(attr):
+                    errors.append(
+                        f"Directive {directive.name} Method "
+                        f"{expected} is not an Async Generator."
+                    )
+
         return errors
 
     def _validate_enum_extensions(self) -> List[str]:
@@ -842,6 +867,14 @@ class GraphQLSchema:
                 else:
                     extended_operations.append(op_type)
 
+            schema_directives = [x.name.value for x in self._schema_directives]
+            for directive in extension.directives:
+                if directive.name.value in schema_directives:
+                    errors.append(
+                        f"Can't add < {directive.name.value} > "
+                        f"Directive to schema cause it's already there."
+                    )
+
         return errors
 
     def _validate(self) -> bool:
@@ -951,6 +984,21 @@ class GraphQLSchema:
     def _bake_extensions(self):
         for extension in self.extensions:
             extension.bake(self)
+
+    def bake_execute(self, func_query, func_subscription):
+        directives = compute_directive_nodes(self, self._schema_directives)
+        func_query = wraps_with_directives(
+            directives, "on_schema_execution", func_query, is_resolver=True
+        )
+
+        func_subscription = wraps_with_directives(
+            directives,
+            "on_schema_subscription",
+            func_subscription,
+            is_async_generator=True,
+        )
+
+        return func_query, func_subscription
 
     async def bake(
         self,

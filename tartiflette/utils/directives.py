@@ -1,7 +1,7 @@
 import asyncio
 
 from functools import partial
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, AsyncGenerator, Callable, Dict, List, Optional, Union
 
 from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.utils.values import is_invalid_value
@@ -175,6 +175,23 @@ async def directive_executor(
     )
 
 
+async def directive_generator(
+    directive_func: AsyncGenerator,
+    directive_arguments_coercer: Callable,
+    wrapped_func: Callable,
+    *args,
+    context_coercer: Optional[Any] = None,
+    **kwargs,
+):
+    async for payload in directive_func(
+        await directive_arguments_coercer(ctx=context_coercer),
+        partial(wrapped_func, context_coercer=context_coercer),
+        *args,
+        **kwargs,
+    ):
+        yield payload
+
+
 async def resolver_executor(resolver: Callable, *args, **kwargs) -> Any:
     """
     Wraos the execution of the raw resolver in order to pop the
@@ -188,12 +205,19 @@ async def resolver_executor(resolver: Callable, *args, **kwargs) -> Any:
     return await resolver(*args, **kwargs)
 
 
+async def subscription_generator(generator: AsyncGenerator, *args, **kwargs):
+    kwargs.pop("context_coercer", None)
+    async for payload in generator(*args, **kwargs):
+        yield payload
+
+
 def wraps_with_directives(
     directives_definition: List[Dict[str, Any]],
     directive_hook: str,
     func: Optional[Callable] = None,
     is_resolver: bool = False,
     with_default: bool = False,
+    is_async_generator: bool = False,
 ) -> Optional[Callable]:
     """
     Wraps a callable with directives.
@@ -203,15 +227,19 @@ def wraps_with_directives(
     :param is_resolver: determines whether or not the wrapped func is a
     resolver
     :param with_default: determines whether or not if there is no directives
+    :param is_async_generator: determines whether or not the wrapped func is a generator
     definition we should return or not a callable
     :type directives_definition: List[Dict[str, Any]]
     :type directive_hook: str
     :type func: Optional[Callable]
     :type is_resolver: bool
     :type with_default: bool
+    :type is_async_generator: bool
     :return: wrapped callable
     :rtype: Optional[Callable]
     """
+    directive_wrapper = directive_executor
+
     if func is None:
         if not with_default and not directives_definition:
             return None
@@ -223,10 +251,14 @@ def wraps_with_directives(
     if is_resolver and not isinstance(func, partial):
         func = partial(resolver_executor, func)
 
+    if is_async_generator and not isinstance(func, partial):
+        func = partial(subscription_generator, func)
+        directive_wrapper = directive_generator
+
     for directive in reversed(directives_definition):
         if directive_hook in directive["callables"]:
             func = partial(
-                directive_executor,
+                directive_wrapper,
                 directive["callables"][directive_hook],
                 directive["arguments_coercer"],
                 func,

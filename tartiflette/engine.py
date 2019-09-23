@@ -158,6 +158,8 @@ class Engine:
         self._sdl = sdl
         self._cooked = False
         self._build_response = None
+        self._query_executor = None
+        self._subcription_executor = None
 
     async def cook(
         self,
@@ -253,7 +255,74 @@ class Engine:
             build_response, error_coercer=self._error_coercer
         )
 
+        self._query_executor, self._subcription_executor = self._schema.bake_execute(
+            self._perform_query, self._perform_subsciption
+        )
+
         self._cooked = True
+
+    async def _perform_subsciption(
+        self,
+        schema: "GraphQLSchema",
+        document: "DocumentNode",
+        request_parsing_errors: Optional[List["TartifletteError"]] = None,
+        operation_name: Optional[str] = None,
+        context: Optional[Any] = None,
+        variables: Optional[Dict[str, Any]] = None,
+        initial_value: Optional[Any] = None,
+    ):
+        # pylint: disable=too-many-locals
+        if request_parsing_errors:
+            yield await self._build_response(errors=request_parsing_errors)
+            return
+
+        source_event_stream = await create_source_event_stream(
+            schema,
+            document,
+            self._build_response,
+            initial_value,
+            context,
+            variables,
+            operation_name,
+        )
+
+        if isinstance(source_event_stream, dict):
+            yield source_event_stream
+            return
+
+        async for payload in source_event_stream:
+            yield await execute(
+                self._schema,
+                document,
+                self._build_response,
+                payload,
+                context,
+                variables,
+                operation_name,
+            )
+
+    async def _perform_query(
+        self,
+        schema: "GraphQLSchema",
+        document: "DocumentNode",
+        request_parsing_errors: Optional[List["TartifletteError"]] = None,
+        operation_name: Optional[str] = None,
+        context: Optional[Any] = None,
+        variables: Optional[Dict[str, Any]] = None,
+        initial_value: Optional[Any] = None,
+    ):
+        if request_parsing_errors:
+            return await self._build_response(errors=request_parsing_errors)
+
+        return await execute(
+            schema,
+            document,
+            self._build_response,
+            initial_value,
+            context,
+            variables,
+            operation_name,
+        )
 
     async def execute(
         self,
@@ -281,17 +350,17 @@ class Engine:
         :rtype: Dict[str, Any]
         """
         document, errors = parse_and_validate_query(query, self._schema)
-        if errors:
-            return await self._build_response(errors=errors)
 
-        return await execute(
+        # Goes through potential schema directives and finish in self._perfom_query
+        return await self._query_executor(
             self._schema,
             document,
-            self._build_response,
-            initial_value,
+            errors,
+            operation_name,
             context,
             variables,
-            operation_name,
+            initial_value,
+            context_coercer=context,
         )
 
     async def subscribe(
@@ -319,33 +388,18 @@ class Engine:
         :return: computed response corresponding to the request
         :rtype: AsyncIterable[Dict[str, Any]]
         """
-        # pylint: disable=too-many-locals
-        document, errors = parse_and_validate_query(query, self._schema)
-        if errors:
-            yield await self._build_response(errors=errors)
-            return
 
-        source_event_stream = await create_source_event_stream(
+        document, errors = parse_and_validate_query(query, self._schema)
+
+        # Goes through potential schema directives and finish in self._perfom_subscription
+        async for payload in self._subcription_executor(
             self._schema,
             document,
-            self._build_response,
-            initial_value,
+            errors,
+            operation_name,
             context,
             variables,
-            operation_name,
-        )
-
-        if isinstance(source_event_stream, dict):
-            yield source_event_stream
-            return
-
-        async for payload in source_event_stream:
-            yield await execute(
-                self._schema,
-                document,
-                self._build_response,
-                payload,
-                context,
-                variables,
-                operation_name,
-            )
+            initial_value,
+            context_coercer=context,
+        ):
+            yield payload

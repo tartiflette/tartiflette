@@ -2,7 +2,10 @@ from functools import partial
 from typing import Any, Callable, Dict, List, Optional
 
 from tartiflette.coercers.arguments import coerce_arguments
-from tartiflette.utils.callables import is_valid_coroutine
+from tartiflette.utils.callables import (
+    is_valid_async_generator,
+    is_valid_coroutine,
+)
 
 __all__ = ("compute_directive_nodes",)
 
@@ -20,7 +23,10 @@ def get_callables(implementation: Any) -> Dict[str, Callable]:
         key: getattr(implementation, key)
         for key in dir(implementation)
         if key.startswith("on_")
-        and is_valid_coroutine(getattr(implementation, key))
+        and (
+            is_valid_coroutine(getattr(implementation, key))
+            or is_valid_async_generator(getattr(implementation, key))
+        )
     }
 
 

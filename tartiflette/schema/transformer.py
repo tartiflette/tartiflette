@@ -357,6 +357,7 @@ def parse_schema_definition(
     parse_operation_type_definitions(
         schema_definition_node.operation_type_definitions, schema
     )
+    schema.add_schema_directives(schema_definition_node.directives)
 
 
 def parse_scalar_type_definition(

@@ -10,6 +10,7 @@ class GraphQLSchemaExtension(GraphQLType, GraphQLExtension):
 
     # TODO Don't forget schema directives here when implementing them
     def bake(self, schema):
+        schema.add_schema_directives(self.directives)
         for okind, otype in self.operations.items():
             setattr(schema, f"{okind}_operation_name", otype)
 
