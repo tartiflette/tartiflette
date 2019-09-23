@@ -4,8 +4,6 @@ title: Moving from v0.x.x to v1.0.x
 sidebar_label: Moving from v0.x.x to v1.0.x
 ---
 
-# Migration Guide: Moving from v0.x.x to v1.0.x
-
 ## Miscellaneous
 
 ### `engine_coercer` has to be asynchronous
@@ -107,7 +105,7 @@ This means that if you were used to "hard" access your arguments (especially the
 For instance, if we make this request:
 ```graphql
 mutation {
-  addNews(input: {title: "Title", content: "Content"}) {
+  addNews(input: {title: "Title", resume: null, content: "Content"}) {
     id
     title
     resume
