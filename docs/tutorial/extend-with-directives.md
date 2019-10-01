@@ -91,6 +91,7 @@ class RateLimiting:
         return await next_resolver(parent, args, ctx, info)
 
     async def on_pre_output_coercion(
+        self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         value: Any,
