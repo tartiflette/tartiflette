@@ -43,7 +43,7 @@ async def resolve_mutation_update_recipe(parent, args, ctx, info):
     name = args["input"].get("name")
     cooking_time = args["input"].get("cookingTime")
 
-    if not (name and cooking_time):
+    if not (name or cooking_time):
         raise Exception(
             "You should provide at least one value for either name or "
             "cookingTime."
