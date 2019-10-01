@@ -250,10 +250,7 @@ class Engine:
             schema_name, custom_default_resolver, custom_default_type_resolver
         )
         self._build_response = partial(
-            build_response,
-            error_coercer=error_coercer_factory(
-                error_coercer or default_error_coercer
-            ),
+            build_response, error_coercer=self._error_coercer
         )
 
         self._cooked = True
