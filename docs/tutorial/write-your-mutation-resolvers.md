@@ -32,13 +32,34 @@ type Mutation {
 
 And now the resolver which is in charge of updating the recipe metadata:
 ```python
+from typing import Any, Dict, Optional
+
 from tartiflette import Resolver
 
 from recipes_manager.data import RECIPES
 
 
 @Resolver("Mutation.updateRecipe")
-async def resolve_mutation_update_recipe(parent, args, ctx, info):
+async def resolve_mutation_update_recipe(
+    parent: Optional[Any],
+    args: Dict[str, Any],
+    ctx: Dict[str, Any],
+    info: "ResolveInfo",
+) -> Dict[str, Any]:
+    """
+    Resolver in charge of the mutation of a recipe.
+    :param parent: initial value filled in to the engine `execute` method
+    :param args: computed arguments related to the mutation
+    :param ctx: context filled in at engine initialization
+    :param info: information related to the execution and field resolution
+    :type parent: Optional[Any]
+    :type args: Dict[str, Any]
+    :type ctx: Dict[str, Any]
+    :type info: ResolveInfo
+    :return: the mutated recipe
+    :rtype: Dict[str, Any]
+    :raises Exception: if the recipe id doesn't exist
+    """
     recipe_id = args["input"]["id"]
     name = args["input"].get("name")
     cooking_time = args["input"].get("cookingTime")

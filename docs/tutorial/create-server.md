@@ -60,7 +60,10 @@ from aiohttp import web
 from tartiflette_aiohttp import register_graphql_handlers
 
 
-def run():
+def run() -> None:
+    """
+    Entry point of the application.
+    """
     web.run_app(
         register_graphql_handlers(
             app=web.Application(),

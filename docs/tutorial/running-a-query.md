@@ -21,7 +21,7 @@ Copy/paste this GraphQL request to your GraphiQL instance and execute it:
 }
 ```
 
-![All recipes](/docs/assets/query-all-recipes.png)
+![All recipes](/docs/assets/query-all-recipes-v1.png)
 
 ## Get all the recipes with ingredients
 
@@ -43,8 +43,7 @@ query {
 }
 ```
 
-# TODO: update this screenshot
-![All recipes with ingredients](/docs/assets/query-all-recipes-with-ingredients.png)
+![All recipes with ingredients](/docs/assets/query-all-recipes-with-ingredients-v1.png)
 
 ## Get only one recipe
 
@@ -64,5 +63,4 @@ Below, a request to select only one recipe, by its `id`:
 }
 ```
 
-# TODO: update this screenshot
-![Only one recipe](/docs/assets/query-one-recipe.png)
+![Only one recipe](/docs/assets/query-one-recipe-v1.png)
