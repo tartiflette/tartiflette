@@ -8,22 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: build docker image
-        uses: actions/docker/cli@master
-        with:
-          args: build -t tartiflette .
       - name: style
-        uses: actions/docker/cli@master
+        uses: ./
         with:
-          args: run -i tartiflette make style
+          args: make style
       - name: functional test
-        uses: actions/docker/cli@master
+        uses: ./
         with:
-          args: run -i tartiflette make test-functional
+          args: make test-functional
       - name: unit test
-        uses: actions/docker/cli@master
+        uses: ./
         with:
-          args: run -i tartiflette make test-unit
+          args: make test-unit
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
