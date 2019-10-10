@@ -96,6 +96,7 @@ apt-get install cmake flex bison
 ```
 
 Make sure you have `bison` in verions 3
+>Note to Mac OS users: Make sure bison in your path is really Bison 3, look [here](https://stackoverflow.com/questions/10778905/why-does-my-mac-os-x-10-7-3-have-an-old-version-2-3-of-gnu-bison/30844621#30844621) for details.
 
 ## Tartiflette over HTTP
 
