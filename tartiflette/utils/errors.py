@@ -171,7 +171,7 @@ def located_error(
 
 
 def extract_exceptions_from_results(
-    results: List[Any]
+    results: List[Any],
 ) -> Optional["MultipleException"]:
     """
     Extracts and concatenates multiple exceptions instances from the results.

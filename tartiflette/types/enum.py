@@ -230,7 +230,7 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
     # Introspection attribute
     @property
     def enumValues(  # pylint: disable=invalid-name
-        self
+        self,
     ) -> List["GraphQLEnumValue"]:
         """
         Returns the list of enum values of the enum which is used by the

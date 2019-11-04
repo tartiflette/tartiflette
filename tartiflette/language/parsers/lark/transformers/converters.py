@@ -364,7 +364,7 @@ def lark_to_directive_node(tree: "Tree") -> "DirectiveNode":
 
 
 def lark_to_operation_type_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "OperationTypeDefinitionNode":
     """
     Creates and returns an OperationTypeDefinitionNode instance extracted from
@@ -419,7 +419,7 @@ def lark_to_schema_definition_node(tree: "Tree") -> "SchemaDefinitionNode":
 
 
 def lark_to_scalar_type_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "ScalarTypeDefinitionNode":
     """
     Creates and returns a ScalarTypeDefinitionNode instance extracted from the
@@ -473,7 +473,7 @@ def lark_to_non_null_type_node(tree: "Tree") -> "NonNullTypeNode":
 
 
 def lark_to_input_value_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "InputValueDefinitionNode":
     """
     Creates and returns an InputValueDefinitionNode instance extracted from the
@@ -506,7 +506,7 @@ def lark_to_input_value_definition_node(
 
 
 def lark_to_directive_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "DirectiveDefinitionNode":
     """
     Creates and returns a DirectiveDefinitionNode instance extracted from the
@@ -590,7 +590,7 @@ def lark_to_field_definition_node(tree: "Tree") -> "FieldDefinitionNode":
 
 
 def lark_to_object_type_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "ObjectTypeDefinitionNode":
     """
     Creates and returns an ObjectTypeDefinitionNode instance extracted from the
@@ -624,7 +624,7 @@ def lark_to_object_type_definition_node(
 
 
 def lark_to_interface_type_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "InterfaceTypeDefinitionNode":
     """
     Creates and returns an InterfaceTypeDefinitionNode instance extracted from
@@ -656,7 +656,7 @@ def lark_to_interface_type_definition_node(
 
 
 def lark_to_union_type_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "UnionTypeDefinitionNode":
     """
     Creates and returns an UnionTypeDefinitionNode instance extracted from the
@@ -688,7 +688,7 @@ def lark_to_union_type_definition_node(
 
 
 def lark_to_enum_value_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "EnumValueDefinitionNode":
     """
     Creates and returns an EnumValueDefinitionNode instance extracted from the
@@ -713,7 +713,7 @@ def lark_to_enum_value_definition_node(
 
 
 def lark_to_enum_type_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "EnumTypeDefinitionNode":
     """
     Creates and returns an EnumTypeDefinitionNode instance extracted from the
@@ -745,7 +745,7 @@ def lark_to_enum_type_definition_node(
 
 
 def lark_to_input_object_type_definition_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "InputObjectTypeDefinitionNode":
     """
     Creates and returns an InputObjectTypeDefinitionNode instance extracted
@@ -809,7 +809,7 @@ def lark_to_schema_extension_node(tree: "Tree") -> "SchemaExtensionNode":
 
 
 def lark_to_scalar_type_extension_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "ScalarTypeExtensionNode":
     """
     Creates and returns a ScalarTypeExtensionNode instance extracted from the
@@ -834,7 +834,7 @@ def lark_to_scalar_type_extension_node(
 
 
 def lark_to_object_type_extension_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "ObjectTypeExtensionNode":
     """
     Creates and returns an ObjectTypeExtensionNode instance extracted from the
@@ -866,7 +866,7 @@ def lark_to_object_type_extension_node(
 
 
 def lark_to_interface_type_extension_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "InterfaceTypeExtensionNode":
     """
     Creates and returns an InterfaceTypeExtensionNode instance extracted from
@@ -892,7 +892,7 @@ def lark_to_interface_type_extension_node(
 
 
 def lark_to_union_type_extension_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "UnionTypeExtensionNode":
     """
     Creates and returns an UnionTypeExtensionNode instance extracted from the
@@ -942,7 +942,7 @@ def lark_to_enum_type_extension_node(tree: "Tree") -> "EnumTypeExtensionNode":
 
 
 def lark_to_input_object_type_extension_node(
-    tree: "Tree"
+    tree: "Tree",
 ) -> "InputObjectTypeExtensionNode":
     """
     Creates and returns an InputObjectTypeExtensionNode instance extracted from
