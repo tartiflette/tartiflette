@@ -255,7 +255,10 @@ class Engine:
             build_response, error_coercer=self._error_coercer
         )
 
-        self._query_executor, self._subcription_executor = self._schema.bake_execute(
+        (
+            self._query_executor,
+            self._subcription_executor,
+        ) = self._schema.bake_execute(
             self._perform_query, self._perform_subsciption
         )
 

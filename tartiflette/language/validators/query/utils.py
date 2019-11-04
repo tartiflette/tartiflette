@@ -178,7 +178,7 @@ def get_used_vars(
 
 
 def get_defined_vars(
-    operation: "OperationDefinitionNode"
+    operation: "OperationDefinitionNode",
 ) -> List["VariableNode"]:
     """
     Retrieve a list of VariableNode defined inside the variableDefinitionNode list of an OperationDefinitionNode

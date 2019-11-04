@@ -869,7 +869,7 @@ def _parse_fragment_definition(
 
 
 def _parse_type(
-    type_ast: dict
+    type_ast: dict,
 ) -> Union["ListTypeNode", "NonNullTypeNode", "NamedTypeNode"]:
     """
     Creates and returns a TypeNode from a type's JSON AST libgraphqlparser

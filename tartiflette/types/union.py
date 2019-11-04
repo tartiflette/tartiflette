@@ -99,7 +99,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
     # Introspection attribute
     @property
     def possibleTypes(  # pylint: disable=invalid-name
-        self
+        self,
     ) -> List["GraphQLObjectType"]:
         """
         Returns the list of possible types of the union which is used by the

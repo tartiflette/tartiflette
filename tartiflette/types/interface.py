@@ -104,7 +104,7 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
     # Introspection attribute
     @property
     def possibleTypes(  # pylint: disable=invalid-name
-        self
+        self,
     ) -> List["GraphQLObjectType"]:
         """
         Returns the list of possible types of the interface which is used by
