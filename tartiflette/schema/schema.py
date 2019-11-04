@@ -43,6 +43,7 @@ from tartiflette.utils.callables import (
 )
 from tartiflette.utils.directives import wraps_with_directives
 from tartiflette.utils.errors import graphql_error_from_nodes
+from functools import partial
 
 __all__ = ("GraphQLSchema",)
 
@@ -160,6 +161,7 @@ class GraphQLSchema:
 
         self.extensions: List["GraphQLExtension"] = []
         self._schema_directives: List["DirectiveNode"] = []
+        self._all_bakeables: List[Union[GraphQLType, GraphQLField, GraphQLEnumValue, GraphQLArgument]] = []
 
     def add_schema_directives(
         self, directives_instances: List["DirectiveNode"]
@@ -190,7 +192,8 @@ class GraphQLSchema:
         :return: the representation of a GraphQLSchema instance
         :rtype: str
         """
-        return "GraphQLSchema(name={!r})".format(self.name)
+        #return "GraphQLSchema(name={!r})".format(self.name)
+        return self.name
 
     def __str__(self) -> str:
         """
@@ -937,6 +940,9 @@ class GraphQLSchema:
         default_resolver (called as resolver for each UNDECORATED field)
         :type custom_default_resolver: Optional[Callable]
         """
+        # Scalar must be baked, before types can be baked before fields, enum_value and inputfields can be baked
+        #That's why whe loop more than once.
+
         for scalar_definition in self._scalar_definitions.values():
             scalar_definition.bake(self)
 
@@ -1000,6 +1006,62 @@ class GraphQLSchema:
 
         return func_query, func_subscription
 
+
+    def _collect_on_pre_bake(self):
+        on_pre_bakes = []
+
+        for schema_object in self.type_definitions.values():
+            on_pre_bake = schema_object.collect_on_pre_bake(self)
+            if on_pre_bake:
+                on_pre_bakes.append(partial(on_pre_bake, schema_object))
+
+        return on_pre_bakes
+
+
+    async def _cook_directives(self):
+        # TODO maybe gather them all
+        for on_pre_bake in self._collect_on_pre_bake():
+            print("calling ...", on_pre_bake)
+            await on_pre_bake(self)
+
+    def _cook_extensions(self):
+        self._validate_extensions()  # Validate this before bake
+        try:
+            self._bake_extensions()
+        except Exception:  # pylint: disable=broad-except
+            # Exceptions should be collected at validation time
+            pass
+
+    async def _cook_types(self, custom_default_resolver):
+        SchemaRegistry.bake_registered_objects(self)
+
+        try:
+            await self._bake_types(custom_default_resolver)
+        except Exception:  # pylint: disable=broad-except
+            # Exceptions should be collected at validation time
+            pass
+
+        self._validate()
+
+    def _cook_introspection(self):
+        self._operation_types = {
+            "query": self.type_definitions.get(self.query_operation_name),
+            "mutation": self.type_definitions.get(
+                self.mutation_operation_name
+            ),
+            "subscription": self.type_definitions.get(
+                self.subscription_operation_name
+            ),
+        }
+        self.queryType = self._operation_types["query"]
+        self.mutationType = self._operation_types["mutation"]
+        self.subscriptionType = self._operation_types["subscription"]
+        self.directives = list(self._directive_definitions.values())
+
+        for type_name, type_definition in self.type_definitions.items():
+            if not type_name.startswith("__"):
+                self.types.append(type_definition)
+
     async def bake(
         self,
         custom_default_resolver: Optional[Callable] = None,
@@ -1021,40 +1083,7 @@ class GraphQLSchema:
         )
         self._inject_introspection_fields()
 
-        self._validate_extensions()  # Validate this before bake
-        # TODO maybe a pre_bake/post_bake thing
-
-        try:
-            self._bake_extensions()
-        except Exception:  # pylint: disable=broad-except
-            # Exceptions should be collected at validation time
-            pass
-
-        SchemaRegistry.bake_registered_objects(self)
-
-        try:
-            await self._bake_types(custom_default_resolver)
-        except Exception:  # pylint: disable=broad-except
-            # Exceptions should be collected at validation time
-            pass
-
-        self._validate()
-
-        # Bake introspection attributes
-        self._operation_types = {
-            "query": self.type_definitions.get(self.query_operation_name),
-            "mutation": self.type_definitions.get(
-                self.mutation_operation_name
-            ),
-            "subscription": self.type_definitions.get(
-                self.subscription_operation_name
-            ),
-        }
-        self.queryType = self._operation_types["query"]
-        self.mutationType = self._operation_types["mutation"]
-        self.subscriptionType = self._operation_types["subscription"]
-        self.directives = list(self._directive_definitions.values())
-
-        for type_name, type_definition in self.type_definitions.items():
-            if not type_name.startswith("__"):
-                self.types.append(type_definition)
+        self._cook_extensions() # Execute extensions
+        await self._cook_directives() # Prepare Directive and call the on_pre_bake on them all.
+        await self._cook_types(custom_default_resolver) #Cook and validate everythings
+        self._cook_introspection() # Bake introspection attributes

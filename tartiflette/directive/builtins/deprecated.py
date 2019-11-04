@@ -32,6 +32,18 @@ class DeprecatedDirective:
         return element
 
 
+    async def on_pre_bake(
+        self,
+        directive_args: Dict[str, Any],
+        next_directive: Callable,
+        element: "GraphQLType",
+        schema: "GraphQLSchema"
+    ):
+        print("on_pre_bake...", type(directive_args), next_directive, type(element), type(schema))
+        return await next_directive(element, schema)
+
+
+
 def bake(schema_name: str, config: Optional[Dict[str, Any]] = None) -> str:
     """
     Links the directive to the appropriate schema and returns the SDL related

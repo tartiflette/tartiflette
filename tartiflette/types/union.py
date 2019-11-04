@@ -174,6 +174,17 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
             ),
         )
 
+    def collect_on_pre_bake(self, schema: "GraphQLSchema") -> "partial":
+        directives_definition = compute_directive_nodes(
+            schema, self.directives
+        )
+
+        return wraps_with_directives(
+            directives_definition=directives_definition,
+            directive_hook="on_pre_bake",
+            with_default=True
+        )
+
     async def bake_fields(
         self,
         schema: "GraphQLSchema",

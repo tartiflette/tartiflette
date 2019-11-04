@@ -124,6 +124,17 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
         """
         return self.implemented_fields[name]
 
+    def collect_on_pre_bake(self, schema: "GraphQLSchema") -> "partial":
+        directives_definition = compute_directive_nodes(
+            schema, self.directives
+        )
+
+        return wraps_with_directives(
+            directives_definition=directives_definition,
+            directive_hook="on_pre_hook",
+            with_default=True
+        )
+
     def bake(self, schema: "GraphQLSchema") -> None:
         """
         Bakes the GraphQLObjectType and computes all the necessary stuff for
