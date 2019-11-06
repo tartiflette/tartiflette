@@ -112,7 +112,6 @@ class GraphQLEnumValue:
         """
         return self.value
 
-
     def collect_on_pre_bake(self, schema: "GraphQLSchema") -> "partial":
         directives_definition = compute_directive_nodes(
             schema, self.directives
@@ -120,7 +119,7 @@ class GraphQLEnumValue:
 
         return wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_pre_hook"
+            directive_hook="on_pre_hook",
         )
 
     def bake(self, schema: "GraphQLSchema") -> None:
@@ -269,7 +268,7 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
         return wraps_with_directives(
             directives_definition=directives_definition,
             directive_hook="on_pre_hook",
-            with_default=True
+            with_default=True,
         )
 
     def bake(self, schema: "GraphQLSchema") -> None:

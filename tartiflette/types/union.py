@@ -182,7 +182,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         return wraps_with_directives(
             directives_definition=directives_definition,
             directive_hook="on_pre_bake",
-            with_default=True
+            with_default=True,
         )
 
     async def bake_fields(

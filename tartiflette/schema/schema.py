@@ -1,3 +1,4 @@
+from functools import partial
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.resolver.default import default_type_resolver
@@ -43,7 +44,6 @@ from tartiflette.utils.callables import (
 )
 from tartiflette.utils.directives import wraps_with_directives
 from tartiflette.utils.errors import graphql_error_from_nodes
-from functools import partial
 
 __all__ = ("GraphQLSchema",)
 
@@ -161,7 +161,9 @@ class GraphQLSchema:
 
         self.extensions: List["GraphQLExtension"] = []
         self._schema_directives: List["DirectiveNode"] = []
-        self._all_bakeables: List[Union[GraphQLType, GraphQLField, GraphQLEnumValue, GraphQLArgument]] = []
+        self._all_bakeables: List[
+            Union[GraphQLType, GraphQLField, GraphQLEnumValue, GraphQLArgument]
+        ] = []
 
     def add_schema_directives(
         self, directives_instances: List["DirectiveNode"]
@@ -192,7 +194,7 @@ class GraphQLSchema:
         :return: the representation of a GraphQLSchema instance
         :rtype: str
         """
-        #return "GraphQLSchema(name={!r})".format(self.name)
+        # return "GraphQLSchema(name={!r})".format(self.name)
         return self.name
 
     def __str__(self) -> str:
@@ -941,7 +943,7 @@ class GraphQLSchema:
         :type custom_default_resolver: Optional[Callable]
         """
         # Scalar must be baked, before types can be baked before fields, enum_value and inputfields can be baked
-        #That's why whe loop more than once.
+        # That's why whe loop more than once.
 
         for scalar_definition in self._scalar_definitions.values():
             scalar_definition.bake(self)
@@ -1006,7 +1008,6 @@ class GraphQLSchema:
 
         return func_query, func_subscription
 
-
     def _collect_on_pre_bake(self):
         on_pre_bakes = []
 
@@ -1016,7 +1017,6 @@ class GraphQLSchema:
                 on_pre_bakes.append(partial(on_pre_bake, schema_object))
 
         return on_pre_bakes
-
 
     async def _cook_directives(self):
         # TODO maybe gather them all
@@ -1083,7 +1083,9 @@ class GraphQLSchema:
         )
         self._inject_introspection_fields()
 
-        self._cook_extensions() # Execute extensions
-        await self._cook_directives() # Prepare Directive and call the on_pre_bake on them all.
-        await self._cook_types(custom_default_resolver) #Cook and validate everythings
-        self._cook_introspection() # Bake introspection attributes
+        self._cook_extensions()  # Execute extensions
+        await self._cook_directives()  # Prepare Directive and call the on_pre_bake on them all.
+        await self._cook_types(
+            custom_default_resolver
+        )  # Cook and validate everythings
+        self._cook_introspection()  # Bake introspection attributes

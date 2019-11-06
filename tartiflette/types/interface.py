@@ -156,7 +156,7 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
         return wraps_with_directives(
             directives_definition=directives_definition,
             directive_hook="on_pre_hook",
-            with_default=True
+            with_default=True,
         )
 
     def bake(self, schema: "GraphQLSchema") -> None:

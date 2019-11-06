@@ -31,17 +31,21 @@ class DeprecatedDirective:
         setattr(element, "deprecationReason", directive_args["reason"])
         return element
 
-
     async def on_pre_bake(
         self,
         directive_args: Dict[str, Any],
         next_directive: Callable,
         element: "GraphQLType",
-        schema: "GraphQLSchema"
+        schema: "GraphQLSchema",
     ):
-        print("on_pre_bake...", type(directive_args), next_directive, type(element), type(schema))
+        print(
+            "on_pre_bake...",
+            type(directive_args),
+            next_directive,
+            type(element),
+            type(schema),
+        )
         return await next_directive(element, schema)
-
 
 
 def bake(schema_name: str, config: Optional[Dict[str, Any]] = None) -> str:
