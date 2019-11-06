@@ -119,7 +119,7 @@ class GraphQLEnumValue:
 
         return wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_pre_hook",
+            directive_hook="on_pre_bake",
         )
 
     def bake(self, schema: "GraphQLSchema") -> None:
@@ -267,7 +267,7 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
 
         return wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_pre_hook",
+            directive_hook="on_pre_bake",
             with_default=True,
         )
 
