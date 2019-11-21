@@ -31,7 +31,7 @@ class ArgumentNames(June2018ReleaseValidationRule):
             if argument.name.value not in schema_directive.arguments:
                 errors.append(
                     graphql_error_from_nodes(
-                        message=f"Provided Argument < {argument.name.value} > doesn't exists on directive < @{schema_directive.name} >.",
+                        message=f"Provided Argument < {argument.name.value} > doesn't exist on directive < @{schema_directive.name} >.",
                         nodes=argument,
                         path=path,
                         extensions=self._extensions,
@@ -56,7 +56,7 @@ class ArgumentNames(June2018ReleaseValidationRule):
             if query_field_argument.name.value not in schema_field.arguments:
                 errors.append(
                     graphql_error_from_nodes(
-                        message=f"Provided Argument < {query_field_argument.name.value} > doesn't exists on field < {parent_type_name}.{schema_field.name} >.",
+                        message=f"Provided Argument < {query_field_argument.name.value} > doesn't exist on field < {parent_type_name}.{schema_field.name} >.",
                         nodes=query_field_argument,
                         path=path,
                         extensions=self._extensions,
