@@ -58,7 +58,7 @@ _TEST_REQUIRE = [
     "isort==4.3.21",
 ]
 
-_BENCHMARK_REQUIRE = ["pytest-benchmark==3.2.2"]
+_BENCHMARK_REQUIRE = ["pytest-benchmark==3.2.3"]
 
 _VERSION = "1.1.1"
 
