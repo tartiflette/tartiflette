@@ -26,7 +26,7 @@ def _get_message(operation, varname):
         if operation.name
         else "anonymous Operation"
     )
-    return f"Undefined Varibable < {varname} > in {operation_message}."
+    return f"Undefined Variable < {varname} > in {operation_message}."
 
 
 class AllVariableUsesDefined(June2018ReleaseValidationRule):

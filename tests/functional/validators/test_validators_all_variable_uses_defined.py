@@ -25,7 +25,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < a > in anonymous Operation.",
+                        "message": "Undefined Variable < a > in anonymous Operation.",
                         "path": None,
                         "locations": [
                             {"line": 2, "column": 13},
@@ -78,7 +78,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < a > in anonymous Operation.",
+                        "message": "Undefined Variable < a > in anonymous Operation.",
                         "path": None,
                         "locations": [
                             {"line": 2, "column": 13},
@@ -92,7 +92,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < b > in anonymous Operation.",
+                        "message": "Undefined Variable < b > in anonymous Operation.",
                         "path": None,
                         "locations": [
                             {"line": 2, "column": 13},
@@ -187,7 +187,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < a > in anonymous Operation.",
+                        "message": "Undefined Variable < a > in anonymous Operation.",
                         "path": None,
                         "locations": [
                             {"line": 2, "column": 13},
@@ -201,7 +201,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < b > in anonymous Operation.",
+                        "message": "Undefined Variable < b > in anonymous Operation.",
                         "path": None,
                         "locations": [
                             {"line": 2, "column": 13},
@@ -216,7 +216,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < b > in Operation < anotherQuery >.",
+                        "message": "Undefined Variable < b > in Operation < anotherQuery >.",
                         "path": None,
                         "locations": [
                             {"line": 10, "column": 13},
@@ -383,7 +383,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < a > in anonymous Operation.",
+                        "message": "Undefined Variable < a > in anonymous Operation.",
                         "path": None,
                         "locations": [
                             {"line": 15, "column": 13},
@@ -397,7 +397,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < b > in anonymous Operation.",
+                        "message": "Undefined Variable < b > in anonymous Operation.",
                         "path": None,
                         "locations": [
                             {"line": 15, "column": 13},
@@ -412,7 +412,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < b > in Operation < anotherQuery >.",
+                        "message": "Undefined Variable < b > in Operation < anotherQuery >.",
                         "path": None,
                         "locations": [
                             {"line": 23, "column": 13},
@@ -427,7 +427,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < f > in Operation < anotherQuery >.",
+                        "message": "Undefined Variable < f > in Operation < anotherQuery >.",
                         "path": None,
                         "locations": [
                             {"line": 23, "column": 13},
@@ -442,7 +442,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < c > in Operation < anotherQuery >.",
+                        "message": "Undefined Variable < c > in Operation < anotherQuery >.",
                         "path": None,
                         "locations": [
                             {"line": 23, "column": 13},
@@ -456,7 +456,7 @@ import pytest
                         },
                     },
                     {
-                        "message": "Undefined Varibable < d > in Operation < anotherQuery >.",
+                        "message": "Undefined Variable < d > in Operation < anotherQuery >.",
                         "path": None,
                         "locations": [
                             {"line": 23, "column": 13},
