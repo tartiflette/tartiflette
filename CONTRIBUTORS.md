@@ -17,3 +17,5 @@ Contributors
 * [@erezsh](https://github.com/erezsh)
 * [@florimondmanca](https://github.com/florimondmanca)
 * [@ultrabug](https://github.com/ultrabug)
+* [@davestone](https://github.com/davestone)
+* [@garyd203](https://github.com/garyd203)

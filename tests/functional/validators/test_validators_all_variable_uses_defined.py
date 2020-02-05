@@ -284,7 +284,7 @@ import pytest
                 "data": None,
                 "errors": [
                     {
-                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                         "path": ["doesKnowCommand"],
                         "locations": [{"line": 4, "column": 33}],
                         "extensions": {
