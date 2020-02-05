@@ -50,7 +50,7 @@ async def resolve_dog(*_, **__):
                         },
                     },
                     {
-                        "message": "Provided Argument < bob > doesn't exists on field < Query.dog >.",
+                        "message": "Provided Argument < bob > doesn't exist on field < Query.dog >.",
                         "path": ["dog"],
                         "locations": [{"line": 3, "column": 21}],
                         "extensions": {

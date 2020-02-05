@@ -17,7 +17,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < notId > doesn't exists on field < Query.dog >.",
+                    "message": "Provided Argument < notId > doesn't exist on field < Query.dog >.",
                     "path": ["dog"],
                     "locations": [{"line": 3, "column": 19}],
                     "extensions": {
@@ -41,7 +41,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < notId > doesn't exists on field < Query.dog >.",
+                    "message": "Provided Argument < notId > doesn't exist on field < Query.dog >.",
                     "path": ["dog"],
                     "locations": [{"line": 4, "column": 21}],
                     "extensions": {
@@ -67,7 +67,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < notId > doesn't exists on field < Query.dog >.",
+                    "message": "Provided Argument < notId > doesn't exist on field < Query.dog >.",
                     "path": ["dog"],
                     "locations": [{"line": 3, "column": 19}],
                     "extensions": {
@@ -95,7 +95,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < notId > doesn't exists on field < Query.dog >.",
+                    "message": "Provided Argument < notId > doesn't exist on field < Query.dog >.",
                     "path": ["dog"],
                     "locations": [{"line": 4, "column": 21}],
                     "extensions": {
@@ -118,7 +118,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                     "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 4, "column": 33}],
                     "extensions": {
@@ -153,7 +153,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                     "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 5, "column": 35}],
                     "extensions": {
@@ -190,7 +190,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                     "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 4, "column": 33}],
                     "extensions": {
@@ -229,7 +229,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                     "path": ["dog", "doesKnowCommand"],
                     "locations": [{"line": 5, "column": 35}],
                     "extensions": {
@@ -274,7 +274,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                    "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                     "path": ["doesKnowCommand"],
                     "locations": [{"line": 4, "column": 33}],
                     "extensions": {
@@ -308,7 +308,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < unless > doesn't exist on directive < @deprecated >.",
                     "path": ["dog"],
                     "locations": [{"line": 3, "column": 31}],
                     "extensions": {
@@ -346,7 +346,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < unless > doesn't exist on directive < @deprecated >.",
                     "path": ["dog"],
                     "locations": [{"line": 4, "column": 33}],
                     "extensions": {
@@ -386,7 +386,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < unless > doesn't exist on directive < @deprecated >.",
                     "path": ["dog"],
                     "locations": [{"line": 3, "column": 31}],
                     "extensions": {
@@ -428,7 +428,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < unless > doesn't exist on directive < @deprecated >.",
                     "path": ["dog"],
                     "locations": [{"line": 4, "column": 33}],
                     "extensions": {
@@ -465,7 +465,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < unless > doesn't exist on directive < @deprecated >.",
                     "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 4, "column": 64}],
                     "extensions": {
@@ -503,7 +503,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < unless > doesn't exist on directive < @deprecated >.",
                     "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 5, "column": 66}],
                     "extensions": {
@@ -543,7 +543,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < unless > doesn't exist on directive < @deprecated >.",
                     "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 4, "column": 64}],
                     "extensions": {
@@ -585,7 +585,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < unless > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < unless > doesn't exist on directive < @deprecated >.",
                     "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 5, "column": 66}],
                     "extensions": {
@@ -622,7 +622,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < firstUndefinedArg > doesn't exists on field < Query.dog >.",
+                    "message": "Provided Argument < firstUndefinedArg > doesn't exist on field < Query.dog >.",
                     "path": ["dog"],
                     "locations": [{"line": 3, "column": 19}],
                     "extensions": {
@@ -633,7 +633,7 @@ import pytest
                     },
                 },
                 {
-                    "message": "Provided Argument < secondUndefinedArg > doesn't exists on field < Query.dog >.",
+                    "message": "Provided Argument < secondUndefinedArg > doesn't exist on field < Query.dog >.",
                     "path": ["dog"],
                     "locations": [{"line": 3, "column": 41}],
                     "extensions": {
@@ -655,7 +655,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < firstUndefinedArg > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < firstUndefinedArg > doesn't exist on directive < @deprecated >.",
                     "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 4, "column": 64}],
                     "extensions": {
@@ -666,7 +666,7 @@ import pytest
                     },
                 },
                 {
-                    "message": "Provided Argument < secondUndefinedArg > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < secondUndefinedArg > doesn't exist on directive < @deprecated >.",
                     "path": ["dog", "isHousetrained"],
                     "locations": [{"line": 4, "column": 86}],
                     "extensions": {
@@ -721,7 +721,7 @@ import pytest
             """,
             [
                 {
-                    "message": "Provided Argument < undefinedArg > doesn't exists on directive < @deprecated >.",
+                    "message": "Provided Argument < undefinedArg > doesn't exist on directive < @deprecated >.",
                     "path": ["undefinedField"],
                     "locations": [{"line": 3, "column": 42}],
                     "extensions": {

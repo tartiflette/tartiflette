@@ -76,7 +76,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < undefinedArgument > doesn't exists on field < Query.human >.",
+                        "message": "Provided Argument < undefinedArgument > doesn't exist on field < Query.human >.",
                         "path": ["human"],
                         "locations": [{"line": 3, "column": 21}],
                         "extensions": {
@@ -116,7 +116,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < undefinedArgument > doesn't exists on field < Query.human >.",
+                        "message": "Provided Argument < undefinedArgument > doesn't exist on field < Query.human >.",
                         "path": ["human"],
                         "locations": [{"line": 3, "column": 21}],
                         "extensions": {
@@ -163,7 +163,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                         "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 4, "column": 33}],
                         "extensions": {
@@ -204,7 +204,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                         "path": ["doesKnowCommand"],
                         "locations": [{"line": 4, "column": 33}],
                         "extensions": {
@@ -278,7 +278,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                         "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 5, "column": 33}],
                         "extensions": {
@@ -389,7 +389,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                         "path": ["doesKnowCommand"],
                         "locations": [{"line": 8, "column": 33}],
                         "extensions": {
@@ -528,7 +528,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                         "path": ["doesKnowCommand"],
                         "locations": [{"line": 8, "column": 33}],
                         "extensions": {
@@ -635,7 +635,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < undefinedArgument > doesn't exists on directive < @deprecated >.",
+                        "message": "Provided Argument < undefinedArgument > doesn't exist on directive < @deprecated >.",
                         "path": ["doesKnowCommand", "unknownField2"],
                         "locations": [{"line": 10, "column": 45}],
                         "extensions": {
@@ -697,7 +697,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < command > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "message": "Provided Argument < command > doesn't exist on field < Dog.doesKnowCommand >.",
                         "path": ["doesKnowCommand"],
                         "locations": [{"line": 9, "column": 58}],
                         "extensions": {
@@ -719,7 +719,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < undefinedArgument > doesn't exists on directive < @deprecated >.",
+                        "message": "Provided Argument < undefinedArgument > doesn't exist on directive < @deprecated >.",
                         "path": ["doesKnowCommand"],
                         "locations": [{"line": 14, "column": 84}],
                         "extensions": {
@@ -755,7 +755,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < undefinedArgument > doesn't exists on field < Dog.doesKnowCommand >.",
+                        "message": "Provided Argument < undefinedArgument > doesn't exist on field < Dog.doesKnowCommand >.",
                         "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 27, "column": 67}],
                         "extensions": {
@@ -777,7 +777,7 @@ async def _query_human_resolver(*_args, **__kwargs):
                         },
                     },
                     {
-                        "message": "Provided Argument < undefinedArgument > doesn't exists on directive < @deprecated >.",
+                        "message": "Provided Argument < undefinedArgument > doesn't exist on directive < @deprecated >.",
                         "path": ["dog", "doesKnowCommand"],
                         "locations": [{"line": 30, "column": 84}],
                         "extensions": {
