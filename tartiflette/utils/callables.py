@@ -35,5 +35,7 @@ def is_valid_async_generator(generator: AsyncGenerator) -> bool:
     :rtype: bool
     """
     return isasyncgenfunction(
-        generator if isfunction(generator) else generator.__call__
+        generator
+        if isfunction(generator) or ismethod(generator)
+        else generator.__call__
     )
