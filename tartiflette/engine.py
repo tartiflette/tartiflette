@@ -259,12 +259,12 @@ class Engine:
             self._query_executor,
             self._subcription_executor,
         ) = self._schema.bake_execute(
-            self._perform_query, self._perform_subsciption
+            self._perform_query, self._perform_subscription
         )
 
         self._cooked = True
 
-    async def _perform_subsciption(
+    async def _perform_subscription(
         self,
         schema: "GraphQLSchema",
         document: "DocumentNode",
