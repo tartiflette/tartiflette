@@ -218,7 +218,7 @@ class GraphQLInterfaceTypeExtension(GraphQLType, GraphQLExtension):
         :rtype: bool
         """
         return self is other or (
-            isintance(other, GraphQLInterfaceTypeExtension)
+            isinstance(other, GraphQLInterfaceTypeExtension)
             and other.directives == self.directives
             and other.fields == self.fields
             and other.name == self.name

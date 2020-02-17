@@ -213,7 +213,7 @@ class GraphQLUnionTypeExtension(GraphQLType, GraphQLExtension):
         :rtype: bool
         """
         return self is other or (
-            isintance(other, GraphQLUnionTypeExtension)
+            isinstance(other, GraphQLUnionTypeExtension)
             and other.directives == self.directives
             and other.name == self.name
             and other.types == self.types
