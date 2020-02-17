@@ -354,7 +354,7 @@ class Engine:
         """
         document, errors = parse_and_validate_query(query, self._schema)
 
-        # Goes through potential schema directives and finish in self._perfom_query
+        # Goes through potential schema directives and finish in self._perform_query
         return await self._query_executor(
             self._schema,
             document,
@@ -394,7 +394,7 @@ class Engine:
 
         document, errors = parse_and_validate_query(query, self._schema)
 
-        # Goes through potential schema directives and finish in self._perfom_subscription
+        # Goes through potential schema directives and finish in self._perform_subscription
         async for payload in self._subscription_executor(
             self._schema,
             document,
