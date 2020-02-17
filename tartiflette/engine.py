@@ -159,7 +159,7 @@ class Engine:
         self._cooked = False
         self._build_response = None
         self._query_executor = None
-        self._subcription_executor = None
+        self._subscription_executor = None
 
     async def cook(
         self,
@@ -257,7 +257,7 @@ class Engine:
 
         (
             self._query_executor,
-            self._subcription_executor,
+            self._subscription_executor,
         ) = self._schema.bake_execute(
             self._perform_query, self._perform_subscription
         )
@@ -395,7 +395,7 @@ class Engine:
         document, errors = parse_and_validate_query(query, self._schema)
 
         # Goes through potential schema directives and finish in self._perfom_subscription
-        async for payload in self._subcription_executor(
+        async for payload in self._subscription_executor(
             self._schema,
             document,
             errors,
