@@ -23,7 +23,7 @@ class GraphQLSchemaExtension(GraphQLType, GraphQLExtension):
         :rtype: bool
         """
         return self is other or (
-            isintance(other, GraphQLSchemaExtension)
+            isinstance(other, GraphQLSchemaExtension)
             and other.directives == self.directives
             and other.operations == self.operations
         )

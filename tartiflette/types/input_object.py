@@ -172,7 +172,7 @@ class GraphQLInputObjectTypeExtension(GraphQLType, GraphQLExtension):
         :rtype: bool
         """
         return self is other or (
-            isintance(other, GraphQLInputObjectTypeExtension)
+            isinstance(other, GraphQLInputObjectTypeExtension)
             and other.directives == self.directives
             and other.input_fields == self.input_fields
             and other.name == self.name

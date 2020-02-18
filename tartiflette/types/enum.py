@@ -323,7 +323,7 @@ class GraphQLEnumTypeExtension(GraphQLType, GraphQLExtension):
         :rtype: bool
         """
         return self is other or (
-            isintance(other, GraphQLEnumTypeExtension)
+            isinstance(other, GraphQLEnumTypeExtension)
             and other.directives == self.directives
             and other.values == self.values
             and other.name == self.name

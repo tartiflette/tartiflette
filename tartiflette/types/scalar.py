@@ -163,7 +163,7 @@ class GraphQLScalarTypeExtension(GraphQLType, GraphQLExtension):
         :rtype: bool
         """
         return self is other or (
-            isintance(other, GraphQLScalarTypeExtension)
+            isinstance(other, GraphQLScalarTypeExtension)
             and other.directives == self.directives
             and other.name == self.name
         )
