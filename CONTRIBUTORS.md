@@ -4,18 +4,19 @@ Maintainers and Contributors
 Maintainers
 -----------
 
-* Aurélien BUSI aurelien.busi (at) dailymotion.com
-* Klemen SEVER klemen.sever (at) dailymotion.com
-* Stanislas CHOLLET stanislas.chollet (at) dailymotion.com
-* Maximilien RAULIC maximilien.raulic (at) dailymotion.com
-* Alice Girard Guittard alice.girardguittard (at) dailymotion.com
+* [Aurélien BUSI](mailto:aurelien.busi@dailymotion.com) - [@abusi](https://github.com/abusi)
+* [Klemen SEVER](mailto:klemen.sever@dailymotion.com) - [@achedeuzot](https://github.com/achedeuzot)
+* [Stanislas CHOLLET](mailto:stanislas.chollet@gmail.com) - [@tsunammis](https://github.com/tsunammis)
+* [Maximilien RAULIC](mailto:maximilien.raulic@dailymotion.com) - [@Maximilien-R](https://github.com/Maximilien-R)
+* [Alice Girard Guittard](mailto:alice.girardguittard@dailymotion.com) -[@zer0tonin](https://github.com/zer0tonin)
 
 Contributors
 ------------
 
 * [@brasilikum](https://github.com/brasilikum)
+* [@davestone](https://github.com/davestone)
 * [@erezsh](https://github.com/erezsh)
 * [@florimondmanca](https://github.com/florimondmanca)
-* [@ultrabug](https://github.com/ultrabug)
-* [@davestone](https://github.com/davestone)
 * [@garyd203](https://github.com/garyd203)
+* [@mkniewallner](https://github.com/mkniewallner)
+* [@ultrabug](https://github.com/ultrabug)
