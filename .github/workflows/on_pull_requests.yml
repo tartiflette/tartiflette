@@ -46,7 +46,7 @@ jobs:
       - name: Brew Magic
         run: brew unlink bison && brew link bison --force
       - name: Install Python deps
-        run: make init && pip install -e .[test]
+        run: make init && PATH="/usr/local/opt/bison/bin:$PATH" LDFLAGS="-L/usr/local/opt/bison/lib" pip install -e .[test]
       - name: Functional Tests
         run: make test-functional
       - name: Unit Tests
