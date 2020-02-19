@@ -107,7 +107,7 @@ class ValuesOfCorrectType(June2018ReleaseValidationRule):
             errors.append(
                 graphql_error_from_nodes(
                     message=f"Value is not a valid < {schema_argument_definition.name} > type, Object expected",
-                    nodes=argument_node.value,
+                    nodes=object_node,
                     path=path,
                     extensions=self._extensions,
                 )
