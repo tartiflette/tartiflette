@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - [1.x.x]
   - [1.1.x]
-    - [1.1.3](./chabgelogs/1.1.3.md) - 2020-02-18
+    - [1.1.3](./changelogs/1.1.3.md) - 2020-02-18
     - [1.1.2](./changelogs/1.1.2.md) - 2020-02-05
     - [1.1.1](./changelogs/1.1.1.md) - 2019-10-10
     - [1.1.0](./changelogs/1.1.0.md) - 2019-10-03
