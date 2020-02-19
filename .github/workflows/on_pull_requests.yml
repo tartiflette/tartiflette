@@ -1,7 +1,7 @@
-name: check and build
-on: [push]
+name: Validate PullRequest
+on: [pull_request]
 jobs:
-  build_publish_and_release:
+  Style:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -9,6 +9,10 @@ jobs:
         uses: ./
         with:
           args: make style
+  Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
       - name: functional test
         uses: ./
         with:
@@ -17,11 +21,26 @@ jobs:
         uses: ./
         with:
           args: make test-unit
+  SonarCloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Unshallow
+        run: git fetch --unshallow
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  PublishToPypiDev:
+    runs-on: ubuntu-latest
+    needs:
+      - Tests
+      - Style
+      - SonarCloud
+    steps:
+      - uses: actions/checkout@master
       - name: build and publish to pypi
         uses: ./.github/actions/pypi/
         if: github.ref != 'refs/heads/master'

@@ -1,10 +1,10 @@
-name: build and release
+name: Build'n'Release
 on:
   push:
     branches:
       - master
 jobs:
-  build_publish_and_release:
+  Style:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -12,6 +12,10 @@ jobs:
         uses: ./
         with:
           args: make style
+  Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
       - name: functional test
         uses: ./
         with:
@@ -20,23 +24,38 @@ jobs:
         uses: ./
         with:
           args: make test-unit
+  SonarCloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Unshallow
+        run: git fetch --unshallow
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: build and publish to pypi
+  PublishAndRelease:
+    runs-on: ubuntu-latest
+    needs:
+      - Tests
+      - Style
+      - SonarCloud
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish to Pypi
         uses: ./.github/actions/pypi/
+        if: github.ref == 'refs/heads/master'
         env:
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      - name: set version and changelog
+      - name: Set Version and Changelog
         uses: ./.github/actions/shell/
         if: github.ref == 'refs/heads/master'
         with:
           entrypoint: make
           args: github-action-version-and-changelog
-      - name: release
+      - name: Creates Github Release
         uses: ./.github/actions/release/
         if: github.ref == 'refs/heads/master'
         env:
