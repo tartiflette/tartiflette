@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Deps
-        run: sudo apt update && sudo apt install cmake bison flex && pip install -e .[test]
+        run: sudo apt update && sudo apt install cmake bison flex && make init && pip install -e .[test]
       - name: Functional Tests
         run: make test-functional
       - name: Unit Tests
@@ -42,7 +42,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Deps
-        run: brew install cmake flex bison && pip install -e .[test]
+        run: brew install cmake flex bison && make init && pip install -e .[test]
       - name: Functional Tests
         run: make test-functional
       - name: Unit Tests
