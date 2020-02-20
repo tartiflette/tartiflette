@@ -8,16 +8,16 @@ Tartiflette is available on [pypi.org](https://pypi.org/project/tartiflette/) an
 
 ## Installation dependencies
 
-As Tartiflette based its query parsing on [`libgraphqlparser`](https://github.com/graphql/libgraphqlparser), you will need these following binaries in your environment to use the library: `cmake`, `bison` and `flex`.
+As Tartiflette based its query parsing on [`libgraphqlparser`](https://github.com/graphql/libgraphqlparser), you will need these following binaries in your environment to use the library: `cmake`
 
 **macOS**:
 ```bash
-brew install cmake flex bison
+brew install cmake
 ```
 
 **Ubuntu**:
 ```bash
-apt-get install cmake flex bison
+apt-get install cmake
 ```
 
 ## Installation
