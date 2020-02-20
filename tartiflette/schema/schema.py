@@ -1021,7 +1021,6 @@ class GraphQLSchema:
     async def _cook_directives(self):
         # TODO maybe gather them all
         for on_pre_bake in self._collect_on_pre_bake():
-            print("calling ...", on_pre_bake)
             await on_pre_bake(self)
 
     def _cook_extensions(self):

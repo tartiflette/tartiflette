@@ -145,6 +145,7 @@ async def execute_fields(
             )
             for entry_key, field_nodes in fields.items()
         ],
+        return_exceptions=True,
     )
 
     exceptions = extract_exceptions_from_results(results)

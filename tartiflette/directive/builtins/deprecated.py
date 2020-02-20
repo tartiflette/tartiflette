@@ -38,13 +38,6 @@ class DeprecatedDirective:
         element: "GraphQLType",
         schema: "GraphQLSchema",
     ):
-        print(
-            "on_pre_bake...",
-            type(directive_args),
-            next_directive,
-            type(element),
-            type(schema),
-        )
         return await next_directive(element, schema)
 
 
