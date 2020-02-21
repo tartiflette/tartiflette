@@ -10,12 +10,12 @@ Create a `Dockerfile` at the root level of your **Tartiflette recipes manager**.
 
 This `Dockerfile` includes:
 * pipenv
-* **tartiflette** dependencies `cmake`, `bison` and `flex`
+* **tartiflette** dependencies `cmake`.
 
 ```dockerfile
 FROM python:3.7.3
 
-RUN apt-get update && apt-get install -y cmake bison flex
+RUN apt-get update && apt-get install -y cmake
 
 RUN pip install --user pipenv
 

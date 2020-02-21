@@ -83,6 +83,22 @@ pip install tartiflette
 
 ### Installation dependencies
 
+#### 1.2.0+
+
+As Tartiflette based its Executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*. You'll need these following commands on your environment to use the library. `cmake`
+
+*MacOSX*
+```bash
+brew install cmake
+```
+
+*Ubuntu*
+```bash
+apt-get install cmake
+```
+
+#### Before 1.2.0
+
 As Tartiflette based its Executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*. You'll need these following commands on your environment to use the library. `cmake`, `bison` and `flex`.
 
 *MacOSX*

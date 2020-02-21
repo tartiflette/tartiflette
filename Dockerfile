@@ -1,6 +1,6 @@
 FROM python:3.7.4
 
-RUN apt-get update && apt-get install -y cmake bison flex git jq
+RUN apt-get update && apt-get install -y cmake git jq
 
 ENV PYTHONPATH=/usr/src/app/
 
