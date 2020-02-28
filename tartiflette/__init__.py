@@ -29,6 +29,7 @@ async def create_engine(
     custom_default_resolver: Optional[Callable] = None,
     custom_default_type_resolver: Optional[Callable] = None,
     modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
+    lru_cache_maxsize: Optional[int] = None,
 ) -> "Engine":
     """
     Create an engine by analyzing the SDL and connecting it with the imported
@@ -47,12 +48,14 @@ async def create_engine(
     :param modules: list of string containing the name of the modules you want
     the engine to import, usually this modules contains your Resolvers,
     Directives, Scalar or Subscription code
+    :param lru_cache_maxsize: max number of queries cached with lru_cache
     :type sdl: Union[str, List[str]]
     :type schema_name: str
     :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
     :type custom_default_resolver: Optional[Callable]
     :type custom_default_type_resolver: Optional[Callable]
     :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
+    :type lru_cache_maxsize: Optional[int]
     :return: a Cooked Engine instance
     :rtype: Engine
 
@@ -74,6 +77,7 @@ async def create_engine(
         custom_default_type_resolver=custom_default_type_resolver,
         modules=modules,
         schema_name=schema_name,
+        lru_cache_maxsize=lru_cache_maxsize,
     )
 
     return e

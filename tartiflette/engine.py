@@ -1,6 +1,6 @@
 import logging
 
-from functools import partial
+from functools import lru_cache, partial
 from importlib import import_module, invalidate_caches
 from inspect import isawaitable
 from typing import (
@@ -14,6 +14,7 @@ from typing import (
     Union,
 )
 
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.execution.collect import parse_and_validate_query
 from tartiflette.execution.execute import create_source_event_stream, execute
 from tartiflette.execution.response import build_response
@@ -145,6 +146,7 @@ class Engine:
         custom_default_resolver=None,
         custom_default_type_resolver=None,
         modules=None,
+        lru_cache_maxsize=512,
     ) -> None:
         """
         Creates an uncooked Engine instance.
@@ -154,12 +156,14 @@ class Engine:
         self._error_coercer = error_coercer
         self._custom_default_resolver = custom_default_resolver
         self._custom_default_type_resolver = custom_default_type_resolver
+        self._lru_cache_maxsize = lru_cache_maxsize
         self._modules = modules
         self._sdl = sdl
         self._cooked = False
         self._build_response = None
         self._query_executor = None
         self._subscription_executor = None
+        self._cached_parse_and_validate_query = None
 
     async def cook(
         self,
@@ -171,6 +175,7 @@ class Engine:
         custom_default_type_resolver: Optional[Callable] = None,
         modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
         schema_name: str = None,
+        lru_cache_maxsize: Optional[int] = UNDEFINED_VALUE,
     ) -> None:
         """
         Cook the tartiflette, basically prepare the engine by binding it to
@@ -189,12 +194,14 @@ class Engine:
         want the engine to import, usually this modules contains your
         Resolvers, Directives, Scalar or Subscription code
         :param schema_name: name of the SDL
+        :param lru_cache_maxsize: max number of queries cached with lru_cache
         :type sdl: Union[str, List[str]]
         :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
         :type custom_default_resolver: Optional[Callable]
         :type custom_default_type_resolver: Optional[Callable]
         :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
         :type schema_name: str
+        :type lru_cache_maxsize: Optional[int]
         """
         if self._cooked:
             return
@@ -261,6 +268,14 @@ class Engine:
         ) = self._schema.bake_execute(
             self._perform_query, self._perform_subscription
         )
+
+        self._cached_parse_and_validate_query = lru_cache(
+            maxsize=(
+                lru_cache_maxsize
+                if lru_cache_maxsize is not UNDEFINED_VALUE
+                else self._lru_cache_maxsize
+            )
+        )(parse_and_validate_query)
 
         self._cooked = True
 
@@ -352,7 +367,9 @@ class Engine:
         :return: computed response corresponding to the request
         :rtype: Dict[str, Any]
         """
-        document, errors = parse_and_validate_query(query, self._schema)
+        document, errors = self._cached_parse_and_validate_query(
+            query, self._schema
+        )
 
         # Goes through potential schema directives and finish in self._perform_query
         return await self._query_executor(
@@ -392,7 +409,9 @@ class Engine:
         :rtype: AsyncIterable[Dict[str, Any]]
         """
 
-        document, errors = parse_and_validate_query(query, self._schema)
+        document, errors = self._cached_parse_and_validate_query(
+            query, self._schema
+        )
 
         # Goes through potential schema directives and finish in self._perform_subscription
         async for payload in self._subscription_executor(
