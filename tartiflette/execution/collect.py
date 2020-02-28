@@ -1,4 +1,4 @@
-from functools import lru_cache
+# from functools import lru_cache
 from typing import Dict, List, Optional, Set, Tuple, Union
 
 from tartiflette.execution.nodes.variable_definition import (
@@ -29,7 +29,7 @@ __all__ = (
 )
 
 
-@lru_cache(maxsize=512)
+# @lru_cache(maxsize=512)
 def parse_and_validate_query(
     query: Union[str, bytes], schema: "GraphQLSchema"
 ) -> Tuple[Optional["DocumentNode"], Optional[List["TartifletteError"]]]:
@@ -58,7 +58,7 @@ def parse_and_validate_query(
     return document, None
 
 
-@lru_cache(maxsize=512)
+# @lru_cache(maxsize=512)
 def collect_executable_variable_definitions(
     schema: "GraphQLSchema",
     document: "DocumentNode",
