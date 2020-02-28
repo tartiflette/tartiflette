@@ -158,7 +158,7 @@ async def build_execution_context(
     variable_values: Dict[str, Any] = {}
     if operation:
         executable_variable_definitions = collect_executable_variable_definitions(
-            schema, document, operation
+            schema, operation
         )
 
         variable_values, variable_errors = await coerce_variables(

@@ -1,4 +1,3 @@
-from functools import lru_cache
 from typing import Dict, List, Optional, Set, Tuple, Union
 
 from tartiflette.execution.nodes.variable_definition import (
@@ -57,20 +56,15 @@ def parse_and_validate_query(
     return document, None
 
 
-@lru_cache(maxsize=512)
 def collect_executable_variable_definitions(
-    schema: "GraphQLSchema",
-    document: "DocumentNode",
-    operation: "OperationDefinitionNode",
+    schema: "GraphQLSchema", operation: "OperationDefinitionNode",
 ) -> List["ExecutableVariableDefinition"]:
     """
     Go recursively through all variable definition AST nodes to convert them as
     executable variable definition.
     :param schema: the GraphQLSchema instance linked to the engine
-    :param document: the DocumentNode instance linked to the GraphQL request
     :param operation: the AST operation definition node to execute
     :type schema: GraphQLSchema
-    :type document: DocumentNode
     :type operation: OperationDefinitionNode
     :return: a list of executable variable definition
     :rtype: List[ExecutableVariableDefinition]
