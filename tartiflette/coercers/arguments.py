@@ -1,5 +1,3 @@
-import asyncio
-
 from typing import Any, Dict, List, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult
@@ -29,7 +27,7 @@ async def coerce_arguments(
     :return: the computed values of the arguments
     :rtype: Dict[str, Any]
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-complex
     argument_nodes = node.arguments
     if not argument_definitions or argument_nodes is None:
         return {}
@@ -39,19 +37,19 @@ async def coerce_arguments(
         for argument_node in argument_nodes
     }
 
-    results = await asyncio.gather(
-        *[
-            argument_definition.coercer(
+    results = []
+    for argument_definition in argument_definitions.values():
+        try:
+            result = await argument_definition.coercer(
                 argument_definition,
                 node,
                 argument_nodes_map.get(argument_definition.name),
                 variable_values,
                 ctx,
             )
-            for argument_definition in argument_definitions.values()
-        ],
-        return_exceptions=True,
-    )
+        except Exception as e:  # pylint: disable=broad-except
+            result = e
+        results.append(result)
 
     coercion_errors: List["TartifletteError"] = []
     coerced_values: Dict[str, Any] = {}
