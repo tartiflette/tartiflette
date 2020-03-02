@@ -1,5 +1,3 @@
-import asyncio
-
 from typing import Any, Callable, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult, Path
@@ -37,14 +35,12 @@ async def list_coercer(
     """
     # pylint: disable=too-many-locals
     if isinstance(value, list):
-        results = await asyncio.gather(
-            *[
-                inner_coercer(
-                    parent_node, node, item_value, ctx, path=Path(path, index)
-                )
-                for index, item_value in enumerate(value)
-            ]
-        )
+        results = [
+            await inner_coercer(
+                parent_node, node, item_value, ctx, path=Path(path, index)
+            )
+            for index, item_value in enumerate(value)
+        ]
 
         errors = []
         coerced_values = []
