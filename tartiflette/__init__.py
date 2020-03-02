@@ -1,5 +1,6 @@
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.directive.directive import Directive
 from tartiflette.engine import Engine
 from tartiflette.resolver.resolver import Resolver
@@ -29,6 +30,7 @@ async def create_engine(
     custom_default_resolver: Optional[Callable] = None,
     custom_default_type_resolver: Optional[Callable] = None,
     modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
+    query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
 ) -> "Engine":
     """
     Create an engine by analyzing the SDL and connecting it with the imported
@@ -47,12 +49,15 @@ async def create_engine(
     :param modules: list of string containing the name of the modules you want
     the engine to import, usually this modules contains your Resolvers,
     Directives, Scalar or Subscription code
+    :param query_cache_decorator: callable that will replace the tartiflette
+    default lru_cache decorator to cache query parsing
     :type sdl: Union[str, List[str]]
     :type schema_name: str
     :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
     :type custom_default_resolver: Optional[Callable]
     :type custom_default_type_resolver: Optional[Callable]
     :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
+    :type query_cache_decorator: Optional[Callable]
     :return: a Cooked Engine instance
     :rtype: Engine
 
@@ -74,6 +79,7 @@ async def create_engine(
         custom_default_type_resolver=custom_default_type_resolver,
         modules=modules,
         schema_name=schema_name,
+        query_cache_decorator=query_cache_decorator,
     )
 
     return e

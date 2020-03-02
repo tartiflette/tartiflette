@@ -1,6 +1,6 @@
 import logging
 
-from functools import partial
+from functools import lru_cache, partial
 from importlib import import_module, invalidate_caches
 from inspect import isawaitable
 from typing import (
@@ -14,6 +14,7 @@ from typing import (
     Union,
 )
 
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.execution.collect import parse_and_validate_query
 from tartiflette.execution.execute import create_source_event_stream, execute
 from tartiflette.execution.response import build_response
@@ -145,6 +146,7 @@ class Engine:
         custom_default_resolver=None,
         custom_default_type_resolver=None,
         modules=None,
+        query_cache_decorator=UNDEFINED_VALUE,
     ) -> None:
         """
         Creates an uncooked Engine instance.
@@ -155,11 +157,17 @@ class Engine:
         self._custom_default_resolver = custom_default_resolver
         self._custom_default_type_resolver = custom_default_type_resolver
         self._modules = modules
+        self._query_cache_decorator = (
+            query_cache_decorator
+            if query_cache_decorator is not UNDEFINED_VALUE
+            else lru_cache(maxsize=512)
+        )
         self._sdl = sdl
         self._cooked = False
         self._build_response = None
         self._query_executor = None
         self._subscription_executor = None
+        self._cached_parse_and_validate_query = None
 
     async def cook(
         self,
@@ -170,6 +178,7 @@ class Engine:
         custom_default_resolver: Optional[Callable] = None,
         custom_default_type_resolver: Optional[Callable] = None,
         modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
+        query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
         schema_name: str = None,
     ) -> None:
         """
@@ -188,12 +197,15 @@ class Engine:
         :param modules: list of string containing the name of the modules you
         want the engine to import, usually this modules contains your
         Resolvers, Directives, Scalar or Subscription code
+        :param query_cache_decorator: callable that will replace the
+        tartiflette default lru_cache decorator to cache query parsing
         :param schema_name: name of the SDL
         :type sdl: Union[str, List[str]]
         :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
         :type custom_default_resolver: Optional[Callable]
         :type custom_default_type_resolver: Optional[Callable]
         :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
+        :type query_cache_decorator: Optional[Callable]
         :type schema_name: str
         """
         if self._cooked:
@@ -260,6 +272,15 @@ class Engine:
             self._subscription_executor,
         ) = self._schema.bake_execute(
             self._perform_query, self._perform_subscription
+        )
+
+        if query_cache_decorator is UNDEFINED_VALUE:
+            query_cache_decorator = self._query_cache_decorator
+
+        self._cached_parse_and_validate_query = (
+            query_cache_decorator(parse_and_validate_query)
+            if callable(query_cache_decorator)
+            else parse_and_validate_query
         )
 
         self._cooked = True
@@ -352,7 +373,9 @@ class Engine:
         :return: computed response corresponding to the request
         :rtype: Dict[str, Any]
         """
-        document, errors = parse_and_validate_query(query, self._schema)
+        document, errors = self._cached_parse_and_validate_query(
+            query, self._schema
+        )
 
         # Goes through potential schema directives and finish in self._perform_query
         return await self._query_executor(
@@ -391,8 +414,9 @@ class Engine:
         :return: computed response corresponding to the request
         :rtype: AsyncIterable[Dict[str, Any]]
         """
-
-        document, errors = parse_and_validate_query(query, self._schema)
+        document, errors = self._cached_parse_and_validate_query(
+            query, self._schema
+        )
 
         # Goes through potential schema directives and finish in self._perform_subscription
         async for payload in self._subscription_executor(

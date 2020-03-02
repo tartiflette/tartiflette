@@ -29,7 +29,6 @@ __all__ = (
 )
 
 
-@lru_cache(maxsize=512)
 def parse_and_validate_query(
     query: Union[str, bytes], schema: "GraphQLSchema"
 ) -> Tuple[Optional["DocumentNode"], Optional[List["TartifletteError"]]]:
