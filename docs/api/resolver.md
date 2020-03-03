@@ -4,7 +4,7 @@ title: Resolver
 sidebar_label: Resolver
 ---
 
-The most common way to assign a specific resolver to a field is to decorate your resolver callable with the `@Resolver` decorator. Your function [MUST BE compliant with the function signature](#function-signature) and be `async`.
+The most common way to assign a specific resolver to a field is to decorate your resolver callable with the `@Resolver` decorator. Your resolver [MUST BE compliant with the resolver signature](#resolver-signature) and be `async`.
 
 ```python
 from tartiflette import Resolver
@@ -15,7 +15,16 @@ async def my_hello_resolver(parent, args, context, info):
     return "Chuck"
 ```
 
-## Function signature
+## Decorator signature
+
+* `name` _(str)_: fully qualified field name to resolve
+* `schema_name` _(str = "default")_: name of the schema to which link the resolver
+* `type_resolver` _(Optional[Callable] = None)_: the callable to use to resolve the type of an abstract type
+* `arguments_coercer` _(Optional[Callable] = None)_: callable to use to coerce field arguments
+
+The `arguments_coercer` parameter is here to provide an easy way to override the default callable used internaly by Tartiflette to coerce the arguments of the field. It has the same behaviour as the `custom_default_arguments_coercer` parameter at engine initialisation but impact only the field.
+
+## Resolver signature
 
 Every resolver in Tartiflette accepts four positional arguments:
 

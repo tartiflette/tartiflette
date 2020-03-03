@@ -1,5 +1,3 @@
-import asyncio
-
 from typing import Any, Callable, List
 
 from tartiflette.coercers.common import Path
@@ -39,15 +37,17 @@ async def list_coercer(
     :return: the computed value
     :rtype: List[Any]
     """
+    # pylint: disable=too-many-locals
     if not isinstance(result, list):
         raise TypeError(
             "Expected Iterable, but did not find one for field "
             f"{info.parent_type.name}.{info.field_name}."
         )
 
-    results = await asyncio.gather(
-        *[
-            complete_value_catching_error(
+    results = []
+    for index, item in enumerate(result):
+        try:
+            value = await complete_value_catching_error(
                 item,
                 info,
                 execution_context,
@@ -56,10 +56,9 @@ async def list_coercer(
                 item_type,
                 inner_coercer,
             )
-            for index, item in enumerate(result)
-        ],
-        return_exceptions=True,
-    )
+        except Exception as e:  # pylint: disable=broad-except
+            value = e
+        results.append(value)
 
     exceptions = extract_exceptions_from_results(results)
     if exceptions:

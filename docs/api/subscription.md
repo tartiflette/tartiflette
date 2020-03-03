@@ -91,6 +91,14 @@ async def subscribe_subscription_launch_and_wait_cooking_timer(
     }
 ```
 
+## Decorator signature
+
+* `name` _(str)_: fully qualified field name to resolve
+* `schema_name` _(str = "default")_: name of the schema to which link the subscription
+* `arguments_coercer` _(Optional[Callable] = None)_: callable to use to coerce field arguments
+
+The `arguments_coercer` parameter is here to provide an easy way to override the default callable used internaly by Tartiflette to coerce the arguments of the field. It has the same behaviour as the `custom_default_arguments_coercer` parameter at engine initialisation but impact only the field.
+
 ## `@Resolver`: Manipulating and shaping the result of a `@Subscription` function
 
 In some cases, especially when you use tools like Redis, Google Pub/Sub etc... the value which will be `yield`ed won't be structured as expected by the schema. In addition to the `@Subscription` decorator, you can implement a `@Resolver` wrapper to shape the data accordingly to the return type.

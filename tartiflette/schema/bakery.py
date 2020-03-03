@@ -32,6 +32,7 @@ class SchemaBakery:
         schema_name: str,
         custom_default_resolver: Optional[Callable] = None,
         custom_default_type_resolver: Optional[Callable] = None,
+        custom_default_arguments_coercer: Optional[Callable] = None,
     ) -> "GraphQLSchema":
         """
         Bakes and returns a GraphQLSchema instance.
@@ -41,14 +42,19 @@ class SchemaBakery:
         :param custom_default_type_resolver: callable that will replace the
         tartiflette `default_type_resolver` (will be called on abstract types
         to deduct the type of a result)
+        :param custom_default_arguments_coercer: callable that will replace the
+        tartiflette `default_arguments_coercer`
         :type schema_name: str
         :type custom_default_resolver: Optional[Callable]
         :type custom_default_type_resolver: Optional[Callable]
+        :type custom_default_arguments_coercer: Optional[Callable]
         :return: a baked GraphQLSchema instance
         :rtype: GraphQLSchema
         """
         schema = SchemaBakery._preheat(schema_name)
         await schema.bake(
-            custom_default_resolver, custom_default_type_resolver
+            custom_default_resolver,
+            custom_default_type_resolver,
+            custom_default_arguments_coercer,
         )
         return schema

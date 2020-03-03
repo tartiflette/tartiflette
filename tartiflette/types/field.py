@@ -59,6 +59,11 @@ class GraphQLField:
         self.resolver: Optional[Callable] = None
         self.subscribe: Optional[Callable] = None
 
+        # Arguments coercer
+        self.arguments_coercer: Optional[Callable] = None
+        self.query_arguments_coercer: Optional[Callable] = None
+        self.subscription_arguments_coercer: Optional[Callable] = None
+
         # Introspection attributes
         self.isDeprecated: bool = False  # pylint: disable=invalid-name
         self.args: List["GraphQLArgument"] = []
@@ -147,6 +152,13 @@ class GraphQLField:
         :type custom_default_resolver: Optional[Callable]
         """
         self.graphql_type = get_graphql_type(schema, self.gql_type)
+
+        if self.subscription_arguments_coercer is not None:
+            self.arguments_coercer = self.subscription_arguments_coercer
+        elif self.query_arguments_coercer is not None:
+            self.arguments_coercer = self.query_arguments_coercer
+        else:
+            self.arguments_coercer = schema.default_arguments_coercer
 
         # Directives
         directives_definition = compute_directive_nodes(

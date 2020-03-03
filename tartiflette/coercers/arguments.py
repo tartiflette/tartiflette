@@ -1,6 +1,4 @@
-import asyncio
-
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.coercers.common import CoercionResult
 from tartiflette.types.exceptions.tartiflette import MultipleException
@@ -15,6 +13,7 @@ async def coerce_arguments(
     node: Union["FieldNode", "DirectiveNode"],
     variable_values: Dict[str, Any],
     ctx: Optional[Any],
+    coercer: Callable,
 ) -> Dict[str, Any]:
     """
     Returns the computed values of the arguments.
@@ -22,10 +21,12 @@ async def coerce_arguments(
     :param node: the parent AST node of the arguments
     :param variable_values: the variables provided in the GraphQL request
     :param ctx: context passed to the query execution
+    :param coercer: callable to use to coerce arguments
     :type argument_definitions: Dict[str, GraphQLArgument]
     :type node: Union[FieldNode, DirectiveNode]
     :type variable_values: Dict[str, Any]
     :type ctx: Optional[Any]
+    :type coercer: Callable
     :return: the computed values of the arguments
     :rtype: Dict[str, Any]
     """
@@ -39,7 +40,7 @@ async def coerce_arguments(
         for argument_node in argument_nodes
     }
 
-    results = await asyncio.gather(
+    results = await coercer(
         *[
             argument_definition.coercer(
                 argument_definition,
@@ -50,7 +51,6 @@ async def coerce_arguments(
             )
             for argument_definition in argument_definitions.values()
         ],
-        return_exceptions=True,
     )
 
     coercion_errors: List["TartifletteError"] = []

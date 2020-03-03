@@ -149,15 +149,20 @@ class Engine:
         modules=None,
         query_cache_decorator=UNDEFINED_VALUE,
         json_loader=None,
+        custom_default_arguments_coercer=None,
     ) -> None:
         """
         Creates an uncooked Engine instance.
         """
+        # pylint: disable=too-many-arguments
         self._schema = None
         self._schema_name = schema_name
         self._error_coercer = error_coercer
         self._custom_default_resolver = custom_default_resolver
         self._custom_default_type_resolver = custom_default_type_resolver
+        self._custom_default_arguments_coercer = (
+            custom_default_arguments_coercer
+        )
         self._modules = modules
         self._query_cache_decorator = (
             query_cache_decorator
@@ -183,6 +188,7 @@ class Engine:
         modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
         query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
         json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
+        custom_default_arguments_coercer: Optional[Callable] = None,
         schema_name: Optional[str] = None,
     ) -> None:
         """
@@ -204,7 +210,9 @@ class Engine:
         :param query_cache_decorator: callable that will replace the
         tartiflette default lru_cache decorator to cache query parsing
         :param json_loader: A callable that will replace default python
-        json module.loads for ast_json loading.
+        json module.loads for ast_json loading
+        :param custom_default_arguments_coercer: callable that will replace the
+        tartiflette `default_arguments_coercer`
         :param schema_name: name of the SDL
         :type sdl: Union[str, List[str]]
         :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
@@ -212,9 +220,11 @@ class Engine:
         :type custom_default_type_resolver: Optional[Callable]
         :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
         :type query_cache_decorator: Optional[Callable]
-        :type schema_name: str
         :type json_loader: Optional[Callable[[str], Dict[str, Any]]]
+        :type custom_default_arguments_coercer: Optional[Callable]
+        :type schema_name: Optional[str]
         """
+        # pylint: disable=too-many-arguments,too-many-locals
         if self._cooked:
             return
 
@@ -258,6 +268,18 @@ class Engine:
                 "Given < custom_default_type_resolver > is not a coroutine callable."
             )
 
+        custom_default_arguments_coercer = (
+            custom_default_arguments_coercer
+            or self._custom_default_arguments_coercer
+        )
+        if custom_default_arguments_coercer and not is_valid_coroutine(
+            custom_default_arguments_coercer
+        ):
+            raise NonCoroutine(
+                "Given < custom_default_arguments_coercer > is not a "
+                "coroutine callable."
+            )
+
         self._error_coercer = error_coercer_factory(
             custom_error_coercer or default_error_coercer
         )
@@ -268,7 +290,10 @@ class Engine:
 
         SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
         self._schema = await SchemaBakery.bake(
-            schema_name, custom_default_resolver, custom_default_type_resolver
+            schema_name,
+            custom_default_resolver,
+            custom_default_type_resolver,
+            custom_default_arguments_coercer,
         )
         self._build_response = partial(
             build_response, error_coercer=self._error_coercer

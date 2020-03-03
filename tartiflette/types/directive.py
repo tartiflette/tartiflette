@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 __all__ = ("GraphQLDirective",)
 
@@ -29,7 +29,8 @@ class GraphQLDirective:
         self.locations = locations
         self.arguments = arguments or {}
         self.description = description
-        self.implementation = None
+        self.implementation: Optional[Callable] = None
+        self.arguments_coercer: Optional[Callable] = None
 
         # Introspection attributes
         self.args: List["GraphQLArgument"] = []

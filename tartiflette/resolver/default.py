@@ -1,6 +1,13 @@
-from typing import Any, Dict, Optional, Union
+import asyncio
 
-__all__ = ("default_field_resolver", "default_type_resolver")
+from typing import Any, Coroutine, Dict, List, Optional, Union
+
+__all__ = (
+    "default_field_resolver",
+    "default_type_resolver",
+    "gather_arguments_coercer",
+    "sync_arguments_coercer",
+)
 
 
 async def default_field_resolver(
@@ -67,3 +74,38 @@ def default_type_resolver(
         pass
 
     return result.__class__.__name__
+
+
+async def gather_arguments_coercer(
+    *coroutines: List[Coroutine],
+) -> List[Union[Any, Exception]]:
+    """
+    Coerce arguments asynchronously with asyncio.gather function.
+
+    :param coroutines: list of coroutine to await
+    :type coroutines: List[Coroutine]
+    :return: the result of coroutines
+    :rtype: List[Union[Any, Exception]]
+    """
+    return await asyncio.gather(*coroutines, return_exceptions=True)
+
+
+async def sync_arguments_coercer(
+    *coroutines: List[Coroutine],
+) -> List[Union[Any, Exception]]:
+    """
+    Coerce arguments synchronously.
+
+    :param coroutines: list of coroutine to await
+    :type coroutines: List[Coroutine]
+    :return: the result of coroutines
+    :rtype: List[Union[Any, Exception]]
+    """
+    results = []
+    for coroutine in coroutines:
+        try:
+            result = await coroutine
+        except Exception as e:  # pylint: disable=broad-except
+            result = e
+        results.append(result)
+    return results

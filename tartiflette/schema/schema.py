@@ -1,6 +1,9 @@
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from tartiflette.resolver.default import default_type_resolver
+from tartiflette.resolver.default import (
+    default_type_resolver,
+    gather_arguments_coercer,
+)
 from tartiflette.schema.introspection import (
     SCHEMA_ROOT_FIELD_DEFINITION,
     TYPENAME_ROOT_FIELD_DEFINITION,
@@ -123,6 +126,7 @@ class GraphQLSchema:
         """
         self.name = name
         self.default_type_resolver: Optional[Callable] = None
+        self.default_arguments_coercer: Optional[Callable] = None
 
         # Operation type names
         self.query_operation_name: str = _DEFAULT_QUERY_OPERATION_NAME
@@ -349,9 +353,7 @@ class GraphQLSchema:
         self.add_type_definition(enum_definition)
 
     def add_extension(self, extension: "GraphQLExtension") -> None:
-        """TODO
-        """
-
+        """TODO"""
         self.extensions.append(extension)
 
     def get_field_by_name(self, name: str) -> "GraphQLField":
@@ -1013,6 +1015,7 @@ class GraphQLSchema:
         self,
         custom_default_resolver: Optional[Callable] = None,
         custom_default_type_resolver: Optional[Callable] = None,
+        custom_default_arguments_coercer: Optional[Callable] = None,
     ) -> None:
         """
         Bake the final schema (it should not change after this) used for
@@ -1022,11 +1025,17 @@ class GraphQLSchema:
         :param custom_default_type_resolver: callable that will replace the
         tartiflette `default_type_resolver` (will be called on abstract types
         to deduct the type of a result)
+        :param custom_default_arguments_coercer: callable that will replace the
+        tartiflette `default_arguments_coercer`
         :type custom_default_resolver: Optional[Callable]
         :type custom_default_type_resolver: Optional[Callable]
+        :type custom_default_arguments_coercer: Optional[Callable]
         """
         self.default_type_resolver = (
             custom_default_type_resolver or default_type_resolver
+        )
+        self.default_arguments_coercer = (
+            custom_default_arguments_coercer or gather_arguments_coercer
         )
         self._inject_introspection_fields()
 
