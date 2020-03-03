@@ -160,6 +160,15 @@ class GraphQLSchema:
 
         self.extensions: List["GraphQLExtension"] = []
         self._schema_directives: List["DirectiveNode"] = []
+        self._json_loader = None
+
+    @property
+    def json_loader(self):
+        return self._json_loader
+
+    @json_loader.setter
+    def json_loader(self, loader):
+        self._json_loader = loader
 
     def add_schema_directives(
         self, directives_instances: List["DirectiveNode"]

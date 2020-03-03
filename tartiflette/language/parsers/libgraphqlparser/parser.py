@@ -1,4 +1,3 @@
-import json
 import os
 
 from types import TracebackType
@@ -152,5 +151,5 @@ def parse_to_document(
     >>> }''')
     """
     return document_from_ast_json(
-        json.loads(_parse_to_json_ast(query)), query, schema
+        schema.json_loader(_parse_to_json_ast(query)), query, schema
     )

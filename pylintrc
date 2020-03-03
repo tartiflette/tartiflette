@@ -40,10 +40,10 @@ disable=C0111,E0602,I0011,I0012,R0801,R0903,W0141,W0142,W0223,W0603,W1202,C0303,
 
 [DESIGN]
 ## Maximum number of arguments for function / method
-max-args=8
+max-args=10
 
 ## Maximum number of locals for function / method body
-max-locals=10
+max-locals=15
 
 ## Maximum number of return / yield for function / method body
 max-returns=10
