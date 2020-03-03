@@ -308,6 +308,7 @@ async def cook(
     error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]] = None,
     custom_default_resolver: Optional[Callable] = None,
     modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
+    json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
     schema_name: str = None,
 ) -> None:
     pass
@@ -318,4 +319,5 @@ async def cook(
 * `custom_default_resolver` _(Optional[Callable])_: callable used to resolve fields which doesn't implements a dedicated resolver (useful if you want to override the behavior for resolving a field, e.g. from `snake_case` to `camelCase` and vice versa) ([more detail here](#parameter-custom_default_resolver))
 * `custom_default_type_resolver` _(Optional[Callable])_: callable that will replace the tartiflette `default_type_resolver` (will be called on abstract types to deduct the type of a result) ([more detail here](#parameter-custom_default_type_resolver))
 * `modules` _(Optional[Union[str, List[str], List[Dict[str, Any]]]])_: list of string containing the name of the modules you want the engine to import, usually this modules contains your `@Resolvers`, `@Directives`, `@Scalar` or `@Subscription` code ([more detail here](#parameter-modules))
+* `json_loader` _(Optional[Callable[[str], Dict[str, Any]]])_: a Callable that will replace python built-in `json.loads` when Tartiflette will transform the json-ast of the query into a dict useable by the execution algorithm. ([more detail here](#parameter-json_loader))
 * `schema_name` _(str = "default")_: name of the schema represented by the provided SDL ([more detail here](./schema-registry.md))
