@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Optional
 
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
@@ -35,16 +35,24 @@ class Subscription:
             yield 0
     """
 
-    def __init__(self, name: str, schema_name: str = "default") -> None:
+    def __init__(
+        self,
+        name: str,
+        schema_name: str = "default",
+        arguments_coercer: Optional[Callable] = None,
+    ) -> None:
         """
         :param name: name of the subscription field
         :param schema_name: name of the schema to which link the subscription
+        :param arguments_coercer: callable to use to coerce field arguments
         :type name: str
         :type schema_name: str
+        :type arguments_coercer: Optional[Callable]
         """
         self.name = name
         self._implementation = None
         self._schema_name = schema_name
+        self._arguments_coercer = arguments_coercer
 
     def bake(self, schema: "GraphQLSchema") -> None:
         """
@@ -72,6 +80,7 @@ class Subscription:
             )
 
         field.subscribe = self._implementation
+        field.subscription_arguments_coercer = self._arguments_coercer
 
     def __call__(self, implementation: Callable) -> Callable:
         """

@@ -331,6 +331,7 @@ async def create_source_event_stream(
             field_nodes[0],
             execution_context.variable_values,
             execution_context.context,
+            coercer=field_definition.arguments_coercer,
         ),
         execution_context.context,
         info,

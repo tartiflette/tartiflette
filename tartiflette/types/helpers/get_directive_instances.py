@@ -80,6 +80,7 @@ def compute_directive_nodes(
                     argument_definitions=directive_definition.arguments,
                     node=directive_node,
                     variable_values=variable_values or {},
+                    coercer=directive_definition.arguments_coercer,
                 ),
             )
         )

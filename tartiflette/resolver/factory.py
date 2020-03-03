@@ -51,13 +51,14 @@ async def resolve_field_value_or_error(
                 )
             )
 
-        resolver = wraps_with_directives(
-            directives_definition=computed_directives,
-            directive_hook="on_field_execution",
-            func=resolver,
-            is_resolver=True,
-            with_default=True,
-        )
+        if computed_directives:
+            resolver = wraps_with_directives(
+                directives_definition=computed_directives,
+                directive_hook="on_field_execution",
+                func=resolver,
+                is_resolver=True,
+                with_default=True,
+            )
 
         result = await resolver(
             source,
@@ -66,6 +67,7 @@ async def resolve_field_value_or_error(
                 field_nodes[0],
                 execution_context.variable_values,
                 execution_context.context,
+                coercer=field_definition.arguments_coercer,
             ),
             execution_context.context,
             info,
