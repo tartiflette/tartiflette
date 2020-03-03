@@ -1,3 +1,4 @@
+import json as default_json_module
 import logging
 
 from functools import lru_cache, partial
@@ -147,6 +148,7 @@ class Engine:
         custom_default_type_resolver=None,
         modules=None,
         query_cache_decorator=UNDEFINED_VALUE,
+        json_loader=None,
     ) -> None:
         """
         Creates an uncooked Engine instance.
@@ -168,6 +170,7 @@ class Engine:
         self._query_executor = None
         self._subscription_executor = None
         self._cached_parse_and_validate_query = None
+        self._json_loader = json_loader or default_json_module.loads
 
     async def cook(
         self,
@@ -179,7 +182,8 @@ class Engine:
         custom_default_type_resolver: Optional[Callable] = None,
         modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
         query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
-        schema_name: str = None,
+        json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
+        schema_name: Optional[str] = None,
     ) -> None:
         """
         Cook the tartiflette, basically prepare the engine by binding it to
@@ -199,6 +203,8 @@ class Engine:
         Resolvers, Directives, Scalar or Subscription code
         :param query_cache_decorator: callable that will replace the
         tartiflette default lru_cache decorator to cache query parsing
+        :param json_loader: A callable that will replace default python
+        json module.loads for ast_json loading.
         :param schema_name: name of the SDL
         :type sdl: Union[str, List[str]]
         :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
@@ -207,6 +213,7 @@ class Engine:
         :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
         :type query_cache_decorator: Optional[Callable]
         :type schema_name: str
+        :type json_loader: Optional[Callable[[str], Dict[str, Any]]]
         """
         if self._cooked:
             return
@@ -283,6 +290,7 @@ class Engine:
             else parse_and_validate_query
         )
 
+        self._schema.json_loader = json_loader or self._json_loader
         self._cooked = True
 
     async def _perform_subscription(

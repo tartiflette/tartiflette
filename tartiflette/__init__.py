@@ -31,6 +31,7 @@ async def create_engine(
     custom_default_type_resolver: Optional[Callable] = None,
     modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
     query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
+    json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
 ) -> "Engine":
     """
     Create an engine by analyzing the SDL and connecting it with the imported
@@ -51,6 +52,8 @@ async def create_engine(
     Directives, Scalar or Subscription code
     :param query_cache_decorator: callable that will replace the tartiflette
     default lru_cache decorator to cache query parsing
+    :param json_loader: A callable that will replace default python
+    json module.loads for ast_json loading.
     :type sdl: Union[str, List[str]]
     :type schema_name: str
     :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
@@ -58,6 +61,7 @@ async def create_engine(
     :type custom_default_type_resolver: Optional[Callable]
     :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
     :type query_cache_decorator: Optional[Callable]
+    :type json_loader: Optional[Callable[[str], Dict[str, Any]]]
     :return: a Cooked Engine instance
     :rtype: Engine
 
@@ -80,6 +84,7 @@ async def create_engine(
         modules=modules,
         schema_name=schema_name,
         query_cache_decorator=query_cache_decorator,
+        json_loader=json_loader,
     )
 
     return e
