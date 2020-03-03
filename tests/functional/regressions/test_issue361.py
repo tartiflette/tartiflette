@@ -19,9 +19,11 @@ async def ttftt_engine():
     """
 
     async def default_arguments_coercer(*coroutines):
+        [await x for x in coroutines]
         return [i for i in range(len(coroutines))]
 
     async def custom_arguments_coercer(*coroutines):
+        [await x for x in coroutines]
         return [i + 2 for i in range(len(coroutines))]
 
     @Resolver("Query.helloDefault", schema_name="test_issue361")
