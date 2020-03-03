@@ -78,7 +78,7 @@ The `create_engine` function provides an advanced interface for initialization. 
 * `custom_default_type_resolver` _(Optional[Callable])_: callable that will replace the tartiflette `default_type_resolver` (will be called on abstract types to deduct the type of a result) ([more detail here](#parameter-custom_default_type_resolver))
 * `modules` _(Optional[Union[str, List[str], List[Dict[str, Any]]]])_: list of string containing the name of the modules you want the engine to import, usually this modules contains your `@Resolvers`, `@Directives`, `@Scalar` or `@Subscription` code ([more detail here](#parameter-modules))
 * `json_loader` _(Optional[Callable[[str], Dict[str, Any]]])_: a Callable that will replace python built-in `json.loads` when Tartiflette will transform the json-ast of the query into a dict useable by the execution algorithm. ([more detail here](#parameter-json_loader))
-
+* `custom_default_arguments_coercer` _(Optional[Callable])_: callable that will replace the tartiflette `default_arguments_coercer`
 
 #### Parameter: `error_coercer`
 
@@ -258,6 +258,33 @@ engine = await create_engine(
 )
 ```
 
+#### Parameter: `custom_default_arguments_coercer`
+
+The `custom_default_arguments_coercer` parameter is here to provide an easy way to override the default callable used internaly by Tartiflette to coerce arguments. The default arguments coercer use the `asyncio.gather` function to coerce asynchronously the arguments. It can be useful to override this behavior to change this behavior. For instance, you could use the `sync_arguments_coercer` in order to coerce your arguments synchronously and avoid the creation of too many asyncio tasks.
+
+```python
+from typing import Any, List
+
+from tartiflette import create_engine
+
+
+async def my_default_arguments_coercer(*coroutines) -> List[Exception, Any]:
+    results = []
+    for coroutine in coroutines:
+        try:
+            result = await coroutine
+        except Exception as e:  # pylint: disable=broad-except
+            result = e
+        results.append(result)
+    return results
+
+
+engine = await create_engine(
+    "my_sdl.graphql",
+    custom_default_arguments_coercer=my_default_arguments_coercer,
+)
+```
+
 ## Advanced instanciation
 
 For those who want to integrate Tartiflette in advanced use-cases. You could be interested by owning the process of building an `Engine`.
@@ -309,6 +336,7 @@ async def cook(
     custom_default_resolver: Optional[Callable] = None,
     modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
     json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
+    custom_default_arguments_coercer: Optional[Callable] = None,
     schema_name: str = None,
 ) -> None:
     pass
@@ -320,4 +348,5 @@ async def cook(
 * `custom_default_type_resolver` _(Optional[Callable])_: callable that will replace the tartiflette `default_type_resolver` (will be called on abstract types to deduct the type of a result) ([more detail here](#parameter-custom_default_type_resolver))
 * `modules` _(Optional[Union[str, List[str], List[Dict[str, Any]]]])_: list of string containing the name of the modules you want the engine to import, usually this modules contains your `@Resolvers`, `@Directives`, `@Scalar` or `@Subscription` code ([more detail here](#parameter-modules))
 * `json_loader` _(Optional[Callable[[str], Dict[str, Any]]])_: a Callable that will replace python built-in `json.loads` when Tartiflette will transform the json-ast of the query into a dict useable by the execution algorithm. ([more detail here](#parameter-json_loader))
+* `custom_default_arguments_coercer` _(Optional[Callable])_: callable that will replace the tartiflette `default_arguments_coercer`
 * `schema_name` _(str = "default")_: name of the schema represented by the provided SDL ([more detail here](./schema-registry.md))

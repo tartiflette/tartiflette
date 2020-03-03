@@ -168,6 +168,14 @@ class MyDirective:
             ###############
 ```
 
+## Decorator signature
+
+* `name` _(str)_: name of the directive
+* `schema_name` _(str = "default")_: name of the schema to which link the directive
+* `arguments_coercer` _(Optional[Callable] = None)_: callable to use to coerce directive arguments
+
+The `arguments_coercer` parameter is here to provide an easy way to override the default callable used internaly by Tartiflette to coerce the arguments of the directive. It has the same behaviour as the `custom_default_arguments_coercer` parameter at engine initialisation but impact only the directive.
+
 ## Execution flow
 
 > Warning: This is valid since `1.1.0`.
