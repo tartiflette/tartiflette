@@ -77,6 +77,7 @@ The `create_engine` function provides an advanced interface for initialization. 
 * `custom_default_resolver` _(Optional[Callable])_: callable used to resolve fields which doesn't implements a dedicated resolver (useful if you want to override the behavior for resolving a field, e.g. from `snake_case` to `camelCase` and vice versa) ([more detail here](#parameter-custom_default_resolver))
 * `custom_default_type_resolver` _(Optional[Callable])_: callable that will replace the tartiflette `default_type_resolver` (will be called on abstract types to deduct the type of a result) ([more detail here](#parameter-custom_default_type_resolver))
 * `modules` _(Optional[Union[str, List[str], List[Dict[str, Any]]]])_: list of string containing the name of the modules you want the engine to import, usually this modules contains your `@Resolvers`, `@Directives`, `@Scalar` or `@Subscription` code ([more detail here](#parameter-modules))
+* `query_cache_decorator` _(Optional[Callable])_: callable that will replace the tartiflette default lru_cache decorator to cache query parsing
 * `json_loader` _(Optional[Callable[[str], Dict[str, Any]]])_: a Callable that will replace python built-in `json.loads` when Tartiflette will transform the json-ast of the query into a dict useable by the execution algorithm. ([more detail here](#parameter-json_loader))
 * `custom_default_arguments_coercer` _(Optional[Callable])_: callable that will replace the tartiflette `default_arguments_coercer`
 
@@ -220,7 +221,33 @@ engine = await create_engine(
 )
 ```
 
-#### Parameter: json_loader
+#### Parameter: `query_cache_decorator`
+
+The `query_cache_decorator` parameter is here to provide an easy way to override the default cache decorated used internaly by Tartiflette over the parsing of queries.
+
+The default cache decorator use the `functools.lru_cache` function with a `maxsize` to `512`.
+
+If necessary, you can change this behavior by providing your own decorator to cache query parsing or disable the cache by providing the `None` value to this parameter.
+
+Here is an example of a custom decorator using `lru_cache` with a `maxsize` of `1024` instead of the default `512`:
+```python
+from functools import lru_cache
+from typing import Callable
+
+from tartiflette import create_engine
+
+
+def my_cache_decorator(func: Callable) -> Callable:
+    return lru_cache(maxsize=1024)(func)
+
+
+engine = await create_engine(
+    "my_sdl.graphql",
+    query_cache_decorator=my_cache_decorator,
+)
+```
+
+#### Parameter: `json_loader`
 
 This parameter enables you to use another json lib for ast-json loading (happens around [here](https://github.com/tartiflette/tartiflette/blob/master/tartiflette/language/parsers/libgraphqlparser/parser.py#L155)).
 
@@ -335,6 +362,7 @@ async def cook(
     error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]] = None,
     custom_default_resolver: Optional[Callable] = None,
     modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
+    query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
     json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
     custom_default_arguments_coercer: Optional[Callable] = None,
     schema_name: str = None,
@@ -347,6 +375,7 @@ async def cook(
 * `custom_default_resolver` _(Optional[Callable])_: callable used to resolve fields which doesn't implements a dedicated resolver (useful if you want to override the behavior for resolving a field, e.g. from `snake_case` to `camelCase` and vice versa) ([more detail here](#parameter-custom_default_resolver))
 * `custom_default_type_resolver` _(Optional[Callable])_: callable that will replace the tartiflette `default_type_resolver` (will be called on abstract types to deduct the type of a result) ([more detail here](#parameter-custom_default_type_resolver))
 * `modules` _(Optional[Union[str, List[str], List[Dict[str, Any]]]])_: list of string containing the name of the modules you want the engine to import, usually this modules contains your `@Resolvers`, `@Directives`, `@Scalar` or `@Subscription` code ([more detail here](#parameter-modules))
+* `query_cache_decorator` _(Optional[Callable])_: callable that will replace the tartiflette default lru_cache decorator to cache query parsing
 * `json_loader` _(Optional[Callable[[str], Dict[str, Any]]])_: a Callable that will replace python built-in `json.loads` when Tartiflette will transform the json-ast of the query into a dict useable by the execution algorithm. ([more detail here](#parameter-json_loader))
 * `custom_default_arguments_coercer` _(Optional[Callable])_: callable that will replace the tartiflette `default_arguments_coercer`
 * `schema_name` _(str = "default")_: name of the schema represented by the provided SDL ([more detail here](./schema-registry.md))
