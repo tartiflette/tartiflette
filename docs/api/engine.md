@@ -77,6 +77,8 @@ The `create_engine` function provides an advanced interface for initialization. 
 * `custom_default_resolver` _(Optional[Callable])_: callable used to resolve fields which doesn't implements a dedicated resolver (useful if you want to override the behavior for resolving a field, e.g. from `snake_case` to `camelCase` and vice versa) ([more detail here](#parameter-custom_default_resolver))
 * `custom_default_type_resolver` _(Optional[Callable])_: callable that will replace the tartiflette `default_type_resolver` (will be called on abstract types to deduct the type of a result) ([more detail here](#parameter-custom_default_type_resolver))
 * `modules` _(Optional[Union[str, List[str], List[Dict[str, Any]]]])_: list of string containing the name of the modules you want the engine to import, usually this modules contains your `@Resolvers`, `@Directives`, `@Scalar` or `@Subscription` code ([more detail here](#parameter-modules))
+* `json_loader` _(Optional[Callable[[str], Dict[str, Any]]])_: a Callable that will replace python built-in `json.loads` when Tartiflette will transform the json-ast of the query into a dict useable by the execution algorithm. ([more detail here](#parameter-json_loader))
+
 
 #### Parameter: `error_coercer`
 
@@ -215,6 +217,44 @@ engine = await create_engine(
         {"name": "a.module.that.needs.config", "config": {"key": "value"}},
         {"name": "b.module.that.needs.config", "config": {"key": "value"}},
     ],
+)
+```
+
+#### Parameter: json_loader
+
+This parameter enables you to use another json lib for ast-json loading (happens around [here](https://github.com/tartiflette/tartiflette/blob/master/tartiflette/language/parsers/libgraphqlparser/parser.py#L155)).
+
+Example usage could be to change the json lib:
+```python
+import rapidjson
+
+engine = await create_engine(*
+    os.path.dirname(os.path.abspath(__file__)) + "/sdl",
+    modules=[
+        "recipes_manager.query_resolvers",
+        "recipes_manager.mutation_resolvers",
+        {"name": "a.module.that.needs.config", "config": {"key": "value"}},
+        {"name": "b.module.that.needs.config", "config": {"key": "value"}},
+    ],
+    json_loader=rapidjson.loads
+)
+```
+
+or to give more arguments to the built-in python loader.
+
+```python
+from functools import partial
+import json
+
+engine = await create_engine(
+    os.path.dirname(os.path.abspath(__file__)) + "/sdl",
+    modules=[
+        "recipes_manager.query_resolvers",
+        "recipes_manager.mutation_resolvers",
+        {"name": "a.module.that.needs.config", "config": {"key": "value"}},
+        {"name": "b.module.that.needs.config", "config": {"key": "value"}},
+    ],
+    json_loader=partial(json.loads, parse_float=..., object_hook=...)
 )
 ```
 
