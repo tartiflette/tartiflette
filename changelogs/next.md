@@ -13,3 +13,28 @@
 - [ISSUE-361](https://github.com/dailymotion/tartiflette/issues/361) - Coerce lists (input, literal, output) synchronously to avoid creation of too many `asyncio` tasks.
 
 ## Fixed
+
+- [ISSUE-370](https://github.com/dailymotion/tartiflette/issues/370) - Fix EnumValue uniqueness in schema definition validation rule. It should now throw the correct error in the correct case.
+
+    ```graphql
+    enum anEnum {
+        A
+        A
+        B
+    }
+    ```
+
+    Will throw a `GraphQLSchemaError` exception at `engine` build time. You can't have duplicates values.
+
+    But now:
+    ```graphql
+    type X {
+        afield:String
+    }
+
+    enum anEnum {
+        Value1
+        X
+    }
+    ```
+    Doesn't throw a `GraphQLSchemaError` for the use of `X` as an `EnumValue`. This was a buggy schema error detection

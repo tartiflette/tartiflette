@@ -107,6 +107,18 @@ def _format_schema_error_message(errors: List[str]) -> str:
     return result
 
 
+def _value_uniqueness(values: List[str]) -> List[str]:
+    seen = []
+    double = []
+
+    for value in values:
+        if value in seen and value not in double:
+            double.append(value)
+        seen.append(value)
+
+    return double
+
+
 class GraphQLSchema:
     """
     GraphQL Schema
@@ -565,13 +577,12 @@ class GraphQLSchema:
         errors = []
         for type_name, gql_type in self.type_definitions.items():
             if isinstance(gql_type, GraphQLEnumType):
-                for value in gql_type.values:
-                    if str(value.value) in self.type_definitions:
-                        errors.append(
-                            f"Enum < {type_name} > has a "
-                            f"value of < {str(value.value)} > which "
-                            f"is a Type"
-                        )
+                for non_unique_value in _value_uniqueness(
+                    [str(x.value) for x in gql_type.values]
+                ):
+                    errors.append(
+                        f"Enum < {type_name} > is invalid, Value < {non_unique_value} > is not unique"
+                    )
         return errors
 
     def _validate_arguments_have_valid_type(self) -> List[str]:
