@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 from tartiflette.coercers.outputs.abstract_coercer import abstract_coercer
 from tartiflette.coercers.outputs.directives_coercer import (
@@ -134,7 +134,7 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
         self._possible_types.append(possible_type)
         self._possible_types_set.add(possible_type.name)
 
-    def is_possible_type(self, gql_type: "GraphQLType") -> bool:
+    def is_possible_type(self, gql_type: Union["GraphQLType", "str"]) -> bool:
         """
         Determines if a GraphQLType is a possible types for the interface.
         :param gql_type: the GraphQLType to check
@@ -142,6 +142,8 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
         :return: whether or not the GraphQLType is a possible type
         :rtype: bool
         """
+        if isinstance(gql_type, str):
+            return gql_type in self._possible_types_set
         return gql_type.name in self._possible_types_set
 
     @property

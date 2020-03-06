@@ -1,5 +1,3 @@
-import logging
-
 import pytest
 
 from tartiflette import Scalar, create_engine

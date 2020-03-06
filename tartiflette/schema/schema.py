@@ -29,6 +29,7 @@ from tartiflette.types.interface import (
     GraphQLInterfaceType,
     GraphQLInterfaceTypeExtension,
 )
+from tartiflette.types.list import GraphQLList
 from tartiflette.types.non_null import GraphQLNonNull
 from tartiflette.types.object import (
     GraphQLObjectType,
@@ -437,6 +438,36 @@ class GraphQLSchema:
                 pass
         return errors
 
+    def _validate_field_type_is_same_as_interface_type(
+        self, field_type, interface_field_type
+    ) -> bool:
+        # If they are the same simple type
+        if field_type == interface_field_type:
+            return True
+
+        # If field_type is a nonnull variant of interface_type then it's ok
+        if isinstance(field_type, GraphQLNonNull):
+            return self._validate_field_type_is_same_as_interface_type(
+                field_type.gql_type, interface_field_type
+            )
+
+        # If interface says !Null but field is not non null
+        if isinstance(interface_field_type, GraphQLNonNull):
+            return False
+
+        # If interface says list but field is not the same list
+        # because firt the == condition is false (or else we wouldn't be here)
+        # and field_type isn't a non_null of interface type
+        # then if interface is a list, they aren't the same type
+        if isinstance(interface_field_type, GraphQLList):
+            return False
+
+        # Then, look at the possible type for the interface
+        interface = self.type_definitions[interface_field_type]
+        if isinstance(interface, GraphQLInterfaceType):
+            return interface.is_possible_type(field_type)
+        return False
+
     def _validate_object_follow_interfaces(self) -> List[str]:
         """
         Validates that object types which implements interfaces does follow
@@ -479,7 +510,9 @@ class GraphQLSchema:
                             f"as defined in the < {iface_name} > Interface."
                         )
                     else:
-                        if gql_type_field.gql_type != iface_field.gql_type:
+                        if not self._validate_field_type_is_same_as_interface_type(
+                            gql_type_field.gql_type, iface_field.gql_type
+                        ):
                             errors.append(
                                 f"Field < {gql_type.name}.{iface_field.name} > "
                                 f"should be of Type < {iface_field.gql_type} > "
