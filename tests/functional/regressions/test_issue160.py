@@ -21,10 +21,9 @@ async def test_issue160():
 8: Type < R > has no fields.
 9: Union Type < H > contains itself.
 10: Scalar < E > is missing an implementation
-11: Enum < I > has a value of < J > which is a Type
-12: Argument < arg > of Field < L.aField > is of type < LL > which is not a Scalar, an Enum or an InputObject
-13: Argument < arg > of Directive < m > is of type < LL > which is not a Scalar, an Enum or an InputObject
-14: Field < N.b > is of type < L > which is not a Scalar, an Enum or an InputObject""",
+11: Argument < arg > of Field < L.aField > is of type < LL > which is not a Scalar, an Enum or an InputObject
+12: Argument < arg > of Directive < m > is of type < LL > which is not a Scalar, an Enum or an InputObject
+13: Field < N.b > is of type < L > which is not a Scalar, an Enum or an InputObject""",
     ):
         await create_engine(
             """
