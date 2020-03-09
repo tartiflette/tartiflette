@@ -38,3 +38,4 @@
     }
     ```
     Doesn't throw a `GraphQLSchemaError` for the use of `X` as an `EnumValue`. This was a buggy schema error detection
+- [ISSUE-372](https://github.com/dailymotion/tartiflette/issues/372) - Fix SDL Validation, Now `ObjectFollowInterface` validator validate field arguments and allows for field type to be `covariant` of the interface defined type.
