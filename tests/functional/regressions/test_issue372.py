@@ -243,6 +243,26 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
             False,
             None,
         ),
+        (
+            "interface A { d: String! } type I implements A { d: Float! }",
+            True,
+            r".*Field < I\.d > should be of Type < String! > as defined in the < A > Interface\..*",
+        ),
+        (
+            "interface A { d: [String] } type I implements A { d: [Float] }",
+            True,
+            r".*Field < I\.d > should be of Type < \[String\] > as defined in the < A > Interface\..*",
+        ),
+        (
+            "interface A { f(a: String!): String } type B implements A { f(a: Float!): String }",
+            True,
+            r".*Field argument < B\.f\(a\) > is not of type < String! > as required by the interface < A >\..*",
+        ),
+        (
+            "interface A { f(a:[String]): String } type B implements A { f(a: [Float]): String }",
+            True,
+            r".*Field argument < B\.f\(a\) > is not of type < \[String\] > as required by the interface < A >\..*",
+        ),
     ],
 )
 async def test_issue372(sdl, should_except, match, random_schema_name):
