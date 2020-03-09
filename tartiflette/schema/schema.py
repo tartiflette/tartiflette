@@ -120,6 +120,45 @@ def _value_uniqueness(values: List[str]) -> List[str]:
     return double
 
 
+def _validated_field_args_are_same_as_interface_args(
+    obj_type_name, obj_field, iface_name, iface_field, errors
+) -> bool:
+    for (
+        iface_field_arg_name,
+        iface_field_arg,
+    ) in iface_field.arguments.items():
+        try:
+            obj_field_arg = obj_field.arguments[iface_field_arg_name]
+        except KeyError:
+            errors.append(
+                f"Field < {obj_type_name}.{obj_field.name} > is missing interface "
+                f"field argument < {iface_name}.{iface_field.name}"
+                f"({iface_field_arg_name}) >."
+            )
+        else:
+            if obj_field_arg.gql_type != iface_field_arg.gql_type:
+                errors.append(
+                    f"Field argument < {obj_type_name}.{obj_field.name}"
+                    f"({iface_field_arg_name}) >"
+                    f" is not of type < {iface_field_arg.gql_type}"
+                    f" > as required by the interface < {iface_name} >."
+                )
+
+    # Makes sure no argument are added to the object field as non-null,
+    # only nullable args are allowed, so for each arguments that are not
+    # in the interface, validate that they are not "NonNullable"
+    for arg_name in set(obj_field.arguments.keys()) - set(
+        iface_field.arguments.keys()
+    ):
+        if isinstance(obj_field.arguments[arg_name].gql_type, GraphQLNonNull):
+            errors.append(
+                f"Field < {obj_type_name}.{obj_field.name}"
+                f"({arg_name}) > isn't required in interface"
+                f" field < {iface_name}.{iface_field.name} >,"
+                f" so it cannot be NonNullable."
+            )
+
+
 class GraphQLSchema:
     """
     GraphQL Schema
@@ -293,6 +332,7 @@ class GraphQLSchema:
                     ),
                 )
             )
+
         self._directive_definitions[
             directive_definition.name
         ] = directive_definition
@@ -333,6 +373,7 @@ class GraphQLSchema:
                     repr(self._scalar_definitions.get(scalar_definition.name)),
                 )
             )
+
         self._scalar_definitions[scalar_definition.name] = scalar_definition
         self._input_types.append(scalar_definition.name)
         self.add_type_definition(scalar_definition)
@@ -361,6 +402,7 @@ class GraphQLSchema:
                     repr(self._enum_definitions.get(enum_definition.name)),
                 )
             )
+
         self._enum_definitions[enum_definition.name] = enum_definition
         self._input_types.append(enum_definition.name)
         self.add_type_definition(enum_definition)
@@ -468,6 +510,30 @@ class GraphQLSchema:
             return interface.is_possible_type(field_type)
         return False
 
+    def _validate_field_follow_interface(
+        self, iface_name, object_type, iface_field, errors
+    ):
+        try:
+            object_field = object_type.find_field(iface_field.name)
+        except KeyError:
+            errors.append(
+                f"Field < {object_type.name}.{iface_field.name} > is missing "
+                f"as defined in the < {iface_name} > Interface."
+            )
+        else:
+            if not self._validate_field_type_is_same_as_interface_type(
+                object_field.gql_type, iface_field.gql_type
+            ):
+                errors.append(
+                    f"Field < {object_type.name}.{iface_field.name} > "
+                    f"should be of Type < {iface_field.gql_type} > "
+                    f"as defined in the < {iface_name} > Interface."
+                )
+
+            _validated_field_args_are_same_as_interface_args(
+                object_type.name, object_field, iface_name, iface_field, errors
+            )
+
     def _validate_object_follow_interfaces(self) -> List[str]:
         """
         Validates that object types which implements interfaces does follow
@@ -502,22 +568,9 @@ class GraphQLSchema:
                     continue
 
                 for iface_field in iface_type.implemented_fields.values():
-                    try:
-                        gql_type_field = gql_type.find_field(iface_field.name)
-                    except KeyError:
-                        errors.append(
-                            f"Field < {gql_type.name}.{iface_field.name} > is missing "
-                            f"as defined in the < {iface_name} > Interface."
-                        )
-                    else:
-                        if not self._validate_field_type_is_same_as_interface_type(
-                            gql_type_field.gql_type, iface_field.gql_type
-                        ):
-                            errors.append(
-                                f"Field < {gql_type.name}.{iface_field.name} > "
-                                f"should be of Type < {iface_field.gql_type} > "
-                                f"as defined in the < {iface_name} > Interface."
-                            )
+                    self._validate_field_follow_interface(
+                        iface_name, gql_type, iface_field, errors
+                    )
         return errors
 
     def _validate_schema_root_types_exist(self) -> List[str]:
