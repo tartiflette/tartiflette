@@ -40,7 +40,7 @@ The client will subscribe to the `launchAndWaitCookingTimer` field _(with the re
 
 ### `recipes_manager/subscription_resolvers.py`
 
-In order to make your subscriptions work properly, Tartiflette needs to know for each subscription fields which event stream to listen to. Like for queries and mutations, there is a built-in `@Subscription` decorator which will bind a callable to the specified subscription field. Unlike the `@Resolver` decorator the `@Subscription` decorator can be applied only on a subscription field and have to returns an asynchronous generator. For advanced use-cases, we suggest you using pub/sub mechanisms like Redis, Nats, Google Pub/Sub, Amazon EQS...
+In order to make your subscriptions work properly, Tartiflette needs to know, for each subscription field, which event stream to listen to. Like for queries and mutations, there is a built-in `@Subscription` decorator which will bind a callable to the specified subscription field. Unlike the `@Resolver` decorator, the `@Subscription` decorator can be applied only on a subscription field and has to return an asynchronous generator. For advanced use-cases, we suggest you use pub/sub mechanisms like Redis, Nats, Google Pub/Sub, Amazon EQS...
 
 ```python
 import asyncio
