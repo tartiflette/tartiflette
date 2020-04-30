@@ -81,12 +81,17 @@ async def ttftt_engine():
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
-            argument_node: "ArgumentNode",
+            argument_definition_node: "InputValueDefinitionNode",
+            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ):
             result = await next_directive(
-                parent_node, argument_node, value, ctx
+                parent_node,
+                argument_definition_node,
+                argument_node,
+                value,
+                ctx,
             )
             return result
 
@@ -117,7 +122,8 @@ async def ttftt_engine():
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
-            argument_node: "ArgumentNode",
+            argument_definition_node: "InputValueDefinitionNode",
+            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ):
