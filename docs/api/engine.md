@@ -107,7 +107,7 @@ class CustomException(Exception):
         self.message = message
 
 
-def my_error_coercer(
+async def my_error_coercer(
     exception: Exception, error: Dict[str, Any]
 ) -> Dict[str, Any]:
     if isinstance(exception, CustomException):
