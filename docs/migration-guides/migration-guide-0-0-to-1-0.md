@@ -256,7 +256,7 @@ class MyDirective:
 -       ctx: Optional[Any],
 -       info: "Info",
 +       parent_node: Union["FieldNode", "DirectiveNode"],
-+       argument_node: "ArgumentNode",
++       argument_node: Optional["ArgumentNode"],
 +       value: Any,
 +       ctx: Optional[Any],
     ) -> Any:
