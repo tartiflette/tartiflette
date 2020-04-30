@@ -51,7 +51,6 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         self._possible_types: List["GraphQLType"] = []
         self._possible_types_set: Set[str] = set()
         self._fields: Dict[str, "GraphQLField"] = {}
-        self._possible_types_dict: Dict[str, GraphQLType] = {}
 
         # Directives
         self.directives = directives
@@ -154,7 +153,6 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
             schema_type = schema.find_type(type_name)
             self._possible_types.append(schema_type)
             self._possible_types_set.add(type_name)
-            self._possible_types_dict[type_name] = schema_type
 
         # Directives
         directives_definition = compute_directive_nodes(
@@ -166,7 +164,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         )
 
         # Coercers
-        self._output_coercer = partial(
+        self.output_coercer = partial(
             output_directives_coercer,
             coercer=partial(abstract_coercer, abstract_type=self),
             directives=wraps_with_directives(
@@ -174,35 +172,6 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
                 directive_hook="on_pre_output_coercion",
                 with_default=True,
             ),
-        )
-
-    async def output_coercer(
-        self,
-        result: Any,
-        info: "ResolveInfo",
-        execution_context: "ExecutionContext",
-        field_nodes: List["FieldNode"],
-        path: "Path",
-    ):
-
-        type_resolver = self.get_type_resolver(
-            f"{info.parent_type.name}.{info.field_name}",
-            execution_context.schema.default_type_resolver,
-        )
-
-        result_type = type_resolver(
-            result, execution_context.context, info, self
-        )
-
-        if result_type in self._possible_types_set:
-            result = await self._possible_types_dict[
-                result_type
-            ].output_coercer(
-                result, info, execution_context, field_nodes, path
-            )
-
-        return await self._output_coercer(
-            result, info, execution_context, field_nodes, path
         )
 
     async def bake_fields(

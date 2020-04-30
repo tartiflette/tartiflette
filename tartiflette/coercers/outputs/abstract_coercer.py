@@ -97,20 +97,19 @@ async def abstract_coercer(
         execution_context.schema.default_type_resolver,
     )
 
-    return await complete_object_value(
-        result,
-        info,
+    runtime_type = ensure_valid_runtime_type(
+        type_resolver(result, execution_context.context, info, abstract_type),
         execution_context,
+        abstract_type,
         field_nodes,
-        path,
-        ensure_valid_runtime_type(
-            type_resolver(
-                result, execution_context.context, info, abstract_type
-            ),
-            execution_context,
-            abstract_type,
-            field_nodes,
-            info,
-            result,
-        ),
+        info,
+        result,
+    )
+
+    result = await complete_object_value(
+        result, info, execution_context, field_nodes, path, runtime_type
+    )
+
+    return await runtime_type.output_coercer(
+        result, info, execution_context, field_nodes, path
     )
