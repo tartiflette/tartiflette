@@ -83,7 +83,8 @@ async def introspection_directives_executor(
 
 async def default_argument_execution_directive(
     parent_node: Union["FieldNode", "DirectiveNode"],
-    argument_node: "ArgumentNode",
+    argument_definition_node: "InputValueDefinitionNode",
+    argument_node: Optional["ArgumentNode"],
     value: Any,
     *args,
     **kwargs,
@@ -92,9 +93,11 @@ async def default_argument_execution_directive(
     Default callable to use to wrap with directives on `on_argument_execution`
     hook name.
     :param parent_node: the parent AST node related to the executed argument
+    :param argument_definition_node: the input value definition AST node
     :param argument_node: the AST argument node executed
     :param value: the coerced value of the argument
     :type parent_node: Union[FieldNode, DirectiveNode]
+    :type argument_definition_node: InputValueDefinitionNode
     :type argument_node: ArgumentNode
     :type value: Any
     :return: the coerced value of the argument
