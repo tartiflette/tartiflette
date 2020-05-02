@@ -118,5 +118,10 @@ async def argument_coercer(
         return coercion_result
 
     return await directives(
-        node, argument_node, value, ctx, context_coercer=ctx
+        node,
+        argument_definition.definition,
+        argument_node,
+        value,
+        ctx,
+        context_coercer=ctx,
     )

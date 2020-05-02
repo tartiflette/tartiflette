@@ -66,12 +66,17 @@ async def ttftt_engine():
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
-            argument_node: "ArgumentNode",
+            argument_definition_node: "InputValueDefinitionNode",
+            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ) -> Any:
             result = await next_directive(
-                parent_node, argument_node, value, ctx
+                parent_node,
+                argument_definition_node,
+                argument_node,
+                value,
+                ctx,
             )
             if len(result) > directive_args["limit"]:
                 raise Exception(
@@ -113,12 +118,17 @@ async def ttftt_engine():
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
-            argument_node: "ArgumentNode",
+            argument_definition_node: "InputValueDefinitionNode",
+            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ) -> Any:
             result = await next_directive(
-                parent_node, argument_node, value, ctx
+                parent_node,
+                argument_definition_node,
+                argument_node,
+                value,
+                ctx,
             )
             if result not in directive_args["choices"]:
                 raise Exception(
@@ -158,11 +168,18 @@ async def ttftt_engine():
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
-            argument_node: "ArgumentNode",
+            argument_definition_node: "InputValueDefinitionNode",
+            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ) -> Any:
-            return await next_directive(parent_node, argument_node, value, ctx)
+            return await next_directive(
+                parent_node,
+                argument_definition_node,
+                argument_node,
+                value,
+                ctx,
+            )
 
         async def on_post_input_coercion(
             self,
@@ -181,7 +198,8 @@ async def ttftt_engine():
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
-            argument_node: "ArgumentNode",
+            argument_definition_node: "InputValueDefinitionNode",
+            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ) -> Any:

@@ -44,14 +44,17 @@ class MyDirective:
         directive_args: Dict[str, Any],
         next_directive: Callable,
         parent_node: Union["FieldNode", "DirectiveNode"],
-        argument_node: "ArgumentNode",
+        argument_definition_node: "InputValueDefinitionNode",
+        argument_node: Optional["ArgumentNode"],
         value: Any,
         ctx: Optional[Any],
     ) -> Any:
         ######################
         # Add your code here #
         ######################
-        return await next_directive(parent_node, argument_node, value, ctx)
+        return await next_directive(
+            parent_node, argument_definition_node, argument_node, value, ctx
+        )
 
     async def on_post_input_coercion(
         self,
