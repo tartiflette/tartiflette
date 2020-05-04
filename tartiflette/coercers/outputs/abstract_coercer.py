@@ -106,10 +106,16 @@ async def abstract_coercer(
         result,
     )
 
-    result = await complete_object_value(
-        result, info, execution_context, field_nodes, path, runtime_type
-    )
-
-    return await runtime_type.output_coercer(
-        result, info, execution_context, field_nodes, path
+    return await complete_object_value(
+        await runtime_type.pre_output_coercion_directives(
+            result,
+            execution_context.context,
+            info,
+            context_coercer=execution_context.context,
+        ),
+        info,
+        execution_context,
+        field_nodes,
+        path,
+        runtime_type,
     )

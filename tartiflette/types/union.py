@@ -57,7 +57,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         self.introspection_directives: Optional[Callable] = None
 
         # Coercers
-        self._output_coercer: Optional[Callable] = None
+        self.output_coercer: Optional[Callable] = None
 
     def __eq__(self, other: Any) -> bool:
         """
