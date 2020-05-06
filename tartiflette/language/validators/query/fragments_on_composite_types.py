@@ -31,7 +31,7 @@ class FragmentsOnCompositeTypes(June2018ReleaseValidationRule):
             message = (
                 f"Fragment {fragment.name.value}"
                 if not isinstance(fragment, InlineFragmentNode)
-                else f"Inline Fragment"
+                else "Inline Fragment"
             )
             errors.append(
                 graphql_error_from_nodes(
