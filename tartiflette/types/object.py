@@ -54,6 +54,7 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
         # Directives
         self.directives = directives
         self.introspection_directives: Optional[Callable] = None
+        self.pre_output_coercion_directives: Optional[Callable] = None
 
         # Coercers
         self.output_coercer: Optional[Callable] = None
@@ -146,15 +147,17 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
             directive_hook="on_introspection",
         )
 
+        self.pre_output_coercion_directives = wraps_with_directives(
+            directives_definition=directives_definition,
+            directive_hook="on_pre_output_coercion",
+            with_default=True,
+        )
+
         # Coercers
         self.output_coercer = partial(
             output_directives_coercer,
             coercer=partial(object_coercer, object_type=self),
-            directives=wraps_with_directives(
-                directives_definition=directives_definition,
-                directive_hook="on_pre_output_coercion",
-                with_default=True,
-            ),
+            directives=self.pre_output_coercion_directives,
         )
 
     async def bake_fields(
