@@ -19,6 +19,8 @@ async def ttftt_engine_union():
         aFieldUnionObj: CoupleOfResponses
         aFieldObj: CoupleOfResponsesNoUnionDir
         aFieldIfa: AnIfa
+        aFieldAnotherIfa: AnotherIfa
+        aFieldIfaNoDir: NoDirOnThisIface
     }
 
     union CoupleOfResponses @run_me_this_union = ResponseOne | ResponseTwo
@@ -28,11 +30,27 @@ async def ttftt_engine_union():
         a: String
     }
 
+    interface AnotherIfa @run_me_this_ifa {
+        a: String
+    }
+
+    interface NoDirOnThisIface {
+        a: String
+    }
+
     type ResponseOne @run_me_this_object {
         a: String
     }
 
     type ResponseThree implements AnIfa {
+        a: String
+    }
+
+    type ResponseFour implements AnotherIfa @run_me_this_object {
+        a: String
+    }
+
+    type ResponseFive implements NoDirOnThisIface @run_me_this_object {
         a: String
     }
 
@@ -68,6 +86,8 @@ async def ttftt_engine_union():
     @Resolver("Query.aFieldUnionObj", schema_name=schema_name)
     @Resolver("Query.aFieldObj", schema_name=schema_name)
     @Resolver("Query.aFieldIfa", schema_name=schema_name)
+    @Resolver("Query.aFieldAnotherIfa", schema_name=schema_name)
+    @Resolver("Query.aFieldIfaNoDir", schema_name=schema_name)
     async def resolve_root_query_field(pr, args, ctx, info):
         return {"a": "LOOOL"}
 
@@ -81,6 +101,14 @@ async def ttftt_engine_union():
     @TypeResolver("AnIfa", schema_name=schema_name)
     def resolve_type_ifa(result, context, info, abstract_type):
         return "ResponseThree"
+
+    @TypeResolver("AnotherIfa", schema_name=schema_name)
+    def resolve_type_ifa(result, context, info, abstract_type):
+        return "ResponseFour"
+
+    @TypeResolver("NoDirOnThisIface", schema_name=schema_name)
+    def resolve_type_ifa(result, context, info, abstract_type):
+        return "ResponseFive"
 
     return await create_engine(sdl=sdl, schema_name=schema_name)
 
@@ -122,6 +150,26 @@ query {
 }
             """,
             {"data": {"aFieldIfa": {"a": "LOOOL ifa"}}},
+        ),
+        (
+            """
+query {
+    aFieldAnotherIfa {
+        ...on ResponseFour { a }
+    }
+}
+            """,
+            {"data": {"aFieldAnotherIfa": {"a": "LOOOL ifa obj"}}},
+        ),
+        (
+            """
+query {
+    aFieldIfaNoDir {
+        ...on ResponseFive { a }
+    }
+}
+            """,
+            {"data": {"aFieldIfaNoDir": {"a": "LOOOL obj"}}},
         ),
     ],
 )
