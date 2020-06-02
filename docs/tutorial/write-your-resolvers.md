@@ -8,7 +8,7 @@ sidebar_label: 5. Write your resolvers
 
 ## What is a resolver?
 
-A resolver is a callable _(which has to be asynchronous)_ that is attached to a field of your schema. It will be in charge of returning data accordingly to the field it is bind to.
+A resolver is a callable _(which has to be asynchronous)_ that is attached to a field of your schema. It will be in charge of returning data accordingly to the field it is bound to.
 
 ### How to attach a resolver to a field with Tartiflette?
 
