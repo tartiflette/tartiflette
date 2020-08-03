@@ -50,7 +50,7 @@ class BuildPyCmd(build_py):
 
 _TEST_REQUIRE = [
     "pytest==6.0.1",
-    "pytest-cov==2.9.0",
+    "pytest-cov==2.10.0",
     "pytest-asyncio==0.14.0",
     "pytest-xdist==1.32.0",
     "pylint==2.5.3",
