@@ -2,6 +2,7 @@ import datetime
 
 import pytest
 
+from tartiflette import TartifletteError
 from tartiflette.scalar.builtins.datetime import ScalarDateTime
 
 
@@ -68,7 +69,7 @@ def test_scalar_datetime_coerce_output(
     value, should_raise_exception, expected
 ):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarDateTime().coerce_output(value)
     else:
         assert ScalarDateTime().coerce_output(value) == expected
@@ -135,7 +136,7 @@ def test_scalar_datetime_coerce_output(
 )
 def test_scalar_datetime_coerce_input(value, should_raise_exception, expected):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarDateTime().coerce_input(value)
     else:
         assert ScalarDateTime().coerce_input(value) == expected
