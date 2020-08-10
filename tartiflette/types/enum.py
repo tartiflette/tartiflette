@@ -240,6 +240,16 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
         """
         return self.values
 
+    def has_value(self, name: str) -> bool:
+        """
+        Determines whether or not the name corresponds to an enum value.
+        :param name: name of the enum value to find
+        :type name: str
+        :return: whether or not the name corresponds to a defined enum value
+        :rtype: bool
+        """
+        return name in self._value_map
+
     def get_value(self, name: str) -> "GraphQLEnumValue":
         """
         Returns the GraphQLEnumValue instance of the enum value `name`.

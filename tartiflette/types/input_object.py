@@ -105,6 +105,16 @@ class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
         """
         return self.name
 
+    def has_field(self, name: str) -> bool:
+        """
+        Determines whether or not the name corresponds to a defined field.
+        :param name: name of the field to find
+        :type name: str
+        :return: whether or not the name corresponds to a defined field
+        :rtype: bool
+        """
+        return name in self.input_fields
+
     def bake(self, schema: "GraphQLSchema") -> None:
         """
         Bakes the GraphQLInputObject and computes all the necessary stuff for execution.
