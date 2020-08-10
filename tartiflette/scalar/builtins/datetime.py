@@ -1,10 +1,11 @@
 from datetime import datetime
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from tartiflette import Scalar
-from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import StringValueNode
+from tartiflette.types.exceptions.tartiflette import TartifletteError
 
+from ...utils.errors import graphql_error_from_nodes
 from .string import ScalarString
 
 
@@ -26,7 +27,10 @@ class ScalarDateTime(ScalarString):
             return value.isoformat()
         except Exception:  # pylint: disable=broad-except
             pass
-        raise TypeError(f"DateTime cannot represent value: < {value} >.")
+
+        raise TartifletteError(
+            f"DateTime cannot represent value: < {value} >."
+        )
 
     def coerce_input(self, value: str) -> datetime:
         """
@@ -42,25 +46,29 @@ class ScalarDateTime(ScalarString):
             return datetime.strptime(result, "%Y-%m-%dT%H:%M:%S")
         except Exception:  # pylint: disable=broad-except
             pass
-        raise TypeError(f"DateTime cannot represent value: < {value} >.")
 
-    def parse_literal(self, ast: "Node") -> Union[datetime, "UNDEFINED_VALUE"]:
+        raise TartifletteError(
+            f"DateTime cannot represent value: < {value} >."
+        )
+
+    def parse_literal(self, ast: "Node") -> datetime:
         """
         Coerce the input value from an AST node.
         :param ast: AST node to coerce
         :type ast: Node
         :return: the coerced value
-        :rtype: Union[datetime, UNDEFINED_VALUE]
+        :rtype: datetime
         """
         # pylint: disable=no-self-use
-        if not isinstance(ast, StringValueNode):
-            return UNDEFINED_VALUE
+        if isinstance(ast, StringValueNode):
+            try:
+                return datetime.strptime(ast.value, "%Y-%m-%dT%H:%M:%S")
+            except Exception:  # pylint: disable=broad-except
+                pass
 
-        try:
-            return datetime.strptime(ast.value, "%Y-%m-%dT%H:%M:%S")
-        except Exception:  # pylint: disable=broad-except
-            pass
-        return UNDEFINED_VALUE
+        raise graphql_error_from_nodes(
+            f"DateTime cannot represent value: {ast}.", nodes=[ast],
+        )
 
 
 def bake(schema_name: str, config: Optional[Dict[str, Any]] = None) -> str:

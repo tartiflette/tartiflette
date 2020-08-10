@@ -1,8 +1,9 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from tartiflette import Scalar
-from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import IntValueNode, StringValueNode
+from tartiflette.types.exceptions.tartiflette import TartifletteError
+from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.utils.values import is_integer
 
 
@@ -26,7 +27,7 @@ class ScalarID:
         if is_integer(value):
             return str(int(value))
 
-        raise TypeError(f"ID cannot represent value: < {value} >.")
+        raise TartifletteError(f"ID cannot represent value: < {value} >.")
 
     def coerce_input(self, value: Any) -> str:
         """
@@ -43,21 +44,24 @@ class ScalarID:
         if is_integer(value):
             return str(int(value))
 
-        raise TypeError(f"ID cannot represent value: < {value} >.")
+        raise TartifletteError(f"ID cannot represent value: < {value} >.")
 
-    def parse_literal(self, ast: "Node") -> Union[str, "UNDEFINED_VALUE"]:
+    def parse_literal(self, ast: "Node") -> str:
         """
         Coerce the input value from an AST node.
         :param ast: AST node to coerce
         :type ast: Node
         :return: the coerced value
-        :rtype: Union[str, UNDEFINED_VALUE]
+        :rtype: str
         """
         # pylint: disable=no-self-use
-        return (
-            ast.value
-            if isinstance(ast, (StringValueNode, IntValueNode))
-            else UNDEFINED_VALUE
+        if isinstance(ast, (StringValueNode, IntValueNode)):
+            return ast.value
+
+        raise graphql_error_from_nodes(
+            "ID cannot represent a non-string and non-integer value: "
+            f"{ast}.",
+            nodes=[ast],
         )
 
 
