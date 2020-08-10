@@ -151,5 +151,5 @@ def parse_to_document(
     >>> }''')
     """
     return document_from_ast_json(
-        schema.json_loader(_parse_to_json_ast(query)), query, schema
+        schema.json_loader(_parse_to_json_ast(query)), query
     )
