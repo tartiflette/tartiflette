@@ -22,31 +22,25 @@ async def resolve_dog(*_, **__):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Unused Varibable < a > in Operation < lol >.",
+                        "message": "Variable < $a > is never used in operation < lol >.",
                         "path": None,
-                        "locations": [
-                            {"line": 2, "column": 9},
-                            {"line": 2, "column": 19},
-                        ],
+                        "locations": [{"line": 2, "column": 19}],
                         "extensions": {
-                            "rule": "5.8.4",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-All-Variables-Used",
+                            "rule": "5.8.4",
                             "tag": "all-variables-used",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variables-Used",
                         },
                     },
                     {
-                        "message": "Unused Varibable < b > in Operation < lol >.",
+                        "message": "Variable < $b > is never used in operation < lol >.",
                         "path": None,
-                        "locations": [
-                            {"line": 2, "column": 9},
-                            {"line": 2, "column": 28},
-                        ],
+                        "locations": [{"line": 2, "column": 28}],
                         "extensions": {
-                            "rule": "5.8.4",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-All-Variables-Used",
+                            "rule": "5.8.4",
                             "tag": "all-variables-used",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variables-Used",
                         },
                     },
                 ],
@@ -64,46 +58,50 @@ async def resolve_dog(*_, **__):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Can't have multiple variables named < a >.",
+                        "message": "There can be only one variable named < $a >.",
                         "path": None,
                         "locations": [
                             {"line": 2, "column": 19},
                             {"line": 2, "column": 41},
                         ],
                         "extensions": {
+                            "spec": "June 2018",
                             "rule": "5.8.1",
-                            "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Variable-Uniqueness",
                             "tag": "variable-uniqueness",
+                            "details": "https://spec.graphql.org/June2018/#sec-Variable-Uniqueness",
                         },
                     },
                     {
-                        "message": "Unused Varibable < a > in Operation < lol >.",
+                        "message": "Variable < $a > is never used in operation < lol >.",
                         "path": None,
-                        "locations": [
-                            {"line": 2, "column": 9},
-                            {"line": 2, "column": 19},
-                            {"line": 2, "column": 41},
-                        ],
+                        "locations": [{"line": 2, "column": 19}],
                         "extensions": {
-                            "rule": "5.8.4",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-All-Variables-Used",
+                            "rule": "5.8.4",
                             "tag": "all-variables-used",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variables-Used",
                         },
                     },
                     {
-                        "message": "Unused Varibable < b > in Operation < lol >.",
+                        "message": "Variable < $b > is never used in operation < lol >.",
                         "path": None,
-                        "locations": [
-                            {"line": 2, "column": 9},
-                            {"line": 2, "column": 28},
-                        ],
+                        "locations": [{"line": 2, "column": 28}],
                         "extensions": {
-                            "rule": "5.8.4",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-All-Variables-Used",
+                            "rule": "5.8.4",
                             "tag": "all-variables-used",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variables-Used",
+                        },
+                    },
+                    {
+                        "message": "Variable < $a > is never used in operation < lol >.",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 41}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.4",
+                            "tag": "all-variables-used",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variables-Used",
                         },
                     },
                 ],

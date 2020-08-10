@@ -9,6 +9,7 @@ from tartiflette import Directive, Resolver, Scalar, create_engine
 _SDL = """
 
 directive @lower on ENUM_VALUE
+directive @lower2 on ENUM_VALUE
 directive @upper on ENUM_VALUE
 directive @capitalized on SCALAR
 directive @mapToValue on ENUM
@@ -31,7 +32,7 @@ enum Color @mapToValue {
     black
     BLACK @lower
     yellow
-    YELLOW @lower @upper @lower
+    YELLOW @lower @upper @lower2
     BROWN
 }
 
@@ -157,6 +158,7 @@ async def ttftt_engine():
             return await next_directive(value.capitalize(), ctx, info)
 
     @Directive("lower", schema_name="issue223")
+    @Directive("lower2", schema_name="issue223")
     class Lower:
         @staticmethod
         async def on_pre_output_coercion(

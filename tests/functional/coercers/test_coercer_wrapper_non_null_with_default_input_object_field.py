@@ -32,17 +32,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
                 }
             },
         ),
@@ -67,113 +57,113 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Input Field < booleanField > of non-null type < Boolean! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 4, "column": 17}],
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 31}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < enumField > of non-null type < MyEnum! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 5, "column": 17}],
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 28}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < floatField > of non-null type < Float! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 6, "column": 17}],
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 29}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < intField > of non-null type < Int! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 7, "column": 17}],
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 27}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < stringField > of non-null type < String! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 8, "column": 17}],
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 30}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < listBooleanField > of non-null type < [Boolean]! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 9, "column": 17}],
+                        "message": "Expected value of type < [Boolean]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 35}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < listEnumField > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 10, "column": 17}],
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 32}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < listFloatField > of non-null type < [Float]! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 11, "column": 17}],
+                        "message": "Expected value of type < [Float]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 33}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < listIntField > of non-null type < [Int]! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 12, "column": 17}],
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 12, "column": 31}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < listStringField > of non-null type < [String]! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 13, "column": 17}],
+                        "message": "Expected value of type < [String]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 13, "column": 34}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                 ],
@@ -200,58 +190,58 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Input Field < booleanField > of non-null type < Boolean! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 4, "column": 17}],
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 31}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < enumField > of non-null type < MyEnum! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 5, "column": 17}],
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 28}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < floatField > of non-null type < Float! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 6, "column": 17}],
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 29}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < intField > of non-null type < Int! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 7, "column": 17}],
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 27}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < stringField > of non-null type < String! > must not be null.",
-                        "path": ["wrapperNonNullWithDefaultInputObjectField"],
-                        "locations": [{"line": 8, "column": 17}],
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 30}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                 ],
@@ -276,17 +266,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_2_2-MyEnum-enumField]-"
-                    "[floatField:2345681.9]-"
-                    "[intField:13]-"
-                    "[stringField:paramdefaultvalue-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_2_2-myenum]-"
-                    "[listFloatField:2345681.9]-"
-                    "[listIntField:13]-"
-                    "[listStringField:paramdefaultvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_2_2-MyEnum-enumField]-[floatField:2345681.9]-[intField:13]-[stringField:paramdefaultvalue-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_2_2-myenum]-[listFloatField:2345681.9]-[listIntField:13]-[listStringField:paramdefaultvalue-scalar]"
                 }
             },
         ),
@@ -309,17 +289,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_2_2-MyEnum-enumField]-"
-                    "[floatField:2345681.9]-"
-                    "[intField:13]-"
-                    "[stringField:paramdefaultvalue-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_2_2-myenum]-"
-                    "[listFloatField:2345681.9]-"
-                    "[listIntField:13]-"
-                    "[listStringField:paramdefaultvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_2_2-MyEnum-enumField]-[floatField:2345681.9]-[intField:13]-[stringField:paramdefaultvalue-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_2_2-myenum]-[listFloatField:2345681.9]-[listIntField:13]-[listStringField:paramdefaultvalue-scalar]"
                 }
             },
         ),
@@ -342,17 +312,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_2_2-MyEnum-enumField]-"
-                    "[floatField:2345681.9]-"
-                    "[intField:13]-"
-                    "[stringField:paramdefaultvalue-scalar-stringField]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_2_2-myenum-None]-"
-                    "[listFloatField:2345681.9-None]-"
-                    "[listIntField:13-None]-"
-                    "[listStringField:paramdefaultvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_2_2-MyEnum-enumField]-[floatField:2345681.9]-[intField:13]-[stringField:paramdefaultvalue-scalar-stringField]-[listBooleanField:False-None]-[listEnumField:enum_2_2-myenum-None]-[listFloatField:2345681.9-None]-[listIntField:13-None]-[listStringField:paramdefaultvalue-scalar-None]"
                 }
             },
         ),
@@ -375,17 +335,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             {"param": {}},
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
                 }
             },
         ),
@@ -526,17 +476,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -558,17 +498,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -590,17 +520,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -627,17 +547,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             {"param": {}},
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
                 }
             },
         ),
@@ -778,17 +688,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -810,17 +710,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -842,17 +732,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -878,10 +758,115 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid default value < {booleanField: null, enumField: null, floatField: null, intField: null, stringField: null, listBooleanField: null, listEnumField: null, listFloatField: null, listIntField: null, listStringField: null} >.",
+                        "message": "Expected value of type < Boolean! >, found < null >.",
                         "path": None,
-                        "locations": [{"line": 2, "column": 58}],
-                    }
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Boolean]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 35}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 32}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Float]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 33}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [String]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 12, "column": 34}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
                 ],
             },
         ),
@@ -904,9 +889,119 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             {"param": None},
             {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-None"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Boolean]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 35}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 32}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Float]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 33}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [String]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 12, "column": 34}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
             },
         ),
         (
@@ -928,19 +1023,119 @@ from tests.functional.coercers.common import resolve_input_object_field
             }""",
             {"param": {}},
             {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Boolean]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 35}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 32}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Float]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 33}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [String]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 12, "column": 34}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
             },
         ),
         (
@@ -956,6 +1151,1510 @@ from tests.functional.coercers.common import resolve_input_object_field
                 listFloatField: null
                 listIntField: null
                 listStringField: null
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": None,
+                    "enumField": None,
+                    "floatField": None,
+                    "intField": None,
+                    "stringField": None,
+                    "listBooleanField": None,
+                    "listEnumField": None,
+                    "listFloatField": None,
+                    "listIntField": None,
+                    "listStringField": None,
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Boolean]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 35}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 32}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Float]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 33}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [String]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 12, "column": 34}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: null
+                listEnumField: null
+                listFloatField: null
+                listIntField: null
+                listStringField: null
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": None,
+                    "enumField": None,
+                    "floatField": None,
+                    "intField": None,
+                    "stringField": None,
+                    "listBooleanField": [None],
+                    "listEnumField": [None],
+                    "listFloatField": [None],
+                    "listIntField": [None],
+                    "listStringField": [None],
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Boolean]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 35}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 32}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Float]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 33}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [String]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 12, "column": 34}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: null
+                listEnumField: null
+                listFloatField: null
+                listIntField: null
+                listStringField: null
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": True,
+                    "enumField": "ENUM_3",
+                    "floatField": 3456.789e2,
+                    "intField": 20,
+                    "stringField": "varValue",
+                    "listBooleanField": True,
+                    "listEnumField": "ENUM_3",
+                    "listFloatField": 3456.789e2,
+                    "listIntField": 20,
+                    "listStringField": "varValue",
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Boolean]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 35}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 32}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Float]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 33}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [String]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 12, "column": 34}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: null
+                listEnumField: null
+                listFloatField: null
+                listIntField: null
+                listStringField: null
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": True,
+                    "enumField": "ENUM_3",
+                    "floatField": 3456.789e2,
+                    "intField": 20,
+                    "stringField": "varValue",
+                    "listBooleanField": [True],
+                    "listEnumField": ["ENUM_3"],
+                    "listFloatField": [3456.789e2],
+                    "listIntField": [20],
+                    "listStringField": ["varValue"],
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Boolean]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 35}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 32}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Float]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 33}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [String]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 12, "column": 34}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: null
+                listEnumField: null
+                listFloatField: null
+                listIntField: null
+                listStringField: null
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": True,
+                    "enumField": "ENUM_3",
+                    "floatField": 3456.789e2,
+                    "intField": 20,
+                    "stringField": "varValue",
+                    "listBooleanField": [True, None],
+                    "listEnumField": ["ENUM_3", None],
+                    "listFloatField": [3456.789e2, None],
+                    "listIntField": [20, None],
+                    "listStringField": ["varValue", None],
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Boolean]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 8, "column": 35}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 9, "column": 32}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Float]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 33}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < [String]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 12, "column": 34}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: [null]
+                listEnumField: [null]
+                listFloatField: [null]
+                listIntField: [null]
+                listStringField: [null]
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: [null]
+                listEnumField: [null]
+                listFloatField: [null]
+                listIntField: [null]
+                listStringField: [null]
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {"param": None},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: [null]
+                listEnumField: [null]
+                listFloatField: [null]
+                listIntField: [null]
+                listStringField: [null]
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {"param": {}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: [null]
+                listEnumField: [null]
+                listFloatField: [null]
+                listIntField: [null]
+                listStringField: [null]
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": None,
+                    "enumField": None,
+                    "floatField": None,
+                    "intField": None,
+                    "stringField": None,
+                    "listBooleanField": None,
+                    "listEnumField": None,
+                    "listFloatField": None,
+                    "listIntField": None,
+                    "listStringField": None,
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: [null]
+                listEnumField: [null]
+                listFloatField: [null]
+                listIntField: [null]
+                listStringField: [null]
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": None,
+                    "enumField": None,
+                    "floatField": None,
+                    "intField": None,
+                    "stringField": None,
+                    "listBooleanField": [None],
+                    "listEnumField": [None],
+                    "listFloatField": [None],
+                    "listIntField": [None],
+                    "listStringField": [None],
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: [null]
+                listEnumField: [null]
+                listFloatField: [null]
+                listIntField: [null]
+                listStringField: [null]
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": True,
+                    "enumField": "ENUM_3",
+                    "floatField": 3456.789e2,
+                    "intField": 20,
+                    "stringField": "varValue",
+                    "listBooleanField": True,
+                    "listEnumField": "ENUM_3",
+                    "listFloatField": 3456.789e2,
+                    "listIntField": 20,
+                    "listStringField": "varValue",
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: [null]
+                listEnumField: [null]
+                listFloatField: [null]
+                listIntField: [null]
+                listStringField: [null]
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": True,
+                    "enumField": "ENUM_3",
+                    "floatField": 3456.789e2,
+                    "intField": 20,
+                    "stringField": "varValue",
+                    "listBooleanField": [True],
+                    "listEnumField": ["ENUM_3"],
+                    "listFloatField": [3456.789e2],
+                    "listIntField": [20],
+                    "listStringField": ["varValue"],
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: null
+                enumField: null
+                floatField: null
+                intField: null
+                stringField: null
+                listBooleanField: [null]
+                listEnumField: [null]
+                listFloatField: [null]
+                listIntField: [null]
+                listStringField: [null]
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {
+                "param": {
+                    "booleanField": True,
+                    "enumField": "ENUM_3",
+                    "floatField": 3456.789e2,
+                    "intField": 20,
+                    "stringField": "varValue",
+                    "listBooleanField": [True, None],
+                    "listEnumField": ["ENUM_3", None],
+                    "listFloatField": [3456.789e2, None],
+                    "listIntField": [20, None],
+                    "listStringField": ["varValue", None],
+                }
+            },
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 31}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < MyEnum! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 27}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    },
+                ],
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: false
+                enumField: ENUM_4
+                floatField: 456.789e2
+                intField: 30
+                stringField: "varDefault"
+                listBooleanField: false
+                listEnumField: ENUM_4
+                listFloatField: 456.789e2
+                listIntField: 30
+                listStringField: "varDefault"
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            None,
+            {
+                "data": {
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_4_4-myenum]-[listFloatField:45681.9]-[listIntField:33]-[listStringField:vardefault-scalar]"
+                }
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: false
+                enumField: ENUM_4
+                floatField: 456.789e2
+                intField: 30
+                stringField: "varDefault"
+                listBooleanField: false
+                listEnumField: ENUM_4
+                listFloatField: 456.789e2
+                listIntField: 30
+                listStringField: "varDefault"
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {"param": None},
+            {
+                "data": {
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-None"
+                }
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: false
+                enumField: ENUM_4
+                floatField: 456.789e2
+                intField: 30
+                stringField: "varDefault"
+                listBooleanField: false
+                listEnumField: ENUM_4
+                listFloatField: 456.789e2
+                listIntField: 30
+                listStringField: "varDefault"
+              }
+            ) {
+              wrapperNonNullWithDefaultInputObjectField(param: $param)
+            }""",
+            {"param": {}},
+            {
+                "data": {
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
+                }
+            },
+        ),
+        (
+            """query (
+              $param: WrapperNonNullWithDefaultMyInput = {
+                booleanField: false
+                enumField: ENUM_4
+                floatField: 456.789e2
+                intField: 30
+                stringField: "varDefault"
+                listBooleanField: false
+                listEnumField: ENUM_4
+                listFloatField: 456.789e2
+                listIntField: 30
+                listStringField: "varDefault"
               }
             ) {
               wrapperNonNullWithDefaultInputObjectField(param: $param)
@@ -1033,765 +2732,6 @@ from tests.functional.coercers.common import resolve_input_object_field
         (
             """query (
               $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: null
-                listEnumField: null
-                listFloatField: null
-                listIntField: null
-                listStringField: null
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": None,
-                    "enumField": None,
-                    "floatField": None,
-                    "intField": None,
-                    "stringField": None,
-                    "listBooleanField": [None],
-                    "listEnumField": [None],
-                    "listFloatField": [None],
-                    "listIntField": [None],
-                    "listStringField": [None],
-                }
-            },
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < Boolean! > not to be null at value.booleanField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < MyEnum! > not to be null at value.enumField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < Float! > not to be null at value.floatField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < Int! > not to be null at value.intField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < String! > not to be null at value.stringField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                ],
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: null
-                listEnumField: null
-                listFloatField: null
-                listIntField: null
-                listStringField: null
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": True,
-                    "enumField": "ENUM_3",
-                    "floatField": 3456.789e2,
-                    "intField": 20,
-                    "stringField": "varValue",
-                    "listBooleanField": True,
-                    "listEnumField": "ENUM_3",
-                    "listFloatField": 3456.789e2,
-                    "listIntField": 20,
-                    "listStringField": "varValue",
-                }
-            },
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: null
-                listEnumField: null
-                listFloatField: null
-                listIntField: null
-                listStringField: null
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": True,
-                    "enumField": "ENUM_3",
-                    "floatField": 3456.789e2,
-                    "intField": 20,
-                    "stringField": "varValue",
-                    "listBooleanField": [True],
-                    "listEnumField": ["ENUM_3"],
-                    "listFloatField": [3456.789e2],
-                    "listIntField": [20],
-                    "listStringField": ["varValue"],
-                }
-            },
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: null
-                listEnumField: null
-                listFloatField: null
-                listIntField: null
-                listStringField: null
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": True,
-                    "enumField": "ENUM_3",
-                    "floatField": 3456.789e2,
-                    "intField": 20,
-                    "stringField": "varValue",
-                    "listBooleanField": [True, None],
-                    "listEnumField": ["ENUM_3", None],
-                    "listFloatField": [3456.789e2, None],
-                    "listIntField": [20, None],
-                    "listStringField": ["varValue", None],
-                }
-            },
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: [null]
-                listEnumField: [null]
-                listFloatField: [null]
-                listIntField: [null]
-                listStringField: [null]
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            None,
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "Variable < $param > got invalid default value < {booleanField: null, enumField: null, floatField: null, intField: null, stringField: null, listBooleanField: [null], listEnumField: [null], listFloatField: [null], listIntField: [null], listStringField: [null]} >.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 58}],
-                    }
-                ],
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: [null]
-                listEnumField: [null]
-                listFloatField: [null]
-                listIntField: [null]
-                listStringField: [null]
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {"param": None},
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-None"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: [null]
-                listEnumField: [null]
-                listFloatField: [null]
-                listIntField: [null]
-                listStringField: [null]
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {"param": {}},
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: [null]
-                listEnumField: [null]
-                listFloatField: [null]
-                listIntField: [null]
-                listStringField: [null]
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": None,
-                    "enumField": None,
-                    "floatField": None,
-                    "intField": None,
-                    "stringField": None,
-                    "listBooleanField": None,
-                    "listEnumField": None,
-                    "listFloatField": None,
-                    "listIntField": None,
-                    "listStringField": None,
-                }
-            },
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < Boolean! > not to be null at value.booleanField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < MyEnum! > not to be null at value.enumField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < Float! > not to be null at value.floatField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < Int! > not to be null at value.intField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < String! > not to be null at value.stringField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [Boolean]! > not to be null at value.listBooleanField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [MyEnum]! > not to be null at value.listEnumField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [Float]! > not to be null at value.listFloatField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [Int]! > not to be null at value.listIntField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [String]! > not to be null at value.listStringField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                ],
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: [null]
-                listEnumField: [null]
-                listFloatField: [null]
-                listIntField: [null]
-                listStringField: [null]
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": None,
-                    "enumField": None,
-                    "floatField": None,
-                    "intField": None,
-                    "stringField": None,
-                    "listBooleanField": [None],
-                    "listEnumField": [None],
-                    "listFloatField": [None],
-                    "listIntField": [None],
-                    "listStringField": [None],
-                }
-            },
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < Boolean! > not to be null at value.booleanField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < MyEnum! > not to be null at value.enumField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < Float! > not to be null at value.floatField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < Int! > not to be null at value.intField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': [None], 'listEnumField': [None], 'listFloatField': [None], 'listIntField': [None], 'listStringField': [None]} >; Expected non-nullable type < String! > not to be null at value.stringField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                ],
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: [null]
-                listEnumField: [null]
-                listFloatField: [null]
-                listIntField: [null]
-                listStringField: [null]
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": True,
-                    "enumField": "ENUM_3",
-                    "floatField": 3456.789e2,
-                    "intField": 20,
-                    "stringField": "varValue",
-                    "listBooleanField": True,
-                    "listEnumField": "ENUM_3",
-                    "listFloatField": 3456.789e2,
-                    "listIntField": 20,
-                    "listStringField": "varValue",
-                }
-            },
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: [null]
-                listEnumField: [null]
-                listFloatField: [null]
-                listIntField: [null]
-                listStringField: [null]
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": True,
-                    "enumField": "ENUM_3",
-                    "floatField": 3456.789e2,
-                    "intField": 20,
-                    "stringField": "varValue",
-                    "listBooleanField": [True],
-                    "listEnumField": ["ENUM_3"],
-                    "listFloatField": [3456.789e2],
-                    "listIntField": [20],
-                    "listStringField": ["varValue"],
-                }
-            },
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: null
-                enumField: null
-                floatField: null
-                intField: null
-                stringField: null
-                listBooleanField: [null]
-                listEnumField: [null]
-                listFloatField: [null]
-                listIntField: [null]
-                listStringField: [null]
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": True,
-                    "enumField": "ENUM_3",
-                    "floatField": 3456.789e2,
-                    "intField": 20,
-                    "stringField": "varValue",
-                    "listBooleanField": [True, None],
-                    "listEnumField": ["ENUM_3", None],
-                    "listFloatField": [3456.789e2, None],
-                    "listIntField": [20, None],
-                    "listStringField": ["varValue", None],
-                }
-            },
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: false
-                enumField: ENUM_4
-                floatField: 456.789e2
-                intField: 30
-                stringField: "varDefault"
-                listBooleanField: false
-                listEnumField: ENUM_4
-                listFloatField: 456.789e2
-                listIntField: 30
-                listStringField: "varDefault"
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            None,
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_4_4-myenum]-"
-                    "[listFloatField:45681.9]-"
-                    "[listIntField:33]-"
-                    "[listStringField:vardefault-scalar]"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: false
-                enumField: ENUM_4
-                floatField: 456.789e2
-                intField: 30
-                stringField: "varDefault"
-                listBooleanField: false
-                listEnumField: ENUM_4
-                listFloatField: 456.789e2
-                listIntField: 30
-                listStringField: "varDefault"
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {"param": None},
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-None"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: false
-                enumField: ENUM_4
-                floatField: 456.789e2
-                intField: 30
-                stringField: "varDefault"
-                listBooleanField: false
-                listEnumField: ENUM_4
-                listFloatField: 456.789e2
-                listIntField: 30
-                listStringField: "varDefault"
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {"param": {}},
-            {
-                "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
-                }
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
-                booleanField: false
-                enumField: ENUM_4
-                floatField: 456.789e2
-                intField: 30
-                stringField: "varDefault"
-                listBooleanField: false
-                listEnumField: ENUM_4
-                listFloatField: 456.789e2
-                listIntField: 30
-                listStringField: "varDefault"
-              }
-            ) {
-              wrapperNonNullWithDefaultInputObjectField(param: $param)
-            }""",
-            {
-                "param": {
-                    "booleanField": None,
-                    "enumField": None,
-                    "floatField": None,
-                    "intField": None,
-                    "stringField": None,
-                    "listBooleanField": None,
-                    "listEnumField": None,
-                    "listFloatField": None,
-                    "listIntField": None,
-                    "listStringField": None,
-                }
-            },
-            {
-                "data": None,
-                "errors": [
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < Boolean! > not to be null at value.booleanField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < MyEnum! > not to be null at value.enumField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < Float! > not to be null at value.floatField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < Int! > not to be null at value.intField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < String! > not to be null at value.stringField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [Boolean]! > not to be null at value.listBooleanField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [MyEnum]! > not to be null at value.listEnumField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [Float]! > not to be null at value.listFloatField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [Int]! > not to be null at value.listIntField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                    {
-                        "message": "Variable < $param > got invalid value < {'booleanField': None, 'enumField': None, 'floatField': None, 'intField': None, 'stringField': None, 'listBooleanField': None, 'listEnumField': None, 'listFloatField': None, 'listIntField': None, 'listStringField': None} >; Expected non-nullable type < [String]! > not to be null at value.listStringField.",
-                        "path": None,
-                        "locations": [{"line": 2, "column": 15}],
-                    },
-                ],
-            },
-        ),
-        (
-            """query (
-              $param: WrapperNonNullWithDefaultMyInput = {
                 booleanField: false
                 enumField: ENUM_4
                 floatField: 456.789e2
@@ -1884,17 +2824,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -1931,17 +2861,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -1978,17 +2898,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -2012,17 +2922,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_4_4-myenum]-"
-                    "[listFloatField:45681.9]-"
-                    "[listIntField:33]-"
-                    "[listStringField:vardefault-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_4_4-myenum]-[listFloatField:45681.9]-[listIntField:33]-[listStringField:vardefault-scalar]"
                 }
             },
         ),
@@ -2070,17 +2970,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             {"param": {}},
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
                 }
             },
         ),
@@ -2266,17 +3156,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2313,17 +3193,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2360,17 +3230,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -2394,17 +3254,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_4_4-myenum-None]-"
-                    "[listFloatField:45681.9-None]-"
-                    "[listIntField:33-None]-"
-                    "[listStringField:vardefault-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False-None]-[listEnumField:enum_4_4-myenum-None]-[listFloatField:45681.9-None]-[listIntField:33-None]-[listStringField:vardefault-scalar-None]"
                 }
             },
         ),
@@ -2452,17 +3302,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             {"param": {}},
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
                 }
             },
         ),
@@ -2648,17 +3488,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2695,17 +3525,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2742,17 +3562,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -2789,17 +3599,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             {"param": {}},
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
                 }
             },
         ),
@@ -2940,17 +3740,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2972,17 +3762,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3004,17 +3784,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -3048,17 +3818,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
                 }
             },
         ),
@@ -3203,17 +3963,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3258,17 +4008,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3313,17 +4053,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -3507,17 +4237,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3562,17 +4282,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3617,17 +4327,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -3811,17 +4511,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3866,17 +4556,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3921,17 +4601,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -3965,17 +4635,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_4_4-myenum]-"
-                    "[listFloatField:45681.9]-"
-                    "[listIntField:33]-"
-                    "[listStringField:vardefault-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_4_4-myenum]-[listFloatField:45681.9]-[listIntField:33]-[listStringField:vardefault-scalar]"
                 }
             },
         ),
@@ -4120,17 +4780,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4175,17 +4825,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4230,17 +4870,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -4274,17 +4904,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_4_4-myenum]-"
-                    "[listFloatField:45681.9]-"
-                    "[listIntField:33]-"
-                    "[listStringField:vardefault-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_4_4-myenum]-[listFloatField:45681.9]-[listIntField:33]-[listStringField:vardefault-scalar]"
                 }
             },
         ),
@@ -4429,17 +5049,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4484,17 +5094,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4539,17 +5139,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -4583,17 +5173,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_4_4-myenum-None]-"
-                    "[listFloatField:45681.9-None]-"
-                    "[listIntField:33-None]-"
-                    "[listStringField:vardefault-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False-None]-[listEnumField:enum_4_4-myenum-None]-[listFloatField:45681.9-None]-[listIntField:33-None]-[listStringField:vardefault-scalar-None]"
                 }
             },
         ),
@@ -4738,17 +5318,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4793,17 +5363,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4848,17 +5408,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -5152,17 +5702,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -5207,17 +5747,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -5262,17 +5792,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -5541,17 +6061,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -5596,17 +6106,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -5995,17 +6495,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -6050,17 +6540,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -6164,17 +6644,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_2_2-myenum-None]-"
-                    "[listFloatField:2345681.9-None]-"
-                    "[listIntField:13-None]-"
-                    "[listStringField:paramdefaultvalue-scalar-None]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:False-None]-[listEnumField:enum_2_2-myenum-None]-[listFloatField:2345681.9-None]-[listIntField:13-None]-[listStringField:paramdefaultvalue-scalar-None]"
                 }
             },
         ),
@@ -6269,17 +6739,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:False-True]-"
-                    "[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-"
-                    "[listFloatField:2345681.9-345681.9]-"
-                    "[listIntField:13-23]-"
-                    "[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:False-True]-[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-[listFloatField:2345681.9-345681.9]-[listIntField:13-23]-[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
                 }
             },
         ),
@@ -6413,17 +6873,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:False-True]-"
-                    "[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-"
-                    "[listFloatField:2345681.9-345681.9]-"
-                    "[listIntField:13-23]-"
-                    "[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:False-True]-[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-[listFloatField:2345681.9-345681.9]-[listIntField:13-23]-[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
                 }
             },
         ),
@@ -6457,17 +6907,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False-False]-"
-                    "[listEnumField:enum_2_2-myenum-enum_4_4-myenum]-"
-                    "[listFloatField:2345681.9-45681.9]-"
-                    "[listIntField:13-33]-"
-                    "[listStringField:paramdefaultvalue-scalar-vardefault-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False-False]-[listEnumField:enum_2_2-myenum-enum_4_4-myenum]-[listFloatField:2345681.9-45681.9]-[listIntField:13-33]-[listStringField:paramdefaultvalue-scalar-vardefault-scalar]"
                 }
             },
         ),
@@ -6562,17 +7002,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:False-True]-"
-                    "[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-"
-                    "[listFloatField:2345681.9-345681.9]-"
-                    "[listIntField:13-23]-"
-                    "[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:False-True]-[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-[listFloatField:2345681.9-345681.9]-[listIntField:13-23]-[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
                 }
             },
         ),
@@ -6796,17 +7226,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:False-True]-"
-                    "[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-"
-                    "[listFloatField:2345681.9-345681.9]-"
-                    "[listIntField:13-23]-"
-                    "[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
+                    "wrapperNonNullWithDefaultInputObjectField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:False-True]-[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-[listFloatField:2345681.9-345681.9]-[listIntField:13-23]-[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
                 }
             },
         ),

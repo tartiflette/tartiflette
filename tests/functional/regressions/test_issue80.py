@@ -38,9 +38,7 @@ async def test_issue80(ttftt_engine):
     }
     """
 
-    results = await ttftt_engine.execute(query)
-
-    assert results == {
+    assert await ttftt_engine.execute(query) == {
         "data": None,
         "errors": [
             {
@@ -48,10 +46,10 @@ async def test_issue80(ttftt_engine):
                 "path": None,
                 "locations": [{"line": 2, "column": 5}],
                 "extensions": {
-                    "rule": "5.5.1.4",
                     "spec": "June 2018",
-                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragments-Must-Be-Used",
+                    "rule": "5.5.1.4",
                     "tag": "fragment-must-be-used",
+                    "details": "https://spec.graphql.org/June2018/#sec-Fragments-Must-Be-Used",
                 },
             }
         ],

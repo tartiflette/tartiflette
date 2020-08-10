@@ -32,14 +32,14 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < String! > must not be null.",
-                        "path": ["listWithDefaultNonNullStringField"],
-                        "locations": [{"line": 1, "column": 43}],
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 51}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],
@@ -70,14 +70,14 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < String! > must not be null.",
-                        "path": ["listWithDefaultNonNullStringField"],
-                        "locations": [{"line": 1, "column": 43}],
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 72}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],
@@ -150,9 +150,15 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid default value < [null] >.",
+                        "message": "Expected value of type < String! >, found < null >.",
                         "path": None,
-                        "locations": [{"line": 1, "column": 28}],
+                        "locations": [{"line": 1, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
                     }
                 ],
             },
@@ -160,24 +166,61 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($param: [String!] = [null]) { listWithDefaultNonNullStringField(param: $param) }""",
             {"param": None},
-            {"data": {"listWithDefaultNonNullStringField": "SUCCESS-[None]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [String!] = [null]) { listWithDefaultNonNullStringField(param: $param) }""",
             {"param": "varValue"},
             {
-                "data": {
-                    "listWithDefaultNonNullStringField": "SUCCESS-[varvalue-scalar]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
             },
         ),
         (
             """query ($param: [String!] = [null]) { listWithDefaultNonNullStringField(param: $param) }""",
             {"param": ["varValue"]},
             {
-                "data": {
-                    "listWithDefaultNonNullStringField": "SUCCESS-[varvalue-scalar]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 29}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
             },
         ),
         (
@@ -251,9 +294,15 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": 'Variable < $param > got invalid default value < ["varDefault", null] >.',
+                        "message": "Expected value of type < String! >, found < null >.",
                         "path": None,
-                        "locations": [{"line": 1, "column": 28}],
+                        "locations": [{"line": 1, "column": 43}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
                     }
                 ],
             },
@@ -261,24 +310,61 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($param: [String!] = ["varDefault", null]) { listWithDefaultNonNullStringField(param: $param) }""",
             {"param": None},
-            {"data": {"listWithDefaultNonNullStringField": "SUCCESS-[None]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 43}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [String!] = ["varDefault", null]) { listWithDefaultNonNullStringField(param: $param) }""",
             {"param": "varValue"},
             {
-                "data": {
-                    "listWithDefaultNonNullStringField": "SUCCESS-[varvalue-scalar]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 43}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
             },
         ),
         (
             """query ($param: [String!] = ["varDefault", null]) { listWithDefaultNonNullStringField(param: $param) }""",
             {"param": ["varValue"]},
             {
-                "data": {
-                    "listWithDefaultNonNullStringField": "SUCCESS-[varvalue-scalar]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 43}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
             },
         ),
         (
@@ -465,12 +551,21 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: String) { listWithDefaultNonNullStringField(param: ["paramDefaultValue", $item]) }""",
             None,
             {
-                "data": {"listWithDefaultNonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": 'Argument < param > has invalid value < ["paramDefaultValue", $item] >.',
-                        "path": ["listWithDefaultNonNullStringField"],
-                        "locations": [{"line": 1, "column": 66}],
+                        "message": "Variable < $item > of type < String > used in position expecting type < String! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 88},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
                     }
                 ],
             },
@@ -479,12 +574,21 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: String) { listWithDefaultNonNullStringField(param: ["paramDefaultValue", $item]) }""",
             {"item": None},
             {
-                "data": {"listWithDefaultNonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": 'Argument < param > has invalid value < ["paramDefaultValue", $item] >.',
-                        "path": ["listWithDefaultNonNullStringField"],
-                        "locations": [{"line": 1, "column": 66}],
+                        "message": "Variable < $item > of type < String > used in position expecting type < String! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 88},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
                     }
                 ],
             },
@@ -493,21 +597,44 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: String) { listWithDefaultNonNullStringField(param: ["paramDefaultValue", $item]) }""",
             {"item": "varValue"},
             {
-                "data": {
-                    "listWithDefaultNonNullStringField": "SUCCESS-[paramdefaultvalue-scalar-varvalue-scalar]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $item > of type < String > used in position expecting type < String! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 88},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
+                    }
+                ],
             },
         ),
         (
             """query ($item: String = null) { listWithDefaultNonNullStringField(param: ["paramDefaultValue", $item]) }""",
             None,
             {
-                "data": {"listWithDefaultNonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": 'Argument < param > has invalid value < ["paramDefaultValue", $item] >.',
-                        "path": ["listWithDefaultNonNullStringField"],
-                        "locations": [{"line": 1, "column": 73}],
+                        "message": "Variable < $item > of type < String > used in position expecting type < String! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 95},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
                     }
                 ],
             },
@@ -516,12 +643,21 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: String = null) { listWithDefaultNonNullStringField(param: ["paramDefaultValue", $item]) }""",
             {"item": None},
             {
-                "data": {"listWithDefaultNonNullStringField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": 'Argument < param > has invalid value < ["paramDefaultValue", $item] >.',
-                        "path": ["listWithDefaultNonNullStringField"],
-                        "locations": [{"line": 1, "column": 73}],
+                        "message": "Variable < $item > of type < String > used in position expecting type < String! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 95},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
                     }
                 ],
             },
@@ -530,9 +666,23 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: String = null) { listWithDefaultNonNullStringField(param: ["paramDefaultValue", $item]) }""",
             {"item": "varValue"},
             {
-                "data": {
-                    "listWithDefaultNonNullStringField": "SUCCESS-[paramdefaultvalue-scalar-varvalue-scalar]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $item > of type < String > used in position expecting type < String! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 95},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
+                    }
+                ],
             },
         ),
         (

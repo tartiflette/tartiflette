@@ -19,17 +19,14 @@ import pytest
             """,
             [
                 {
-                    "message": "Subcription Sub must select only one top level field.",
+                    "message": "Subscription < Sub > must select only one top level field.",
                     "path": None,
-                    "locations": [
-                        {"line": 2, "column": 13},
-                        {"line": 2, "column": 30},
-                    ],
+                    "locations": [{"line": 6, "column": 15}],
                     "extensions": {
-                        "rule": "5.2.3.1",
                         "spec": "June 2018",
-                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Single-root-field",
+                        "rule": "5.2.3.1",
                         "tag": "single-root-field",
+                        "details": "https://spec.graphql.org/June2018/#sec-Single-root-field",
                     },
                 }
             ],
@@ -45,17 +42,14 @@ import pytest
             """,
             [
                 {
-                    "message": "Subcription Sub must select only one top level field.",
+                    "message": "Subscription < Sub > must select only one top level field.",
                     "path": None,
-                    "locations": [
-                        {"line": 2, "column": 13},
-                        {"line": 2, "column": 30},
-                    ],
+                    "locations": [{"line": 6, "column": 15}],
                     "extensions": {
-                        "rule": "5.2.3.1",
                         "spec": "June 2018",
-                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Single-root-field",
+                        "rule": "5.2.3.1",
                         "tag": "single-root-field",
+                        "details": "https://spec.graphql.org/June2018/#sec-Single-root-field",
                     },
                 }
             ],
@@ -77,17 +71,14 @@ import pytest
             """,
             [
                 {
-                    "message": "Subcription Sub must select only one top level field.",
+                    "message": "Subscription < Sub > must select only one top level field.",
                     "path": None,
-                    "locations": [
-                        {"line": 11, "column": 13},
-                        {"line": 2, "column": 66},
-                    ],
+                    "locations": [{"line": 6, "column": 15}],
                     "extensions": {
-                        "rule": "5.2.3.1",
                         "spec": "June 2018",
-                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Single-root-field",
+                        "rule": "5.2.3.1",
                         "tag": "single-root-field",
+                        "details": "https://spec.graphql.org/June2018/#sec-Single-root-field",
                     },
                 }
             ],
@@ -107,17 +98,14 @@ import pytest
             """,
             [
                 {
-                    "message": "Subcription Sub must select only one top level field.",
+                    "message": "Subscription < Sub > must select only one top level field.",
                     "path": None,
-                    "locations": [
-                        {"line": 2, "column": 13},
-                        {"line": 3, "column": 35},
-                    ],
+                    "locations": [{"line": 7, "column": 17}],
                     "extensions": {
-                        "rule": "5.2.3.1",
                         "spec": "June 2018",
-                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Single-root-field",
+                        "rule": "5.2.3.1",
                         "tag": "single-root-field",
+                        "details": "https://spec.graphql.org/June2018/#sec-Single-root-field",
                     },
                 }
             ],
@@ -132,6 +120,9 @@ import pytest
                 newHuman {
                   name
                 }
+                newAlien {
+                  name
+                }
               }
             }
 
@@ -141,17 +132,17 @@ import pytest
             """,
             [
                 {
-                    "message": "Subcription Sub must select only one top level field.",
+                    "message": "Subscription < Sub > must select only one top level field.",
                     "path": None,
                     "locations": [
-                        {"line": 13, "column": 13},
-                        {"line": 3, "column": 35},
+                        {"line": 7, "column": 17},
+                        {"line": 10, "column": 17},
                     ],
                     "extensions": {
-                        "rule": "5.2.3.1",
                         "spec": "June 2018",
-                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Single-root-field",
+                        "rule": "5.2.3.1",
                         "tag": "single-root-field",
+                        "details": "https://spec.graphql.org/June2018/#sec-Single-root-field",
                     },
                 }
             ],

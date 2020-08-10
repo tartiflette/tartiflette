@@ -28,14 +28,14 @@ async def resolver_query_viewer(*_, **__):
             """,
             [
                 {
-                    "message": "Anonymous operation must be the only defined operation.",
+                    "message": "This anonymous operation must be the only defined operation.",
                     "path": None,
                     "locations": [{"line": 2, "column": 13}],
                     "extensions": {
-                        "rule": "5.2.2.1",
                         "spec": "June 2018",
-                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Lone-Anonymous-Operation",
+                        "rule": "5.2.2.1",
                         "tag": "lone-anonymous-operation",
+                        "details": "https://spec.graphql.org/June2018/#sec-Lone-Anonymous-Operation",
                     },
                 }
             ],
@@ -58,14 +58,14 @@ async def resolver_query_viewer(*_, **__):
             """,
             [
                 {
-                    "message": "Anonymous operation must be the only defined operation.",
+                    "message": "This anonymous operation must be the only defined operation.",
                     "path": None,
                     "locations": [{"line": 10, "column": 13}],
                     "extensions": {
-                        "rule": "5.2.2.1",
                         "spec": "June 2018",
-                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Lone-Anonymous-Operation",
+                        "rule": "5.2.2.1",
                         "tag": "lone-anonymous-operation",
+                        "details": "https://spec.graphql.org/June2018/#sec-Lone-Anonymous-Operation",
                     },
                 }
             ],
@@ -88,19 +88,27 @@ async def resolver_query_viewer(*_, **__):
             """,
             [
                 {
-                    "message": "Anonymous operation must be the only defined operation.",
+                    "message": "This anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [
-                        {"line": 2, "column": 13},
-                        {"line": 8, "column": 13},
-                    ],
+                    "locations": [{"line": 2, "column": 13}],
                     "extensions": {
-                        "rule": "5.2.2.1",
                         "spec": "June 2018",
-                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Lone-Anonymous-Operation",
+                        "rule": "5.2.2.1",
                         "tag": "lone-anonymous-operation",
+                        "details": "https://spec.graphql.org/June2018/#sec-Lone-Anonymous-Operation",
                     },
-                }
+                },
+                {
+                    "message": "This anonymous operation must be the only defined operation.",
+                    "path": None,
+                    "locations": [{"line": 8, "column": 13}],
+                    "extensions": {
+                        "spec": "June 2018",
+                        "rule": "5.2.2.1",
+                        "tag": "lone-anonymous-operation",
+                        "details": "https://spec.graphql.org/June2018/#sec-Lone-Anonymous-Operation",
+                    },
+                },
             ],
         ),
         (
@@ -121,19 +129,27 @@ async def resolver_query_viewer(*_, **__):
             """,
             [
                 {
-                    "message": "Anonymous operation must be the only defined operation.",
+                    "message": "This anonymous operation must be the only defined operation.",
                     "path": None,
-                    "locations": [
-                        {"line": 2, "column": 13},
-                        {"line": 10, "column": 13},
-                    ],
+                    "locations": [{"line": 2, "column": 13}],
                     "extensions": {
-                        "rule": "5.2.2.1",
                         "spec": "June 2018",
-                        "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Lone-Anonymous-Operation",
+                        "rule": "5.2.2.1",
                         "tag": "lone-anonymous-operation",
+                        "details": "https://spec.graphql.org/June2018/#sec-Lone-Anonymous-Operation",
                     },
-                }
+                },
+                {
+                    "message": "This anonymous operation must be the only defined operation.",
+                    "path": None,
+                    "locations": [{"line": 10, "column": 13}],
+                    "extensions": {
+                        "spec": "June 2018",
+                        "rule": "5.2.2.1",
+                        "tag": "lone-anonymous-operation",
+                        "details": "https://spec.graphql.org/June2018/#sec-Lone-Anonymous-Operation",
+                    },
+                },
             ],
         ),
     ],

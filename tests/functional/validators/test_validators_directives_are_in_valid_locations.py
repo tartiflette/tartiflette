@@ -31,6 +31,7 @@ type Subscription {
     )
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -52,31 +53,25 @@ type Subscription {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Directive < @queryDirective > is not used in a valid location.",
+                        "message": "Directive < @queryDirective > may not be used on MUTATION.",
                         "path": None,
-                        "locations": [
-                            {"line": 6, "column": 13},
-                            {"line": 6, "column": 24},
-                        ],
+                        "locations": [{"line": 6, "column": 24}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                     {
-                        "message": "Directive < @queryDirective > is not used in a valid location.",
+                        "message": "Directive < @queryDirective > may not be used on SUBSCRIPTION.",
                         "path": None,
-                        "locations": [
-                            {"line": 10, "column": 13},
-                            {"line": 10, "column": 28},
-                        ],
+                        "locations": [{"line": 10, "column": 28}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                 ],
@@ -100,31 +95,25 @@ type Subscription {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Directive < @mutationDirective > is not used in a valid location.",
+                        "message": "Directive < @mutationDirective > may not be used on QUERY.",
                         "path": None,
-                        "locations": [
-                            {"line": 2, "column": 13},
-                            {"line": 2, "column": 21},
-                        ],
+                        "locations": [{"line": 2, "column": 21}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                     {
-                        "message": "Directive < @mutationDirective > is not used in a valid location.",
+                        "message": "Directive < @mutationDirective > may not be used on SUBSCRIPTION.",
                         "path": None,
-                        "locations": [
-                            {"line": 10, "column": 13},
-                            {"line": 10, "column": 28},
-                        ],
+                        "locations": [{"line": 10, "column": 28}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                 ],
@@ -148,31 +137,25 @@ type Subscription {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Directive < @subscriptionDirective > is not used in a valid location.",
+                        "message": "Directive < @subscriptionDirective > may not be used on QUERY.",
                         "path": None,
-                        "locations": [
-                            {"line": 2, "column": 13},
-                            {"line": 2, "column": 21},
-                        ],
+                        "locations": [{"line": 2, "column": 21}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                     {
-                        "message": "Directive < @subscriptionDirective > is not used in a valid location.",
+                        "message": "Directive < @subscriptionDirective > may not be used on MUTATION.",
                         "path": None,
-                        "locations": [
-                            {"line": 6, "column": 13},
-                            {"line": 6, "column": 24},
-                        ],
+                        "locations": [{"line": 6, "column": 24}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                 ],
@@ -196,31 +179,25 @@ type Subscription {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Directive < @fragmentSpreadDirective > is not used in a valid location.",
-                        "path": ["lol"],
-                        "locations": [
-                            {"line": 7, "column": 17},
-                            {"line": 7, "column": 21},
-                        ],
+                        "message": "Directive < @fragmentSpreadDirective > may not be used on FIELD.",
+                        "path": None,
+                        "locations": [{"line": 7, "column": 21}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                     {
-                        "message": "Directive < @inlineFragmentDirective > is not used in a valid location.",
-                        "path": ["mdr"],
-                        "locations": [
-                            {"line": 11, "column": 17},
-                            {"line": 11, "column": 21},
-                        ],
+                        "message": "Directive < @inlineFragmentDirective > may not be used on FIELD.",
+                        "path": None,
+                        "locations": [{"line": 11, "column": 21}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                 ],
@@ -250,45 +227,36 @@ type Subscription {
                 "data": None,
                 "errors": [
                     {
-                        "message": "Directive < @fieldDirective > is not used in a valid location.",
+                        "message": "Directive < @fieldDirective > may not be used on FRAGMENT_DEFINITION.",
                         "path": None,
-                        "locations": [
-                            {"line": 2, "column": 13},
-                            {"line": 2, "column": 55},
-                        ],
+                        "locations": [{"line": 2, "column": 55}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                     {
-                        "message": "Directive < @inlineFragmentDirective > is not used in a valid location.",
+                        "message": "Directive < @inlineFragmentDirective > may not be used on FRAGMENT_SPREAD.",
                         "path": None,
-                        "locations": [
-                            {"line": 7, "column": 17},
-                            {"line": 7, "column": 50},
-                        ],
+                        "locations": [{"line": 7, "column": 50}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                     {
-                        "message": "Directive < @fragmentSpreadDirective > is not used in a valid location.",
+                        "message": "Directive < @fragmentSpreadDirective > may not be used on INLINE_FRAGMENT.",
                         "path": None,
-                        "locations": [
-                            {"line": 11, "column": 17},
-                            {"line": 11, "column": 58},
-                        ],
+                        "locations": [{"line": 11, "column": 58}],
                         "extensions": {
-                            "rule": "5.7.2",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-In-Valid-Locations",
+                            "rule": "5.7.2",
                             "tag": "directives-are-in-valid-locations",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-In-Valid-Locations",
                         },
                     },
                 ],
@@ -296,7 +264,6 @@ type Subscription {
         ),
     ],
 )
-@pytest.mark.asyncio
 async def test_validators_directives_are_in_valid_locations(
     query, expected, ttftt_engine
 ):

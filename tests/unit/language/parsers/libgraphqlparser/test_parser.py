@@ -1,3 +1,5 @@
+import json
+
 from unittest.mock import Mock
 
 import pytest
@@ -80,11 +82,6 @@ def test_parse_to_json_ast(query, expected):
     assert _parse_to_json_ast(query) == expected
 
 
-@pytest.mark.skip(
-    reason="Should be unskipped when a better validation "
-    "system which doesn't alter the DocumentNode will "
-    "be implemented."
-)
 @pytest.mark.parametrize(
     "sdl,expected",
     [
@@ -1027,7 +1024,7 @@ def test_parse_to_json_ast(query, expected):
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value=0.0,
+                                                value="0.0",
                                                 location=Location(
                                                     line=5,
                                                     column=35,
@@ -1053,7 +1050,7 @@ def test_parse_to_json_ast(query, expected):
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value=10.20,
+                                                value="10.20",
                                                 location=Location(
                                                     line=5,
                                                     column=46,
@@ -1079,7 +1076,7 @@ def test_parse_to_json_ast(query, expected):
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value=1000.0,
+                                                value="1e3",
                                                 location=Location(
                                                     line=5,
                                                     column=59,
@@ -1105,7 +1102,7 @@ def test_parse_to_json_ast(query, expected):
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value=123.4,
+                                                value="1.234e2",
                                                 location=Location(
                                                     line=6,
                                                     column=21,
@@ -1131,7 +1128,7 @@ def test_parse_to_json_ast(query, expected):
                                                 ),
                                             ),
                                             value=FloatValueNode(
-                                                value=-123.4,
+                                                value="-1.234e2",
                                                 location=Location(
                                                     line=6,
                                                     column=36,
@@ -1179,7 +1176,7 @@ def test_parse_to_json_ast(query, expected):
                                                 ),
                                             ),
                                             value=IntValueNode(
-                                                value=0,
+                                                value="0",
                                                 location=Location(
                                                     line=7,
                                                     column=33,
@@ -1205,7 +1202,7 @@ def test_parse_to_json_ast(query, expected):
                                                 ),
                                             ),
                                             value=IntValueNode(
-                                                value=10,
+                                                value="10",
                                                 location=Location(
                                                     line=7,
                                                     column=42,
@@ -1231,7 +1228,7 @@ def test_parse_to_json_ast(query, expected):
                                                 ),
                                             ),
                                             value=IntValueNode(
-                                                value=-10,
+                                                value="-10",
                                                 location=Location(
                                                     line=7,
                                                     column=52,
@@ -1446,7 +1443,7 @@ def test_parse_to_json_ast(query, expected):
                                                         ),
                                                     ),
                                                     FloatValueNode(
-                                                        value=-123.4,
+                                                        value="-1.234e2",
                                                         location=Location(
                                                             line=10,
                                                             column=63,
@@ -1455,7 +1452,7 @@ def test_parse_to_json_ast(query, expected):
                                                         ),
                                                     ),
                                                     IntValueNode(
-                                                        value=-10,
+                                                        value="-10",
                                                         location=Location(
                                                             line=10,
                                                             column=73,
@@ -1618,7 +1615,7 @@ def test_parse_to_json_ast(query, expected):
                                                             ),
                                                         ),
                                                         value=FloatValueNode(
-                                                            value=-123.4,
+                                                            value="-1.234e2",
                                                             location=Location(
                                                                 line=15,
                                                                 column=24,
@@ -1644,7 +1641,7 @@ def test_parse_to_json_ast(query, expected):
                                                             ),
                                                         ),
                                                         value=IntValueNode(
-                                                            value=-10,
+                                                            value="-10",
                                                             location=Location(
                                                                 line=16,
                                                                 column=22,
@@ -2466,7 +2463,7 @@ def test_parse_to_json_ast(query, expected):
                                             value=ListValueNode(
                                                 values=[
                                                     IntValueNode(
-                                                        value=123,
+                                                        value="123",
                                                         location=Location(
                                                             line=3,
                                                             column=39,
@@ -2475,7 +2472,7 @@ def test_parse_to_json_ast(query, expected):
                                                         ),
                                                     ),
                                                     IntValueNode(
-                                                        value=456,
+                                                        value="456",
                                                         location=Location(
                                                             line=3,
                                                             column=44,
@@ -2630,7 +2627,7 @@ def test_parse_to_json_ast(query, expected):
                                                                                     ),
                                                                                 ),
                                                                                 value=IntValueNode(
-                                                                                    value=10,
+                                                                                    value="10",
                                                                                     location=Location(
                                                                                         line=8,
                                                                                         column=41,
@@ -3054,7 +3051,7 @@ def test_parse_to_json_ast(query, expected):
                                                 ),
                                             ),
                                             value=IntValueNode(
-                                                value=123,
+                                                value="123",
                                                 location=Location(
                                                     line=24,
                                                     column=27,
@@ -3844,4 +3841,6 @@ def test_parse_to_json_ast(query, expected):
     ],
 )
 def test_parse_to_document(sdl, expected):
-    assert parse_to_document(sdl) == expected
+    schema_mock = Mock()
+    schema_mock.json_loader = json.loads
+    assert parse_to_document(sdl, schema_mock) == expected

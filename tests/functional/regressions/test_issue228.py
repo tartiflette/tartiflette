@@ -1,6 +1,7 @@
 import pytest
 
 from tartiflette import Directive, Resolver, create_engine
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.mark.asyncio
@@ -92,17 +93,7 @@ async def test_issue228_3():
         def on_schema_execution(self, *_, **_kwargs):
             pass
 
-    with pytest.raises(
-        GraphQLSchemaError,
-        match="""
-
-0: Missing Query Type < Query >.
-1: Directive tartifyMe Method on_pre_output_coercion is not awaitable.
-2: Directive tartifyMe Method on_introspection is not awaitable.
-3: Directive tartifyMe Method on_post_input_coercion is not awaitable.
-4: Directive tartifyMe Method on_argument_execution is not awaitable.
-5: Directive tartifyMe Method on_field_execution is not awaitable.
-6: Directive tartifyMe Method on_schema_execution is not awaitable.
-7: Directive tartifyMe Method on_schema_subscription is not an Async Generator.""",
-    ):
+    with pytest.raises(GraphQLSchemaError) as excinfo:
         await create_engine(sdl=sdl, schema_name="issue228_3")
+
+    match_schema_errors(excinfo.value, ["Query root type must be provided."])

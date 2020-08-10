@@ -1,9 +1,8 @@
-from typing import Any, Callable, Dict, Optional
-
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import Resolver, create_engine
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.fixture(scope="module")
@@ -109,16 +108,7 @@ async def test_issue_278_interface_extend(query, expected, ttftt_engine):
 
 @pytest.mark.asyncio
 async def test_issue_278_extend_interface_invalid_sdl():
-    with pytest.raises(
-        GraphQLSchemaError,
-        match="""
-
-0: Can't add Field < a > to INTERFACE < bob > cause field already exists.
-1: Can't add Field < b > to INTERFACE < bob > cause field already exists.
-2: Can't add < C > Directive to < bob > INTERFACE, cause it's already there.
-3: Can't extend a non existing type < dontexists >.
-4: Can't extend INTERFACE < aType > cause it's not an INTERFACE.""",
-    ):
+    with pytest.raises(GraphQLSchemaError) as excinfo:
         await create_engine(
             sdl="""
                 directive @C on INTERFACE
@@ -153,3 +143,15 @@ async def test_issue_278_extend_interface_invalid_sdl():
             """,
             schema_name="test_issue_278_extend_interface_invalid_sdl",
         )
+
+    match_schema_errors(
+        excinfo.value,
+        [
+            "Field < bob.a > can only be defined once.",
+            "Field < bob.b > can only be defined once.",
+            "The directive < @C > can only be used once at this location.",
+            "Cannot extend type < dontexists > because it is not defined.",
+            "Cannot extend non-scalar type < aType >.",
+            "Unknown directive < @c >.",
+        ],
+    )

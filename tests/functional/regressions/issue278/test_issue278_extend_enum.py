@@ -4,6 +4,7 @@ import pytest
 
 from tartiflette import Directive, Resolver, create_engine
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.fixture(scope="module")
@@ -135,16 +136,7 @@ async def test_issue_278_enum_extend(query, expected, ttftt_engine):
 
 @pytest.mark.asyncio
 async def test_issue_278_extend_enum_invalid_sdl():
-    with pytest.raises(
-        GraphQLSchemaError,
-        match="""
-
-0: Can't add < A > Value to < bob > ENUM, cause value already exists.
-1: Can't add < A > Value to < bob > ENUM, cause value already exists.
-2: Can't add < C > Directive to < bob > ENUM, cause it's already there.
-3: Can't extend a non existing type < dontexists >.
-4: Can't extend ENUM < aType > cause it's not an ENUM.""",
-    ):
+    with pytest.raises(GraphQLSchemaError) as excinfo:
         await create_engine(
             sdl="""
                 directive @C on ENUM
@@ -175,3 +167,14 @@ async def test_issue_278_extend_enum_invalid_sdl():
             """,
             schema_name="test_issue_278_invalid_sdl",
         )
+
+    match_schema_errors(
+        excinfo.value,
+        [
+            "Enum value < bob.A > can only be defined once.",
+            "Enum value < bob.A > can only be defined once.",
+            "The directive < @C > can only be used once at this location.",
+            "Cannot extend type < dontexists > because it is not defined.",
+            "Cannot extend non-object type < aType >.",
+        ],
+    )

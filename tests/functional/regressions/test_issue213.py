@@ -86,14 +86,14 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < name > of non-null type < String! > must not be null.",
-                        "path": ["bye"],
-                        "locations": [{"line": 3, "column": 19}],
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 25}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],

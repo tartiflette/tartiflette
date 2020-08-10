@@ -2141,8 +2141,8 @@ async def test_coercion_input_object_field_variables_errors(
 
 
 _SDL = """
-directive @internalCoercionError on INPUT_FIELD_DEFINITION
-directive @customCoercionError on INPUT_FIELD_DEFINITION
+directive @internalCoercionError on INPUT_FIELD_DEFINITION | SCALAR
+directive @customCoercionError on INPUT_FIELD_DEFINITION | SCALAR
 
 scalar FirstErrorScalar @internalCoercionError
 scalar SecondErrorScalar @customCoercionError

@@ -2,29 +2,12 @@ import pytest
 
 from tartiflette import create_engine
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.mark.asyncio
 async def test_issue160():
-    with pytest.raises(
-        GraphQLSchemaError,
-        match="""
-
-0: Field < F.a > is Invalid: the given Type < G > does not exist!
-1: Field < C.a > is missing as defined in the < Bob > Interface.
-2: Type < D > implements < Richard > which does not exist!
-3: Type < J > implements < F > which is not an interface!
-4: Field < K.a > should be of Type < String > as defined in the < Bob > Interface.
-5: Missing Query Type < Query >.
-6: Missing Mutation Type < MutationType >.
-7: Missing Subscription Type < SubscriptionType >.
-8: Type < R > has no fields.
-9: Union Type < H > contains itself.
-10: Scalar < E > is missing an implementation
-11: Argument < arg > of Field < L.aField > is of type < LL > which is not a Scalar, an Enum or an InputObject
-12: Argument < arg > of Directive < m > is of type < LL > which is not a Scalar, an Enum or an InputObject
-13: Field < N.b > is of type < L > which is not a Scalar, an Enum or an InputObject""",
-    ):
+    with pytest.raises(GraphQLSchemaError) as excinfo:
         await create_engine(
             """
         type R
@@ -87,3 +70,29 @@ async def test_issue160():
         """,
             schema_name="test_issue160",
         )
+
+    match_schema_errors(
+        excinfo.value,
+        [
+            "Type < D > must only implement Interface types, it cannot implement < Richard >.",
+            "Unknown type < Richard >.",
+            "The type of < F.a > must be Output type but got: G.",
+            "Unknown type < G >.",
+            "Unknown type < G >.",
+            "Type < J > must only implement Interface types, it cannot implement < F >.",
+            "Unknown type < Query >.",
+            "Unknown type < MutationType >.",
+            "Unknown type < SubscriptionType >.",
+            "The type of L.aField(arg:) must be Input type but got: LL!.",
+            "The type of @m(arg:) must be Input type but got: LL!.",
+            "The type of N.b must be Input type but got: L.",
+            "Query root type must be Object type.",
+            "Mutation root type must be Object type.",
+            "Subscription root type must be Object type.",
+            "Type < R > must define one or more fields.",
+            "Union type < H > can only include Object types, it cannot include < H >.",
+            "Union type < H > can only include Object types, it cannot include < G >.",
+            "Interface field < Bob.a > expected but < C > does not provide it.",
+            "Interface field < Bob.a > expects type < String > but < K.a > is type < Int >.",
+        ],
+    )

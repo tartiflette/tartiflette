@@ -50,6 +50,7 @@ async def ttftt_engine():
     return await create_engine(sdl=_SDL, schema_name="test_empty_values")
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -151,7 +152,6 @@ async def ttftt_engine():
         ),
     ],
 )
-@pytest.mark.asyncio
 async def test_empty_values_1(query, expected, ttftt_engine):
     assert await ttftt_engine.execute(query) == expected
 
