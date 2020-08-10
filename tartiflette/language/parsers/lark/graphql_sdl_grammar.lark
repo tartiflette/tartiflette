@@ -152,7 +152,7 @@ directive: "@" name arguments?
 directives: directive+
 directive_location: TYPE_SYSTEM_DIRECTIVE_LOCATION
                   | EXECUTABLE_DIRECTIVE_LOCATION
-directive_locations: directive_location ("|" directive_location)*
+directive_locations: "|"? directive_location ("|" directive_location)*
 
 
 //
