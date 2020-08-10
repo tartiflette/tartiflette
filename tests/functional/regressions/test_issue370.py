@@ -3,18 +3,12 @@ import pytest
 from tartiflette import Scalar, create_engine
 from tartiflette.scalar.builtins.string import ScalarString
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.mark.asyncio
 async def test_issue370_double_values():
-
-    with pytest.raises(
-        GraphQLSchemaError,
-        match="""
-
-0: Enum < Invalid > is invalid, Value < VALUE_3 > is not unique
-1: Enum < Invalid > is invalid, Value < VALUE_2 > is not unique""",
-    ):
+    with pytest.raises(GraphQLSchemaError) as excinfo:
         await create_engine(
             """
             enum Invalid {
@@ -31,6 +25,14 @@ async def test_issue370_double_values():
         """,
             schema_name="test_issue370_uniqueness",
         )
+
+    match_schema_errors(
+        excinfo.value,
+        [
+            "Enum value < Invalid.VALUE_3 > can only be defined once.",
+            "Enum value < Invalid.VALUE_2 > can only be defined once.",
+        ],
+    )
 
 
 @pytest.mark.asyncio

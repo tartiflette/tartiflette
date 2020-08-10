@@ -38,32 +38,19 @@ async def test_issue79(ttftt_engine):
     }
     """
 
-    results = await ttftt_engine.execute(query)
-
-    assert results == {
+    assert await ttftt_engine.execute(query) == {
         "data": None,
         "errors": [
             {
-                "message": "Field name doesn't exist on UnknownType",
-                "path": ["name"],
-                "locations": [{"line": 3, "column": 9}],
-                "extensions": {
-                    "rule": "5.3.1",
-                    "spec": "June 2018",
-                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                },
-            },
-            {
-                "message": "Unknown type UnknownType.",
+                "message": "Unknown type < UnknownType >.",
                 "path": None,
-                "locations": [{"line": 2, "column": 5}],
+                "locations": [{"line": 2, "column": 31}],
                 "extensions": {
-                    "rule": "5.5.1.2",
                     "spec": "June 2018",
-                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragment-Spread-Type-Existence",
+                    "rule": "5.5.1.2",
                     "tag": "fragment-spread-type-existence",
+                    "details": "https://spec.graphql.org/June2018/#sec-Fragment-Spread-Type-Existence",
                 },
-            },
+            }
         ],
     }

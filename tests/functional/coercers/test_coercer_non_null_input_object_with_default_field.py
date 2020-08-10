@@ -18,17 +18,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
                 }
             },
         ),
@@ -39,14 +29,14 @@ from tests.functional.coercers.common import resolve_input_object_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < MyInput! > must not be null.",
-                        "path": ["nonNullInputObjectWithDefaultField"],
-                        "locations": [{"line": 1, "column": 44}],
+                        "message": "Expected value of type < MyInput! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 51}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],
@@ -76,17 +66,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -109,17 +89,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -142,17 +112,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_2_2-MyEnum-enumField]-"
-                    "[floatField:2345681.9]-"
-                    "[intField:13]-"
-                    "[stringField:paramdefaultvalue-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_2_2-myenum]-"
-                    "[listFloatField:2345681.9]-"
-                    "[listIntField:13]-"
-                    "[listStringField:paramdefaultvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_2_2-MyEnum-enumField]-[floatField:2345681.9]-[intField:13]-[stringField:paramdefaultvalue-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_2_2-myenum]-[listFloatField:2345681.9]-[listIntField:13]-[listStringField:paramdefaultvalue-scalar]"
                 }
             },
         ),
@@ -175,17 +135,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_2_2-MyEnum-enumField]-"
-                    "[floatField:2345681.9]-"
-                    "[intField:13]-"
-                    "[stringField:paramdefaultvalue-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_2_2-myenum]-"
-                    "[listFloatField:2345681.9]-"
-                    "[listIntField:13]-"
-                    "[listStringField:paramdefaultvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_2_2-MyEnum-enumField]-[floatField:2345681.9]-[intField:13]-[stringField:paramdefaultvalue-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_2_2-myenum]-[listFloatField:2345681.9]-[listIntField:13]-[listStringField:paramdefaultvalue-scalar]"
                 }
             },
         ),
@@ -208,17 +158,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_2_2-MyEnum-enumField]-"
-                    "[floatField:2345681.9]-"
-                    "[intField:13]-"
-                    "[stringField:paramdefaultvalue-scalar-stringField]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_2_2-myenum-None]-"
-                    "[listFloatField:2345681.9-None]-"
-                    "[listIntField:13-None]-"
-                    "[listStringField:paramdefaultvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_2_2-MyEnum-enumField]-[floatField:2345681.9]-[intField:13]-[stringField:paramdefaultvalue-scalar-stringField]-[listBooleanField:False-None]-[listEnumField:enum_2_2-myenum-None]-[listFloatField:2345681.9-None]-[listIntField:13-None]-[listStringField:paramdefaultvalue-scalar-None]"
                 }
             },
         ),
@@ -227,17 +167,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_1_1-MyEnum-enumField]-"
-                    "[floatField:12345681.9]-"
-                    "[intField:123459]-"
-                    "[stringField:defaultstring-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_1_1-myenum-None]-"
-                    "[listFloatField:12345681.9-None]-"
-                    "[listIntField:123459-None]-"
-                    "[listStringField:defaultstring-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_1_1-MyEnum-enumField]-[floatField:12345681.9]-[intField:123459]-[stringField:defaultstring-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_1_1-myenum-None]-[listFloatField:12345681.9-None]-[listIntField:123459-None]-[listStringField:defaultstring-scalar-None]"
                 }
             },
         ),
@@ -278,17 +208,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -310,17 +230,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -342,17 +252,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -374,17 +274,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -406,17 +296,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -471,17 +351,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -503,17 +373,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -535,17 +395,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -567,17 +417,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -599,17 +439,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -633,17 +463,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -729,17 +549,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -776,17 +586,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -823,17 +623,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -870,17 +660,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -917,17 +697,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -951,17 +721,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -1047,17 +807,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -1094,17 +844,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -1141,17 +881,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -1188,17 +918,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -1235,17 +955,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -1269,17 +979,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_4_4-myenum]-"
-                    "[listFloatField:45681.9]-"
-                    "[listIntField:33]-"
-                    "[listStringField:vardefault-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_4_4-myenum]-[listFloatField:45681.9]-[listIntField:33]-[listStringField:vardefault-scalar]"
                 }
             },
         ),
@@ -1365,17 +1065,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -1412,17 +1102,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -1459,17 +1139,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -1506,17 +1176,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -1553,17 +1213,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -1587,17 +1237,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_4_4-myenum]-"
-                    "[listFloatField:45681.9]-"
-                    "[listIntField:33]-"
-                    "[listStringField:vardefault-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_4_4-myenum]-[listFloatField:45681.9]-[listIntField:33]-[listStringField:vardefault-scalar]"
                 }
             },
         ),
@@ -1683,17 +1323,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -1730,17 +1360,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -1777,17 +1397,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -1824,17 +1434,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -1871,17 +1471,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -1905,17 +1495,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_4_4-myenum-None]-"
-                    "[listFloatField:45681.9-None]-"
-                    "[listIntField:33-None]-"
-                    "[listStringField:vardefault-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False-None]-[listEnumField:enum_4_4-myenum-None]-[listFloatField:45681.9-None]-[listIntField:33-None]-[listStringField:vardefault-scalar-None]"
                 }
             },
         ),
@@ -2001,17 +1581,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -2048,17 +1618,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -2095,17 +1655,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2142,17 +1692,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2189,17 +1729,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -2254,17 +1784,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -2286,17 +1806,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -2318,17 +1828,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2350,17 +1850,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2382,17 +1872,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -2467,17 +1947,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -2522,17 +1992,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -2577,17 +2037,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2632,17 +2082,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2687,17 +2127,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -2731,17 +2161,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -2786,17 +2206,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -2841,17 +2251,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -2896,17 +2296,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -2951,17 +2341,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3006,17 +2386,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -3050,17 +2420,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -3105,17 +2465,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -3160,17 +2510,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -3215,17 +2555,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3270,17 +2600,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3325,17 +2645,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -3369,17 +2679,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_4_4-myenum]-"
-                    "[listFloatField:45681.9]-"
-                    "[listIntField:33]-"
-                    "[listStringField:vardefault-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_4_4-myenum]-[listFloatField:45681.9]-[listIntField:33]-[listStringField:vardefault-scalar]"
                 }
             },
         ),
@@ -3424,17 +2724,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -3479,17 +2769,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -3534,17 +2814,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3589,17 +2859,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3644,17 +2904,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -3688,17 +2938,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False]-"
-                    "[listEnumField:enum_4_4-myenum]-"
-                    "[listFloatField:45681.9]-"
-                    "[listIntField:33]-"
-                    "[listStringField:vardefault-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False]-[listEnumField:enum_4_4-myenum]-[listFloatField:45681.9]-[listIntField:33]-[listStringField:vardefault-scalar]"
                 }
             },
         ),
@@ -3743,17 +2983,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -3798,17 +3028,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -3853,17 +3073,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3908,17 +3118,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -3963,17 +3163,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -4007,17 +3197,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_4_4-myenum-None]-"
-                    "[listFloatField:45681.9-None]-"
-                    "[listIntField:33-None]-"
-                    "[listStringField:vardefault-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False-None]-[listEnumField:enum_4_4-myenum-None]-[listFloatField:45681.9-None]-[listIntField:33-None]-[listStringField:vardefault-scalar-None]"
                 }
             },
         ),
@@ -4062,17 +3242,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -4117,17 +3287,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:None]-"
-                    "[listEnumField:None]-"
-                    "[listFloatField:None]-"
-                    "[listIntField:None]-"
-                    "[listStringField:None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:None]-[listEnumField:None]-[listFloatField:None]-[listIntField:None]-[listStringField:None]"
                 }
             },
         ),
@@ -4172,17 +3332,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4227,17 +3377,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4282,17 +3422,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -4586,17 +3716,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4641,17 +3761,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -4696,17 +3806,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True-None]-"
-                    "[listEnumField:enum_3_3-myenum-None]-"
-                    "[listFloatField:345681.9-None]-"
-                    "[listIntField:23-None]-"
-                    "[listStringField:varvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True-None]-[listEnumField:enum_3_3-myenum-None]-[listFloatField:345681.9-None]-[listIntField:23-None]-[listStringField:varvalue-scalar-None]"
                 }
             },
         ),
@@ -4975,17 +4075,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -5030,17 +4120,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -5429,17 +4509,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -5484,17 +4554,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:True]-"
-                    "[listEnumField:enum_3_3-myenum]-"
-                    "[listFloatField:345681.9]-"
-                    "[listIntField:23]-"
-                    "[listStringField:varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:True]-[listEnumField:enum_3_3-myenum]-[listFloatField:345681.9]-[listIntField:23]-[listStringField:varvalue-scalar]"
                 }
             },
         ),
@@ -5598,12 +4658,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_2_2-myenum-None]-"
-                    "[listFloatField:2345681.9-None]-"
-                    "[listIntField:13-None]-"
-                    "[listStringField:paramdefaultvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[listBooleanField:False-None]-[listEnumField:enum_2_2-myenum-None]-[listFloatField:2345681.9-None]-[listIntField:13-None]-[listStringField:paramdefaultvalue-scalar-None]"
                 }
             },
         ),
@@ -5648,17 +4703,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_2_2-myenum-None]-"
-                    "[listFloatField:2345681.9-None]-"
-                    "[listIntField:13-None]-"
-                    "[listStringField:paramdefaultvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:False-None]-[listEnumField:enum_2_2-myenum-None]-[listFloatField:2345681.9-None]-[listIntField:13-None]-[listStringField:paramdefaultvalue-scalar-None]"
                 }
             },
         ),
@@ -5703,17 +4748,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:False-True]-"
-                    "[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-"
-                    "[listFloatField:2345681.9-345681.9]-"
-                    "[listIntField:13-23]-"
-                    "[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:False-True]-[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-[listFloatField:2345681.9-345681.9]-[listIntField:13-23]-[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
                 }
             },
         ),
@@ -5747,17 +4782,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_2_2-myenum-None]-"
-                    "[listFloatField:2345681.9-None]-"
-                    "[listIntField:13-None]-"
-                    "[listStringField:paramdefaultvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:False-None]-[listEnumField:enum_2_2-myenum-None]-[listFloatField:2345681.9-None]-[listIntField:13-None]-[listStringField:paramdefaultvalue-scalar-None]"
                 }
             },
         ),
@@ -5802,17 +4827,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_2_2-myenum-None]-"
-                    "[listFloatField:2345681.9-None]-"
-                    "[listIntField:13-None]-"
-                    "[listStringField:paramdefaultvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:False-None]-[listEnumField:enum_2_2-myenum-None]-[listFloatField:2345681.9-None]-[listIntField:13-None]-[listStringField:paramdefaultvalue-scalar-None]"
                 }
             },
         ),
@@ -5857,17 +4872,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:False-True]-"
-                    "[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-"
-                    "[listFloatField:2345681.9-345681.9]-"
-                    "[listIntField:13-23]-"
-                    "[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:False-True]-[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-[listFloatField:2345681.9-345681.9]-[listIntField:13-23]-[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
                 }
             },
         ),
@@ -5901,17 +4906,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             None,
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:False]-"
-                    "[enumField:ENUM_4_4-MyEnum-enumField]-"
-                    "[floatField:45681.9]-"
-                    "[intField:33]-"
-                    "[stringField:vardefault-scalar-stringField]-"
-                    "[listBooleanField:False-False]-"
-                    "[listEnumField:enum_2_2-myenum-enum_4_4-myenum]-"
-                    "[listFloatField:2345681.9-45681.9]-"
-                    "[listIntField:13-33]-"
-                    "[listStringField:paramdefaultvalue-scalar-vardefault-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:False]-[enumField:ENUM_4_4-MyEnum-enumField]-[floatField:45681.9]-[intField:33]-[stringField:vardefault-scalar-stringField]-[listBooleanField:False-False]-[listEnumField:enum_2_2-myenum-enum_4_4-myenum]-[listFloatField:2345681.9-45681.9]-[listIntField:13-33]-[listStringField:paramdefaultvalue-scalar-vardefault-scalar]"
                 }
             },
         ),
@@ -5956,17 +4951,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:None]-"
-                    "[enumField:None]-"
-                    "[floatField:None]-"
-                    "[intField:None]-"
-                    "[stringField:None]-"
-                    "[listBooleanField:False-None]-"
-                    "[listEnumField:enum_2_2-myenum-None]-"
-                    "[listFloatField:2345681.9-None]-"
-                    "[listIntField:13-None]-"
-                    "[listStringField:paramdefaultvalue-scalar-None]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:None]-[enumField:None]-[floatField:None]-[intField:None]-[stringField:None]-[listBooleanField:False-None]-[listEnumField:enum_2_2-myenum-None]-[listFloatField:2345681.9-None]-[listIntField:13-None]-[listStringField:paramdefaultvalue-scalar-None]"
                 }
             },
         ),
@@ -6011,17 +4996,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:False-True]-"
-                    "[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-"
-                    "[listFloatField:2345681.9-345681.9]-"
-                    "[listIntField:13-23]-"
-                    "[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:False-True]-[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-[listFloatField:2345681.9-345681.9]-[listIntField:13-23]-[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
                 }
             },
         ),
@@ -6245,17 +5220,7 @@ from tests.functional.coercers.common import resolve_input_object_field
             },
             {
                 "data": {
-                    "nonNullInputObjectWithDefaultField": "SUCCESS-"
-                    "[booleanField:True]-"
-                    "[enumField:ENUM_3_3-MyEnum-enumField]-"
-                    "[floatField:345681.9]-"
-                    "[intField:23]-"
-                    "[stringField:varvalue-scalar-stringField]-"
-                    "[listBooleanField:False-True]-"
-                    "[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-"
-                    "[listFloatField:2345681.9-345681.9]-"
-                    "[listIntField:13-23]-"
-                    "[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
+                    "nonNullInputObjectWithDefaultField": "SUCCESS-[booleanField:True]-[enumField:ENUM_3_3-MyEnum-enumField]-[floatField:345681.9]-[intField:23]-[stringField:varvalue-scalar-stringField]-[listBooleanField:False-True]-[listEnumField:enum_2_2-myenum-enum_3_3-myenum]-[listFloatField:2345681.9-345681.9]-[listIntField:13-23]-[listStringField:paramdefaultvalue-scalar-varvalue-scalar]"
                 }
             },
         ),

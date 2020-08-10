@@ -1,8 +1,23 @@
-directive @debug(message: DefaultRawString) on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM | ENUM_VALUE
-directive @lowercase on ENUM_VALUE | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
-directive @increment(step: DefaultRawInt = 1) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+directive @debug(message: DefaultRawString) on
+    | FIELD_DEFINITION
+    | ARGUMENT_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | SCALAR
+    | INPUT_OBJECT
+directive @lowercase on ENUM_VALUE | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION | SCALAR
+directive @increment(step: DefaultRawInt = 1) on
+    | INPUT_FIELD_DEFINITION
+    | ARGUMENT_DEFINITION
+    | SCALAR
 directive @mapToValue(newValue: DefaultRawString!) on ENUM_VALUE
-directive @concatenate(with: DefaultRawString!) on ENUM_VALUE | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+directive @concatenate(with: DefaultRawString!) on
+    | ENUM_VALUE
+    | INPUT_FIELD_DEFINITION
+    | ARGUMENT_DEFINITION
+    | SCALAR
+    | ENUM
 
 scalar DefaultRawInt
 scalar DefaultRawString

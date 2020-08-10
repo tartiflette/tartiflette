@@ -7,7 +7,14 @@ from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import StringValueNode
 
 _SDL = """
-directive @debug(message: String) on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM | ENUM_VALUE
+directive @debug(message: String) on
+    | FIELD_DEFINITION
+    | ARGUMENT_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | SCALAR
+    | INPUT_OBJECT
 directive @error on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM | ENUM_VALUE
 
 scalar CustomString @debug(message: "CustomString")
@@ -283,58 +290,58 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Input Field < groups > of non-null type < String! > must not be null.",
-                        "path": ["users"],
-                        "locations": [{"line": 5, "column": 19}],
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 39}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < groups > of non-null type < String! > must not be null.",
-                        "path": ["users"],
-                        "locations": [{"line": 5, "column": 19}],
+                        "message": "Expected value of type < String! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 56}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < fields > of non-null type < Field! > must not be null.",
-                        "path": ["users"],
-                        "locations": [{"line": 6, "column": 19}],
+                        "message": "Expected value of type < Field! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 37}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Input Field < fields > of non-null type < Field! > must not be null.",
-                        "path": ["users"],
-                        "locations": [{"line": 6, "column": 19}],
+                        "message": "Expected value of type < Field! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 52}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                     {
-                        "message": "Value UNKNOWN_FIELD is not a valid value for enum Field",
-                        "path": ["users"],
-                        "locations": [{"line": 3, "column": 21}],
+                        "message": "Value < UNKNOWN_FIELD > does not exist in < Field > enum.",
+                        "path": None,
+                        "locations": [{"line": 6, "column": 58}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     },
                 ],
@@ -367,29 +374,29 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "locations": [{"column": 25, "line": 2}],
                         "message": "Variable < $input > got invalid value < {'filters': {'groups': ['Group 1', None, 'Group 2', None], 'fields': ['FIELD_1', None, 'FIELD_2', None, 'UNKNOWN_FIELD']}} >; Expected non-nullable type < String! > not to be null at value.filters.groups[1].",
                         "path": None,
+                        "locations": [{"line": 2, "column": 25}],
                     },
                     {
-                        "locations": [{"column": 25, "line": 2}],
                         "message": "Variable < $input > got invalid value < {'filters': {'groups': ['Group 1', None, 'Group 2', None], 'fields': ['FIELD_1', None, 'FIELD_2', None, 'UNKNOWN_FIELD']}} >; Expected non-nullable type < String! > not to be null at value.filters.groups[3].",
                         "path": None,
+                        "locations": [{"line": 2, "column": 25}],
                     },
                     {
-                        "locations": [{"column": 25, "line": 2}],
                         "message": "Variable < $input > got invalid value < {'filters': {'groups': ['Group 1', None, 'Group 2', None], 'fields': ['FIELD_1', None, 'FIELD_2', None, 'UNKNOWN_FIELD']}} >; Expected non-nullable type < Field! > not to be null at value.filters.fields[1].",
                         "path": None,
+                        "locations": [{"line": 2, "column": 25}],
                     },
                     {
-                        "locations": [{"column": 25, "line": 2}],
                         "message": "Variable < $input > got invalid value < {'filters': {'groups': ['Group 1', None, 'Group 2', None], 'fields': ['FIELD_1', None, 'FIELD_2', None, 'UNKNOWN_FIELD']}} >; Expected non-nullable type < Field! > not to be null at value.filters.fields[3].",
                         "path": None,
+                        "locations": [{"line": 2, "column": 25}],
                     },
                     {
-                        "locations": [{"column": 25, "line": 2}],
                         "message": "Variable < $input > got invalid value < {'filters': {'groups': ['Group 1', None, 'Group 2', None], 'fields': ['FIELD_1', None, 'FIELD_2', None, 'UNKNOWN_FIELD']}} >; Expected type < Field > at value.filters.fields[4].",
                         "path": None,
+                        "locations": [{"line": 2, "column": 25}],
                     },
                 ],
             },
@@ -415,14 +422,14 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "locations": [{"column": 25, "line": 2}],
                         "message": "on_post_input_coercion error",
                         "path": None,
+                        "locations": [{"line": 2, "column": 25}],
                     },
                     {
-                        "locations": [{"column": 25, "line": 2}],
                         "message": "on_post_input_coercion error",
                         "path": None,
+                        "locations": [{"line": 2, "column": 25}],
                     },
                 ],
             },

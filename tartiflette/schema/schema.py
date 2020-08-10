@@ -77,7 +77,11 @@ class GraphQLSchema:
     # pylint: disable=too-many-instance-attributes
 
     # Introspection attributes
-    description = "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations."
+    description = (
+        "A GraphQL Schema defines the capabilities of a GraphQL server. It"
+        "exposes all available types and directives on the server, as well as"
+        "the entry points for query, mutation, and subscription operations."
+    )
 
     def __init__(self, name: str = "default") -> None:
         """

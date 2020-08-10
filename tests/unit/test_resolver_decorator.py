@@ -14,8 +14,6 @@ async def test_resolver_decorator(clean_registry):
     schema_sdl = """
     schema {
         query: RootQuery
-        mutation: Mutation
-        subscription: Subscription
     }
 
     type Foo {

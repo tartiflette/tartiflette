@@ -188,36 +188,36 @@ async def resolve_friends(parent, args, ctx, info):
                 "data": None,
                 "errors": [
                     {
-                        "message": "Field id doesn't exist on Pet",
-                        "path": ["pet", "id"],
+                        "message": "Cannot query field < id > on type < Pet >.",
+                        "path": None,
                         "locations": [{"line": 5, "column": 17}],
                         "extensions": {
-                            "rule": "5.3.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "rule": "5.3.1",
                             "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                            "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                         },
                     },
                     {
-                        "message": "Field name doesn't exist on Pet",
-                        "path": ["pet", "name"],
+                        "message": "Cannot query field < name > on type < Pet >.",
+                        "path": None,
                         "locations": [{"line": 6, "column": 17}],
                         "extensions": {
-                            "rule": "5.3.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "rule": "5.3.1",
                             "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                            "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                         },
                     },
                     {
-                        "message": "Field friends doesn't exist on Pet",
-                        "path": ["pet", "friends"],
+                        "message": "Cannot query field < friends > on type < Pet >.",
+                        "path": None,
                         "locations": [{"line": 7, "column": 17}],
                         "extensions": {
-                            "rule": "5.3.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "rule": "5.3.1",
                             "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                            "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                         },
                     },
                 ],
@@ -229,20 +229,59 @@ async def resolve_friends(parent, args, ctx, info):
               pet(id: 2) {
                 __typename
                 ... on Cat {
-                    id
-                    name
-                    friends {
+                  id
+                  name
+                  friends {
                     __typename
                     ... on Human {
-                        id
+                      id
                     }
                     ... on Cat {
-                        id
+                      id
                     }
                     ... on Dog {
-                        id
+                      id
                     }
+                  }
+                }
+              }
+            }
+            """,
+            None,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Fragment cannot be spread here as objects of type < Pet > can never be of type < Human >.",
+                        "path": None,
+                        "locations": [{"line": 10, "column": 21}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.5.2.3",
+                            "tag": "fragment-spread-is-possible",
+                            "details": "https://spec.graphql.org/June2018/#sec-Fragment-spread-is-possible",
+                        },
                     }
+                ],
+            },
+        ),
+        (
+            """
+            {
+              pet(id: 2) {
+                __typename
+                ... on Cat {
+                  id
+                  name
+                  friends {
+                    __typename
+                    ... on Cat {
+                      id
+                    }
+                    ... on Dog {
+                      id
+                    }
+                  }
                 }
               }
             }

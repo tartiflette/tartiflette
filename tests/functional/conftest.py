@@ -27,6 +27,7 @@ _SCHEMAS = {
         {"modules": ["tests.functional.coercers.common"]},
     ),
     "pets": os.path.join(_CURR_PATH, "reusable", "pets", "schema.graphql"),
+    "harness": _get_sdl_path("harness.graphql"),
 }
 
 _TTFTT_ENGINES = {}
@@ -78,7 +79,13 @@ def pytest_generate_tests(metafunc):
 
 def pytest_runtest_teardown(item, nextitem):
     if nextitem:
-        nextitem.allow_schema_bake = item.function is not nextitem.function
+        item_marker = _get_ttftt_engine_marker(item)
+        nextitem_marker = _get_ttftt_engine_marker(nextitem)
+        nextitem.allow_schema_bake = (
+            item_marker is not nextitem_marker
+            if item_marker and nextitem_marker
+            else True
+        )
 
 
 def pytest_runtest_setup(item):

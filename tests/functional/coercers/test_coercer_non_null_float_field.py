@@ -18,14 +18,14 @@ from tests.functional.coercers.common import resolve_unwrapped_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Missing mandatory argument < param > in field < Query.nonNullFloatField >.",
-                        "path": ["nonNullFloatField"],
+                        "message": "Field < nonNullFloatField > argument < param > of type < Float! > is required, but it was not provided.",
+                        "path": None,
                         "locations": [{"line": 1, "column": 9}],
                         "extensions": {
-                            "rule": "5.4.2.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "rule": "5.4.2.1",
                             "tag": "required-arguments",
+                            "details": "https://spec.graphql.org/June2018/#sec-Required-Arguments",
                         },
                     }
                 ],
@@ -38,14 +38,14 @@ from tests.functional.coercers.common import resolve_unwrapped_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < Float! > must not be null.",
-                        "path": ["nonNullFloatField"],
-                        "locations": [{"line": 1, "column": 27}],
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 34}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],
@@ -64,7 +64,22 @@ from tests.functional.coercers.common import resolve_unwrapped_field
         (
             """query ($param: Float! = null) { nonNullFloatField(param: $param) }""",
             {"param": 3456.789e2},
-            {"data": {"nonNullFloatField": "SUCCESS-345681.9"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Float! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 25}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: Float! = 456.789e2) { nonNullFloatField(param: $param) }""",

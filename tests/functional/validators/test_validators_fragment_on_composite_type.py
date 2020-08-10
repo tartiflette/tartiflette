@@ -1,10 +1,8 @@
 import pytest
 
-from tartiflette import create_engine
 
-
-@pytest.mark.ttftt_engine
 @pytest.mark.asyncio
+@pytest.mark.ttftt_engine
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -18,69 +16,36 @@ from tartiflette import create_engine
                 "data": None,
                 "errors": [
                     {
-                        "message": "Field name doesn't exist on String",
-                        "path": ["name"],
-                        "locations": [{"line": 2, "column": 44}],
-                        "extensions": {
-                            "rule": "5.3.1",
-                            "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        },
-                    },
-                    {
-                        "message": "Fragment aFragment cannot condition on non composite type String.",
+                        "message": "Fragment < aFragment > cannot condition on non composite type < String >.",
                         "path": None,
-                        "locations": [{"line": 2, "column": 13}],
+                        "locations": [{"line": 2, "column": 35}],
                         "extensions": {
+                            "spec": "June 2018",
                             "rule": "5.5.1.3",
-                            "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragments-On-Composite-Types",
                             "tag": "fragments-on-composite-types",
+                            "details": "https://spec.graphql.org/June2018/#sec-Fragments-On-Composite-Types",
                         },
                     },
                     {
-                        "message": "Field name doesn't exist on Root",
-                        "path": ["devs", "name"],
-                        "locations": [{"line": 4, "column": 28}],
-                        "extensions": {
-                            "rule": "5.3.1",
-                            "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        },
-                    },
-                    {
-                        "message": "Field preferredLanguage doesn't exist on Root",
-                        "path": ["devs", "preferredLanguage"],
-                        "locations": [{"line": 4, "column": 33}],
-                        "extensions": {
-                            "rule": "5.3.1",
-                            "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        },
-                    },
-                    {
-                        "message": "Field devs doesn't exist on Query",
-                        "path": ["devs"],
+                        "message": "Cannot query field < devs > on type < Query >.",
+                        "path": None,
                         "locations": [{"line": 4, "column": 21}],
                         "extensions": {
-                            "rule": "5.3.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                            "rule": "5.3.1",
                             "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                            "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                         },
                     },
                     {
-                        "message": "Unknown Fragment for Spread < anotherFragment >.",
+                        "message": "Unknown fragment < anotherFragment >.",
                         "path": None,
-                        "locations": [{"line": 4, "column": 64}],
+                        "locations": [{"line": 4, "column": 67}],
                         "extensions": {
-                            "rule": "5.5.2.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragment-spread-target-defined",
+                            "rule": "5.5.2.1",
                             "tag": "fragment-spread-target-defined",
+                            "details": "https://spec.graphql.org/June2018/#sec-Fragment-spread-target-defined",
                         },
                     },
                 ],
@@ -94,36 +59,25 @@ from tartiflette import create_engine
                 "data": None,
                 "errors": [
                     {
-                        "message": "Field nothing doesn't exist on String",
-                        "path": ["dog", "name", "nothing"],
-                        "locations": [{"line": 2, "column": 50}],
+                        "message": "Field < name > must not have a selection since type < String! > has no subfields.",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 32}],
                         "extensions": {
-                            "rule": "5.3.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        },
-                    },
-                    {
-                        "message": "Inline Fragment cannot condition on non composite type String.",
-                        "path": ["dog", "name"],
-                        "locations": [{"line": 2, "column": 34}],
-                        "extensions": {
-                            "rule": "5.5.1.3",
-                            "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragments-On-Composite-Types",
-                            "tag": "fragments-on-composite-types",
-                        },
-                    },
-                    {
-                        "message": "Field name must not have a selection since type String has no subfields.",
-                        "path": ["dog", "name"],
-                        "locations": [{"line": 2, "column": 27}],
-                        "extensions": {
                             "rule": "5.3.3",
-                            "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
                             "tag": "leaf-field-selections",
+                            "details": "https://spec.graphql.org/June2018/#sec-Leaf-Field-Selections",
+                        },
+                    },
+                    {
+                        "message": "Fragment cannot condition on non composite type < String >.",
+                        "path": None,
+                        "locations": [{"line": 2, "column": 41}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.5.1.3",
+                            "tag": "fragments-on-composite-types",
+                            "details": "https://spec.graphql.org/June2018/#sec-Fragments-On-Composite-Types",
                         },
                     },
                 ],

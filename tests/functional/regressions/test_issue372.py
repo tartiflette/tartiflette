@@ -2,11 +2,12 @@ import pytest
 
 from tartiflette import create_engine
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "sdl,should_except,match",
+    "sdl,expected_errors",
     [
         (
             """interface MediaMetadata {
@@ -36,7 +37,6 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
                 media: Media
             }""",
             False,
-            None,
         ),
         (
             """interface A {
@@ -50,8 +50,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
             type Query {
                 a: I
             }""",
-            True,
-            r".*Field < I\.b > should be of Type < String! > as defined in the < A > Interface\..*",
+            [
+                "Interface field < A.b > expects type < String! > but < I.b > is type < String >."
+            ],
         ),
         (
             """interface A {
@@ -64,8 +65,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
             type Query {
                 a: I
             }""",
-            True,
-            r".*Field < I\.c > should be of Type < \[String\] > as defined in the < A > Interface\..*",
+            [
+                "Interface field < A.c > expects type < [String] > but < I.c > is type < String >."
+            ],
         ),
         (
             """interface A {
@@ -78,8 +80,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
             type Query {
                 a: I
             }""",
-            True,
-            r".*Field < I\.d > should be of Type < \[String!\] > as defined in the < A > Interface\..*",
+            [
+                "Interface field < A.d > expects type < [String!] > but < I.d > is type < [String] >."
+            ],
         ),
         (
             """interface A {
@@ -92,8 +95,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
             type Query {
                 a: I
             }""",
-            True,
-            r".*Field < I\.e > should be of Type < \[String!\]! > as defined in the < A > Interface\..*",
+            [
+                "Interface field < A.e > expects type < [String!]! > but < I.e > is type < [String] >."
+            ],
         ),
         (
             """interface A {
@@ -106,8 +110,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
             type Query {
                 a: I
             }""",
-            True,
-            r".*Field < I\.f > should be of Type < \[String\]! > as defined in the < A > Interface\..*",
+            [
+                "Interface field < A.f > expects type < [String]! > but < I.f > is type < [String!] >."
+            ],
         ),
         (
             """interface A {
@@ -122,8 +127,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
                 a: I
             }
             """,
-            True,
-            r".*Field < I\.g > should be of Type < String > as defined in the < A > Interface\..*",
+            [
+                "Interface field < A.g > expects type < String > but < I.g > is type < Float >."
+            ],
         ),
         (
             """interface A {
@@ -139,7 +145,6 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
             }
             """,
             False,
-            None,
         ),
         (
             """
@@ -155,8 +160,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
                 a: B
             }
             """,
-            True,
-            r".*Field argument < B\.f\(a\) > is not of type < String > as required by the interface < A >\..*",
+            [
+                "Interface field argument < A.f(a:) > expects type < String > but < B.f(a:) > is type < Float >."
+            ],
         ),
         (
             """
@@ -172,8 +178,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
                 a: B
             }
             """,
-            True,
-            r".*Field argument < B\.f\(a\) > is not of type < String! > as required by the interface < A >\..*",
+            [
+                "Interface field argument < A.f(a:) > expects type < String! > but < B.f(a:) > is type < String >."
+            ],
         ),
         (
             """
@@ -189,8 +196,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
                 a: B
             }
             """,
-            True,
-            r".*Field argument < B\.f\(a\) > is not of type < String > as required by the interface < A >\..*",
+            [
+                "Interface field argument < A.f(a:) > expects type < String > but < B.f(a:) > is type < String! >."
+            ],
         ),
         (
             """
@@ -206,8 +214,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
                 a: B
             }
             """,
-            True,
-            r".*Field < B\.f > is missing interface field argument < A\.f\(a\) >\..*",
+            [
+                "Interface field argument < A.f(a:) > expected but < B.f > does not provide it."
+            ],
         ),
         (
             """
@@ -223,8 +232,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
                 a: B
             }
             """,
-            True,
-            r".*Field < B\.f\(b\) > isn't required in interface field < A\.f >, so it cannot be NonNullable\..*",
+            [
+                "Object field < B.f > includes required argument b that is missing from the Interface field < A.f >."
+            ],
         ),
         (
             """
@@ -241,36 +251,41 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
             }
             """,
             False,
-            None,
         ),
         (
             "interface A { d: String! } type I implements A { d: Float! }",
-            True,
-            r".*Field < I\.d > should be of Type < String! > as defined in the < A > Interface\..*",
+            [
+                "Query root type must be provided.",
+                "Interface field < A.d > expects type < String! > but < I.d > is type < Float! >.",
+            ],
         ),
         (
             "interface A { d: [String] } type I implements A { d: [Float] }",
-            True,
-            r".*Field < I\.d > should be of Type < \[String\] > as defined in the < A > Interface\..*",
+            [
+                "Query root type must be provided.",
+                "Interface field < A.d > expects type < [String] > but < I.d > is type < [Float] >.",
+            ],
         ),
         (
             "interface A { f(a: String!): String } type B implements A { f(a: Float!): String }",
-            True,
-            r".*Field argument < B\.f\(a\) > is not of type < String! > as required by the interface < A >\..*",
+            [
+                "Query root type must be provided.",
+                "Interface field argument < A.f(a:) > expects type < String! > but < B.f(a:) > is type < Float! >.",
+            ],
         ),
         (
             "interface A { f(a:[String]): String } type B implements A { f(a: [Float]): String }",
-            True,
-            r".*Field argument < B\.f\(a\) > is not of type < \[String\] > as required by the interface < A >\..*",
+            [
+                "Query root type must be provided.",
+                "Interface field argument < A.f(a:) > expects type < [String] > but < B.f(a:) > is type < [Float] >.",
+            ],
         ),
     ],
 )
-async def test_issue372(sdl, should_except, match, random_schema_name):
-    if not should_except:
-        assert (
+async def test_issue372(sdl, expected_errors, random_schema_name):
+    if expected_errors:
+        with pytest.raises(GraphQLSchemaError) as excinfo:
             await create_engine(sdl, schema_name=random_schema_name)
-            is not None
-        )
+        match_schema_errors(excinfo.value, expected_errors)
     else:
-        with pytest.raises(GraphQLSchemaError, match=match):
-            await create_engine(sdl, schema_name=random_schema_name)
+        await create_engine(sdl, schema_name=random_schema_name)

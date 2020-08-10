@@ -10,7 +10,7 @@ _curr_path = os.path.dirname(os.path.abspath(__file__))
 
 @pytest.mark.asyncio
 async def test_tartiflette_engine_initialization_with_sdl_file_list():
-    engine = await create_engine(
+    await create_engine(
         [
             _curr_path + "/data/splitted_sdl/directives.sdl",
             _curr_path + "/data/splitted_sdl/author.sdl",
@@ -64,7 +64,7 @@ async def test_tartiflette_engine_initialization_with_sdl_folder(path):
         f"{path}_test_tartiflette_engine_initialization_with_sdl_folder"
     )
 
-    engine = await create_engine(path, schema_name=schema_name)
+    await create_engine(path, schema_name=schema_name)
 
     assert (
         SchemaRegistry.find_schema(schema_name).find_type("Author") is not None
@@ -85,7 +85,7 @@ async def test_tartiflette_engine_initialization_with_sdl_folder(path):
 
 @pytest.mark.asyncio
 async def test_tartiflette_engine_initialization_with_single_sdl_file():
-    engine = await create_engine(
+    await create_engine(
         _curr_path + "/data/simple_full_sdl/simple_full.sdl",
         schema_name="test_tartiflette_engine_initialization_with_single_sdl_file",
     )
@@ -120,7 +120,7 @@ async def test_tartiflette_engine_initialization_with_single_sdl_file():
 
 @pytest.mark.asyncio
 async def test_tartiflette_engine_initialization_with_string_schema():
-    engine = await create_engine(
+    await create_engine(
         """
     directive @relation(name: String!) on FIELD_DEFINITION
     directive @default(value: Int!) on FIELD_DEFINITION

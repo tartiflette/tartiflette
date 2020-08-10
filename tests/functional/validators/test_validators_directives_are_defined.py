@@ -1,6 +1,8 @@
 import pytest
 
 
+@pytest.mark.asyncio
+@pytest.mark.ttftt_engine
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -14,14 +16,14 @@ import pytest
                 "data": None,
                 "errors": [
                     {
-                        "message": "Unknow Directive < @dontExists >.",
-                        "path": ["catOrDog"],
+                        "message": "Unknown directive < @dontExists >.",
+                        "path": None,
                         "locations": [{"line": 3, "column": 33}],
                         "extensions": {
-                            "rule": "5.7.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Directives-Are-Defined",
+                            "rule": "5.7.1",
                             "tag": "directives-are-defined",
+                            "details": "https://spec.graphql.org/June2018/#sec-Directives-Are-Defined",
                         },
                     }
                 ],
@@ -29,7 +31,5 @@ import pytest
         )
     ],
 )
-@pytest.mark.asyncio
-@pytest.mark.ttftt_engine
 async def test_validators_directives_are_defined(query, expected, engine):
     assert await engine.execute(query) == expected

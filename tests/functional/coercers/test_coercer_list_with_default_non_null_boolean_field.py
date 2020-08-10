@@ -28,14 +28,14 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < Boolean! > must not be null.",
-                        "path": ["listWithDefaultNonNullBooleanField"],
-                        "locations": [{"line": 1, "column": 44}],
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 52}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],
@@ -66,14 +66,14 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < Boolean! > must not be null.",
-                        "path": ["listWithDefaultNonNullBooleanField"],
-                        "locations": [{"line": 1, "column": 44}],
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 59}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],
@@ -126,9 +126,15 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid default value < [null] >.",
+                        "message": "Expected value of type < Boolean! >, found < null >.",
                         "path": None,
-                        "locations": [{"line": 1, "column": 29}],
+                        "locations": [{"line": 1, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
                     }
                 ],
             },
@@ -136,17 +142,62 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($param: [Boolean!] = [null]) { listWithDefaultNonNullBooleanField(param: $param) }""",
             {"param": None},
-            {"data": {"listWithDefaultNonNullBooleanField": "SUCCESS-[None]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [Boolean!] = [null]) { listWithDefaultNonNullBooleanField(param: $param) }""",
             {"param": True},
-            {"data": {"listWithDefaultNonNullBooleanField": "SUCCESS-[True]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [Boolean!] = [null]) { listWithDefaultNonNullBooleanField(param: $param) }""",
             {"param": [True]},
-            {"data": {"listWithDefaultNonNullBooleanField": "SUCCESS-[True]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 30}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [Boolean!] = false) { listWithDefaultNonNullBooleanField(param: $param) }""",
@@ -203,9 +254,15 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid default value < [false, null] >.",
+                        "message": "Expected value of type < Boolean! >, found < null >.",
                         "path": None,
-                        "locations": [{"line": 1, "column": 29}],
+                        "locations": [{"line": 1, "column": 37}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
                     }
                 ],
             },
@@ -213,17 +270,62 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($param: [Boolean!] = [false, null]) { listWithDefaultNonNullBooleanField(param: $param) }""",
             {"param": None},
-            {"data": {"listWithDefaultNonNullBooleanField": "SUCCESS-[None]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 37}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [Boolean!] = [false, null]) { listWithDefaultNonNullBooleanField(param: $param) }""",
             {"param": True},
-            {"data": {"listWithDefaultNonNullBooleanField": "SUCCESS-[True]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 37}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [Boolean!] = [false, null]) { listWithDefaultNonNullBooleanField(param: $param) }""",
             {"param": [True]},
-            {"data": {"listWithDefaultNonNullBooleanField": "SUCCESS-[True]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Boolean! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 37}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [Boolean!]!) { listWithDefaultNonNullBooleanField(param: $param) }""",
@@ -381,12 +483,21 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: Boolean) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             None,
             {
-                "data": {"listWithDefaultNonNullBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [false, $item] >.",
-                        "path": ["listWithDefaultNonNullBooleanField"],
-                        "locations": [{"line": 1, "column": 68}],
+                        "message": "Variable < $item > of type < Boolean > used in position expecting type < Boolean! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 76},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
                     }
                 ],
             },
@@ -395,12 +506,21 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: Boolean) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             {"item": None},
             {
-                "data": {"listWithDefaultNonNullBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [false, $item] >.",
-                        "path": ["listWithDefaultNonNullBooleanField"],
-                        "locations": [{"line": 1, "column": 68}],
+                        "message": "Variable < $item > of type < Boolean > used in position expecting type < Boolean! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 76},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
                     }
                 ],
             },
@@ -409,21 +529,44 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: Boolean) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             {"item": True},
             {
-                "data": {
-                    "listWithDefaultNonNullBooleanField": "SUCCESS-[False-True]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $item > of type < Boolean > used in position expecting type < Boolean! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 76},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
+                    }
+                ],
             },
         ),
         (
             """query ($item: Boolean = null) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             None,
             {
-                "data": {"listWithDefaultNonNullBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [false, $item] >.",
-                        "path": ["listWithDefaultNonNullBooleanField"],
-                        "locations": [{"line": 1, "column": 75}],
+                        "message": "Variable < $item > of type < Boolean > used in position expecting type < Boolean! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 83},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
                     }
                 ],
             },
@@ -432,12 +575,21 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: Boolean = null) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             {"item": None},
             {
-                "data": {"listWithDefaultNonNullBooleanField": None},
+                "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > has invalid value < [false, $item] >.",
-                        "path": ["listWithDefaultNonNullBooleanField"],
-                        "locations": [{"line": 1, "column": 75}],
+                        "message": "Variable < $item > of type < Boolean > used in position expecting type < Boolean! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 83},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
                     }
                 ],
             },
@@ -446,9 +598,23 @@ from tests.functional.coercers.common import resolve_list_field
             """query ($item: Boolean = null) { listWithDefaultNonNullBooleanField(param: [false, $item]) }""",
             {"item": True},
             {
-                "data": {
-                    "listWithDefaultNonNullBooleanField": "SUCCESS-[False-True]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Variable < $item > of type < Boolean > used in position expecting type < Boolean! >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 1, "column": 8},
+                            {"line": 1, "column": 83},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.8.5",
+                            "tag": "all-variable-usages-are-allowed",
+                            "details": "https://spec.graphql.org/June2018/#sec-All-Variable-Usages-are-Allowed",
+                        },
+                    }
+                ],
             },
         ),
         (
