@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import pytest
 
+from tartiflette import TartifletteError
 from tartiflette.scalar.builtins.boolean import ScalarBoolean
 
 
@@ -146,7 +147,7 @@ from tartiflette.scalar.builtins.boolean import ScalarBoolean
 )
 def test_scalar_boolean_coerce_output(value, should_raise_exception, expected):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarBoolean().coerce_output(value)
     else:
         assert ScalarBoolean().coerce_output(value) == expected
@@ -287,7 +288,7 @@ def test_scalar_boolean_coerce_output(value, should_raise_exception, expected):
 )
 def test_scalar_boolean_coerce_input(value, should_raise_exception, expected):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarBoolean().coerce_input(value)
     else:
         assert ScalarBoolean().coerce_input(value) == expected
