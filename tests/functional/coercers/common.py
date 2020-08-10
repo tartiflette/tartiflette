@@ -34,11 +34,9 @@ class DebugDirective:
         value: Any,
         ctx: Optional[Any],
     ):
-        result = await next_directive(
+        return await next_directive(
             parent_node, argument_definition_node, argument_node, value, ctx
         )
-        # print("@adebug:", directive_args.get("message"))
-        return result
 
     async def on_post_input_coercion(
         self,
@@ -48,9 +46,7 @@ class DebugDirective:
         value: Any,
         ctx: Optional[Any],
     ):
-        result = await next_directive(parent_node, value, ctx)
-        # print("@idebug:", directive_args.get("message"))
-        return result
+        return await next_directive(parent_node, value, ctx)
 
 
 class LowercaseDirective:
@@ -225,10 +221,6 @@ async def resolve_input_object_field(parent, args, ctx, info):
     if "param" in args:
         if args["param"] is None:
             return "SUCCESS-None"
-        # TODO: remove this condition when the `validate` function is available
-        # in order to highlight some errors on literal coercion especially on
-        # InputObject with NonNull InputFields with null value specified as
-        # default value
         if isinstance(args["param"], dict):
             if not args["param"]:
                 return "SUCCESS-{}"

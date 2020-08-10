@@ -9,6 +9,7 @@ from tartiflette.types.exceptions.tartiflette import (
     ImproperlyConfigured,
     UnknownSchemaFieldResolver,
 )
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.mark.asyncio
@@ -152,7 +153,10 @@ async def test_schema_object_get_field_name(clean_registry):
             placeholder: String
         }
         """,
-            True,
+            [
+                "The type of < SimpleObject.firstField > must be Output type but got: CustomType.",
+                "Unknown type < CustomType >.",
+            ],
         ),
     ],
 )
@@ -166,8 +170,9 @@ async def test_schema_validate_named_types(
     generated_schema = SchemaBakery._preheat("A")
 
     if expected_error:
-        with pytest.raises(GraphQLSchemaError):
+        with pytest.raises(GraphQLSchemaError) as excinfo:
             await generated_schema.bake()
+        match_schema_errors(excinfo.value, expected_error)
     else:
         await generated_schema.bake()
 
@@ -264,7 +269,9 @@ async def test_schema_validate_named_types(
             placeholder: String
         }
         """,
-            True,
+            [
+                "Interface field < Vehicle.parts > expects type < [String!]! > but < Car.parts > is type < [Int!]! >.",
+            ],
         ),
         (
             """
@@ -278,7 +285,10 @@ async def test_schema_validate_named_types(
             placeholder: String
         }
         """,
-            True,
+            [
+                "Type < Car > must only implement Interface types, it cannot implement < Unknown >.",
+                "Unknown type < Unknown >.",
+            ],
         ),
         (
             """
@@ -292,7 +302,9 @@ async def test_schema_validate_named_types(
             placeholder: String
         }
         """,
-            True,
+            [
+                "Type < Car > must only implement Interface types, it cannot implement < Brand >.",
+            ],
         ),
         (
             """
@@ -314,7 +326,9 @@ async def test_schema_validate_named_types(
             placeholder: String
         }
         """,
-            True,
+            [
+                "Interface field < MechanicalStuff.parts > expected but < Car > does not provide it.",
+            ],
         ),
     ],
     ids=["1", "2", "3", "4", "5", "6", "7"],
@@ -342,8 +356,9 @@ async def test_schema_validate_object_follow_interfaces(
         pass
 
     if expected_error:
-        with pytest.raises(GraphQLSchemaError):
+        with pytest.raises(GraphQLSchemaError) as excinfo:
             await generated_schema.bake()
+        match_schema_errors(excinfo.value, expected_error)
     else:
         await generated_schema.bake()
 
@@ -387,7 +402,7 @@ async def test_schema_validate_object_follow_interfaces(
             placeholder: String
         }
         """,
-            True,
+            ["Query root type must be provided."],
         ),
         (
             """
@@ -404,7 +419,10 @@ async def test_schema_validate_object_follow_interfaces(
             placeholder: String
         }
         """,
-            True,
+            [
+                "Unknown type < RootQuery >.",
+                "Query root type must be Object type.",
+            ],
         ),
         (
             """
@@ -421,7 +439,10 @@ async def test_schema_validate_object_follow_interfaces(
             placeholder: String
         }
         """,
-            True,
+            [
+                "Unknown type < RootMutation >. Did you mean RootSubscription?",
+                "Mutation root type must be Object type.",
+            ],
         ),
         (
             """
@@ -438,7 +459,10 @@ async def test_schema_validate_object_follow_interfaces(
             placeholder: String
         }
         """,
-            True,
+            [
+                "Unknown type < RootSubscription >. Did you mean RootMutation?",
+                "Subscription root type must be Object type.",
+            ],
         ),
     ],
 )
@@ -451,8 +475,9 @@ async def test_schema_validate_root_types_exist(
     generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
-        with pytest.raises(GraphQLSchemaError):
+        with pytest.raises(GraphQLSchemaError) as excinfo:
             await generated_schema.bake()
+        match_schema_errors(excinfo.value, expected_error)
     else:
         await generated_schema.bake()
 
@@ -475,7 +500,10 @@ async def test_schema_validate_root_types_exist(
         type Foo
         type Query
         """,
-            True,
+            [
+                "Type < Foo > must define one or more fields.",
+                "Type < Query > must define one or more fields.",
+            ],
         ),
     ],
 )
@@ -488,8 +516,9 @@ async def test_schema_validate_non_empty_object(
     generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
-        with pytest.raises(GraphQLSchemaError):
+        with pytest.raises(GraphQLSchemaError) as excinfo:
             await generated_schema.bake()
+        match_schema_errors(excinfo.value, expected_error)
     else:
         await generated_schema.bake()
 
@@ -525,7 +554,10 @@ async def test_schema_validate_non_empty_object(
 
         union Test = Test | Test
         """,
-            True,
+            [
+                "Union type < Test > can only include type < Test > once.",
+                "Union type < Test > can only include Object types, it cannot include < Test >.",
+            ],
         ),
     ],
 )
@@ -538,8 +570,9 @@ async def test_schema_validate_union_is_acceptable(
     generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
-        with pytest.raises(GraphQLSchemaError):
+        with pytest.raises(GraphQLSchemaError) as excinfo:
             await generated_schema.bake()
+        match_schema_errors(excinfo.value, expected_error)
     else:
         await generated_schema.bake()
 

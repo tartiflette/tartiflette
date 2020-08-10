@@ -27,14 +27,14 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListWithDefaultEnumField"],
-                        "locations": [{"line": 1, "column": 41}],
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 48}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],

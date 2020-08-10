@@ -1,9 +1,8 @@
-from typing import Any, Callable, Dict, Optional
-
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import Resolver, create_engine
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.fixture(scope="module")
@@ -76,13 +75,7 @@ async def test_issue_278_schema_extend(query, expected, ttftt_engine):
 
 @pytest.mark.asyncio
 async def test_issue_278_schema_extend_invalid_sdl():
-    with pytest.raises(
-        GraphQLSchemaError,
-        match="""
-
-0: Can't extend Schema Operation < Query > multiple times
-1: Can't extend Schema with Operation < Mutation > cause type is already defined.""",
-    ):
+    with pytest.raises(GraphQLSchemaError) as excinfo:
         await create_engine(
             sdl="""
                 type aType {
@@ -107,3 +100,7 @@ async def test_issue_278_schema_extend_invalid_sdl():
             """,
             schema_name="test_issue_278_schema_extend_invalid_sdl",
         )
+
+    match_schema_errors(
+        excinfo.value, ["There can be only one < query > type in schema."],
+    )

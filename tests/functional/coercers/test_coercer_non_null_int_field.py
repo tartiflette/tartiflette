@@ -18,14 +18,14 @@ from tests.functional.coercers.common import resolve_unwrapped_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Missing mandatory argument < param > in field < Query.nonNullIntField >.",
-                        "path": ["nonNullIntField"],
+                        "message": "Field < nonNullIntField > argument < param > of type < Int! > is required, but it was not provided.",
+                        "path": None,
                         "locations": [{"line": 1, "column": 9}],
                         "extensions": {
-                            "rule": "5.4.2.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "rule": "5.4.2.1",
                             "tag": "required-arguments",
+                            "details": "https://spec.graphql.org/June2018/#sec-Required-Arguments",
                         },
                     }
                 ],
@@ -38,14 +38,14 @@ from tests.functional.coercers.common import resolve_unwrapped_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < Int! > must not be null.",
-                        "path": ["nonNullIntField"],
-                        "locations": [{"line": 1, "column": 25}],
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 32}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],
@@ -96,9 +96,15 @@ from tests.functional.coercers.common import resolve_unwrapped_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid default value < null >.",
+                        "message": "Expected value of type < Int! >, found < null >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 23}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
                     }
                 ],
             },
@@ -110,9 +116,15 @@ from tests.functional.coercers.common import resolve_unwrapped_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > of non-null type < Int! > must not be null.",
+                        "message": "Expected value of type < Int! >, found < null >.",
                         "path": None,
-                        "locations": [{"line": 1, "column": 8}],
+                        "locations": [{"line": 1, "column": 23}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
                     }
                 ],
             },
@@ -120,7 +132,22 @@ from tests.functional.coercers.common import resolve_unwrapped_field
         (
             """query ($param: Int! = null) { nonNullIntField(param: $param) }""",
             {"param": 20},
-            {"data": {"nonNullIntField": "SUCCESS-23"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < Int! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 23}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: Int! = 30) { nonNullIntField(param: $param) }""",

@@ -18,14 +18,14 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Missing mandatory argument < param > in field < Query.nonNullListEnumField >.",
-                        "path": ["nonNullListEnumField"],
+                        "message": "Field < nonNullListEnumField > argument < param > of type < [MyEnum]! > is required, but it was not provided.",
+                        "path": None,
                         "locations": [{"line": 1, "column": 9}],
                         "extensions": {
-                            "rule": "5.4.2.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Required-Arguments",
+                            "rule": "5.4.2.1",
                             "tag": "required-arguments",
+                            "details": "https://spec.graphql.org/June2018/#sec-Required-Arguments",
                         },
                     }
                 ],
@@ -38,14 +38,14 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [MyEnum]! > must not be null.",
-                        "path": ["nonNullListEnumField"],
-                        "locations": [{"line": 1, "column": 30}],
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 37}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],
@@ -134,9 +134,15 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > got invalid default value < null >.",
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
                         "path": None,
                         "locations": [{"line": 1, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
                     }
                 ],
             },
@@ -148,9 +154,15 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Variable < $param > of non-null type < [MyEnum]! > must not be null.",
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
                         "path": None,
-                        "locations": [{"line": 1, "column": 8}],
+                        "locations": [{"line": 1, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
                     }
                 ],
             },
@@ -158,25 +170,81 @@ from tests.functional.coercers.common import resolve_list_field
         (
             """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             {"param": [None]},
-            {"data": {"nonNullListEnumField": "SUCCESS-[None]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             {"param": "ENUM_3"},
-            {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3"]},
-            {"data": {"nonNullListEnumField": "SUCCESS-[enum_3_3-myenum]"}},
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
+            },
         ),
         (
             """query ($param: [MyEnum]! = null) { nonNullListEnumField(param: $param) }""",
             {"param": ["ENUM_3", None]},
             {
-                "data": {
-                    "nonNullListEnumField": "SUCCESS-[enum_3_3-myenum-None]"
-                }
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Expected value of type < [MyEnum]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 28}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.6.1",
+                            "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
+                        },
+                    }
+                ],
             },
         ),
         (

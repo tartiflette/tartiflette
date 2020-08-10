@@ -35,20 +35,18 @@ async def test_issue82(ttftt_engine):
     }
     """
 
-    results = await ttftt_engine.execute(query)
-
-    assert results == {
+    assert await ttftt_engine.execute(query) == {
         "data": None,
         "errors": [
             {
-                "message": "Unknown Fragment for Spread < UndefinedFragment >.",
+                "message": "Unknown fragment < UndefinedFragment >.",
                 "path": None,
-                "locations": [{"line": 5, "column": 13}],
+                "locations": [{"line": 5, "column": 16}],
                 "extensions": {
-                    "rule": "5.5.2.1",
                     "spec": "June 2018",
-                    "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Fragment-spread-target-defined",
+                    "rule": "5.5.2.1",
                     "tag": "fragment-spread-target-defined",
+                    "details": "https://spec.graphql.org/June2018/#sec-Fragment-spread-target-defined",
                 },
             }
         ],

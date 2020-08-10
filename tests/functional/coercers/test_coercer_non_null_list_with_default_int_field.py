@@ -27,14 +27,14 @@ from tests.functional.coercers.common import resolve_list_field
                 "data": None,
                 "errors": [
                     {
-                        "message": "Argument < param > of non-null type < [Int]! > must not be null.",
-                        "path": ["nonNullListWithDefaultIntField"],
-                        "locations": [{"line": 1, "column": 40}],
+                        "message": "Expected value of type < [Int]! >, found < null >.",
+                        "path": None,
+                        "locations": [{"line": 1, "column": 47}],
                         "extensions": {
-                            "rule": "5.6.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Values-of-Correct-Type",
+                            "rule": "5.6.1",
                             "tag": "values-of-correct-type",
+                            "details": "https://spec.graphql.org/June2018/#sec-Values-of-Correct-Type",
                         },
                     }
                 ],

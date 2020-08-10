@@ -67,17 +67,17 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Can't have multiple operations named < getName >.",
+                        "message": "There can be only one operation named < getName >.",
                         "path": None,
                         "locations": [
-                            {"line": 2, "column": 9},
-                            {"line": 8, "column": 9},
+                            {"line": 2, "column": 15},
+                            {"line": 8, "column": 15},
                         ],
                         "extensions": {
-                            "rule": "5.2.1.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Operation-Name-Uniqueness",
+                            "rule": "5.2.1.1",
                             "tag": "operation-name-uniqueness",
+                            "details": "https://spec.graphql.org/June2018/#sec-Operation-Name-Uniqueness",
                         },
                     }
                 ],
@@ -111,20 +111,33 @@ async def ttftt_engine():
                 "data": None,
                 "errors": [
                     {
-                        "message": "Can't have multiple operations named < getName >.",
+                        "message": "There can be only one operation named < getName >.",
                         "path": None,
                         "locations": [
-                            {"line": 2, "column": 9},
-                            {"line": 8, "column": 9},
-                            {"line": 16, "column": 9},
+                            {"line": 2, "column": 15},
+                            {"line": 8, "column": 15},
                         ],
                         "extensions": {
-                            "rule": "5.2.1.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Operation-Name-Uniqueness",
+                            "rule": "5.2.1.1",
                             "tag": "operation-name-uniqueness",
+                            "details": "https://spec.graphql.org/June2018/#sec-Operation-Name-Uniqueness",
                         },
-                    }
+                    },
+                    {
+                        "message": "There can be only one operation named < getName >.",
+                        "path": None,
+                        "locations": [
+                            {"line": 2, "column": 15},
+                            {"line": 16, "column": 15},
+                        ],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.2.1.1",
+                            "tag": "operation-name-uniqueness",
+                            "details": "https://spec.graphql.org/June2018/#sec-Operation-Name-Uniqueness",
+                        },
+                    },
                 ],
             },
         ),

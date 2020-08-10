@@ -2,6 +2,7 @@ import pytest
 
 
 @pytest.mark.asyncio
+@pytest.mark.ttftt_engine
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -19,27 +20,16 @@ import pytest
                 "data": None,
                 "errors": [
                     {
-                        "message": "Field a doesn't exist on String",
-                        "path": ["dog", "name", "a"],
-                        "locations": [{"line": 5, "column": 25}],
+                        "message": "Field < name > must not have a selection since type < String! > has no subfields.",
+                        "path": None,
+                        "locations": [{"line": 4, "column": 26}],
                         "extensions": {
-                            "rule": "5.3.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        },
-                    },
-                    {
-                        "message": "Field name must not have a selection since type String has no subfields.",
-                        "path": ["dog", "name"],
-                        "locations": [{"line": 4, "column": 21}],
-                        "extensions": {
                             "rule": "5.3.3",
                             "tag": "leaf-field-selections",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
-                            "spec": "June 2018",
+                            "details": "https://spec.graphql.org/June2018/#sec-Leaf-Field-Selections",
                         },
-                    },
+                    }
                 ],
             },
         ),
@@ -53,14 +43,14 @@ import pytest
                 "data": None,
                 "errors": [
                     {
-                        "message": "Field dog of type Dog must have a selection of subfields.",
-                        "path": ["dog"],
+                        "message": "Field < dog > of type < Dog > must have a selection of subfields. Did you mean < dog { ... } >?",
+                        "path": None,
                         "locations": [{"line": 3, "column": 17}],
                         "extensions": {
+                            "spec": "June 2018",
                             "rule": "5.3.3",
                             "tag": "leaf-field-selections",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
-                            "spec": "June 2018",
+                            "details": "https://spec.graphql.org/June2018/#sec-Leaf-Field-Selections",
                         },
                     }
                 ],
@@ -83,27 +73,16 @@ import pytest
                 "data": None,
                 "errors": [
                     {
-                        "message": "Field a doesn't exist on String",
-                        "path": ["name", "a"],
-                        "locations": [{"line": 4, "column": 21}],
+                        "message": "Field < name > must not have a selection since type < String! > has no subfields.",
+                        "path": None,
+                        "locations": [{"line": 3, "column": 22}],
                         "extensions": {
-                            "rule": "5.3.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        },
-                    },
-                    {
-                        "message": "Field name must not have a selection since type String has no subfields.",
-                        "path": ["name"],
-                        "locations": [{"line": 3, "column": 17}],
-                        "extensions": {
                             "rule": "5.3.3",
                             "tag": "leaf-field-selections",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
-                            "spec": "June 2018",
+                            "details": "https://spec.graphql.org/June2018/#sec-Leaf-Field-Selections",
                         },
-                    },
+                    }
                 ],
             },
         ),
@@ -123,32 +102,20 @@ import pytest
                 "data": None,
                 "errors": [
                     {
-                        "message": "Field a doesn't exist on String",
-                        "path": ["dog", "name", "a"],
-                        "locations": [{"line": 6, "column": 29}],
+                        "message": "Field < name > must not have a selection since type < String! > has no subfields.",
+                        "path": None,
+                        "locations": [{"line": 5, "column": 30}],
                         "extensions": {
-                            "rule": "5.3.1",
                             "spec": "June 2018",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                            "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        },
-                    },
-                    {
-                        "message": "Field name must not have a selection since type String has no subfields.",
-                        "path": ["dog", "name"],
-                        "locations": [{"line": 5, "column": 25}],
-                        "extensions": {
                             "rule": "5.3.3",
                             "tag": "leaf-field-selections",
-                            "details": "https://graphql.github.io/graphql-spec/June2018/#sec-Leaf-Field-Selections",
-                            "spec": "June 2018",
+                            "details": "https://spec.graphql.org/June2018/#sec-Leaf-Field-Selections",
                         },
-                    },
+                    }
                 ],
             },
         ),
     ],
 )
-@pytest.mark.ttftt_engine()
 async def test_issue109(query, expected, engine):
     assert await engine.execute(query) == expected

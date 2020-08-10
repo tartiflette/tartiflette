@@ -20,6 +20,7 @@ async def ttftt_engine():
     return await create_engine(sdl=_SDL, schema_name="test_arguments")
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query,expected,varis",
     [
@@ -37,7 +38,6 @@ async def ttftt_engine():
         ),
     ],
 )
-@pytest.mark.asyncio
 async def test_arguments_in_sdl(query, expected, varis, ttftt_engine):
     result = await ttftt_engine.execute(
         query, variables=varis, operation_name="aQuery"

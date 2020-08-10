@@ -4,6 +4,7 @@ import pytest
 
 from tartiflette import Directive, Resolver, create_engine
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.fixture(scope="module")
@@ -109,16 +110,7 @@ async def test_issue_278_input_object_extend(query, expected, ttftt_engine):
 
 @pytest.mark.asyncio
 async def test_issue_278_extend_input_object_invalid_sdl():
-    with pytest.raises(
-        GraphQLSchemaError,
-        match="""
-
-0: Can't add < C > Directive to < bob > INPUT, cause it's already there.
-1: Can't add Input Field < a > to Input Object < bob > cause it already exists
-2: Can't add Input Field < b > to Input Object < bob > cause it already exists
-3: Can't extend a non existing type < dontexists >.
-4: Can't extend INPUT < aType > cause it's not an INPUT.""",
-    ):
+    with pytest.raises(GraphQLSchemaError) as excinfo:
         await create_engine(
             sdl="""
                 directive @C on INPUT_OBJECT
@@ -149,3 +141,16 @@ async def test_issue_278_extend_input_object_invalid_sdl():
             """,
             schema_name="test_issue_278_extend_input_object_invalid_sdl",
         )
+
+    match_schema_errors(
+        excinfo.value,
+        [
+            "Field < bob.a > can only be defined once.",
+            "Field < bob.b > can only be defined once.",
+            "The directive < @C > can only be used once at this location.",
+            "The type of < aType.b > must be Output type but got: bob.",
+            "The type of < Query.a > must be Output type but got: bob.",
+            "Cannot extend type < dontexists > because it is not defined.",
+            "Cannot extend non-object type < aType >.",
+        ],
+    )

@@ -31,29 +31,38 @@ async def test_engine_execute(clean_registry):
     assert result == {"data": {"a": None}}
 
 
-@pytest.mark.skip(reason="Waiting for the validation part to be merged.")
 @pytest.mark.asyncio
 async def test_engine_execute_parse_error(clean_registry):
     e = await create_engine("type Query { a: String }")
-
     assert await e.execute("query { unknownNode1 unknownNode2 }") == {
         "data": None,
         "errors": [
             {
-                "message": "field `Query.unknownNode1` was not found in GraphQL schema.",
-                "path": ["unknownNode1"],
-                "locations": [{"column": 9, "line": 1}],
+                "message": "Cannot query field < unknownNode1 > on type < Query >.",
+                "path": None,
+                "locations": [{"line": 1, "column": 9}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                },
             },
             {
-                "message": "field `Query.unknownNode2` was not found in GraphQL schema.",
-                "path": ["unknownNode2"],
-                "locations": [{"column": 22, "line": 1}],
+                "message": "Cannot query field < unknownNode2 > on type < Query >.",
+                "path": None,
+                "locations": [{"line": 1, "column": 22}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                },
             },
         ],
     }
 
 
-@pytest.mark.skip(reason="Waiting for the validation part to be merged.")
 @pytest.mark.asyncio
 async def test_engine_execute_custom_error_coercer(clean_registry):
     async def custom_error_coercer(exception, error):
@@ -63,19 +72,30 @@ async def test_engine_execute_custom_error_coercer(clean_registry):
     e = await create_engine(
         "type Query { a: String }", error_coercer=custom_error_coercer
     )
-
     assert await e.execute("query { unknownNode1 unknownNode2 }") == {
         "data": None,
         "errors": [
             {
-                "message": "field `Query.unknownNode1` was not found in GraphQL schema.Custom",
-                "path": ["unknownNode1"],
-                "locations": [{"column": 9, "line": 1}],
+                "message": "Cannot query field < unknownNode1 > on type < Query >.Custom",
+                "path": None,
+                "locations": [{"line": 1, "column": 9}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                },
             },
             {
-                "message": "field `Query.unknownNode2` was not found in GraphQL schema.Custom",
-                "path": ["unknownNode2"],
-                "locations": [{"column": 22, "line": 1}],
+                "message": "Cannot query field < unknownNode2 > on type < Query >.Custom",
+                "path": None,
+                "locations": [{"line": 1, "column": 22}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                },
             },
         ],
     }
