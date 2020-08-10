@@ -42,8 +42,6 @@ async def variable_coercer(
     variable_definition_node = executable_variable_definition.definition
 
     if not has_value and not is_invalid_value(default_value):
-        # TODO: we should be able to remove this once the `ValuesOfCorrectType`
-        # rule of `validate_document` will be implemented
         coercion_result = await literal_coercer(
             variable_definition_node, default_value, ctx
         )
