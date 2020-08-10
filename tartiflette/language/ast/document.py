@@ -10,12 +10,11 @@ class DocumentNode(Node):
     AST node representing a GraphQL document.
     """
 
-    __slots__ = ("definitions", "location", "_hash_id", "validators")
+    __slots__ = ("definitions", "location", "_hash_id")
 
     def __init__(
         self,
         definitions: List["DefinitionNode"],
-        validators: Optional["Validators"] = None,
         location: Optional["Location"] = None,
         hash_id: Optional[int] = None,
     ) -> None:
@@ -23,16 +22,13 @@ class DocumentNode(Node):
         :param definitions: definitions of the document
         :param location: location of the document in the query/SDL
         :param hash_id: hash of the DocumentNode
-        :param validators: a validators object that will be used to validate the document
         :type definitions: List[DefinitionNode]
         :type location: Optional[Location]
         :type hash_id: Optional[int]
-        :type validators: Optional["Validators"]
         """
         self.definitions = definitions
         self.location = location
         self._hash_id = hash_id
-        self.validators = validators
 
     def __eq__(self, other: Any) -> bool:
         """

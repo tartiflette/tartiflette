@@ -16,8 +16,8 @@ from typing import (
 )
 
 from tartiflette.constants import UNDEFINED_VALUE
-from tartiflette.execution.collect import parse_and_validate_query
 from tartiflette.execution.execute import create_source_event_stream, execute
+from tartiflette.execution.parser import parse_and_validate_query
 from tartiflette.execution.response import build_response
 from tartiflette.schema.bakery import SchemaBakery
 from tartiflette.schema.registry import SchemaRegistry

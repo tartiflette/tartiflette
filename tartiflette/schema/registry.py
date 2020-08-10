@@ -7,6 +7,7 @@ from tartiflette.types.exceptions.tartiflette import ImproperlyConfigured
 
 __all__ = ("SchemaRegistry",)
 
+
 _SCHEMA_OBJECT_IDS = [
     "directives",
     "resolvers",
