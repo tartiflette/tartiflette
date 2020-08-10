@@ -115,6 +115,16 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
         """
         self.implemented_fields[field.name] = field
 
+    def has_field(self, name: str) -> bool:
+        """
+        Determines whether or not the name corresponds to a defined field.
+        :param name: name of the field to find
+        :type name: str
+        :return: whether or not the name corresponds to a defined field
+        :rtype: bool
+        """
+        return name in self.implemented_fields
+
     def find_field(self, name: str) -> "GraphQLField":
         """
         Returns the field corresponding to the filled in name.
