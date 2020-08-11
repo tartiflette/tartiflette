@@ -5,7 +5,7 @@ from tartiflette.language.visitor.type_info import (
     WithTypeInfoVisitor,
 )
 from tartiflette.language.visitor.visit import visit
-from tartiflette.language.visitor.visitor import ParallelVisitor
+from tartiflette.language.visitor.visitor import MultipleVisitor
 from tartiflette.validation.context import (
     ASTValidationContext,
     QueryValidationContext,
@@ -33,7 +33,7 @@ def validate_sdl(
         rules = SPECIFIED_SDL_RULES
 
     context = ASTValidationContext(document_node)
-    visit(document_node, ParallelVisitor([rule(context) for rule in rules]))
+    visit(document_node, MultipleVisitor([rule(context) for rule in rules]))
     return context.errors
 
 
@@ -66,7 +66,7 @@ def validate_query(
     visit(
         document_node,
         WithTypeInfoVisitor(
-            type_info, ParallelVisitor([rule(context) for rule in rules])
+            type_info, MultipleVisitor([rule(context) for rule in rules])
         ),
     )
     return context.errors
