@@ -1,9 +1,10 @@
 from math import isfinite
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from tartiflette import Scalar
-from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import BooleanValueNode
+from tartiflette.types.exceptions.tartiflette import TartifletteError
+from tartiflette.utils.errors import graphql_error_from_nodes
 
 
 class ScalarBoolean:
@@ -28,7 +29,8 @@ class ScalarBoolean:
                 return bool(value)
         except Exception:  # pylint: disable=broad-except
             pass
-        raise TypeError(
+
+        raise TartifletteError(
             f"Boolean cannot represent a non boolean value: < {value} >."
         )
 
@@ -41,23 +43,28 @@ class ScalarBoolean:
         :rtype: bool
         """
         # pylint: disable=no-self-use
-        if not isinstance(value, bool):
-            raise TypeError(
-                f"Boolean cannot represent a non boolean value: < {value} >."
-            )
-        return value
+        if isinstance(value, bool):
+            return value
 
-    def parse_literal(self, ast: "Node") -> Union[bool, "UNDEFINED_VALUE"]:
+        raise TartifletteError(
+            f"Boolean cannot represent a non boolean value: < {value} >."
+        )
+
+    def parse_literal(self, ast: "Node") -> bool:
         """
         Coerce the input value from an AST node.
         :param ast: AST node to coerce
         :type ast: Node
         :return: the coerced value
-        :rtype: Union[bool, UNDEFINED_VALUE]
+        :rtype: bool
         """
         # pylint: disable=no-self-use
-        return (
-            ast.value if isinstance(ast, BooleanValueNode) else UNDEFINED_VALUE
+        if isinstance(ast, BooleanValueNode):
+            return ast.value
+
+        raise graphql_error_from_nodes(
+            f"Boolean cannot represent a non boolean value: {ast}.",
+            nodes=[ast],
         )
 
 

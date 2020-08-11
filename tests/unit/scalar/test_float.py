@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import pytest
 
+from tartiflette import TartifletteError
 from tartiflette.scalar.builtins.float import ScalarFloat
 
 
@@ -70,7 +71,7 @@ from tartiflette.scalar.builtins.float import ScalarFloat
 )
 def test_scalar_float_coerce_output(value, should_raise_exception, expected):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarFloat().coerce_output(value)
     else:
         assert ScalarFloat().coerce_output(value) == expected
@@ -159,7 +160,7 @@ def test_scalar_float_coerce_output(value, should_raise_exception, expected):
 )
 def test_scalar_float_coerce_input(value, should_raise_exception, expected):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarFloat().coerce_input(value)
     else:
         assert ScalarFloat().coerce_input(value) == expected

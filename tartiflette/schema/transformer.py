@@ -946,6 +946,7 @@ def schema_from_document(
     schema = GraphQLSchema(name=schema_name)
     for definition_node in document_node.definitions:
         parse_definition(definition_node, schema)
+    schema.document_node = document_node
     return schema
 
 
@@ -962,9 +963,6 @@ def schema_from_sdl(
     :return: build GraphQLSchema
     :rtype: GraphQLSchema
     """
-    document_node = parse_to_document(sdl)
-    # TODO: implements the `validate_document` function
-    # errors = validate_document(document)
-    # if errors:
-    #     raise Something(errors)
-    return schema_from_document(document_node, schema_name=schema_name)
+    return schema_from_document(
+        parse_to_document(sdl), schema_name=schema_name
+    )

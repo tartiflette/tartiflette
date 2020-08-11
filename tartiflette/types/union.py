@@ -48,7 +48,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         self.name = name
         self.types = types
         self.description = description
-        self._possible_types: List["GraphQLType"] = []
+        self.possible_types: List["GraphQLType"] = []
         self._possible_types_set: Set[str] = set()
         self._fields: Dict[str, "GraphQLField"] = {}
 
@@ -107,7 +107,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         :return: the list of possible types
         :rtype: List[GraphQLObjectType]
         """
-        return self._possible_types
+        return self.possible_types
 
     def add_field(self, field: "GraphQLField") -> None:
         """
@@ -151,7 +151,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         """
         for type_name in self.types:
             schema_type = schema.find_type(type_name)
-            self._possible_types.append(schema_type)
+            self.possible_types.append(schema_type)
             self._possible_types_set.add(type_name)
 
         # Directives

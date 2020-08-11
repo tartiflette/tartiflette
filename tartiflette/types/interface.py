@@ -48,7 +48,7 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
         self.name = name
         self.implemented_fields = fields or {}
         self.description = description
-        self._possible_types: List["GraphQLType"] = []
+        self.possible_types: List["GraphQLType"] = []
         self._possible_types_set: Set[str] = set()
 
         # Directives
@@ -112,7 +112,25 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
         :return: the list of possible types
         :rtype: List[GraphQLObjectType]
         """
-        return self._possible_types
+        return self.possible_types
+
+    def add_field(self, field: "GraphQLField") -> None:
+        """
+        Adds the filled in field to the list of implemented fields.
+        :param field: field to add to the list
+        :type field: GraphQLField
+        """
+        self.implemented_fields[field.name] = field
+
+    def has_field(self, name: str) -> bool:
+        """
+        Determines whether or not the name corresponds to a defined field.
+        :param name: name of the field to find
+        :type name: str
+        :return: whether or not the name corresponds to a defined field
+        :rtype: bool
+        """
+        return name in self.implemented_fields
 
     def find_field(self, name: str) -> "GraphQLField":
         """
@@ -131,7 +149,7 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
         :param possible_type: GraphQLObjectType which implements the interface
         :type possible_type: GraphQLObjectType
         """
-        self._possible_types.append(possible_type)
+        self.possible_types.append(possible_type)
         self._possible_types_set.add(possible_type.name)
 
     def is_possible_type(self, gql_type: Union["GraphQLType", "str"]) -> bool:

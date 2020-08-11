@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Dict, List, Optional, Set, Union
 
 from tartiflette.execution.nodes.variable_definition import (
     variable_definition_node_to_executable,
@@ -8,52 +8,18 @@ from tartiflette.language.ast import (
     FragmentSpreadNode,
     InlineFragmentNode,
 )
-from tartiflette.language.parsers.libgraphqlparser import parse_to_document
-from tartiflette.types.exceptions.tartiflette import (
-    SkipCollection,
-    TartifletteError,
-)
+from tartiflette.types.exceptions.tartiflette import SkipCollection
 from tartiflette.types.helpers.get_directive_instances import (
     compute_directive_nodes,
 )
 from tartiflette.utils.directives import wraps_with_directives
-from tartiflette.utils.errors import to_graphql_error
 from tartiflette.utils.type_from_ast import schema_type_from_ast
 
 __all__ = (
-    "parse_and_validate_query",
     "collect_executable_variable_definitions",
     "collect_fields",
     "collect_subfields",
 )
-
-
-def parse_and_validate_query(
-    query: Union[str, bytes], schema: "GraphQLSchema"
-) -> Tuple[Optional["DocumentNode"], Optional[List["TartifletteError"]]]:
-    """
-    Analyzes & validates a query by converting it to a DocumentNode.
-    :param query: the GraphQL request / query as UTF8-encoded string
-    :type query: Union[str, bytes]
-    :param schema: the GraphQLSchema instance linked to the engine
-    :type schema: GraphQLSchema
-    :return: a DocumentNode representing the query
-    :rtype: Tuple[Optional[DocumentNode], Optional[List[TartifletteError]]]
-    """
-    try:
-        document: "DocumentNode" = parse_to_document(query, schema)
-    except TartifletteError as e:
-        return None, [e]
-    except Exception as e:  # pylint: disable=broad-except
-        return (
-            None,
-            [to_graphql_error(e, message="Server encountered an error.")],
-        )
-
-    if document.validators.errors:
-        return None, document.validators.errors
-
-    return document, None
 
 
 def collect_executable_variable_definitions(

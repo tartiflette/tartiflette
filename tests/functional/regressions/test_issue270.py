@@ -1,5 +1,3 @@
-import json
-
 import pytest
 
 from tartiflette import Resolver, create_engine
@@ -31,6 +29,7 @@ async def ttftt_engine():
     )
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "query, variables, expected",
     [
@@ -65,6 +64,5 @@ async def ttftt_engine():
         ),
     ],
 )
-@pytest.mark.asyncio
 async def test_issue270(query, variables, expected, ttftt_engine):
     assert await ttftt_engine.execute(query, variables=variables) == expected

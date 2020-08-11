@@ -1,9 +1,8 @@
-from typing import Any, Callable, Dict, Optional
-
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import create_engine
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
+from tests.functional.utils import match_schema_errors
 
 
 @pytest.fixture(scope="module")
@@ -24,7 +23,7 @@ async def ttftt_engine():
             p: Boolean
         }
 
-        union bobby @deprecated = aType | anotherType
+        union bobby = aType | anotherType
 
         type Query {
             a: bobby
@@ -75,15 +74,7 @@ async def test_issue_278_union_extend(query, expected, ttftt_engine):
 
 @pytest.mark.asyncio
 async def test_issue_278_union_extend_invalid_sdl():
-    with pytest.raises(
-        GraphQLSchemaError,
-        match="""
-
-0: Can't add PossibleType < String > to UNION < bob > cause PossibleType already exists.
-1: Can't add < deprecated > Directive to < bob > UNION, cause it's already there.
-2: Can't extend a non existing type < dontexists >.
-3: Can't extend UNION < aType > cause it's not an UNION.""",
-    ):
+    with pytest.raises(GraphQLSchemaError) as excinfo:
         await create_engine(
             sdl="""
                 union bob @deprecated = String | Int
@@ -104,3 +95,19 @@ async def test_issue_278_union_extend_invalid_sdl():
             """,
             schema_name="test_issue_278_union_extend_invalid_sdl",
         )
+
+    match_schema_errors(
+        excinfo.value,
+        [
+            "Directive < @deprecated > may not be used on UNION.",
+            "The directive < @deprecated > can only be used once at this location.",
+            "Union type < bob > can only include type < String > once.",
+            "Directive < @deprecated > may not be used on UNION.",
+            "Cannot extend type < dontexists > because it is not defined.",
+            "Directive < @deprecated > may not be used on UNION.",
+            "Cannot extend non-object type < aType >.",
+            "Union type < bob > can only include Object types, it cannot include < String >.",
+            "Union type < bob > can only include Object types, it cannot include < Int >.",
+            "Union type < aType > can only include Object types, it cannot include < Float >.",
+        ],
+    )

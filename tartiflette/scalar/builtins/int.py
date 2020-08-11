@@ -1,8 +1,9 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from tartiflette import Scalar
-from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import IntValueNode
+from tartiflette.types.exceptions.tartiflette import TartifletteError
+from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.utils.values import is_integer
 
 _MIN_INT = -2_147_483_648
@@ -37,12 +38,12 @@ class ScalarInt:
             if not is_integer(result):
                 raise ValueError()
         except Exception:  # pylint: disable=broad-except
-            raise TypeError(
+            raise TartifletteError(
                 f"Int cannot represent non-integer value: < {value} >."
             )
 
         if not _MIN_INT <= result <= _MAX_INT:
-            raise TypeError(
+            raise TartifletteError(
                 "Int cannot represent non 32-bit signed integer value: "
                 f"< {value} >."
             )
@@ -59,35 +60,39 @@ class ScalarInt:
         # pylint: disable=no-self-use
         # ¯\_(ツ)_/¯ booleans are int: `assert isinstance(True, int) is True`
         if not is_integer(value):
-            raise TypeError(
+            raise TartifletteError(
                 f"Int cannot represent non-integer value: < {value} >."
             )
         if not _MIN_INT <= value <= _MAX_INT:
-            raise TypeError(
+            raise TartifletteError(
                 "Int cannot represent non 32-bit signed integer value: "
                 f"< {value} >."
             )
         return int(value)
 
-    def parse_literal(self, ast: "Node") -> Union[int, "UNDEFINED_VALUE"]:
+    def parse_literal(self, ast: "Node") -> int:
         """
         Coerce the input value from an AST node.
         :param ast: AST node to coerce
         :type ast: Node
         :return: the coerced value
-        :rtype: Union[int, UNDEFINED_VALUE]
+        :rtype: int
         """
         # pylint: disable=no-self-use
-        if not isinstance(ast, IntValueNode):
-            return UNDEFINED_VALUE
-
-        try:
+        if isinstance(ast, IntValueNode):
             value = int(ast.value)
             if _MIN_INT <= value <= _MAX_INT:
                 return value
-        except Exception:  # pylint: disable=broad-except
-            pass
-        return UNDEFINED_VALUE
+
+            raise graphql_error_from_nodes(
+                "Int cannot represent non 32-bit signed integer value: "
+                f"{ast.value}.",
+                nodes=[ast],
+            )
+
+        raise graphql_error_from_nodes(
+            f"Int cannot represent non-integer value: {ast}.", nodes=[ast],
+        )
 
 
 def bake(schema_name: str, config: Optional[Dict[str, Any]] = None) -> str:

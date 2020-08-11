@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import pytest
 
+from tartiflette import TartifletteError
 from tartiflette.scalar.builtins.id import ScalarID
 
 
@@ -74,7 +75,7 @@ from tartiflette.scalar.builtins.id import ScalarID
 )
 def test_scalar_id_coerce_output(value, should_raise_exception, expected):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarID().coerce_output(value)
     else:
         assert ScalarID().coerce_output(value) == expected
@@ -149,7 +150,7 @@ def test_scalar_id_coerce_output(value, should_raise_exception, expected):
 )
 def test_scalar_id_coerce_input(value, should_raise_exception, expected):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarID().coerce_input(value)
     else:
         assert ScalarID().coerce_input(value) == expected

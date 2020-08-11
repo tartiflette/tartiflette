@@ -47,15 +47,39 @@ class TartifletteError(Exception):
         self.extensions = extensions or {}
         self.original_error = original_error
 
+    def __eq__(self, other: Any) -> bool:
+        """
+        Returns True if `other` instance is identical to `self`.
+        :param other: object instance to compare to `self`
+        :type other: Any
+        :return: whether or not `other` is identical to `self`
+        :rtype: bool
+        """
+        return self is other or (
+            isinstance(other, TartifletteError)
+            and self.message == other.message
+            and self.user_message == other.user_message
+            and self.more_info == other.more_info
+            and self.path == other.path
+            and self.locations == other.locations
+            and self.extensions == other.extensions
+            and self.original_error == other.original_error
+        )
+
     def __repr__(self) -> str:
         """
         Returns the representation of a TartifletteError instance.
         :return: the representation of a TartifletteError instance
         :rtype: str
         """
-        return f"{self.__class__.__name__}(message=%r, locations=%r)" % (
-            self.user_message or self.message,
-            self.locations,
+        return (
+            f"{self.__class__.__name__}(message=%r, locations=%r, "
+            "extensions=%r)"
+            % (
+                self.user_message or self.message,
+                self.locations,
+                self.extensions,
+            )
         )
 
     def coerce_value(

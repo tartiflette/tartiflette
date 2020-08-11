@@ -116,7 +116,22 @@ _EXPECTED = {
             }
             """,
             None,
-            _EXPECTED,
+            {
+                "data": None,
+                "errors": [
+                    {
+                        "message": "Fragment cannot be spread here as objects of type < Cat > can never be of type < Dog >.",
+                        "path": None,
+                        "locations": [{"line": 17, "column": 17}],
+                        "extensions": {
+                            "spec": "June 2018",
+                            "rule": "5.5.2.3",
+                            "tag": "fragment-spread-is-possible",
+                            "details": "https://spec.graphql.org/June2018/#sec-Fragment-spread-is-possible",
+                        },
+                    }
+                ],
+            },
         ),
         (
             None,

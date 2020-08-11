@@ -126,10 +126,11 @@ def coercion_error(
     :return: a CoercionError
     :rtype: CoercionError
     """
+    if path:
+        message = f"{message} at {path}"
+
     return CoercionError(
-        message
-        + (" at " + str(path) if path else "")
-        + ("; " + sub_message if sub_message else "."),
+        message + ("; " + sub_message if sub_message else "."),
         locations=[node.location] if node else None,
         original_error=original_error,
     )

@@ -2,13 +2,13 @@ from decimal import Decimal
 
 import pytest
 
+from tartiflette import TartifletteError
 from tartiflette.scalar.builtins.string import ScalarString
 
 
 @pytest.mark.parametrize(
     "value,should_raise_exception,expected",
     [
-        # TODO: maybe we shouldn't accepts None, list, dict, exceptions...
         (None, False, "None"),
         (True, False, "true"),
         (False, False, "false"),
@@ -71,7 +71,7 @@ from tartiflette.scalar.builtins.string import ScalarString
 )
 def test_scalar_string_coerce_output(value, should_raise_exception, expected):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarString().coerce_output(value)
     else:
         assert ScalarString().coerce_output(value) == expected
@@ -140,7 +140,7 @@ def test_scalar_string_coerce_output(value, should_raise_exception, expected):
 )
 def test_scalar_string_coerce_input(value, should_raise_exception, expected):
     if should_raise_exception:
-        with pytest.raises(TypeError, match=expected):
+        with pytest.raises(TartifletteError, match=expected):
             ScalarString().coerce_input(value)
     else:
         assert ScalarString().coerce_input(value) == expected

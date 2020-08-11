@@ -1,8 +1,9 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from tartiflette import Scalar
-from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import StringValueNode
+from tartiflette.types.exceptions.tartiflette import TartifletteError
+from tartiflette.utils.errors import graphql_error_from_nodes
 
 
 class ScalarString:
@@ -30,7 +31,8 @@ class ScalarString:
             return str(value)
         except Exception:  # pylint: disable=broad-except
             pass
-        raise TypeError(f"String cannot represent value: < {value} >.")
+
+        raise TartifletteError(f"String cannot represent value: < {value} >.")
 
     def coerce_input(self, value: Any) -> str:
         """
@@ -41,23 +43,27 @@ class ScalarString:
         :rtype: str
         """
         # pylint: disable=no-self-use
-        if not isinstance(value, str):
-            raise TypeError(
-                f"String cannot represent a non string value: < {value} >."
-            )
-        return value
+        if isinstance(value, str):
+            return value
 
-    def parse_literal(self, ast: "Node") -> Union[str, "UNDEFINED_VALUE"]:
+        raise TartifletteError(
+            f"String cannot represent a non string value: < {value} >."
+        )
+
+    def parse_literal(self, ast: "Node") -> str:
         """
         Coerce the input value from an AST node.
         :param ast: AST node to coerce
         :type ast: Node
         :return: the coerced value
-        :rtype: Union[str, UNDEFINED_VALUE]
+        :rtype: str
         """
         # pylint: disable=no-self-use
-        return (
-            ast.value if isinstance(ast, StringValueNode) else UNDEFINED_VALUE
+        if isinstance(ast, StringValueNode):
+            return ast.value
+
+        raise graphql_error_from_nodes(
+            f"String cannot represent a non string value: {ast}.", nodes=[ast],
         )
 
 
