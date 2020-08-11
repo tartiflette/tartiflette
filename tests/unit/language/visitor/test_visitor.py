@@ -23,7 +23,7 @@ from tartiflette.language.visitor.constants import (
     SKIP,
 )
 from tartiflette.language.visitor.visit import visit
-from tartiflette.language.visitor.visitor import ParallelVisitor, Visitor
+from tartiflette.language.visitor.visitor import MultipleVisitor, Visitor
 
 _BASE_DIR = os.path.dirname(__file__)
 
@@ -1173,7 +1173,7 @@ def test_visit_in_parallel_allows_skipping_a_sub_tree():
     ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
     visitor = MyVisitor(ast)
     assert visitor.visited == []
-    visit(ast, ParallelVisitor([visitor]))
+    visit(ast, MultipleVisitor([visitor]))
     assert visitor.visited == [
         ("enter", "DocumentNode", UNDEFINED_VALUE),
         ("enter", "OperationDefinitionNode", UNDEFINED_VALUE),
@@ -1235,7 +1235,7 @@ def test_visit_in_parallel_allows_skipping_different_sub_trees():
     assert parallel_visited == []
     assert visitor_a.visited == []
     assert visitor_b.visited == []
-    visit(ast, ParallelVisitor([visitor_a, visitor_b]))
+    visit(ast, MultipleVisitor([visitor_a, visitor_b]))
     assert visitor_a.visited == [
         ("no-a", "enter", "DocumentNode", UNDEFINED_VALUE),
         ("no-a", "enter", "OperationDefinitionNode", UNDEFINED_VALUE),
@@ -1335,7 +1335,7 @@ def test_visit_in_parallel_allows_early_exit_while_visiting():
     ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
     visitor = MyVisitor(ast)
     assert visitor.visited == []
-    visit(ast, ParallelVisitor([visitor]))
+    visit(ast, MultipleVisitor([visitor]))
     assert visitor.visited == [
         ("enter", "DocumentNode", UNDEFINED_VALUE),
         ("enter", "OperationDefinitionNode", UNDEFINED_VALUE),
@@ -1392,7 +1392,7 @@ def test_visit_in_parallel_allows_early_exit_from_different_points():
     assert parallel_visited == []
     assert visitor_a.visited == []
     assert visitor_b.visited == []
-    visit(ast, ParallelVisitor([visitor_a, visitor_b]))
+    visit(ast, MultipleVisitor([visitor_a, visitor_b]))
     assert visitor_a.visited == [
         ("break-a", "enter", "DocumentNode", UNDEFINED_VALUE),
         ("break-a", "enter", "OperationDefinitionNode", UNDEFINED_VALUE),
@@ -1464,7 +1464,7 @@ def test_visit_in_parallel_allows_early_exit_while_leaving():
     ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
     visitor = MyVisitor(ast)
     assert visitor.visited == []
-    visit(ast, ParallelVisitor([visitor]))
+    visit(ast, MultipleVisitor([visitor]))
     assert visitor.visited == [
         ("enter", "DocumentNode", UNDEFINED_VALUE),
         ("enter", "OperationDefinitionNode", UNDEFINED_VALUE),
@@ -1525,7 +1525,7 @@ def test_visit_in_parallel_allows_early_exit_from_leaving_different_points():
     assert parallel_visited == []
     assert visitor_a.visited == []
     assert visitor_b.visited == []
-    visit(ast, ParallelVisitor([visitor_a, visitor_b]))
+    visit(ast, MultipleVisitor([visitor_a, visitor_b]))
     assert visitor_a.visited == [
         ("break-a", "enter", "DocumentNode", UNDEFINED_VALUE),
         ("break-a", "enter", "OperationDefinitionNode", UNDEFINED_VALUE),
@@ -1644,7 +1644,7 @@ def test_visit_in_parallel_allows_for_editing_on_enter():
     visitor_1 = MyVisitor1(ast)
     visitor_2 = MyVisitor2(ast)
     assert visitor_2.visited == []
-    edited_ast = visit(ast, ParallelVisitor([visitor_1, visitor_2]))
+    edited_ast = visit(ast, MultipleVisitor([visitor_1, visitor_2]))
     assert ast == parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
     assert edited_ast == parse_to_document(
         "{ a,    c { a,    c } }", _SCHEMA_MOCK
@@ -1715,7 +1715,7 @@ def test_visit_in_parallel_allows_for_editing_on_leave():
     visitor_1 = MyVisitor1(ast)
     visitor_2 = MyVisitor2(ast)
     assert visitor_2.visited == []
-    edited_ast = visit(ast, ParallelVisitor([visitor_1, visitor_2]))
+    edited_ast = visit(ast, MultipleVisitor([visitor_1, visitor_2]))
     assert ast == parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
     assert edited_ast == parse_to_document(
         "{ a,    c { a,    c } }", _SCHEMA_MOCK
@@ -1846,7 +1846,7 @@ def test_visit_in_parallel_allows_editing_a_node_both_on_enter_and_on_leave():
     assert parallel_visited == []
     assert visitor_1.visited == []
     assert visitor_2.visited == []
-    visit(ast, ParallelVisitor([visitor_1, visitor_2]))
+    visit(ast, MultipleVisitor([visitor_1, visitor_2]))
     assert visitor_1.visited == [
         ("visitor-1", "enter", "OperationDefinitionNode", UNDEFINED_VALUE),
         ("visitor-1", "enter", "FieldNode", UNDEFINED_VALUE),

@@ -4,13 +4,16 @@ from tartiflette.language.visitor.constants import BREAK, OK, SKIP
 from tartiflette.language.visitor.utils import get_visit_function
 
 
+__all__ = ("Visitor", "MultipleVisitor")
+
+
 class Visitor:
     """
     Base class for AST visitor.
     """
 
 
-class ParallelVisitor(Visitor):
+class MultipleVisitor(Visitor):
     """
     Visitor which delegates to many visitors to run in parallel.
     """
