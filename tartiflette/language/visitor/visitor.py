@@ -3,7 +3,6 @@ from typing import Any, List, Optional, Union
 from tartiflette.language.visitor.constants import BREAK, OK, SKIP
 from tartiflette.language.visitor.utils import get_visit_function
 
-
 __all__ = ("Visitor", "MultipleVisitor")
 
 

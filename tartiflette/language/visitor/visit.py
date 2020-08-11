@@ -117,6 +117,11 @@ def visit(
             in_array = stack.in_array
             stack = stack.prev
         else:
+            # Compute the key and node depending on the current location.
+            # The key can be either an integer corresponding to the index in
+            # the array (eg: FieldNode.definitions[*]) or a string
+            # corresponding to the name of a node attribute
+            # (eg: FieldNode.name).
             if parent:
                 if in_array:
                     key = index
@@ -133,28 +138,36 @@ def visit(
             if node is REMOVE or node is OK:
                 continue
 
+            # Append the key (array index or node attribute name) to the path
             if parent:
                 path.append(key)
 
         result = None
         if not isinstance(node, list):
+            # If node isn't a list it should be a Node instance
             if not isinstance(node, Node):
                 raise Exception(f"Invalid AST node: < {node} >.")
 
+            # Fetch the appropriate visit function from the visitor which
+            # match the node and the visit enter/leave way (eg: enter_Field).
             visit_function = get_visit_function(visitor, node, is_leaving)
             if visit_function:
+                # Call the visitor visit function
                 result = visit_function(node, key, parent, path, ancestors)
 
                 if result is BREAK:
                     break
 
                 if result is SKIP:
+                    # To avoid visiting children we pop the path and continue
                     if not is_leaving:
                         path.pop()
                         continue
+                # If not BREAK, SKIP or OK, we want to edit the visited node
                 elif result is not OK:
                     edits.append((key, result))
                     if not is_leaving:
+                        # If result is a Node, replace the node value
                         if isinstance(result, Node):
                             node = result
                         else:
@@ -164,19 +177,27 @@ def visit(
         if result is OK and is_edited:
             edits.append((key, node))
 
+        # If leaving the node just pop the path
         if is_leaving:
             if path:
                 path.pop()
         else:
+            # Store the current state into a Stack instance to be able to
+            # get back to this state when leaving the node
             stack = Stack(in_array, index, keys, edits, prev=stack)
+
+            # Recompute & reinitialization of variables before digging into
+            # the node/array.
             in_array = isinstance(node, list)
             keys = (
                 node
                 if in_array
+                # Fetch the known node attributes to visit
                 else visitor_keys.get(node.__class__.__name__, [])
             )
             index = -1
             edits = []
+            # Append the parent to the known ancestors
             if parent:
                 ancestors.append(parent)
             parent = node
@@ -184,6 +205,7 @@ def visit(
         if not stack:
             break
 
+    # If there is still items in edits, its to edit the root node
     if edits:
         new_root = edits[-1][1]
 
