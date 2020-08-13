@@ -76,7 +76,7 @@ class GraphQLDirective:
         """
         Bakes the GraphQLDirective and computes all the necessary stuff for
         execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         for argument in self.arguments.values():

@@ -56,7 +56,7 @@ def variable_definition_node_to_executable(
     """
     Converts a variable definition AST node into an executable variable
     definition.
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :param variable_definition_node: the variable definition AST node to treat
     :type schema: GraphQLSchema
     :type variable_definition_node: VariableDefinitionNode

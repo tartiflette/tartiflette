@@ -116,7 +116,7 @@ class GraphQLEnumValue:
         """
         Bakes the GraphQLEnumValue and computes all the necessary stuff for
         execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         # Directives
@@ -264,7 +264,7 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
         """
         Bakes the GraphQLEnumType and computes all the necessary stuff for
         execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         # Directives
@@ -304,7 +304,7 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
     async def bake_enum_values(self, schema: "GraphQLSchema") -> None:
         """
         Bakes enum's values.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         for enum_value in self.values:

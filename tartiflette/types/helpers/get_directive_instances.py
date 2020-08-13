@@ -57,7 +57,7 @@ def compute_directive_nodes(
     """
     Computes a list of AST directive node into a list of pre-computed
     directives.
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :param directive_nodes: list of AST directive node to compute
     :param variable_values: the variables provided in the GraphQL request
     :type schema: GraphQLSchema

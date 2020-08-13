@@ -145,7 +145,7 @@ class GraphQLField:
         """
         Bakes the GraphQLField and computes all the necessary stuff for
         execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :param custom_default_resolver: callable that will replace the builtin
         default_resolver
         :type schema: GraphQLSchema
