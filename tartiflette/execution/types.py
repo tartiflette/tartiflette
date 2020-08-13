@@ -42,7 +42,7 @@ class ResolveInfo:
         :param return_type: GraphQLOutputType instance of the resolved field
         :param parent_type: GraphQLObjectType of the field's parent
         :param path: the path traveled until this field
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :param fragments: a dictionary of fragment definition AST nodes
         contained in the request
         :param root_value: the initial value corresponding to the root type

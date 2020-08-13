@@ -15,7 +15,7 @@ def is_type_sub_type_of(
 ) -> bool:
     """
     Determines whether or not a type if a possible sub type of the other.
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :param maybe_sub_type: sub type to test
     :param super_type: main type to test
     :type schema: GraphQLType

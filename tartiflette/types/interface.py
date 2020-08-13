@@ -172,7 +172,7 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
         """
         Bakes the GraphQLInterfaceType and computes all the necessary stuff for
         execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         # Directives
@@ -202,7 +202,7 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
     ) -> None:
         """
         Bakes interface's fields.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :param custom_default_resolver: callable that will replace the builtin
         default_resolver
         :type schema: GraphQLSchema

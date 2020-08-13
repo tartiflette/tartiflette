@@ -40,7 +40,7 @@ class ExecutionContext:
         variable_values: Optional[Dict[str, Any]],
     ) -> None:
         """
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :param fragments: the dictionary of fragment definition AST node
         contained in the request
         :param operation: the AST operation definition node to execute
@@ -110,7 +110,7 @@ async def build_execution_context(
 ) -> Tuple[Optional["ExecutionContext"], Optional[List["TartifletteError"]]]:
     """
     Factory function to build and return an ExecutionContext instance.
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :param document: the DocumentNode instance linked to the GraphQL request
     :param root_value: an initial value corresponding to the root type being
     executed

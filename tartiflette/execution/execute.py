@@ -216,7 +216,7 @@ async def execute(
 ) -> Dict[str, Any]:
     """
     Runs the execution of the executable operation.
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :param document: the DocumentNode instance linked to the GraphQL request
     :param response_builder: callable in charge of returning the formatted
     GraphQL response
@@ -260,7 +260,7 @@ async def create_source_event_stream(
 ) -> Union[AsyncIterable[Dict[str, Any]], Dict[str, Any]]:
     """
     Resolves the subscription source event stream.
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :param document: the DocumentNode instance linked to the GraphQL request
     :param response_builder: callable in charge of returning the formatted
     GraphQL response

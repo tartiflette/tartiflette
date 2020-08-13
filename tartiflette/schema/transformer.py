@@ -43,7 +43,7 @@ def parse_name(
     """
     Returns the value of an AST name node.
     :param name_node: AST name node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type name_node: NameNode
     :type schema: GraphQLSchema
     :return: the name value
@@ -59,7 +59,7 @@ def parse_named_type(
     """
     Returns the value of the name of an AST named type node.
     :param named_type_node: AST named type node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type named_type_node: NamedTypeNode
     :type schema: GraphQLSchema
     :return: the name value
@@ -76,7 +76,7 @@ def parse_boolean_value(
     """
     Returns the value of an AST boolean value node.
     :param boolean_value_node: AST boolean value node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type boolean_value_node: BooleanValueNode
     :type schema: GraphQLSchema
     :return: the boolean value
@@ -92,7 +92,7 @@ def parse_enum_value(
     """
     Returns the value of an AST enum value node.
     :param enum_value_node: AST enum value node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type enum_value_node: EnumValueNode
     :type schema: GraphQLSchema
     :return: the enum value
@@ -108,7 +108,7 @@ def parse_float_value(
     """
     Returns the value of an AST float value node.
     :param float_value_node: AST float value node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type float_value_node: FloatValueNode
     :type schema: GraphQLSchema
     :return: the float value
@@ -124,7 +124,7 @@ def parse_int_value(
     """
     Returns the value of an AST int value node.
     :param int_value_node: AST int value node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type int_value_node: IntValueNode
     :type schema: GraphQLSchema
     :return: the int value
@@ -140,7 +140,7 @@ def parse_string_value(
     """
     Returns the value of an AST string value node.
     :param string_value_node: AST string value node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type string_value_node: StringValueNode
     :type schema: GraphQLSchema
     :return: the string value
@@ -156,7 +156,7 @@ def parse_list_value(
     """
     Returns the value of an AST list value node.
     :param list_value_node: AST list value node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type list_value_node: ListValueNode
     :type schema: GraphQLSchema
     :return: the list value
@@ -173,7 +173,7 @@ def parse_null_value(
     """
     Returns the value of an AST null value node.
     :param null_value_node: AST null value node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type null_value_node: NullValueNode
     :type schema: GraphQLSchema
     """
@@ -187,7 +187,7 @@ def parse_object_value(
     """
     Returns the value of an AST object value node
     :param object_value_node: AST object value node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type object_value_node: ObjectValueNode
     :type schema: GraphQLSchema
     :return: the object value
@@ -221,7 +221,7 @@ def parse_value(
     """
     Returns the value of an AST value node
     :param value_node: AST value node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type value_node: ValueNode
     :type schema: GraphQLSchema
     :return: the value
@@ -244,7 +244,7 @@ def parse_input_value_definition(
     GraphQLInputField instance.
     :param input_value_definition_node: AST input value definition node to
     treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :param as_argument_definition: determines whether or not the return type
     should be a GraphQLArgument or a GraphQLInputField
     :type input_value_definition_node: InputValueDefinitionNode
@@ -281,7 +281,7 @@ def parse_arguments_definition(
     Returns a dictionary of computed GraphQLArgument.
     :param argument_definitions_node: list of AST input value definition
     node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type argument_definitions_node: List[InputValueDefinitionNode]
     :type schema: GraphQLSchema
     :return: dictionary of computed GraphQLArgument
@@ -308,7 +308,7 @@ def parse_operation_type_definition(
     schema.
     :param operation_type_definition_node: AST operation type definition node
     to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type operation_type_definition_node: OperationTypeDefinitionNode
     :type schema: GraphQLSchema
     """
@@ -330,7 +330,7 @@ def parse_operation_type_definitions(
     schema.
     :param operation_type_definitions_node: list of AST operation type
     definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type operation_type_definitions_node: List[OperationTypeDefinitionNode]
     :type schema: GraphQLSchema
     """
@@ -348,7 +348,7 @@ def parse_schema_definition(
     Parses the AST operation type definition nodes from the AST schema
     definition node.
     :param schema_definition_node: AST schema definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type schema_definition_node: SchemaDefinitionNode
     :type schema: GraphQLSchema
     """
@@ -369,7 +369,7 @@ def parse_scalar_type_definition(
     instance.
     :param scalar_type_definition_node: AST scalar type definition node to
     treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type scalar_type_definition_node: ScalarTypeDefinitionNode
     :type schema: GraphQLSchema
     :return: the computed GraphQLScalarType instance
@@ -395,7 +395,7 @@ def parse_implements_interfaces(
     """
     Returns the list of implemented interface names.
     :param interfaces_node: list of AST named type node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type interfaces_node: List[NamedTypeNode]
     :type schema: GraphQLSchema
     :return: the list of implemented interface names
@@ -419,7 +419,7 @@ def parse_object_type_definition(
     instance.
     :param object_type_definition_node: AST object type definition node to
     treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type object_type_definition_node: ObjectTypeDefinitionNode
     :type schema: GraphQLSchema
     :return: the GraphQLObjectType instance
@@ -451,7 +451,7 @@ def parse_field_definition(
     """
     Computes an AST field definition node into a GraphQLField instance.
     :param field_definition_node: AST field definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type field_definition_node: FieldDefinitionNode
     :type schema: GraphQLSchema
     :return: the GraphQLField instance
@@ -478,7 +478,7 @@ def parse_fields_definition(
     """
     Returns a dictionary of computed GraphQLField.
     :param fields_definition_node: list of AST field definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type fields_definition_node: List[FieldDefinitionNode]
     :type schema: GraphQLSchema
     :return: dictionary of computed GraphQLField
@@ -503,7 +503,7 @@ def parse_interface_type_definition(
     instance.
     :param interface_type_definition_node: AST interface type definition node
     to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type interface_type_definition_node: InterfaceTypeDefinitionNode
     :type schema: GraphQLSchema
     :return: the GraphQLInterfaceType instance
@@ -532,7 +532,7 @@ def parse_union_member_types(
     """
     Returns the list of union member type name.
     :param types_node: list of AST named type node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type types_node: List[NamedTypeNode]
     :type schema: GraphQLSchema
     :return: the list of union member type name
@@ -555,7 +555,7 @@ def parse_union_type_definition(
     Computes an AST union type definition node into a GraphQLUnionType
     instance.
     :param union_type_definition_node: AST union type definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type union_type_definition_node: UnionTypeDefinitionNode
     :type schema: GraphQLSchema
     :return: the GraphQLUnionType instance
@@ -584,7 +584,7 @@ def parse_enum_value_definition(
     Computes an AST enum value definition node into a GraphQLEnumValue
     instance.
     :param enum_value_definition_node: AST enum value definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type enum_value_definition_node: EnumValueDefinitionNode
     :type schema: GraphQLSchema
     :return: the GraphQLEnumValue instance
@@ -607,7 +607,7 @@ def parse_enum_values_definition(
     Returns a list of computed GraphQLEnumValue.
     :param enum_values_definition_node: list of AST enum value definition node
     to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type enum_values_definition_node: List[EnumValueDefinitionNode]
     :type schema: GraphQLSchema
     :return: list of computed GraphQLEnumValue
@@ -629,7 +629,7 @@ def parse_enum_type_definition(
     """
     Computes an AST enum type definition node into a GraphQLEnumType instance.
     :param enum_type_definition_node: AST enum type definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type enum_type_definition_node: EnumTypeDefinitionNode
     :type schema: GraphQLSchema
     :return: the GraphQLEnumType instance
@@ -658,7 +658,7 @@ def parse_input_fields_definition(
     Returns a dictionary of computed GraphQLInputField.
     :param input_fields_definition_node: list of AST input value definition
     node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type input_fields_definition_node: List[InputValueDefinitionNode]
     :type schema: GraphQLSchema
     :return: dictionary of computed GraphQLInputField
@@ -687,7 +687,7 @@ def parse_input_object_type_definition(
     GraphQLInputObjectType instance.
     :param input_object_type_definition_node: AST input object type
     definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type input_object_type_definition_node: InputObjectTypeDefinitionNode
     :type schema: GraphQLSchema
     :return: the GraphQLInputObjectType instance
@@ -716,7 +716,7 @@ def parse_type(
     """
     Computes an AST type node into its GraphQL representation.
     :param type_node: AST type node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type type_node: TypeNode
     :type schema: GraphQLSchema
     :return: the GraphQL representation of the type node
@@ -746,7 +746,7 @@ def parse_directive_definition(
     """
     Computes an AST directive definition node into a GraphQLDirective instance.
     :param directive_definition_node: AST directive definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type directive_definition_node: DirectiveDefinitionNode
     :type schema: GraphQLSchema
     :return: the GraphQLDirective instance
@@ -916,7 +916,7 @@ def parse_definition(
     """
     Attempts to parses and computes an AST definition node.
     :param definition_node: AST definition node to treat
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type definition_node: DefinitionNode
     :type schema: GraphQLSchema
     :return: the computed result
