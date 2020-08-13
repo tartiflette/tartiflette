@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from tartiflette.language.ast import ListTypeNode, NonNullTypeNode
 from tartiflette.language.parsers.lark import parse_to_document
@@ -951,18 +951,20 @@ def schema_from_document(
 
 
 def schema_from_sdl(
-    sdl: Union[str, bytes], schema_name: str
+    sdl: Union[str, bytes], schema_name: str, parser: Optional[Callable] = None
 ) -> "GraphQLSchema":
     """
     Parse the SDL into an AST document node before validating it and building a
     GraphQL Schema instance upon it.
     :param sdl: sdl to parse
     :param schema_name: name of the schema to build
+    :param parser: parser to use to parse the SDL into a document
     :type sdl: Union[str, bytes]
     :type schema_name: str
+    :type parser: Optional[Callable]
     :return: build GraphQLSchema
     :rtype: GraphQLSchema
     """
-    return schema_from_document(
-        parse_to_document(sdl), schema_name=schema_name
-    )
+    if not parser:
+        parser = parse_to_document
+    return schema_from_document(parser(sdl), schema_name=schema_name)
