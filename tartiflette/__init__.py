@@ -1,4 +1,5 @@
 from tartiflette.directive.directive import Directive
+from tartiflette.execution.factory import executor_factory, subscriptor_factory
 from tartiflette.resolver.resolver import Resolver
 from tartiflette.resolver.type_resolver import TypeResolver
 from tartiflette.scalar.scalar import Scalar
@@ -14,4 +15,6 @@ __all__ = (
     "Subscription",
     "TartifletteError",
     "create_schema",
+    "executor_factory",
+    "subscriptor_factory",
 )
