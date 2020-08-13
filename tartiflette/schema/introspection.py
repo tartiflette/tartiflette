@@ -76,7 +76,7 @@ async def __type_resolver(
 def prepare_type_root_field(schema: "GraphQLSchema") -> "GraphQLField":
     """
     Factory to generate a `__type` field.
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :type schema: GraphQLSchema
     :return: the `__type` field
     :rtype: GraphQLField

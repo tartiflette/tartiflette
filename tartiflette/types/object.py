@@ -139,7 +139,7 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
         """
         Bakes the GraphQLObjectType and computes all the necessary stuff for
         execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         if self.interfaces_names:
@@ -177,7 +177,7 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
     ) -> None:
         """
         Bakes object's fields.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :param custom_default_resolver: callable that will replace the builtin
         default_resolver
         :type schema: GraphQLSchema

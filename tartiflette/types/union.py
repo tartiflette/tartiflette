@@ -146,7 +146,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         """
         Bakes the GraphQLUnionType and computes all the necessary stuff for
         execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         for type_name in self.types:
@@ -181,7 +181,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
     ) -> None:
         """
         Bakes union's fields.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :param custom_default_resolver: callable that will replace the builtin
         default_resolver
         :type schema: GraphQLSchema
