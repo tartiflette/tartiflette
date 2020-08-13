@@ -7,7 +7,7 @@ class SkipCollection(Exception):
 
 class TartifletteError(Exception):
     """
-    Base exceptions of all internal errors raised by the Tartiflette engine.
+    Base exceptions of all internal errors raised by the Tartiflette.
     """
 
     def __init__(

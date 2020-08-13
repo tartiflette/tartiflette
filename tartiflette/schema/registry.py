@@ -211,6 +211,17 @@ class SchemaRegistry:
         return SchemaRegistry._schemas[schema_name]
 
     @staticmethod
+    def is_schema_registered(schema_name: str) -> bool:
+        """
+        Determine whether or not the schema is registered.
+        :param schema_name: name of the schema to check
+        :type schema_name: str
+        :return: whether or not the schema is registered
+        :rtype: bool
+        """
+        return schema_name in SchemaRegistry._schemas
+
+    @staticmethod
     def find_schema(schema_name: str = "default") -> "GraphQLSchema":
         """
         Returns the GraphQLSchema instance of a registered schema.
