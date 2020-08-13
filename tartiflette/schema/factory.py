@@ -144,7 +144,7 @@ async def create_schema(
     if modules is None:
         modules = []
     elif isinstance(modules, str):
-        modules = []
+        modules = [modules]
 
     if not sdl:
         raise ImproperlyConfigured("Please provide a SDL.")

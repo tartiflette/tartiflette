@@ -1,7 +1,8 @@
+import json
 import os
 
 from types import TracebackType
-from typing import Optional, Type, Union
+from typing import Callable, Optional, Type, Union
 
 from cffi import FFI
 
@@ -124,15 +125,15 @@ def _parse_to_json_ast(query: Union[str, bytes]) -> bytes:
 
 
 def parse_to_document(
-    query: Union[str, bytes], schema: "GraphQLSchema"
+    query: Union[str, bytes], json_loader: Optional[Callable] = None
 ) -> "DocumentNode":
     """
     Returns a DocumentNode instance which represents the query after being
     parsed.
     :param query: query to parse and transform into a DocumentNode
+    :param json_loader: a callable to loads the JSON AST from libgraphqlparser
     :type query: Union[str, bytes]
-    :param schema: the GraphQLSchema instance linked to the engine
-    :type schema: GraphQLSchema
+    :type json_loader: Optional[Callable]
     :return: a DocumentNode representing the query
     :rtype: DocumentNode
 
@@ -150,6 +151,9 @@ def parse_to_document(
     >>>   }
     >>> }''')
     """
+    if json_loader is None:
+        json_loader = json.loads
+
     return document_from_ast_json(
-        schema.json_loader(_parse_to_json_ast(query)), query
+        json_loader(_parse_to_json_ast(query)), query
     )

@@ -131,15 +131,6 @@ class GraphQLSchema:
         self.extensions: List["GraphQLExtension"] = []
         self._schema_directives: List["DirectiveNode"] = []
         self.document_node: Optional["DocumentNode"] = None
-        self._json_loader = None
-
-    @property
-    def json_loader(self):
-        return self._json_loader
-
-    @json_loader.setter
-    def json_loader(self, loader):
-        self._json_loader = loader
 
     def add_schema_directives(
         self, directives_instances: List["DirectiveNode"]
@@ -499,20 +490,21 @@ class GraphQLSchema:
         for extension in self.extensions:
             extension.bake(self)
 
-    def bake_execute(self, func_query, func_subscription):
-        directives = compute_directive_nodes(self, self._schema_directives)
-        func_query = wraps_with_directives(
-            directives, "on_schema_execution", func_query, is_resolver=True
+    def bake_executor(self, executor):
+        return wraps_with_directives(
+            compute_directive_nodes(self, self._schema_directives),
+            "on_schema_execution",
+            executor,
+            is_resolver=True,
         )
 
-        func_subscription = wraps_with_directives(
-            directives,
+    def bake_subscriptor(self, subscriptor):
+        return wraps_with_directives(
+            compute_directive_nodes(self, self._schema_directives),
             "on_schema_subscription",
-            func_subscription,
+            subscriptor,
             is_async_generator=True,
         )
-
-        return func_query, func_subscription
 
     async def bake(
         self,
