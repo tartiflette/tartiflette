@@ -55,7 +55,7 @@ _TEST_REQUIRE = [
     "pytest-xdist==1.34.0",
     "pylint==2.5.3",
     "black==19.10b0",
-    "isort==4.3.21",
+    "isort==5.4.2",
 ]
 
 _BENCHMARK_REQUIRE = ["pytest-benchmark==3.2.3"]
