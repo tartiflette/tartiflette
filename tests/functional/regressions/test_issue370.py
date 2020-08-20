@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Scalar, create_engine
+from tartiflette import Scalar, create_schema
 from tartiflette.scalar.builtins.string import ScalarString
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
@@ -9,7 +9,7 @@ from tests.functional.utils import match_schema_errors
 @pytest.mark.asyncio
 async def test_issue370_double_values():
     with pytest.raises(GraphQLSchemaError) as excinfo:
-        await create_engine(
+        await create_schema(
             """
             enum Invalid {
                 VALUE_1
@@ -23,7 +23,7 @@ async def test_issue370_double_values():
                 field1: Invalid
             }
         """,
-            schema_name="test_issue370_uniqueness",
+            name="test_issue370_uniqueness",
         )
 
     match_schema_errors(
@@ -42,7 +42,7 @@ async def test_issue370_type_name_enum_value_mismatch():
         pass
 
     assert (
-        await create_engine(
+        await create_schema(
             """
             scalar aType
             enum Valid {
@@ -56,7 +56,7 @@ async def test_issue370_type_name_enum_value_mismatch():
                 field1: Valid
             }
         """,
-            schema_name="test_issue370_type_name_enum_value_mismatch",
+            name="test_issue370_type_name_enum_value_mismatch",
         )
         is not None
     )

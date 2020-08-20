@@ -1,38 +1,37 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
-
-_SDL = """
-type ListContainer {
-  listA: [String]
-  listB: [String]
-  listC: [String]
-  listD: [String]
-}
-
-type Query {
-  lists: ListContainer
-}
-"""
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Query.lists", schema_name="test_skip_include")
+def bakery(schema_name):
+    @Resolver("Query.lists", schema_name=schema_name)
     async def resolve_query_lists(*_):
         return {}
 
-    @Resolver("ListContainer.listA", schema_name="test_skip_include")
-    @Resolver("ListContainer.listB", schema_name="test_skip_include")
-    @Resolver("ListContainer.listC", schema_name="test_skip_include")
-    @Resolver("ListContainer.listD", schema_name="test_skip_include")
+    @Resolver("ListContainer.listA", schema_name=schema_name)
+    @Resolver("ListContainer.listB", schema_name=schema_name)
+    @Resolver("ListContainer.listC", schema_name=schema_name)
+    @Resolver("ListContainer.listD", schema_name=schema_name)
     async def resolve_list_container_list(*_):
         return [str(i) for i in range(2)]
 
-    return await create_engine(sdl=_SDL, schema_name="test_skip_include")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type ListContainer {
+      listA: [String]
+      listB: [String]
+      listC: [String]
+      listD: [String]
+    }
+
+    type Query {
+      lists: ListContainer
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -280,5 +279,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_skip_include(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_skip_include(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

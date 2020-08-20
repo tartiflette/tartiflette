@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from tartiflette import create_engine
+from tartiflette import create_schema
 from tartiflette.language.ast import (
     FieldNode,
     NameNode,
@@ -20,17 +20,18 @@ from tartiflette.types.helpers.definition import (
     get_wrapped_type,
     is_composite_type,
 )
+from tests.data.utils import get_path_to_sdl
 
 _BASE_DIR = os.path.dirname(__file__)
 
 
 @pytest.mark.asyncio
 async def test_allow_all_methods_to_be_called_before_entering_any_node():
-    engine = await create_engine(
-        os.path.join(_BASE_DIR, "fixtures", "harness.graphql"),
-        schema_name="allow_all_methods_to_be_called_before_entering_any_node",
+    schema = await create_schema(
+        get_path_to_sdl("harness.graphql"),
+        name="allow_all_methods_to_be_called_before_entering_any_node",
     )
-    type_info = TypeInfo(engine._schema)
+    type_info = TypeInfo(schema)
 
     assert type_info.get_type() is None
     assert type_info.get_parent_type() is None
@@ -45,27 +46,27 @@ async def test_allow_all_methods_to_be_called_before_entering_any_node():
 
 @pytest.mark.asyncio
 async def test_visit_with_type_info_supports_different_operation_types():
-    engine = await create_engine(
+    schema = await create_schema(
         """
         schema {
           query: QueryRoot
           mutation: MutationRoot
           subscription: SubscriptionRoot
         }
-        
+
         type QueryRoot {
           foo: String
         }
-        
+
         type MutationRoot {
           bar: String
         }
-        
+
         type SubscriptionRoot {
           baz: String
         }
         """,
-        schema_name="supports_different_operation_types",
+        name="supports_different_operation_types",
     )
 
     ast = parse_to_document(
@@ -73,8 +74,7 @@ async def test_visit_with_type_info_supports_different_operation_types():
         query { foo }
         mutation { bar }
         subscription { baz }
-        """,
-        engine._schema,
+        """
     )
 
     class MyVisitor(Visitor):
@@ -89,7 +89,7 @@ async def test_visit_with_type_info_supports_different_operation_types():
                 self.type_info.get_type()
             )
 
-    type_info = TypeInfo(engine._schema)
+    type_info = TypeInfo(schema)
     visitor = MyVisitor(type_info)
     visit(ast, WithTypeInfoVisitor(type_info, visitor))
     assert visitor.root_types == {
@@ -115,28 +115,27 @@ async def test_visit_with_type_info_provide_exact_same_arguments_to_wrapped_visi
                 ("leave", node, key, parent, path, ancestors)
             )
 
-    engine = await create_engine(
-        os.path.join(_BASE_DIR, "fixtures", "harness.graphql"),
-        schema_name="provide_exact_same_arguments_to_wrapped_visitor",
+    schema = await create_schema(
+        get_path_to_sdl("harness.graphql"),
+        name="provide_exact_same_arguments_to_wrapped_visitor",
     )
 
     ast = parse_to_document(
-        "{ human(id: 4) { name, pets { ... { name } }, unknown } }",
-        engine._schema,
+        "{ human(id: 4) { name, pets { ... { name } }, unknown } }"
     )
 
     visitor = MyVisitor()
     wrapped_visitor = MyVisitor()
     visit(ast, visitor)
-    visit(ast, WithTypeInfoVisitor(TypeInfo(engine._schema), wrapped_visitor))
+    visit(ast, WithTypeInfoVisitor(TypeInfo(schema), wrapped_visitor))
     assert visitor.visitor_args == wrapped_visitor.visitor_args
 
 
 @pytest.mark.asyncio
 async def test_visit_with_type_info_maintains_type_info_during_visit():
-    engine = await create_engine(
-        os.path.join(_BASE_DIR, "fixtures", "harness.graphql"),
-        schema_name="maintains_type_info_during_visit",
+    schema = await create_schema(
+        get_path_to_sdl("harness.graphql"),
+        name="maintains_type_info_during_visit",
     )
 
     class MyVisitor(Visitor):
@@ -174,12 +173,11 @@ async def test_visit_with_type_info_maintains_type_info_during_visit():
                 )
             )
 
-    type_info = TypeInfo(engine._schema)
+    type_info = TypeInfo(schema)
     visitor = MyVisitor(type_info)
 
     ast = parse_to_document(
-        "{ human(id: 4) { name, pets { ... { name } }, unknown } }",
-        engine._schema,
+        "{ human(id: 4) { name, pets { ... { name } }, unknown } }"
     )
 
     visit(ast, WithTypeInfoVisitor(type_info, visitor))
@@ -230,9 +228,9 @@ async def test_visit_with_type_info_maintains_type_info_during_visit():
 
 @pytest.mark.asyncio
 async def test_visit_with_type_info_maintains_type_info_during_edit():
-    engine = await create_engine(
-        os.path.join(_BASE_DIR, "fixtures", "harness.graphql"),
-        schema_name="maintains_type_info_during_edit",
+    schema = await create_schema(
+        get_path_to_sdl("harness.graphql"),
+        name="maintains_type_info_during_edit",
     )
 
     class MyVisitor(Visitor):
@@ -286,18 +284,14 @@ async def test_visit_with_type_info_maintains_type_info_during_edit():
                 )
             )
 
-    type_info = TypeInfo(engine._schema)
+    type_info = TypeInfo(schema)
     visitor = MyVisitor(type_info)
 
-    ast = parse_to_document(
-        "{ human(id: 4) { name, pets }, alien }", engine._schema,
-    )
+    ast = parse_to_document("{ human(id: 4) { name, pets }, alien }")
 
     edited_ast = visit(ast, WithTypeInfoVisitor(type_info, visitor))
 
-    assert ast == parse_to_document(
-        "{ human(id: 4) { name, pets }, alien }", engine._schema,
-    )
+    assert ast == parse_to_document("{ human(id: 4) { name, pets }, alien }")
     assert (
         len(
             edited_ast.definitions[0]
@@ -378,9 +372,9 @@ async def test_visit_with_type_info_maintains_type_info_during_edit():
 
 @pytest.mark.asyncio
 async def test_visit_with_type_info_supports_traversals_of_selection_sets():
-    engine = await create_engine(
-        os.path.join(_BASE_DIR, "fixtures", "harness.graphql"),
-        schema_name="supports_traversals_of_selection_sets",
+    schema = await create_schema(
+        get_path_to_sdl("harness.graphql"),
+        name="supports_traversals_of_selection_sets",
     )
 
     class MyVisitor(Visitor):
@@ -414,11 +408,11 @@ async def test_visit_with_type_info_supports_traversals_of_selection_sets():
                 )
             )
 
-    human_type = engine._schema.find_type("Human")
-    type_info = TypeInfo(engine._schema, initial_type=human_type)
+    human_type = schema.find_type("Human")
+    type_info = TypeInfo(schema, initial_type=human_type)
     visitor = MyVisitor(type_info)
 
-    ast = parse_to_document("{ name, pets { name } }", engine._schema)
+    ast = parse_to_document("{ name, pets { name } }")
 
     assert len(ast.definitions) == 1
     operation_node = ast.definitions[0]

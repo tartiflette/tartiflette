@@ -1,40 +1,37 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver, create_schema
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    schema_sdl = """
-        type anotherType {
-            b: String
-        }
-
-        type aType {
-            vala: anotherType
-        }
-
-        schema {
-            query: aType
-        }
-
-        extend schema {
-            mutation: aType
-        }
-    """
-
-    @Resolver("aType.vala", schema_name="test_issue_278_schema_extend")
+def bakery(schema_name):
+    @Resolver("aType.vala", schema_name=schema_name)
     async def resolver_enum_test_1(*args, **kwargs):
         return {"b": "LOL"}
 
-    return await create_engine(
-        schema_sdl, schema_name="test_issue_278_schema_extend"
-    )
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type anotherType {
+        b: String
+    }
+
+    type aType {
+        vala: anotherType
+    }
+
+    schema {
+        query: aType
+    }
+
+    extend schema {
+        mutation: aType
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -69,15 +66,15 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue_278_schema_extend(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue_278_schema_extend(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected
 
 
 @pytest.mark.asyncio
 async def test_issue_278_schema_extend_invalid_sdl():
     with pytest.raises(GraphQLSchemaError) as excinfo:
-        await create_engine(
-            sdl="""
+        await create_schema(
+            """
                 type aType {
                     b: String
                 }
@@ -98,7 +95,7 @@ async def test_issue_278_schema_extend_invalid_sdl():
                     mutation: aType
                 }
             """,
-            schema_name="test_issue_278_schema_extend_invalid_sdl",
+            name="test_issue_278_schema_extend_invalid_sdl",
         )
 
     match_schema_errors(

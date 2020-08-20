@@ -1,6 +1,7 @@
 import pytest
 
-from tests.functional.reusable.pets.storage import PETS, find_object
+from tartiflette import Resolver
+from tests.data.modules.pets.storage import PETS, find_object
 
 
 async def resolve_query_version(parent, args, ctx, info):
@@ -35,19 +36,20 @@ async def resolve_friends(parent, args, ctx, info):
     return friends
 
 
+def pets_bakery(schema_name):
+    Resolver("MyQuery.version", schema_name=schema_name)(resolve_query_version)
+    Resolver("MyQuery.serviceStatus", schema_name=schema_name)(
+        resolve_query_service_status
+    )
+    Resolver("MyQuery.human", schema_name=schema_name)(resolve_query_human)
+    Resolver("Human.friends", schema_name=schema_name)(resolve_friends)
+    Resolver("MyQuery.pet", schema_name=schema_name)(resolve_query_pet)
+    Resolver("Cat.friends", schema_name=schema_name)(resolve_friends)
+    Resolver("Dog.friends", schema_name=schema_name)(resolve_friends)
+
+
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="pets",
-    resolvers={
-        "MyQuery.version": resolve_query_version,
-        "MyQuery.serviceStatus": resolve_query_service_status,
-        "MyQuery.human": resolve_query_human,
-        "Human.friends": resolve_friends,
-        "MyQuery.pet": resolve_query_pet,
-        "Cat.friends": resolve_friends,
-        "Dog.friends": resolve_friends,
-    },
-)
+@pytest.mark.with_schema_stack(preset="pets", bakery=pets_bakery)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -339,14 +341,16 @@ async def resolve_friends(parent, args, ctx, info):
         ),
     ],
 )
-async def test_pets(engine, query, variables, expected):
-    assert await engine.execute(query, variables=variables) == expected
+async def test_pets(schema_stack, query, variables, expected):
+    assert await schema_stack.execute(query, variables=variables) == expected
+
+
+def pets_errors_bakery(schema_name):
+    Resolver("MyQuery.pets", schema_name=schema_name)(resolve_query_pets)
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="pets", resolvers={"MyQuery.pets": resolve_query_pets}
-)
+@pytest.mark.with_schema_stack(preset="pets", bakery=pets_errors_bakery)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -424,5 +428,5 @@ async def test_pets(engine, query, variables, expected):
         ),
     ],
 )
-async def test_pets_errors(engine, query, variables, expected):
-    assert await engine.execute(query, variables=variables) == expected
+async def test_pets_errors(schema_stack, query, variables, expected):
+    assert await schema_stack.execute(query, variables=variables) == expected

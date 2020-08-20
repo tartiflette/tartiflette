@@ -1,15 +1,8 @@
 import pytest
 
-from tests.functional.coercers.common import resolve_input_object_field
-
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="coercion",
-    resolvers={
-        "Query.wrapperNonNullWithDefaultInputObjectWithDefaultField": resolve_input_object_field
-    },
-)
+@pytest.mark.with_schema_stack(preset="coercion")
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -7313,6 +7306,6 @@ from tests.functional.coercers.common import resolve_input_object_field
     ],
 )
 async def test_coercer_wrapper_non_null_with_default_input_object_with_default_field(
-    engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected

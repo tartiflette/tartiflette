@@ -1,25 +1,24 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
-
-_SDL = """
-type Query {
-  aField(nbItems: Int = 2): [String!]
-}
-"""
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Query.aField", schema_name="test_issue207")
+def bakery(schema_name):
+    @Resolver("Query.aField", schema_name=schema_name)
     async def resolve_query_a_field(parent, args, ctx, info):
         nb_items = args["nbItems"]
         return [f"{nb_items}.{i}" for i in range(nb_items)]
 
-    return await create_engine(sdl=_SDL, schema_name="test_issue207")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type Query {
+      aField(nbItems: Int = 2): [String!]
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -61,5 +60,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue207(query, variables, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query, variables=variables) == expected
+async def test_issue207(schema_stack, query, variables, expected):
+    assert await schema_stack.execute(query, variables=variables) == expected

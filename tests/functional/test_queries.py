@@ -2,6 +2,8 @@ from collections import namedtuple
 
 import pytest
 
+from tartiflette import Resolver
+
 Library = namedtuple("Library", "books,authors")
 Author = namedtuple("Author", "name")
 Book = namedtuple("Book", "title,author,price,category")
@@ -44,17 +46,16 @@ LibraryTwo = Library(
 )
 
 
-async def func_field_libraries_resolver(*_args, **_kwargs):
-    return [LibraryOne, LibraryTwo]
+def bakery(schema_name):
+    @Resolver("Query.libraries", schema_name=schema_name)
+    async def resolve_query_libraries(*_args, **_kwargs):
+        return [LibraryOne, LibraryTwo]
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="libraries",
-    resolvers={"Query.libraries": func_field_libraries_resolver},
-)
-async def test_full_query_execute(engine):
-    result = await engine.execute(
+@pytest.mark.with_schema_stack(preset="libraries", bakery=bakery)
+async def test_full_query_execute(schema_stack):
+    result = await schema_stack.execute(
         """
         fragment boby on Author {
             name

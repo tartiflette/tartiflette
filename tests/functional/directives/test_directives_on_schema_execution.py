@@ -1,8 +1,8 @@
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import Directive, Resolver
 
-_SDL = """
+SDL = """
 directive @a_directive(t: String) on SCHEMA
 
 type Query {
@@ -14,7 +14,7 @@ schema @a_directive(t: "Loll") {
 }
 """
 
-_SDL_EXTEND = """
+SDL_EXTEND = """
 directive @b_directive(s: String) on SCHEMA
 
 extend schema @b_directive(s: "extended")
@@ -34,8 +34,6 @@ class ADirective:
         variables,
         initial_value,
     ):
-        initial_value = {"Modified by the directive": directive_args}
-
         results = await next_directive(
             schema,
             document,
@@ -43,31 +41,12 @@ class ADirective:
             operation_name,
             context,
             variables,
-            initial_value,
+            {"Modified by the directive": directive_args},
         )
-
         results.setdefault("extensions", {}).update(
             {"AddedByTheDirective": "OhYeah"}
         )
-
         return results
-
-
-async def resolve_a(parent_result, _args, _ctx, _info):
-    return str(parent_result)
-
-
-@pytest.fixture(scope="module", name="engine")
-async def ttftt_engine():
-    Directive(
-        name="a_directive", schema_name="test_directive_on_schema_execute"
-    )(ADirective)
-    Resolver("Query.a", schema_name="test_directive_on_schema_execute")(
-        resolve_a
-    )
-    return await create_engine(
-        sdl=_SDL, schema_name="test_directive_on_schema_execute"
-    )
 
 
 class BDirective:
@@ -84,7 +63,6 @@ class BDirective:
         initial_value,
     ):
         initial_value.update(directive_args)
-
         results = await next_directive(
             schema,
             document,
@@ -94,67 +72,69 @@ class BDirective:
             variables,
             initial_value,
         )
-
         results.setdefault("extensions", {}).update(
             {"AddedByBBBBBBBTheDirective": "OhYeah"}
         )
-
         return results
 
 
-@pytest.mark.asyncio
-async def test_directive_on_schema_execute(engine):
-    result = await engine.execute(
-        """
-        query {
-            a
-        }
-        """,
-        operation_name="",
-    )
-
-    assert {
-        "data": {"a": "{'Modified by the directive': {'t': 'Loll'}}"},
-        "extensions": {"AddedByTheDirective": "OhYeah"},
-    } == result
+async def resolve_a(parent_result, _args, _ctx, _info):
+    return str(parent_result)
 
 
-@pytest.fixture(scope="module", name="engine_extended")
-async def ttftt_engine_extended():
-    Directive(
-        name="a_directive",
-        schema_name="test_directive_on_schema_execute_extended",
-    )(ADirective)
-    Directive(
-        name="b_directive",
-        schema_name="test_directive_on_schema_execute_extended",
-    )(BDirective)
-    Resolver(
-        "Query.a", schema_name="test_directive_on_schema_execute_extended"
-    )(resolve_a)
-    return await create_engine(
-        sdl=_SDL + _SDL_EXTEND,
-        schema_name="test_directive_on_schema_execute_extended",
-    )
+def directive_on_schema_execute_bakery(schema_name):
+    Directive(name="a_directive", schema_name=schema_name)(ADirective)
+    Resolver("Query.a", schema_name=schema_name)(resolve_a)
 
 
 @pytest.mark.asyncio
-async def test_directive_on_schema_execute_extended(engine_extended):
-    result = await engine_extended.execute(
-        """
-        query {
-            a
+@pytest.mark.with_schema_stack(
+    sdl=SDL, bakery=directive_on_schema_execute_bakery,
+)
+async def test_directive_on_schema_execute(schema_stack):
+    assert (
+        await schema_stack.execute(
+            """
+            query {
+              a
+            }
+            """,
+            operation_name="",
+        )
+        == {
+            "data": {"a": "{'Modified by the directive': {'t': 'Loll'}}"},
+            "extensions": {"AddedByTheDirective": "OhYeah"},
         }
-        """,
-        operation_name="",
     )
 
-    assert {
-        "data": {
-            "a": "{'Modified by the directive': {'t': 'Loll'}, 's': 'extended'}"
-        },
-        "extensions": {
-            "AddedByBBBBBBBTheDirective": "OhYeah",
-            "AddedByTheDirective": "OhYeah",
-        },
-    } == result
+
+def directive_on_schema_execute_extended_bakery(schema_name):
+    Directive(name="a_directive", schema_name=schema_name)(ADirective)
+    Directive(name="b_directive", schema_name=schema_name)(BDirective)
+    Resolver("Query.a", schema_name=schema_name)(resolve_a)
+
+
+@pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl=SDL + SDL_EXTEND, bakery=directive_on_schema_execute_extended_bakery,
+)
+async def test_directive_on_schema_execute_extended(schema_stack):
+    assert (
+        await schema_stack.execute(
+            """
+            query {
+              a
+            }
+            """,
+            operation_name="",
+        )
+        == {
+            "data": {
+                "a": "{'Modified by the directive': {'t': 'Loll'}, 's': 'extended'}"
+            },
+            "extensions": {
+                "AddedByBBBBBBBTheDirective": "OhYeah",
+                "AddedByTheDirective": "OhYeah",
+            },
+        }
+    )

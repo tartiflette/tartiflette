@@ -1,18 +1,10 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
-
-_SDL = """
-type Query {
-  hello(name: String = "Unknown"): String
-  bye(name: String! = "Unknown"): String
-}
-"""
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Query.hello", schema_name="test_issue213")
+def bakery(schema_name):
+    @Resolver("Query.hello", schema_name=schema_name)
     async def resolve_query_hello(parent, args, ctx, info):
         return args.get("name")
 
@@ -20,12 +12,19 @@ async def ttftt_engine():
         async def __call__(self, parent, args, ctx, info):
             return args.get("name")
 
-    Resolver("Query.bye", schema_name="test_issue213")(QueryByResolver())
-
-    return await create_engine(sdl=_SDL, schema_name="test_issue213")
+    Resolver("Query.bye", schema_name=schema_name)(QueryByResolver())
 
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type Query {
+      hello(name: String = "Unknown"): String
+      bye(name: String! = "Unknown"): String
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -183,5 +182,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue213(query, variables, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query, variables=variables) == expected
+async def test_issue213(schema_stack, query, variables, expected):
+    assert await schema_stack.execute(query, variables=variables) == expected

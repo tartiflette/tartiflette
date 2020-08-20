@@ -1,62 +1,43 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module", name="ttftt_engine")
-async def ttftt_engine_fixture():
-    sdl = """
-enum AnEnum {
-    AValue
-}
-
-input AnInput {
-    AField: String
-}
-
-type Query {
-    simpleParameterField(i: Int, f: Float, s: String, e: AnEnum, input: AnInput): String
-    nonNullParameterField(i: Int!, f: Float!, s: String!, e: AnEnum!, input: AnInput!): String
-    listParameterField(i: [Int], f: [Float], s: [String], e: [AnEnum], input: [AnInput]): String
-    listOfNonNullParameterField(i: [Int!], f: [Float!], s: [String!], e: [AnEnum!], input: [AnInput!]): String
-    nonNullListParameterField(i: [Int]!, f: [Float]!, s: [String]!, e: [AnEnum]!, input: [AnInput]!): String
-    nonNullListOfNonNullParameterField(i: [Int!]!, f: [Float!]!, s: [String!]!, e: [AnEnum!]!, input: [AnInput!]!): String
-}
-"""
-
+def bakery(schema_name):
+    @Resolver("Query.simpleParameterField", schema_name=schema_name)
+    @Resolver("Query.nonNullParameterField", schema_name=schema_name)
+    @Resolver("Query.listParameterField", schema_name=schema_name)
+    @Resolver("Query.listOfNonNullParameterField", schema_name=schema_name)
+    @Resolver("Query.nonNullListParameterField", schema_name=schema_name)
     @Resolver(
-        "Query.simpleParameterField",
-        schema_name="test_validators_all_variable_usages_are_allowed",
+        "Query.nonNullListOfNonNullParameterField", schema_name=schema_name
     )
-    @Resolver(
-        "Query.nonNullParameterField",
-        schema_name="test_validators_all_variable_usages_are_allowed",
-    )
-    @Resolver(
-        "Query.listParameterField",
-        schema_name="test_validators_all_variable_usages_are_allowed",
-    )
-    @Resolver(
-        "Query.listOfNonNullParameterField",
-        schema_name="test_validators_all_variable_usages_are_allowed",
-    )
-    @Resolver(
-        "Query.nonNullListParameterField",
-        schema_name="test_validators_all_variable_usages_are_allowed",
-    )
-    @Resolver(
-        "Query.nonNullListOfNonNullParameterField",
-        schema_name="test_validators_all_variable_usages_are_allowed",
-    )
-    async def resolver(_pr, args, _ctx, _info):
+    async def resolve_stringify(_pr, args, _ctx, _info):
         return str(args)
-
-    return await create_engine(
-        sdl, schema_name="test_validators_all_variable_usages_are_allowed"
-    )
 
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    enum AnEnum {
+      AValue
+    }
+
+    input AnInput {
+      AField: String
+    }
+
+    type Query {
+      simpleParameterField(i: Int, f: Float, s: String, e: AnEnum, input: AnInput): String
+      nonNullParameterField(i: Int!, f: Float!, s: String!, e: AnEnum!, input: AnInput!): String
+      listParameterField(i: [Int], f: [Float], s: [String], e: [AnEnum], input: [AnInput]): String
+      listOfNonNullParameterField(i: [Int!], f: [Float!], s: [String!], e: [AnEnum!], input: [AnInput!]): String
+      nonNullListParameterField(i: [Int]!, f: [Float]!, s: [String]!, e: [AnEnum]!, input: [AnInput]!): String
+      nonNullListOfNonNullParameterField(i: [Int!]!, f: [Float!]!, s: [String!]!, e: [AnEnum!]!, input: [AnInput!]!): String
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -1845,6 +1826,6 @@ type Query {
     ],
 )
 async def test_validators_all_variable_usages_are_allowed(
-    query, expected, ttftt_engine
+    schema_stack, query, expected
 ):
-    assert await ttftt_engine.execute(query) == expected
+    assert await schema_stack.execute(query) == expected

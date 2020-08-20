@@ -1,65 +1,13 @@
-import logging
-
 from typing import Any, Callable, Dict, Optional, Union
 
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import Directive, Resolver
 from tartiflette.constants import UNDEFINED_VALUE
 
-logger = logging.getLogger(__name__)
 
-
-_SDL = """
-directive @maxLength(
-  limit: Int!
-) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
-
-directive @validateChoices(
-  choices: [String!]!
-) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
-
-directive @debug on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
-
-directive @stop on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
-
-input MyInput {
-  myInputArg: MyInputInput! @debug
-}
-
-input MyStopedInput {
-  myInputArg: MyInputInput! @stop
-}
-
-input MyInputInput {
-  myInputInputArg1: String! @validateChoices(choices: ["VALID"])
-  myInputInputArg2: String! @validateChoices(choices: ["VALID"])
-}
-
-type Query {
-  search(
-    query: String @maxLength(limit: 10)
-  ): [String]
-
-  aField(
-    myArg: MyInput! @debug
-  ): String
-
-  anotherField(
-    myInputArg: String! @validateChoices(choices: ["VALID"])
-    myArg: MyInput! @debug
-  ): [String]
-
-  stopedField(
-    stopedArg: MyStopedInput!
-  ): String
-}
-"""
-
-
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Directive("maxLength", schema_name="test_issue133")
+def bakery(schema_name):
+    @Directive("maxLength", schema_name=schema_name)
     class MaxLengthDirective:
         async def on_argument_execution(
             self,
@@ -111,7 +59,7 @@ async def ttftt_engine():
                 )
             return result
 
-    @Directive("validateChoices", schema_name="test_issue133")
+    @Directive("validateChoices", schema_name=schema_name)
     class ValidateChoicesDirective:
         async def on_argument_execution(
             self,
@@ -161,7 +109,7 @@ async def ttftt_engine():
                 )
             return result
 
-    @Directive("debug", schema_name="test_issue133")
+    @Directive("debug", schema_name=schema_name)
     class DebugDirective:
         async def on_argument_execution(
             self,
@@ -191,7 +139,7 @@ async def ttftt_engine():
         ):
             return await next_directive(parent_node, value, ctx)
 
-    @Directive("stop", schema_name="test_issue133")
+    @Directive("stop", schema_name=schema_name)
     class StopDirective:
         async def on_argument_execution(
             self,
@@ -215,15 +163,15 @@ async def ttftt_engine():
         ):
             return UNDEFINED_VALUE
 
-    @Resolver("Query.search", schema_name="test_issue133")
+    @Resolver("Query.search", schema_name=schema_name)
     async def _query_search_resolver(parent, args, *_, **__):
         return [args["query"]]
 
-    @Resolver("Query.aField", schema_name="test_issue133")
+    @Resolver("Query.aField", schema_name=schema_name)
     async def _query_a_field_resolver(parent, args, *_, **__):
         return "aValue"
 
-    @Resolver("Query.stopedField", schema_name="test_issue133")
+    @Resolver("Query.stopedField", schema_name=schema_name)
     async def _query_stoped_field_resolver(parent, args, *_, **__):
         return (
             args.get("stopedArg", {})
@@ -231,10 +179,56 @@ async def ttftt_engine():
             .get("myInputInputArg1")
         )
 
-    return await create_engine(_SDL, schema_name="test_issue133")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @maxLength(
+      limit: Int!
+    ) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+    directive @validateChoices(
+      choices: [String!]!
+    ) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+    directive @debug on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+    directive @stop on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+    input MyInput {
+      myInputArg: MyInputInput! @debug
+    }
+
+    input MyStopedInput {
+      myInputArg: MyInputInput! @stop
+    }
+
+    input MyInputInput {
+      myInputInputArg1: String! @validateChoices(choices: ["VALID"])
+      myInputInputArg2: String! @validateChoices(choices: ["VALID"])
+    }
+
+    type Query {
+      search(
+        query: String @maxLength(limit: 10)
+      ): [String]
+
+      aField(
+        myArg: MyInput! @debug
+      ): String
+
+      anotherField(
+        myInputArg: String! @validateChoices(choices: ["VALID"])
+        myArg: MyInput! @debug
+      ): [String]
+
+      stopedField(
+        stopedArg: MyStopedInput!
+      ): String
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -363,5 +357,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue133(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue133(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

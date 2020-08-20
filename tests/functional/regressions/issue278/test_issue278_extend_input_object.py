@@ -2,43 +2,13 @@ from typing import Any, Callable, Dict, Optional
 
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import Directive, Resolver, create_schema
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    schema_sdl = """
-        input anInput {
-            a: String
-            b: Float
-        }
-
-        type Query {
-            test1(aParameter: anInput): String
-        }
-
-        input switchValuInput {
-            c: Int
-        }
-
-        input anotherInput {
-            g: Int
-        }
-
-        directive @switchValue(newValue: switchValuInput) on INPUT_OBJECT
-
-        extend input anInput @switchValue(newValue: {c: 5}) {
-            c: Int
-        }
-
-        extend input anotherInput @switchValue(newValue: switchValuInput)
-    """
-
-    @Directive(
-        name="switchValue", schema_name="test_issue_278_input_object_extend"
-    )
+def bakery(schema_name):
+    @Directive(name="switchValue", schema_name=schema_name)
     class SwitchValue:
         async def on_post_input_coercion(
             self,
@@ -52,16 +22,41 @@ async def ttftt_engine():
             value.update(directive_args["newValue"])
             return value
 
-    @Resolver("Query.test1", schema_name="test_issue_278_input_object_extend")
+    @Resolver("Query.test1", schema_name=schema_name)
     async def resolver_input_object_test_1(_pr, arguments, *_args, **_kwargs):
         return str(arguments)
 
-    return await create_engine(
-        schema_sdl, schema_name="test_issue_278_input_object_extend"
-    )
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    input anInput {
+        a: String
+        b: Float
+    }
+
+    type Query {
+        test1(aParameter: anInput): String
+    }
+
+    input switchValuInput {
+        c: Int
+    }
+
+    input anotherInput {
+        g: Int
+    }
+
+    directive @switchValue(newValue: switchValuInput) on INPUT_OBJECT
+
+    extend input anInput @switchValue(newValue: {c: 5}) {
+        c: Int
+    }
+
+    extend input anotherInput @switchValue(newValue: switchValuInput)
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -104,15 +99,15 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue_278_input_object_extend(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue_278_input_object_extend(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected
 
 
 @pytest.mark.asyncio
 async def test_issue_278_extend_input_object_invalid_sdl():
     with pytest.raises(GraphQLSchemaError) as excinfo:
-        await create_engine(
-            sdl="""
+        await create_schema(
+            """
                 directive @C on INPUT_OBJECT
 
                 input bob @C {
@@ -139,7 +134,7 @@ async def test_issue_278_extend_input_object_invalid_sdl():
                     d: Float
                 }
             """,
-            schema_name="test_issue_278_extend_input_object_invalid_sdl",
+            name="test_issue_278_extend_input_object_invalid_sdl",
         )
 
     match_schema_errors(

@@ -9,7 +9,7 @@ import pytest
     )
 )
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine
+@pytest.mark.with_schema_stack(preset="animals")
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -266,6 +266,6 @@ import pytest
     ],
 )
 async def test_validators_fragment_spreads_must_not_form_cycles(
-    query, expected, engine
+    schema_stack, query, expected
 ):
-    assert await engine.execute(query) == expected
+    assert await schema_stack.execute(query) == expected

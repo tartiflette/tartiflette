@@ -1,21 +1,20 @@
 import pytest
 
-
-async def _query_dog_resolver(*_args, **__kwargs):
-    return {"name": "Doggy"}
+from tartiflette import Resolver
 
 
-async def _dog_does_know_command_resolver(_parent, args, *__args, **___kwargs):
-    return args["dogCommand"] == "SIT"
+def bakery(schema_name):
+    @Resolver("Query.dog", schema_name=schema_name)
+    async def resolve_query_dog(*_args, **__kwargs):
+        return {"name": "Doggy"}
+
+    @Resolver("Dog.doesKnowCommand", schema_name=schema_name)
+    async def resolve_dog_does_know_command(_parent, args, *_args, **__kwargs):
+        return args["dogCommand"] == "SIT"
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    resolvers={
-        "Query.dog": _query_dog_resolver,
-        "Dog.doesKnowCommand": _dog_does_know_command_resolver,
-    }
-)
+@pytest.mark.with_schema_stack(preset="animals", bakery=bakery)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -43,5 +42,5 @@ async def _dog_does_know_command_resolver(_parent, args, *__args, **___kwargs):
         ),
     ],
 )
-async def test_issue103(engine, query, expected):
-    assert await engine.execute(query) == expected
+async def test_issue103(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

@@ -2,35 +2,11 @@ from typing import Any, Callable, Dict, Optional, Union
 
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
-
-_SDL = """
-directive @maxValue(limit: Int!) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
-directive @increment(step: Int! = 1) on ARGUMENT_DEFINITION | FIELD
-directive @truncate(
-  limit: Int! = 10 @maxValue(limit: 11) @increment
-) on FIELD_DEFINITION | FIELD
-directive @lowercase on FIELD_DEFINITION | FIELD
-directive @uppercase on FIELD_DEFINITION | FIELD
-directive @uppercase2 on FIELD_DEFINITION | FIELD
-directive @uppercased on FIELD_DEFINITION | FIELD
-
-type Person {
-  id: Int!
-  name: String! @truncate(limit: 5)
-  nickname: String @truncate
-  hobby: String @uppercased
-}
-
-type Query {
-  person(id: Int!): Person
-}
-"""
+from tartiflette import Directive, Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Directive("maxValue", schema_name="test_directives_arguments")
+def bakery(schema_name):
+    @Directive("maxValue", schema_name=schema_name)
     class MaxValueDirective:
         async def on_argument_execution(
             self,
@@ -68,7 +44,7 @@ async def ttftt_engine():
                 raise ValueError(f"{result} > {directive_args['limit']}")
             return result
 
-    @Directive("increment", schema_name="test_directives_arguments")
+    @Directive("increment", schema_name=schema_name)
     class IncrementDirective:
         async def on_argument_execution(
             self,
@@ -110,7 +86,7 @@ async def ttftt_engine():
             result = await next_resolver(parent, args, ctx, info)
             return result + directive_args["step"]
 
-    @Directive("truncate", schema_name="test_directives_arguments")
+    @Directive("truncate", schema_name=schema_name)
     class TruncateDirective:
         async def on_field_execution(
             self,
@@ -128,7 +104,7 @@ async def ttftt_engine():
                 else result
             )
 
-    @Directive("lowercase", schema_name="test_directives_arguments")
+    @Directive("lowercase", schema_name=schema_name)
     class LowercaseDirective:
         async def on_field_execution(
             self,
@@ -142,8 +118,8 @@ async def ttftt_engine():
             result = await next_resolver(parent, args, ctx, info)
             return result.lower() if isinstance(result, str) else result
 
-    @Directive("uppercase2", schema_name="test_directives_arguments")
-    @Directive("uppercase", schema_name="test_directives_arguments")
+    @Directive("uppercase2", schema_name=schema_name)
+    @Directive("uppercase", schema_name=schema_name)
     class UppercaseDirective:
         async def on_field_execution(
             self,
@@ -157,7 +133,7 @@ async def ttftt_engine():
             result = await next_resolver(parent, args, ctx, info)
             return result.upper() if isinstance(result, str) else result
 
-    @Directive("uppercased", schema_name="test_directives_arguments")
+    @Directive("uppercased", schema_name=schema_name)
     class UppercasedDirective:
         async def on_field_execution(
             self,
@@ -171,7 +147,7 @@ async def ttftt_engine():
             result = await next_resolver(parent, args, ctx, info)
             return result.upper() if isinstance(result, str) else result
 
-    @Resolver("Query.person", schema_name="test_directives_arguments")
+    @Resolver("Query.person", schema_name=schema_name)
     async def resolve_query_person(parent, args, ctx, info):
         return {
             "id": args["id"],
@@ -180,10 +156,33 @@ async def ttftt_engine():
             "hobby": "Sport",
         }
 
-    return await create_engine(_SDL, schema_name="test_directives_arguments")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @maxValue(limit: Int!) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+    directive @increment(step: Int! = 1) on ARGUMENT_DEFINITION | FIELD
+    directive @truncate(
+      limit: Int! = 10 @maxValue(limit: 11) @increment
+    ) on FIELD_DEFINITION | FIELD
+    directive @lowercase on FIELD_DEFINITION | FIELD
+    directive @uppercase on FIELD_DEFINITION | FIELD
+    directive @uppercase2 on FIELD_DEFINITION | FIELD
+    directive @uppercased on FIELD_DEFINITION | FIELD
+
+    type Person {
+      id: Int!
+      name: String! @truncate(limit: 5)
+      nickname: String @truncate
+      hobby: String @uppercased
+    }
+
+    type Query {
+      person(id: Int!): Person
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -394,5 +393,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_directives_arguments(ttftt_engine, query, expected):
-    assert await ttftt_engine.execute(query) == expected
+async def test_directives_arguments(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

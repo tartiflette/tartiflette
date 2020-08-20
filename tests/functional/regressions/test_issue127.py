@@ -1,99 +1,99 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
-
-_SDL = """
-input RecipeInput {
-  id: Int
-  name: String
-  cookingTime: Int
-}
-
-input CreateRecipeInput{
-    id: Int
-    name: String
-    cookingTime: Int
-    ingredients: [String]
-}
-
-type Recipe{
-    id: Int
-    name: String
-    cookingTime: Int
-    ingredients: [String]
-}
-
-enum IngredientQuality  {
-    GOOD
-    NOT_GOOD
-    BAD
-    NOT_BAD
-    SOSO
-}
-
-input Ingredientrrrte {
-    id: Int
-    name: String
-    type: String
-    quality: IngredientQuality
-    aListOfNumber: [Int]
-}
-
-type Ingredient {
-    id: Int
-    name: String
-    type: String
-    quality: IngredientQuality
-    aListOfNumber: [Int]
-}
-
-input PatchRecipeInput {
-    id: Int
-    name: String
-    cookingTime: Int
-    ingredients: [Ingredientrrrte]
-}
-
-type ListObjectWithObject {
-    id: Int
-    name: String
-    cookingTime: Int
-    ingredients: [Ingredient]
-}
-
-type ABigObject {
-    lol: Recipe
-}
-
-input ABigInputObject {
-    lol: RecipeInput
-}
-
-type Mutation {
-  updateRecipe(input: RecipeInput): Recipe
-  deleteRecipe(input: ABigInputObject): ABigObject
-  createRecipe(input: CreateRecipeInput): Recipe
-  patchRecipe(input: PatchRecipeInput): ListObjectWithObject
-}
-
-type Query {
-    recipe: Recipe
-}
-"""
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Mutation.updateRecipe", schema_name="test_issue127")
-    @Resolver("Mutation.deleteRecipe", schema_name="test_issue127")
-    @Resolver("Mutation.createRecipe", schema_name="test_issue127")
-    @Resolver("Mutation.patchRecipe", schema_name="test_issue127")
+def bakery(schema_name):
+    @Resolver("Mutation.updateRecipe", schema_name=schema_name)
+    @Resolver("Mutation.deleteRecipe", schema_name=schema_name)
+    @Resolver("Mutation.createRecipe", schema_name=schema_name)
+    @Resolver("Mutation.patchRecipe", schema_name=schema_name)
     async def update_recipe(_, args, *__, **kwargs):
         return args["input"]
 
-    return await create_engine(sdl=_SDL, schema_name="test_issue127")
 
+@pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    input RecipeInput {
+      id: Int
+      name: String
+      cookingTime: Int
+    }
 
+    input CreateRecipeInput{
+        id: Int
+        name: String
+        cookingTime: Int
+        ingredients: [String]
+    }
+
+    type Recipe{
+        id: Int
+        name: String
+        cookingTime: Int
+        ingredients: [String]
+    }
+
+    enum IngredientQuality  {
+        GOOD
+        NOT_GOOD
+        BAD
+        NOT_BAD
+        SOSO
+    }
+
+    input Ingredientrrrte {
+        id: Int
+        name: String
+        type: String
+        quality: IngredientQuality
+        aListOfNumber: [Int]
+    }
+
+    type Ingredient {
+        id: Int
+        name: String
+        type: String
+        quality: IngredientQuality
+        aListOfNumber: [Int]
+    }
+
+    input PatchRecipeInput {
+        id: Int
+        name: String
+        cookingTime: Int
+        ingredients: [Ingredientrrrte]
+    }
+
+    type ListObjectWithObject {
+        id: Int
+        name: String
+        cookingTime: Int
+        ingredients: [Ingredient]
+    }
+
+    type ABigObject {
+        lol: Recipe
+    }
+
+    input ABigInputObject {
+        lol: RecipeInput
+    }
+
+    type Mutation {
+      updateRecipe(input: RecipeInput): Recipe
+      deleteRecipe(input: ABigInputObject): ABigObject
+      createRecipe(input: CreateRecipeInput): Recipe
+      patchRecipe(input: PatchRecipeInput): ListObjectWithObject
+    }
+
+    type Query {
+        recipe: Recipe
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -246,6 +246,5 @@ async def ttftt_engine():
         ),
     ],
 )
-@pytest.mark.asyncio
-async def test_issue127(query, variables, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query, variables=variables) == expected
+async def test_issue127(schema_stack, query, variables, expected):
+    assert await schema_stack.execute(query, variables=variables) == expected

@@ -1,53 +1,53 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver
 
 
-@Resolver("Query.viewer", schema_name="test_issue82")
-async def resolver_query_viewer(*_, **__):
-    return {"name": "N1"}
-
-
-_SDL = """
-type User {
-    name: String
-}
-
-type Query {
-    viewer: User
-}
-"""
-
-
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    return await create_engine(sdl=_SDL, schema_name="test_issue82")
+def bakery(schema_name):
+    @Resolver("Query.viewer", schema_name=schema_name)
+    async def resolver_query_viewer(*_, **__):
+        return {"name": "N1"}
 
 
 @pytest.mark.asyncio
-async def test_issue82(ttftt_engine):
-    query = """
-    query {
-        viewer {
-            name
-            ...UndefinedFragment
-        }
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type User {
+        name: String
     }
-    """
 
-    assert await ttftt_engine.execute(query) == {
-        "data": None,
-        "errors": [
-            {
-                "message": "Unknown fragment < UndefinedFragment >.",
-                "path": None,
-                "locations": [{"line": 5, "column": 16}],
-                "extensions": {
-                    "spec": "June 2018",
-                    "rule": "5.5.2.1",
-                    "tag": "fragment-spread-target-defined",
-                    "details": "https://spec.graphql.org/June2018/#sec-Fragment-spread-target-defined",
-                },
-            }
-        ],
+    type Query {
+        viewer: User
     }
+    """,
+    bakery=bakery,
+)
+async def test_issue82(schema_stack):
+    assert (
+        await schema_stack.execute(
+            """
+            query {
+                viewer {
+                    name
+                    ...UndefinedFragment
+                }
+            }
+            """
+        )
+        == {
+            "data": None,
+            "errors": [
+                {
+                    "message": "Unknown fragment < UndefinedFragment >.",
+                    "path": None,
+                    "locations": [{"line": 5, "column": 24}],
+                    "extensions": {
+                        "spec": "June 2018",
+                        "rule": "5.5.2.1",
+                        "tag": "fragment-spread-target-defined",
+                        "details": "https://spec.graphql.org/June2018/#sec-Fragment-spread-target-defined",
+                    },
+                }
+            ],
+        }
+    )

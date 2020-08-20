@@ -3841,6 +3841,4 @@ def test_parse_to_json_ast(query, expected):
     ],
 )
 def test_parse_to_document(sdl, expected):
-    schema_mock = Mock()
-    schema_mock.json_loader = json.loads
-    assert parse_to_document(sdl, schema_mock) == expected
+    assert parse_to_document(sdl) == expected

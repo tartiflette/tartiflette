@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import TartifletteError, create_engine
+from tartiflette import TartifletteError
 from tartiflette.language.ast import Location
 from tartiflette.language.parsers.libgraphqlparser import parse_to_document
 from tartiflette.validation.rules import OverlappingFieldsCanBeMergedRule
@@ -8,77 +8,8 @@ from tartiflette.validation.validate import validate_query
 from tests.functional.utils import assert_unordered_lists
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    return await create_engine(
-        """
-        interface SomeBox {
-          deepBox: SomeBox
-          unrelatedField: String
-        }
-        
-        type StringBox implements SomeBox {
-          scalar: String
-          deepBox: StringBox
-          unrelatedField: String
-          listStringBox: [StringBox]
-          stringBox: StringBox
-          intBox: IntBox
-        }
-        
-        type IntBox implements SomeBox {
-          scalar: Int
-          deepBox: IntBox
-          unrelatedField: String
-          listStringBox: [StringBox]
-          stringBox: StringBox
-          intBox: IntBox
-        }
-        
-        interface NonNullStringBox1 {
-          scalar: String!
-        }
-        
-        type NonNullStringBox1Impl implements SomeBox & NonNullStringBox1 {
-          scalar: String!
-          unrelatedField: String
-          deepBox: SomeBox
-        }
-        
-        interface NonNullStringBox2 {
-          scalar: String!
-        }
-        
-        type NonNullStringBox2Impl implements SomeBox & NonNullStringBox2 {
-          scalar: String!
-          unrelatedField: String
-          deepBox: SomeBox
-        }
-        
-        type Connection {
-          edges: [Edge]
-        }
-        
-        type Edge {
-          node: Node
-        }
-        
-        type Node {
-          id: ID
-          name: String
-        }
-        
-        type Query {
-          someBox: SomeBox
-          connection: Connection
-        }
-        """,
-        schema_name="test_overlapping_fields_can_be_merged_box",
-    )
-
-
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(name="harness")
+@pytest.mark.with_schema_stack(preset="harness")
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -731,12 +662,12 @@ async def ttftt_engine():
     ],
 )
 async def test_overlapping_fields_can_be_merged_harness(
-    engine, query, expected
+    schema_stack, query, expected
 ):
     assert_unordered_lists(
         validate_query(
-            engine._schema,
-            parse_to_document(query, engine._schema),
+            schema_stack.schema,
+            parse_to_document(query),
             rules=[OverlappingFieldsCanBeMergedRule],
         ),
         expected,
@@ -744,6 +675,70 @@ async def test_overlapping_fields_can_be_merged_harness(
 
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    interface SomeBox {
+      deepBox: SomeBox
+      unrelatedField: String
+    }
+
+    type StringBox implements SomeBox {
+      scalar: String
+      deepBox: StringBox
+      unrelatedField: String
+      listStringBox: [StringBox]
+      stringBox: StringBox
+      intBox: IntBox
+    }
+
+    type IntBox implements SomeBox {
+      scalar: Int
+      deepBox: IntBox
+      unrelatedField: String
+      listStringBox: [StringBox]
+      stringBox: StringBox
+      intBox: IntBox
+    }
+
+    interface NonNullStringBox1 {
+      scalar: String!
+    }
+
+    type NonNullStringBox1Impl implements SomeBox & NonNullStringBox1 {
+      scalar: String!
+      unrelatedField: String
+      deepBox: SomeBox
+    }
+
+    interface NonNullStringBox2 {
+      scalar: String!
+    }
+
+    type NonNullStringBox2Impl implements SomeBox & NonNullStringBox2 {
+      scalar: String!
+      unrelatedField: String
+      deepBox: SomeBox
+    }
+
+    type Connection {
+      edges: [Edge]
+    }
+
+    type Edge {
+      node: Node
+    }
+
+    type Node {
+      id: ID
+      name: String
+    }
+
+    type Query {
+      someBox: SomeBox
+      connection: Connection
+    }
+    """,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -1173,12 +1168,12 @@ async def test_overlapping_fields_can_be_merged_harness(
     ],
 )
 async def test_overlapping_fields_can_be_merged_box(
-    ttftt_engine, query, expected
+    schema_stack, query, expected
 ):
     assert_unordered_lists(
         validate_query(
-            ttftt_engine._schema,
-            parse_to_document(query, ttftt_engine._schema),
+            schema_stack.schema,
+            parse_to_document(query),
             rules=[OverlappingFieldsCanBeMergedRule],
         ),
         expected,
@@ -1186,28 +1181,26 @@ async def test_overlapping_fields_can_be_merged_box(
 
 
 @pytest.mark.asyncio
-async def test_overlapping_fields_can_be_merged_foo():
-    engine = await create_engine(
-        """
-        type Foo {
-          items: String
-          values: String
-          str: String
-          dict: String
-          for: String
-          isinstance: String
-        }
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type Foo {
+      items: String
+      values: String
+      str: String
+      dict: String
+      for: String
+      isinstance: String
+    }
 
-        type Query {
-          foo: Foo
-        }
-        """,
-        schema_name="test_overlapping_fields_can_be_merged_foo",
-    )
-
+    type Query {
+      foo: Foo
+    }
+    """
+)
+async def test_overlapping_fields_can_be_merged_foo(schema_stack):
     assert_unordered_lists(
         validate_query(
-            engine._schema,
+            schema_stack.schema,
             parse_to_document(
                 """
                 {
@@ -1220,8 +1213,7 @@ async def test_overlapping_fields_can_be_merged_foo():
                     isinstance
                   }
                 }
-                """,
-                engine._schema,
+                """
             ),
             rules=[OverlappingFieldsCanBeMergedRule],
         ),
