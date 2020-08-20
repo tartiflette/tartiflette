@@ -1,19 +1,34 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    sdl = """
+def bakery(schema_name):
+    @Resolver("Query.hello", schema_name=schema_name)
+    @Resolver("Query.world", schema_name=schema_name)
+    async def resolve_query_world(*_):
+        return "World"
+
+    @Resolver("Mutation.world", schema_name=schema_name)
+    async def resolve_mutation_world(*_):
+        return "World"
+
+    @Resolver("Subscription.world", schema_name=schema_name)
+    async def resolve_subscription_world(*_):
+        return "World"
+
+
+@pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
     type Query {
       hello: String
     }
-    
+
     type Mutation {
       hello: String
     }
-    
+
     type Subscription {
       hello: String
     }
@@ -29,25 +44,9 @@ async def ttftt_engine():
     extend type Subscription {
       world: String
     }
-    """
-
-    @Resolver("Query.hello", schema_name="test_issue292")
-    @Resolver("Query.world", schema_name="test_issue292")
-    async def resolve_query_world(*_):
-        return "World"
-
-    @Resolver("Mutation.world", schema_name="test_issue292")
-    async def resolve_mutation_world(*_):
-        return "World"
-
-    @Resolver("Subscription.world", schema_name="test_issue292")
-    async def resolve_subscription_world(*_):
-        return "World"
-
-    return await create_engine(sdl, schema_name="test_issue292")
-
-
-@pytest.mark.asyncio
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -69,5 +68,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue292(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue292(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

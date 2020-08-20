@@ -1,46 +1,47 @@
 import json as json_module
-import logging
+
+from functools import partial
 
 import pytest
 
-from tartiflette import Resolver, create_engine
-
-logger = logging.getLogger(__name__)
+from tartiflette import Resolver
+from tartiflette.language.parsers.libgraphqlparser import parse_to_document
 
 _CALLED = False
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    sdl = """
-    type Query {
-      hello(name: String!): String
-    }
-    """
+def my_loader(a_str, *_args, **_kwargs):
+    global _CALLED
+    _CALLED = True
+    return json_module.loads(a_str)
 
-    @Resolver("Query.hello", schema_name="test_issue362")
+
+def bakery(schema_name):
+    @Resolver("Query.hello", schema_name=schema_name)
     async def resolve_query_world(parent, args, ctx, info):
         return f"Hello {args['name']}"
 
-    def my_loader(a_str, *_args, **_kwargs):
-        global _CALLED
-        _CALLED = True
-        return json_module.loads(a_str)
-
-    return await create_engine(
-        sdl, schema_name="test_issue362", json_loader=my_loader
-    )
-
 
 @pytest.mark.asyncio
-async def test_issue362(ttftt_engine):
-    query = """
-    query {
-      hello(name: "John")
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type Query {
+      hello(name: String!): String
     }
-    """
-    expected = {"data": {"hello": "Hello John"}}
-
+    """,
+    query_parser=partial(parse_to_document, json_loader=my_loader),
+    bakery=bakery,
+)
+async def test_issue362(schema_stack):
     assert not _CALLED
-    assert await ttftt_engine.execute(query) == expected
+    assert (
+        await schema_stack.execute(
+            """
+            query {
+              hello(name: "John")
+            }
+            """
+        )
+        == {"data": {"hello": "Hello John"}}
+    )
     assert _CALLED

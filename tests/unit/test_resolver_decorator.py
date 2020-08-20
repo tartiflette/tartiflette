@@ -4,13 +4,12 @@ import pytest
 
 from tartiflette import Resolver
 from tartiflette.schema.bakery import SchemaBakery
+from tartiflette.schema.factory import _import_builtins
 from tartiflette.types.exceptions.tartiflette import NonAwaitableResolver
 
 
 @pytest.mark.asyncio
 async def test_resolver_decorator(clean_registry):
-    from tartiflette.engine import _import_builtins
-
     schema_sdl = """
     schema {
         query: RootQuery

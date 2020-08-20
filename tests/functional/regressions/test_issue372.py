@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import create_engine
+from tartiflette import create_schema
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
 
@@ -285,7 +285,7 @@ from tests.functional.utils import match_schema_errors
 async def test_issue372(sdl, expected_errors, random_schema_name):
     if expected_errors:
         with pytest.raises(GraphQLSchemaError) as excinfo:
-            await create_engine(sdl, schema_name=random_schema_name)
+            await create_schema(sdl, name=random_schema_name)
         match_schema_errors(excinfo.value, expected_errors)
     else:
-        await create_engine(sdl, schema_name=random_schema_name)
+        await create_schema(sdl, name=random_schema_name)

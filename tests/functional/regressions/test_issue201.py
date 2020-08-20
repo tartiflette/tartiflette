@@ -1,16 +1,14 @@
-import os
-
 import pytest
 
-from tartiflette import create_engine
+from tartiflette import create_schema
+from tests.data.utils import get_path_to_sdl
 
 
 @pytest.mark.asyncio
 async def test_issue201():
     assert (
-        await create_engine(
-            [f"{os.path.dirname(__file__)}/sdl/issue201.sdl"],
-            schema_name="test_issue201",
+        await create_schema(
+            [get_path_to_sdl("issue201.sdl")], name="test_issue201",
         )
         is not None
     )

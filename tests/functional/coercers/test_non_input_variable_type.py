@@ -1,36 +1,33 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
-
-_SDL = """
-type MyType {
-  field: String
-}
-
-type AnotherType {
-  field: String
-}
-
-union UnionType = MyType | AnotherType
-
-type Query {
-  aField(aParam: String): MyType
-}
-"""
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Query.aField", schema_name="test_non_input_variable_type")
+def bakery(schema_name):
+    @Resolver("Query.aField", schema_name=schema_name)
     async def resolver_query_a_field(parent, args, ctx, info):
         return {"field": "value"}
 
-    return await create_engine(
-        sdl=_SDL, schema_name="test_non_input_variable_type"
-    )
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type MyType {
+      field: String
+    }
+
+    type AnotherType {
+      field: String
+    }
+
+    union UnionType = MyType | AnotherType
+
+    type Query {
+      aField(aParam: String): MyType
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -128,5 +125,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_non_input_variable_type(ttftt_engine, query, expected):
-    assert await ttftt_engine.execute(query) == expected
+async def test_non_input_variable_type(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

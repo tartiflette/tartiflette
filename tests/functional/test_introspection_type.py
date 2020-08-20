@@ -196,7 +196,7 @@ _TYPE_INTROSPECTION_QUERY = """
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(name="pets")
+@pytest.mark.with_schema_stack(preset="pets")
 @pytest.mark.parametrize(
     "type_name,expected",
     [
@@ -1598,8 +1598,8 @@ _TYPE_INTROSPECTION_QUERY = """
         ),
     ],
 )
-async def test_introspection_type(engine, type_name, expected):
+async def test_introspection_type(schema_stack, type_name, expected):
     assert (
-        await engine.execute(_TYPE_INTROSPECTION_QUERY.format(type_name))
+        await schema_stack.execute(_TYPE_INTROSPECTION_QUERY.format(type_name))
         == expected
     )

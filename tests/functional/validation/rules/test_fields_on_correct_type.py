@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import TartifletteError, create_engine
+from tartiflette import TartifletteError, create_schema
 from tartiflette.language.ast import Location
 from tartiflette.language.parsers.libgraphqlparser import parse_to_document
 from tartiflette.validation.rules import FieldsOnCorrectTypeRule
@@ -9,7 +9,7 @@ from tests.functional.utils import assert_unordered_lists
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(name="harness")
+@pytest.mark.with_schema_stack(preset="harness")
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -340,11 +340,11 @@ from tests.functional.utils import assert_unordered_lists
         ),
     ],
 )
-async def test_fields_on_correct_type(engine, query, expected):
+async def test_fields_on_correct_type(schema_stack, query, expected):
     assert_unordered_lists(
         validate_query(
-            engine._schema,
-            parse_to_document(query, engine._schema),
+            schema_stack.schema,
+            parse_to_document(query),
             rules=[FieldsOnCorrectTypeRule],
         ),
         expected,
@@ -569,12 +569,10 @@ async def test_fields_on_correct_type(engine, query, expected):
     ],
 )
 async def test_fields_on_correct_type_custom_schema(sdl, query, expected):
-    engine = await create_engine(sdl, schema_name=str(hash(sdl)))
+    schema = await create_schema(sdl, name=str(hash(sdl)))
     assert_unordered_lists(
         validate_query(
-            engine._schema,
-            parse_to_document(query, engine._schema),
-            rules=[FieldsOnCorrectTypeRule],
+            schema, parse_to_document(query), rules=[FieldsOnCorrectTypeRule],
         ),
         expected,
     )

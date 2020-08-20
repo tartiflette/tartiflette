@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict, Optional, Union
 
 import pytest
 
-from tartiflette import Directive, Resolver, Scalar, create_engine
+from tartiflette import Directive, Resolver, Scalar
 from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import StringValueNode
 from tests.functional.utils import is_expected
@@ -31,160 +31,9 @@ _PET_DATASET = [
     },
 ]
 
-_SDL = """
-scalar CapitalizedString @concatenate(with: "scalar")
 
-directive @validateMaxLength(
-  limit: Int!
-) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
-
-directive @concatenate(
-  with: String! @validateMaxLength(limit: 25)
-) on SCALAR | FIELD_DEFINITION | FIELD
-
-interface Identifiable {
-  id: Int!
-}
-
-interface Named {
-  name: CapitalizedString!
-}
-
-enum OrderDirection { ASC, DESC }
-enum OwnerOrderField { NAME }
-enum PetOrderField { NAME, NICKNAME }
-enum OwnerKind { ALIEN, HUMAN }
-enum PetKind { CAT, DOG }
-enum CatCommand { JUMP }
-enum DogCommand { SIT, DOWN, HEEL }
-
-type Alien implements Identifiable & Named {
-  id: Int!
-  name: CapitalizedString! @concatenate(with: "Alien.name")
-}
-
-type Human implements Identifiable & Named {
-  id: Int!
-  name: CapitalizedString! @concatenate(with: "Human.name")
-  owner: Alien
-}
-
-type Cat implements Identifiable & Named {
-  id: Int!
-  name: CapitalizedString! @concatenate(with: "Cat.name")
-  nickname: String
-  doesKnowCommand(catCommand: CatCommand!): Boolean!
-  meowVolume: Int
-  owner: Human
-  friends: [Pet!]
-}
-
-type Dog implements Identifiable & Named {
-  id: Int!
-  name: CapitalizedString! @concatenate(with: "Dog.name")
-  nickname: String
-  doesKnowCommand(dogCommand: DogCommand!): Boolean!
-  barkVolume: Int
-  owner: Human
-  friends: [Pet!]
-}
-
-union Pet = Cat | Dog
-union Owner = Alien | Human
-
-input OwnerOrder {
-  field: OwnerOrderField!
-  direction: OrderDirection!
-}
-
-input PetOrder {
-  field: PetOrderField!
-  direction: OrderDirection!
-}
-
-input AddCatInput {
-  clientMutationId: String
-  name: String!
-  nickname: String
-  knownCommands: [DogCommand!]
-  barkVolume: Int
-  ownerId: Int
-  friendIds: [Int!]
-}
-
-type AddCatPayload {
-  clientMutationId: String
-  cat: Cat!
-}
-
-input AddDogInput {
-  clientMutationId: String
-  name: String!
-  nickname: String
-  knownCommands: [DogCommand!]
-  meowVolume: Int
-  ownerId: Int
-  friendIds: [Int!]
-}
-
-type AddDogPayload {
-  clientMutationId: String
-  dog: Dog!
-}
-
-input AddHumanInput {
-  clientMutationId: String
-  name: String!
-  ownerId: Int
-}
-
-type AddHumanPayload {
-  clientMutationId: String
-  human: Human!
-}
-
-input AddAlienInput {
-  clientMutationId: String
-  name: String!
-}
-
-type AddAlienPayload {
-  clientMutationId: String
-  alien: Alien!
-}
-
-type Query {
-  pet(id: Int!): Pet
-  pets(ids: [Int!], orderBy: PetOrder, kind: PetKind): [Pet!]
-  nullablePets(ids: [Int!], orderBy: PetOrder, kind: PetKind): [Pet]
-
-  owner(id: Int!): Pet
-  owners(ids: [Int!], orderBy: OwnerOrder, kind: OwnerKind): [Owner!]
-}
-
-type Mutation {
-  addCat(input: AddCatInput!): AddCatPayload!
-  addDog(input: AddDogInput!): AddDogPayload!
-  addHuman(input: AddHumanInput!): AddHumanPayload!
-  addAlien(input: AddAlienInput!): AddAlienPayload!
-}
-
-type Subscription {
-  petAdded(kind: PetKind): Pet
-  ownerAdded(kind: OwnerKind): Owner
-}
-
-schema {
-  query: Query
-  mutation: Mutation
-  subscription: Subscription
-}
-"""
-
-
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Scalar("CapitalizedString", schema_name="test_oh_god")
+def bakery(schema_name):
+    @Scalar("CapitalizedString", schema_name=schema_name)
     class CapitalizedString:
         @staticmethod
         def coerce_output(val) -> str:
@@ -206,7 +55,7 @@ async def ttftt_engine():
                 else UNDEFINED_VALUE
             )
 
-    @Directive("validateMaxLength", schema_name="test_oh_god")
+    @Directive("validateMaxLength", schema_name=schema_name)
     class ValidateMaxLengthDirective:
         @staticmethod
         async def on_field_execution(
@@ -248,7 +97,7 @@ async def ttftt_engine():
                 )
             return result
 
-    @Directive("concatenate", schema_name="test_oh_god")
+    @Directive("concatenate", schema_name=schema_name)
     class ConcatenateDirective:
         @staticmethod
         async def on_field_execution(
@@ -289,8 +138,8 @@ async def ttftt_engine():
                 else result
             )
 
-    @Resolver("Query.pets", schema_name="test_oh_god")
-    @Resolver("Query.nullablePets", schema_name="test_oh_god")
+    @Resolver("Query.pets", schema_name=schema_name)
+    @Resolver("Query.nullablePets", schema_name=schema_name)
     async def resolve_query_pets(parent, args, ctx, info):
         kind = args.get("kind")
         return [
@@ -299,25 +148,175 @@ async def ttftt_engine():
             if kind is None or kind == pet["_typename"].upper()
         ]
 
-    @Resolver("Cat.doesKnowCommand", schema_name="test_oh_god")
-    @Resolver("Dog.doesKnowCommand", schema_name="test_oh_god")
+    @Resolver("Cat.doesKnowCommand", schema_name=schema_name)
+    @Resolver("Dog.doesKnowCommand", schema_name=schema_name)
     async def resolve_pet_does_know_command(*_, **__):
         return True
 
-    @Resolver("Cat.owner", schema_name="test_oh_god")
-    @Resolver("Dog.owner", schema_name="test_oh_god")
+    @Resolver("Cat.owner", schema_name=schema_name)
+    @Resolver("Dog.owner", schema_name=schema_name)
     async def resolve_pet_owner(*_, **__):
         return {"id": 1, "name": "Hooman"}
 
-    @Resolver("Cat.friends", schema_name="test_oh_god")
-    @Resolver("Dog.friends", schema_name="test_oh_god")
+    @Resolver("Cat.friends", schema_name=schema_name)
+    @Resolver("Dog.friends", schema_name=schema_name)
     async def resolve_pet_friends(*_, **__):
         return _PET_DATASET
 
-    return await create_engine(_SDL, schema_name="test_oh_god")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    scalar CapitalizedString @concatenate(with: "scalar")
+
+    directive @validateMaxLength(
+      limit: Int!
+    ) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+    directive @concatenate(
+      with: String! @validateMaxLength(limit: 25)
+    ) on SCALAR | FIELD_DEFINITION | FIELD
+
+    interface Identifiable {
+      id: Int!
+    }
+
+    interface Named {
+      name: CapitalizedString!
+    }
+
+    enum OrderDirection { ASC, DESC }
+    enum OwnerOrderField { NAME }
+    enum PetOrderField { NAME, NICKNAME }
+    enum OwnerKind { ALIEN, HUMAN }
+    enum PetKind { CAT, DOG }
+    enum CatCommand { JUMP }
+    enum DogCommand { SIT, DOWN, HEEL }
+
+    type Alien implements Identifiable & Named {
+      id: Int!
+      name: CapitalizedString! @concatenate(with: "Alien.name")
+    }
+
+    type Human implements Identifiable & Named {
+      id: Int!
+      name: CapitalizedString! @concatenate(with: "Human.name")
+      owner: Alien
+    }
+
+    type Cat implements Identifiable & Named {
+      id: Int!
+      name: CapitalizedString! @concatenate(with: "Cat.name")
+      nickname: String
+      doesKnowCommand(catCommand: CatCommand!): Boolean!
+      meowVolume: Int
+      owner: Human
+      friends: [Pet!]
+    }
+
+    type Dog implements Identifiable & Named {
+      id: Int!
+      name: CapitalizedString! @concatenate(with: "Dog.name")
+      nickname: String
+      doesKnowCommand(dogCommand: DogCommand!): Boolean!
+      barkVolume: Int
+      owner: Human
+      friends: [Pet!]
+    }
+
+    union Pet = Cat | Dog
+    union Owner = Alien | Human
+
+    input OwnerOrder {
+      field: OwnerOrderField!
+      direction: OrderDirection!
+    }
+
+    input PetOrder {
+      field: PetOrderField!
+      direction: OrderDirection!
+    }
+
+    input AddCatInput {
+      clientMutationId: String
+      name: String!
+      nickname: String
+      knownCommands: [DogCommand!]
+      barkVolume: Int
+      ownerId: Int
+      friendIds: [Int!]
+    }
+
+    type AddCatPayload {
+      clientMutationId: String
+      cat: Cat!
+    }
+
+    input AddDogInput {
+      clientMutationId: String
+      name: String!
+      nickname: String
+      knownCommands: [DogCommand!]
+      meowVolume: Int
+      ownerId: Int
+      friendIds: [Int!]
+    }
+
+    type AddDogPayload {
+      clientMutationId: String
+      dog: Dog!
+    }
+
+    input AddHumanInput {
+      clientMutationId: String
+      name: String!
+      ownerId: Int
+    }
+
+    type AddHumanPayload {
+      clientMutationId: String
+      human: Human!
+    }
+
+    input AddAlienInput {
+      clientMutationId: String
+      name: String!
+    }
+
+    type AddAlienPayload {
+      clientMutationId: String
+      alien: Alien!
+    }
+
+    type Query {
+      pet(id: Int!): Pet
+      pets(ids: [Int!], orderBy: PetOrder, kind: PetKind): [Pet!]
+      nullablePets(ids: [Int!], orderBy: PetOrder, kind: PetKind): [Pet]
+
+      owner(id: Int!): Pet
+      owners(ids: [Int!], orderBy: OwnerOrder, kind: OwnerKind): [Owner!]
+    }
+
+    type Mutation {
+      addCat(input: AddCatInput!): AddCatPayload!
+      addDog(input: AddDogInput!): AddDogPayload!
+      addHuman(input: AddHumanInput!): AddHumanPayload!
+      addAlien(input: AddAlienInput!): AddAlienPayload!
+    }
+
+    type Subscription {
+      petAdded(kind: PetKind): Pet
+      ownerAdded(kind: OwnerKind): Owner
+    }
+
+    schema {
+      query: Query
+      mutation: Mutation
+      subscription: Subscription
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -507,7 +506,7 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_oh_god(query, variables, expected, ttftt_engine):
+async def test_oh_god(schema_stack, query, variables, expected):
     is_expected(
-        await ttftt_engine.execute(query, variables=variables), expected
+        await schema_stack.execute(query, variables=variables), expected
     )

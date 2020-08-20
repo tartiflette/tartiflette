@@ -2,40 +2,38 @@ from datetime import datetime
 
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver, Scalar, create_schema_with_operationers
 
 
-@pytest.mark.asyncio
-async def test_tartiflette_execute_scalar_type_output():
-    schema_sdl = """
-    type Query {
-        lastUpdate: DateTime
-    }
-    """
-
-    @Resolver(
-        "Query.lastUpdate",
-        schema_name="test_tartiflette_execute_scalar_type_output",
-    )
-    async def func_field_resolver(*args, **kwargs):
+def tartiflette_execute_scalar_type_output_bakery(schema_name):
+    @Resolver("Query.lastUpdate", schema_name=schema_name)
+    async def resolve_query_last_update(*args, **kwargs):
         return datetime(
             year=2018, month=4, day=19, hour=14, minute=57, second=38
         )
 
-    ttftt = await create_engine(
-        schema_sdl, schema_name="test_tartiflette_execute_scalar_type_output"
-    )
 
-    result = await ttftt.execute(
-        """
-    query Test{
-        lastUpdate
+@pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type Query {
+        lastUpdate: DateTime
     }
     """,
-        operation_name="Test",
+    bakery=tartiflette_execute_scalar_type_output_bakery,
+)
+async def test_tartiflette_execute_scalar_type_output(schema_stack):
+    assert (
+        await schema_stack.execute(
+            """
+            query Test{
+                lastUpdate
+            }
+            """,
+            operation_name="Test",
+        )
+        == {"data": {"lastUpdate": "2018-04-19T14:57:38"}}
     )
-
-    assert {"data": {"lastUpdate": "2018-04-19T14:57:38"}} == result
 
 
 @pytest.mark.asyncio
@@ -54,7 +52,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -71,7 +69,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -88,7 +86,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -103,7 +101,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -121,7 +119,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -135,7 +133,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -150,7 +148,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -165,7 +163,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -179,7 +177,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -193,7 +191,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -208,7 +206,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -223,7 +221,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -237,7 +235,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -251,7 +249,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -265,7 +263,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -279,12 +277,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -298,12 +296,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -317,7 +315,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -332,7 +330,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -354,7 +352,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -371,7 +369,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -388,7 +386,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -403,7 +401,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -421,7 +419,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -435,7 +433,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -450,7 +448,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -465,7 +463,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -479,7 +477,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -493,7 +491,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -508,7 +506,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -523,7 +521,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -537,7 +535,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -551,7 +549,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -565,7 +563,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -579,12 +577,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -598,12 +596,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -617,7 +615,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -632,7 +630,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -654,7 +652,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -671,7 +669,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -688,7 +686,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -703,7 +701,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -721,7 +719,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -735,7 +733,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -750,7 +748,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -765,7 +763,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -779,7 +777,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -793,7 +791,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -808,7 +806,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -823,7 +821,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -837,7 +835,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -851,7 +849,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -865,7 +863,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -879,12 +877,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -898,12 +896,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -917,7 +915,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -932,7 +930,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -950,7 +948,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -967,7 +965,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -992,7 +990,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1007,7 +1005,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1033,7 +1031,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1047,7 +1045,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1062,7 +1060,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1081,7 +1079,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1095,7 +1093,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1109,7 +1107,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1124,7 +1122,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1143,7 +1141,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1157,7 +1155,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1171,7 +1169,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1185,7 +1183,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1199,12 +1197,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -1218,12 +1216,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -1237,7 +1235,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1252,7 +1250,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1280,7 +1278,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1305,7 +1303,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1354,7 +1352,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1371,7 +1369,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1421,7 +1419,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1437,7 +1435,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1465,7 +1463,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1495,7 +1493,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1509,7 +1507,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1525,7 +1523,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1553,7 +1551,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1583,7 +1581,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1597,7 +1595,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1613,7 +1611,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1631,7 +1629,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1650,12 +1648,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -1676,12 +1674,12 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     },
                 ],
             },
@@ -1695,7 +1693,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1737,7 +1735,7 @@ async def test_tartiflette_execute_scalar_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 17}],
                     }
                 ],
             },
@@ -1777,51 +1775,36 @@ async def test_tartiflette_execute_scalar_type_output():
 async def test_tartiflette_execute_scalar_type_advanced(
     input_sdl, resolver_response, expected, random_schema_name
 ):
-    schema_sdl = """
-    type Query {{
-        testField: {}
-    }}
-    """.format(
-        input_sdl
-    )
-
     @Resolver("Query.testField", schema_name=random_schema_name)
-    async def func_field_resolver(*args, **kwargs):
+    async def resolve_query_test_field(*args, **kwargs):
         return resolver_response
 
-    ttftt = await create_engine(schema_sdl, schema_name=random_schema_name)
-
-    result = await ttftt.execute(
+    _, execute, __ = await create_schema_with_operationers(
         """
-        query Test{
-            testField
-        }
-        """,
-        operation_name="Test",
+        type Query {{
+            testField: {}
+        }}
+        """.format(
+            input_sdl
+        ),
+        name=random_schema_name,
     )
 
-    assert expected == result
-
-
-@pytest.mark.asyncio
-async def test_tartiflette_declare_custom_scalar():
-    from tartiflette import Scalar
-
-    sdl = """
-        scalar Ntm
-
-        type Lol {
-            joey: Ntm
-        }
-
-        type Query {
-            alol: Lol
-        }
-    """
-
-    @Resolver(
-        "Query.alol", schema_name="test_tartiflette_declare_custom_scalar"
+    assert (
+        await execute(
+            """
+            query Test{
+                testField
+            }
+            """,
+            operation_name="Test",
+        )
+        == expected
     )
+
+
+def tartiflette_declare_custom_scalar_bakery(schema_name):
+    @Resolver("Query.alol", schema_name=schema_name)
     async def alol_resolver(*_, **__):
         class customobject:
             def __init__(self, p1):
@@ -1829,7 +1812,7 @@ async def test_tartiflette_declare_custom_scalar():
 
         return {"joey": customobject("OL")}
 
-    @Scalar(name="Ntm", schema_name="test_tartiflette_declare_custom_scalar")
+    @Scalar(name="Ntm", schema_name=schema_name)
     class Ntm:
         @staticmethod
         def coerce_output(val):
@@ -1843,18 +1826,32 @@ async def test_tartiflette_declare_custom_scalar():
         def parse_literal(ast: "Node") -> str:
             return ast.value
 
-    ttftt = await create_engine(
-        sdl, schema_name="test_tartiflette_declare_custom_scalar"
-    )
 
-    result = await ttftt.execute(
-        query="""
-        query {
-            alol {
-                joey
+@pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    scalar Ntm
+
+    type Lol {
+        joey: Ntm
+    }
+
+    type Query {
+        alol: Lol
+    }
+    """,
+    bakery=tartiflette_declare_custom_scalar_bakery,
+)
+async def test_tartiflette_declare_custom_scalar(schema_stack):
+    assert (
+        await schema_stack.execute(
+            """
+            query {
+                alol {
+                    joey
+                }
             }
-        }
-        """
+            """
+        )
+        == {"data": {"alol": {"joey": "I'am a val OL "}}}
     )
-
-    assert {"data": {"alol": {"joey": "I'am a val OL "}}} == result

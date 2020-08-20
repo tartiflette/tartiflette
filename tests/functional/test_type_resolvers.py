@@ -1,6 +1,11 @@
 import pytest
 
-from tartiflette import Resolver, TypeResolver, create_engine
+from tartiflette import (
+    Resolver,
+    TypeResolver,
+    create_schema,
+    create_schema_with_operationers,
+)
 from tartiflette.types.exceptions.tartiflette import (
     InvalidType,
     UnknownTypeDefinition,
@@ -247,13 +252,13 @@ async def test_type_resolvers_default_type_resolver(
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(
+    _, execute, __ = await create_schema_with_operationers(
         _SDL,
-        schema_name=random_schema_name,
-        custom_default_type_resolver=custom_default_type_resolver,
+        name=random_schema_name,
+        default_type_resolver=custom_default_type_resolver,
     )
 
-    assert await engine.execute(_UNION_QUERY) == expected
+    assert await execute(_UNION_QUERY) == expected
 
 
 @pytest.mark.asyncio
@@ -266,9 +271,8 @@ async def test_type_resolvers_type_resolver_unknown_type_0():
             schema_name="test_type_resolvers_type_resolver_unknown_type_0",
         )(lambda result, context, info, abstract_type: "Unknown")
 
-        await create_engine(
-            _SDL,
-            schema_name="test_type_resolvers_type_resolver_unknown_type_0",
+        await create_schema(
+            _SDL, name="test_type_resolvers_type_resolver_unknown_type_0",
         )
 
 
@@ -282,9 +286,8 @@ async def test_type_resolvers_type_resolver_unknown_type_1():
             schema_name="test_type_resolvers_type_resolver_unknown_type_1",
         )(lambda result, context, info, abstract_type: "Unknown")
 
-        await create_engine(
-            _SDL,
-            schema_name="test_type_resolvers_type_resolver_unknown_type_1",
+        await create_schema(
+            _SDL, name="test_type_resolvers_type_resolver_unknown_type_1",
         )
 
 
@@ -373,9 +376,11 @@ async def test_union_type_resolvers_default(
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(_SDL, schema_name=random_schema_name)
+    _, execute, __ = await create_schema_with_operationers(
+        _SDL, name=random_schema_name
+    )
 
-    assert await engine.execute(_UNION_QUERY) == expected
+    assert await execute(_UNION_QUERY) == expected
 
 
 @pytest.mark.asyncio
@@ -462,9 +467,11 @@ async def test_union_type_resolvers_field_resolver(
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(_SDL, schema_name=random_schema_name)
+    _, execute, __ = await create_schema_with_operationers(
+        _SDL, name=random_schema_name
+    )
 
-    assert await engine.execute(_UNION_QUERY) == expected
+    assert await execute(_UNION_QUERY) == expected
 
 
 @pytest.mark.asyncio
@@ -549,9 +556,11 @@ async def test_union_type_resolvers_type_resolver(
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(_SDL, schema_name=random_schema_name)
+    _, execute, __ = await create_schema_with_operationers(
+        _SDL, name=random_schema_name
+    )
 
-    assert await engine.execute(_UNION_QUERY) == expected
+    assert await execute(_UNION_QUERY) == expected
 
 
 @pytest.mark.asyncio
@@ -601,9 +610,11 @@ async def test_interface_type_resolvers_default(
     async def resolve_query_named(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(_SDL, schema_name=random_schema_name)
+    _, execute, __ = await create_schema_with_operationers(
+        _SDL, name=random_schema_name
+    )
 
-    assert await engine.execute(_INTERFACE_QUERY) == expected
+    assert await execute(_INTERFACE_QUERY) == expected
 
 
 @pytest.mark.asyncio
@@ -662,9 +673,11 @@ async def test_interface_type_resolvers_field_resolver(
     async def resolve_query_named(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(_SDL, schema_name=random_schema_name)
+    _, execute, __ = await create_schema_with_operationers(
+        _SDL, name=random_schema_name
+    )
 
-    assert await engine.execute(_INTERFACE_QUERY) == expected
+    assert await execute(_INTERFACE_QUERY) == expected
 
 
 @pytest.mark.asyncio
@@ -721,6 +734,8 @@ async def test_interface_type_resolvers_type_resolver(
     async def resolve_query_named(parent, args, ctx, info):
         return result
 
-    engine = await create_engine(_SDL, schema_name=random_schema_name)
+    _, execute, __ = await create_schema_with_operationers(
+        _SDL, name=random_schema_name
+    )
 
-    assert await engine.execute(_INTERFACE_QUERY) == expected
+    assert await execute(_INTERFACE_QUERY) == expected

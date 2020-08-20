@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine
+@pytest.mark.with_schema_stack(preset="animals")
 @pytest.mark.parametrize(
     "query,errors",
     [
@@ -160,5 +160,8 @@ import pytest
         ),
     ],
 )
-async def test_issue99(engine, query, errors):
-    assert await engine.execute(query) == {"data": None, "errors": errors}
+async def test_issue99(schema_stack, query, errors):
+    assert await schema_stack.execute(query) == {
+        "data": None,
+        "errors": errors,
+    }

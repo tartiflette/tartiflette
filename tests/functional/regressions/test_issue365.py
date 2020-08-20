@@ -1,26 +1,10 @@
-import logging
-
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
-
-logger = logging.getLogger(__name__)
+from tartiflette import Directive, Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    sdl = """
-    directive @appendArgumentName on ARGUMENT_DEFINITION
-    directive @prependArgumentName on ARGUMENT_DEFINITION
-
-    type Query {
-      hello(
-        identifier: String! = "Unknown" @prependArgumentName @appendArgumentName
-      ): String!
-    }
-    """
-
-    @Directive("appendArgumentName", schema_name="test_issue365")
+def bakery(schema_name):
+    @Directive("appendArgumentName", schema_name=schema_name)
     class AppendArgumentNameDirective:
         @staticmethod
         async def on_argument_execution(
@@ -40,7 +24,7 @@ async def ttftt_engine():
                 ctx,
             )
 
-    @Directive("prependArgumentName", schema_name="test_issue365")
+    @Directive("prependArgumentName", schema_name=schema_name)
     class PrependArgumentNameDirective:
         @staticmethod
         async def on_argument_execution(
@@ -60,14 +44,25 @@ async def ttftt_engine():
                 ctx,
             )
 
-    @Resolver("Query.hello", schema_name="test_issue365")
+    @Resolver("Query.hello", schema_name=schema_name)
     async def resolve_query_hello(parent, args, ctx, info):
         return f"Hello < {args['identifier']} >"
 
-    return await create_engine(sdl, schema_name="test_issue365")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @appendArgumentName on ARGUMENT_DEFINITION
+    directive @prependArgumentName on ARGUMENT_DEFINITION
+
+    type Query {
+      hello(
+        identifier: String! = "Unknown" @prependArgumentName @appendArgumentName
+      ): String!
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -109,5 +104,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue365(ttftt_engine, query, variables, expected):
-    assert await ttftt_engine.execute(query, variables=variables) == expected
+async def test_issue365(schema_stack, query, variables, expected):
+    assert await schema_stack.execute(query, variables=variables) == expected

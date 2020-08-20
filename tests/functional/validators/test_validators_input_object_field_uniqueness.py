@@ -1,12 +1,16 @@
 import pytest
 
+from tartiflette import Resolver
 
-async def resolve_dog(*_, **__):
-    return {"name": "JeanMichel"}
+
+def bakery(schema_name):
+    @Resolver("Query.dog", schema_name=schema_name)
+    async def resolve_query_dog(*_, **__):
+        return {"name": "JeanMichel"}
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(resolvers={"Query.dog": resolve_dog})
+@pytest.mark.with_schema_stack(preset="animals", bakery=bakery)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -66,6 +70,6 @@ async def resolve_dog(*_, **__):
     ],
 )
 async def test_validators_input_object_field_uniqueness(
-    query, expected, engine
+    schema_stack, query, expected
 ):
-    assert await engine.execute(query) == expected
+    assert await schema_stack.execute(query) == expected

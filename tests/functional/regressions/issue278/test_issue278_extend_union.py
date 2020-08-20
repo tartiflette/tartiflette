@@ -1,43 +1,37 @@
 import pytest
 
-from tartiflette import create_engine
+from tartiflette import create_schema
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    schema_sdl = """
-        type aType {
-            a:String
-            b:Int
-        }
-
-        type anotherType {
-            c: String
-            d: Float
-        }
-
-        type lol {
-            g: String
-            p: Boolean
-        }
-
-        union bobby = aType | anotherType
-
-        type Query {
-            a: bobby
-        }
-
-        extend union bobby = lol
-    """
-
-    return await create_engine(
-        schema_sdl, schema_name="test_issue_278_union_extend"
-    )
-
-
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type aType {
+        a:String
+        b:Int
+    }
+
+    type anotherType {
+        c: String
+        d: Float
+    }
+
+    type lol {
+        g: String
+        p: Boolean
+    }
+
+    union bobby = aType | anotherType
+
+    type Query {
+        a: bobby
+    }
+
+    extend union bobby = lol
+    """,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -68,15 +62,15 @@ async def ttftt_engine():
         )
     ],
 )
-async def test_issue_278_union_extend(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue_278_union_extend(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected
 
 
 @pytest.mark.asyncio
 async def test_issue_278_union_extend_invalid_sdl():
     with pytest.raises(GraphQLSchemaError) as excinfo:
-        await create_engine(
-            sdl="""
+        await create_schema(
+            """
                 union bob @deprecated = String | Int
 
                 extend union bob @deprecated = String
@@ -93,7 +87,7 @@ async def test_issue_278_union_extend_invalid_sdl():
 
                 extend union aType = Float
             """,
-            schema_name="test_issue_278_union_extend_invalid_sdl",
+            name="test_issue_278_union_extend_invalid_sdl",
         )
 
     match_schema_errors(

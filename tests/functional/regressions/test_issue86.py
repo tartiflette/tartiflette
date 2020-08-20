@@ -1,12 +1,16 @@
 import pytest
 
+from tartiflette import Resolver
 
-async def resolver_query_viewer(*_, **__):
-    return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
+
+def bakery(schema_name):
+    @Resolver("Query.dog", schema_name=schema_name)
+    async def resolver_query_dog(*_, **__):
+        return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(resolvers={"Query.dog": resolver_query_viewer})
+@pytest.mark.with_schema_stack(preset="animals", bakery=bakery)
 @pytest.mark.parametrize(
     "query,errors",
     [
@@ -154,5 +158,8 @@ async def resolver_query_viewer(*_, **__):
         ),
     ],
 )
-async def test_issue86(engine, query, errors):
-    assert await engine.execute(query) == {"data": None, "errors": errors}
+async def test_issue86(schema_stack, query, errors):
+    assert await schema_stack.execute(query) == {
+        "data": None,
+        "errors": errors,
+    }

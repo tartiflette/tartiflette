@@ -1,22 +1,10 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
-
-_SDL = """
-input ListInput {
-  limit: Int! = 3
-  maxValue: Int
-}
-
-type Query {
-  aList(input: ListInput): [String]
-}
-"""
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Query.aList", schema_name="test_issue188")
+def bakery(schema_name):
+    @Resolver("Query.aList", schema_name=schema_name)
     async def resolve_query_a_list(_parent, args, _ctx, _info):
         max_value = args["input"].get("maxValue")
         return [
@@ -24,10 +12,21 @@ async def ttftt_engine():
             for i in range(1, args["input"]["limit"] + 1)
         ]
 
-    return await create_engine(sdl=_SDL, schema_name="test_issue188")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    input ListInput {
+      limit: Int! = 3
+      maxValue: Int
+    }
+
+    type Query {
+      aList(input: ListInput): [String]
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,data",
     [
@@ -65,5 +64,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue188(query, data, ttftt_engine):
-    assert await ttftt_engine.execute(query) == data
+async def test_issue188(schema_stack, query, data):
+    assert await schema_stack.execute(query) == data

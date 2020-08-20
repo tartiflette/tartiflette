@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(name="pets")
+@pytest.mark.with_schema_stack(preset="pets")
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -2380,5 +2380,5 @@ import pytest
         ),
     ],
 )
-async def test_introspection_full(engine, query, expected):
-    assert await engine.execute(query) == expected
+async def test_introspection_full(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

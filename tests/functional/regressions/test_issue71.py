@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver
 
 _DATAS = {
     "repositories": {
@@ -8,71 +8,71 @@ _DATAS = {
     }
 }
 
-_SDL = """
-type RepositoryOwner {
-    login: String
-}
 
-type Repository {
-    name: String
-    owner: RepositoryOwner
-}
-
-type RepositoryEdge {
-    node: Repository
-}
-
-type RepositoryConnection {
-    edges: [RepositoryEdge]!
-}
-
-type Viewer {
-    repositories(first: Int = 10): RepositoryConnection
-}
-
-type Query {
-    viewer: Viewer
-}
-"""
-
-
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Query.viewer", schema_name="test_issue71")
+def bakery(schema_name):
+    @Resolver("Query.viewer", schema_name=schema_name)
     async def resolver_query_viewer(*_, **__):
         return _DATAS
 
-    return await create_engine(sdl=_SDL, schema_name="test_issue71")
-
 
 @pytest.mark.asyncio
-async def test_issue71(ttftt_engine):
-    query = """
-        query {{}
-    """
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type RepositoryOwner {
+      login: String
+    }
 
-    results = await ttftt_engine.execute(query)
-    assert results == {
+    type Repository {
+      name: String
+      owner: RepositoryOwner
+    }
+
+    type RepositoryEdge {
+      node: Repository
+    }
+
+    type RepositoryConnection {
+      edges: [RepositoryEdge]!
+    }
+
+    type Viewer {
+      repositories(first: Int = 10): RepositoryConnection
+    }
+
+    type Query {
+      viewer: Viewer
+    }
+    """,
+    bakery=bakery,
+)
+async def test_issue71(schema_stack):
+    assert await schema_stack.execute("query {{}") == {
         "data": None,
         "errors": [
             {
                 "locations": [],
-                "message": "2.16: syntax error, unexpected {",
+                "message": "1.8: syntax error, unexpected {",
                 "path": None,
             }
         ],
     }
-    query = """
-        query { viewer { repositories { edges { node { name } } } } }
-    """
-    results = await ttftt_engine.execute(query)
 
-    assert results == {
-        "data": {
-            "viewer": {
-                "repositories": {
-                    "edges": [{"node": {"name": "A"}}, {"node": {"name": "b"}}]
+    assert (
+        await schema_stack.execute(
+            """
+            query { viewer { repositories { edges { node { name } } } } }
+            """
+        )
+        == {
+            "data": {
+                "viewer": {
+                    "repositories": {
+                        "edges": [
+                            {"node": {"name": "A"}},
+                            {"node": {"name": "b"}},
+                        ]
+                    }
                 }
             }
         }
-    }
+    )

@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict, Optional, Union
 
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import Directive, Resolver
 
 
 class LimitReachedException(Exception):
@@ -24,22 +24,8 @@ class LimitReachedException(Exception):
         }
 
 
-_SDL = """
-directive @validateLimit(
-  limit: Int!
-) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
-
-type Query {
-  aList(
-    nbItems: Int! @validateLimit(limit: 2)
-  ): [String!]
-}
-"""
-
-
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Directive("validateLimit", schema_name="test_issue209")
+def bakery(schema_name):
+    @Directive("validateLimit", schema_name=schema_name)
     class ValidateLimitDirective:
         @staticmethod
         async def on_argument_execution(
@@ -62,15 +48,27 @@ async def ttftt_engine():
                 raise LimitReachedException("Limit has been reached")
             return value
 
-    @Resolver("Query.aList", schema_name="test_issue209")
+    @Resolver("Query.aList", schema_name=schema_name)
     async def resolver_query_a_list(parent, args, ctx, info):
         nb_items = args["nbItems"]
         return [f"{nb_items}.{index}" for index in range(nb_items)]
 
-    return await create_engine(sdl=_SDL, schema_name="test_issue209")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @validateLimit(
+      limit: Int!
+    ) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+    type Query {
+      aList(
+        nbItems: Int! @validateLimit(limit: 2)
+      ): [String!]
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -94,5 +92,5 @@ async def ttftt_engine():
         )
     ],
 )
-async def test_issue209(ttftt_engine, query, expected):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue209(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

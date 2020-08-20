@@ -1,50 +1,47 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver, create_schema
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    schema_sdl = """
-        type Query {
-            test1: aType
-        }
-
-        type aType implements anInterface {
-            a: String
-            b: Int
-            h: Int
-            d: String
-        }
-
-        interface anInterface {
-            h: Int
-            d: String
-        }
-
-        extend interface anInterface {
-            c: Int
-            t: Boolean
-        }
-
-        extend type aType {
-            c: Int
-            t: Boolean
-        }
-    """
-
-    @Resolver("Query.test1", schema_name="test_issue_278_interface_extend")
+def bakery(schema_name):
+    @Resolver("Query.test1", schema_name=schema_name)
     async def resolver_interface_test_1(*_args, **_kwargs):
         return {"a": "Hey", "b": 6, "c": 9, "t": True, "h": 6, "d": "GG"}
 
-    return await create_engine(
-        schema_sdl, schema_name="test_issue_278_interface_extend"
-    )
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type Query {
+        test1: aType
+    }
+
+    type aType implements anInterface {
+        a: String
+        b: Int
+        h: Int
+        d: String
+    }
+
+    interface anInterface {
+        h: Int
+        d: String
+    }
+
+    extend interface anInterface {
+        c: Int
+        t: Boolean
+    }
+
+    extend type aType {
+        c: Int
+        t: Boolean
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -102,15 +99,15 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue_278_interface_extend(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue_278_interface_extend(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected
 
 
 @pytest.mark.asyncio
 async def test_issue_278_extend_interface_invalid_sdl():
     with pytest.raises(GraphQLSchemaError) as excinfo:
-        await create_engine(
-            sdl="""
+        await create_schema(
+            """
                 directive @C on INTERFACE
 
                 interface bob @C {
@@ -141,7 +138,7 @@ async def test_issue_278_extend_interface_invalid_sdl():
 
                 extend interface a @c
             """,
-            schema_name="test_issue_278_extend_interface_invalid_sdl",
+            name="test_issue_278_extend_interface_invalid_sdl",
         )
 
     match_schema_errors(

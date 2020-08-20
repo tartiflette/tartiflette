@@ -2,6 +2,8 @@ from collections import namedtuple
 
 import pytest
 
+from tartiflette import Resolver
+
 Library = namedtuple("Library", "books,authors")
 Author = namedtuple("Author", "name")
 Book = namedtuple("Book", "title,author,price,category")
@@ -44,18 +46,19 @@ LibraryTwo = Library(
 )
 
 
-async def func_field_libraries_resolver(*_args, **_kwargs):
-    return [LibraryOne, LibraryTwo]
+def full_query_with_alias_bakery(schema_name):
+    @Resolver("Query.libraries", schema_name=schema_name)
+    async def resolve_query_libraries(*_args, **_kwargs):
+        return [LibraryOne, LibraryTwo]
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="libraries",
-    resolvers={"Query.libraries": func_field_libraries_resolver},
+@pytest.mark.with_schema_stack(
+    preset="libraries", bakery=full_query_with_alias_bakery
 )
-async def test_full_query_with_alias(engine):
+async def test_full_query_with_alias(schema_stack):
     # TODO: Add Union and Interface and NonNull, All scalars Fields.
-    result = await engine.execute(
+    result = await schema_stack.execute(
         """
         query TestQueriesFromEnd2End{
             libraries {
@@ -136,27 +139,28 @@ BookLight = namedtuple("BookLight", ("title", "price"))
 data_store = [BookLight(title="The Jungle Book", price=14.99)]
 
 
-async def add_book_resolver(_, args, *__):
-    added_book = BookLight(
-        title=args["input"]["title"], price=args["input"]["price"]
-    )
-    data_store.append(added_book)
-    return {
-        "clientMutationId": args["input"].get("clientMutationId"),
-        "status": "SUCCESS",
-        "book": added_book,
-    }
+def full_mutation_execute_alias_bakery(schema_name):
+    @Resolver("CustomRootMutation.addBook", schema_name=schema_name)
+    async def resolve_custom_root_mutation_add_book(_, args, *__):
+        added_book = BookLight(
+            title=args["input"]["title"], price=args["input"]["price"]
+        )
+        data_store.append(added_book)
+        return {
+            "clientMutationId": args["input"].get("clientMutationId"),
+            "status": "SUCCESS",
+            "book": added_book,
+        }
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="libraries",
-    resolvers={"CustomRootMutation.addBook": add_book_resolver},
+@pytest.mark.with_schema_stack(
+    preset="libraries", bakery=full_mutation_execute_alias_bakery,
 )
-async def test_full_mutation_execute_alias(engine):
+async def test_full_mutation_execute_alias(schema_stack):
     assert len(data_store) == 1
 
-    result = await engine.execute(
+    result = await schema_stack.execute(
         """
         mutation AddBook($input: AddBookInput!) {
           lol: addBook(input: $input) {

@@ -1,19 +1,12 @@
 import pytest
 
-from tartiflette import Directive, Scalar, create_engine
+from tartiflette import Directive, Scalar
 from tartiflette.scalar.builtins.string import ScalarString
 from tartiflette.types.exceptions.tartiflette import CoercionError
-from tests.functional.coercers.common import (
-    resolve_input_object_field,
-    resolve_unwrapped_field,
-)
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="coercion",
-    resolvers={"Query.nonNullBooleanField": resolve_unwrapped_field},
-)
+@pytest.mark.with_schema_stack(preset="coercion")
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -74,16 +67,13 @@ from tests.functional.coercers.common import (
     ],
 )
 async def test_coercion_boolean_field_arguments_errors(
-    engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="coercion",
-    resolvers={"Query.nonNullEnumField": resolve_unwrapped_field},
-)
+@pytest.mark.with_schema_stack(preset="coercion")
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -144,16 +134,13 @@ async def test_coercion_boolean_field_arguments_errors(
     ],
 )
 async def test_coercion_enum_field_arguments_errors(
-    engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="coercion",
-    resolvers={"Query.nonNullFloatField": resolve_unwrapped_field},
-)
+@pytest.mark.with_schema_stack(preset="coercion")
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -214,16 +201,13 @@ async def test_coercion_enum_field_arguments_errors(
     ],
 )
 async def test_coercion_float_field_arguments_errors(
-    engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="coercion",
-    resolvers={"Query.nonNullIntField": resolve_unwrapped_field},
-)
+@pytest.mark.with_schema_stack(preset="coercion")
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -284,16 +268,13 @@ async def test_coercion_float_field_arguments_errors(
     ],
 )
 async def test_coercion_int_field_arguments_errors(
-    engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="coercion",
-    resolvers={"Query.nonNullStringField": resolve_unwrapped_field},
-)
+@pytest.mark.with_schema_stack(preset="coercion")
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -354,16 +335,13 @@ async def test_coercion_int_field_arguments_errors(
     ],
 )
 async def test_coercion_string_field_arguments_errors(
-    engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="coercion",
-    resolvers={"Query.nonNullInputObjectField": resolve_input_object_field},
-)
+@pytest.mark.with_schema_stack(preset="coercion")
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -424,9 +402,9 @@ async def test_coercion_string_field_arguments_errors(
     ],
 )
 async def test_coercion_input_object_field_arguments_errors(
-    engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected
 
 
 _SDL = """
@@ -455,11 +433,8 @@ type Query {
 """
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Directive(
-        "internalCoercionError", schema_name="test_coercion_arguments_errors"
-    )
+def bakery(schema_name):
+    @Directive("internalCoercionError", schema_name=schema_name)
     class InternalCoercionError:
         async def on_argument_execution(
             self,
@@ -478,9 +453,7 @@ async def ttftt_engine():
         ):
             raise CoercionError("Oopsie")
 
-    @Directive(
-        "customCoercionError", schema_name="test_coercion_arguments_errors"
-    )
+    @Directive("customCoercionError", schema_name=schema_name)
     class CustomCoercionError:
         async def on_argument_execution(
             self,
@@ -499,17 +472,40 @@ async def ttftt_engine():
         ):
             raise ValueError("Oopsie")
 
-    @Scalar("FirstErrorScalar", schema_name="test_coercion_arguments_errors")
-    @Scalar("SecondErrorScalar", schema_name="test_coercion_arguments_errors")
+    @Scalar("FirstErrorScalar", schema_name=schema_name)
+    @Scalar("SecondErrorScalar", schema_name=schema_name)
     class ErrorScalars(ScalarString):
         pass
 
-    return await create_engine(
-        sdl=_SDL, schema_name="test_coercion_arguments_errors"
-    )
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @internalCoercionError on INPUT_FIELD_DEFINITION | SCALAR | ARGUMENT_DEFINITION
+    directive @customCoercionError on INPUT_FIELD_DEFINITION | SCALAR | ARGUMENT_DEFINITION
+
+    scalar FirstErrorScalar @internalCoercionError
+    scalar SecondErrorScalar @customCoercionError
+
+    input FirstInputField {
+      inputField: String
+    }
+
+    input SecondInputField {
+      inputField: String
+    }
+
+    type Query {
+      field(
+        firstInput: FirstInputField @internalCoercionError
+        secondInput: SecondInputField @customCoercionError
+        firstErrorScalar: FirstErrorScalar
+        secondErrorScalar: SecondErrorScalar
+      ): String!
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -583,5 +579,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_coercion_arguments_errors(ttftt_engine, query, expected):
-    assert await ttftt_engine.execute(query) == expected
+async def test_coercion_arguments_errors(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

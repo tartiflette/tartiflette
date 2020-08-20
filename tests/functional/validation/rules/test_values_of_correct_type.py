@@ -1,11 +1,7 @@
 import pytest
 
-from tartiflette import (
-    UNDEFINED_VALUE,
-    Scalar,
-    TartifletteError,
-    create_engine,
-)
+from tartiflette import Scalar, TartifletteError, create_schema
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import Location
 from tartiflette.language.parsers.libgraphqlparser import parse_to_document
 from tartiflette.validation.rules import ValuesOfCorrectTypeRule
@@ -14,7 +10,7 @@ from tests.functional.utils import assert_unordered_lists
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(name="harness")
+@pytest.mark.with_schema_stack(preset="harness")
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -1263,11 +1259,11 @@ from tests.functional.utils import assert_unordered_lists
         ),
     ],
 )
-async def test_values_of_correct_type(engine, query, expected):
+async def test_values_of_correct_type(schema_stack, query, expected):
     assert_unordered_lists(
         validate_query(
-            engine._schema,
-            parse_to_document(query, engine._schema),
+            schema_stack.schema,
+            parse_to_document(query),
             rules=[ValuesOfCorrectTypeRule],
         ),
         expected,
@@ -1333,19 +1329,19 @@ async def test_values_of_correct_type_custom_scalar(literal_parser, expected):
 
         parse_literal = staticmethod(literal_parser)
 
-    engine = await create_engine(
+    schema = await create_schema(
         """
         scalar CustomScalar
         type Query {
           invalidArg(arg: CustomScalar): String
         }
         """,
-        schema_name=schema_name,
+        name=schema_name,
     )
 
     result = validate_query(
-        engine._schema,
-        parse_to_document("{ invalidArg(arg: 123) }", engine._schema),
+        schema,
+        parse_to_document("{ invalidArg(arg: 123) }"),
         rules=[ValuesOfCorrectTypeRule],
     )
 
