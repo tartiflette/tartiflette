@@ -1,5 +1,6 @@
 import asyncio
 
+from functools import partial
 from uuid import uuid4
 
 import pytest
@@ -62,7 +63,7 @@ def _fetch_with_schema_stack_marker(node):
     return None
 
 
-def _build_schema_stack_from_marker(marker):
+async def _build_schema_stack_from_marker(marker):
     marker_kwargs = dict(marker.kwargs)
 
     preset = marker_kwargs.pop("preset", None)
@@ -96,10 +97,8 @@ def _build_schema_stack_from_marker(marker):
             schema,
             executor,
             subscriptor,
-        ) = asyncio.get_event_loop().run_until_complete(
-            create_schema_with_operationers(
-                loaded_sdl, name=schema_stack_hash, **marker_kwargs
-            )
+        ) = await create_schema_with_operationers(
+            loaded_sdl, name=schema_stack_hash, **marker_kwargs
         )
         schema_stack = _KNOWN_SCHEMA_STACKS[schema_stack_hash] = SchemaStack(
             schema_stack_hash, schema, executor, subscriptor
@@ -120,5 +119,17 @@ def pytest_generate_tests(metafunc):
         return
 
     metafunc.parametrize(
-        "schema_stack", [_build_schema_stack_from_marker(marker)]
+        "schema_stack", [partial(_build_schema_stack_from_marker, marker)]
+    )
+
+
+def pytest_runtest_setup(item):
+    marker = _fetch_with_schema_stack_marker(item)
+    if not marker:
+        return
+
+    item.callspec.params[
+        "schema_stack"
+    ] = asyncio.get_event_loop().run_until_complete(
+        item.callspec.params["schema_stack"]()
     )
