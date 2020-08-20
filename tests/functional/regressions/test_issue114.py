@@ -1,21 +1,20 @@
 import pytest
 
-
-async def _query_dog_resolver(*_args, **__kwargs):
-    return {"name": "Doggo"}
+from tartiflette import Resolver
 
 
-async def _query_human_resolver(*_args, **_kwargs):
-    return {"name": "Hooman"}
+def bakery(schema_name):
+    @Resolver("Query.dog", schema_name=schema_name)
+    async def resolve_query_dog(*_args, **__kwargs):
+        return {"name": "Doggo"}
+
+    @Resolver("Query.human", schema_name=schema_name)
+    async def resolve_query_human(*_args, **_kwargs):
+        return {"name": "Hooman"}
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    resolvers={
-        "Query.dog": _query_dog_resolver,
-        "Query.human": _query_human_resolver,
-    }
-)
+@pytest.mark.with_schema_stack(preset="animals", bakery=bakery)
 @pytest.mark.parametrize(
     "query,operation_name,expected",
     [
@@ -79,7 +78,7 @@ async def _query_human_resolver(*_args, **_kwargs):
                 name
               }
             }
-            
+
             query Human {
               human(id: 1) {
                 name
@@ -105,7 +104,7 @@ async def _query_human_resolver(*_args, **_kwargs):
                 name
               }
             }
-            
+
             query Human {
               human(id: 1) {
                 name
@@ -122,7 +121,7 @@ async def _query_human_resolver(*_args, **_kwargs):
                 name
               }
             }
-            
+
             query Human {
               human(id: 1) {
                 name
@@ -139,7 +138,7 @@ async def _query_human_resolver(*_args, **_kwargs):
                 name
               }
             }
-            
+
             query Human {
               human(id: 1) {
                 name
@@ -160,7 +159,8 @@ async def _query_human_resolver(*_args, **_kwargs):
         ),
     ],
 )
-async def test_issue114(engine, query, operation_name, expected):
+async def test_issue114(schema_stack, query, operation_name, expected):
     assert (
-        await engine.execute(query, operation_name=operation_name) == expected
+        await schema_stack.execute(query, operation_name=operation_name)
+        == expected
     )

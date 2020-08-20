@@ -2,86 +2,22 @@ from typing import Any, Callable, Dict, Optional, Union
 
 import pytest
 
-from tartiflette import Directive, Resolver, Scalar, create_engine
+from tartiflette import Directive, Resolver, Scalar
 from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import StringValueNode
 
-_SDL = """
-directive @debug(message: String) on
-    | FIELD_DEFINITION
-    | ARGUMENT_DEFINITION
-    | INPUT_FIELD_DEFINITION
-    | ENUM
-    | ENUM_VALUE
-    | SCALAR
-    | INPUT_OBJECT
-directive @error on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM | ENUM_VALUE
 
-scalar CustomString @debug(message: "CustomString")
-
-enum ChannelOrderField @debug(message: "ChannelOrderField") {
-  NAME @debug(message: "ChannelOrderField.NAME")
-  CREATION_DATE @debug(message: "ChannelOrderField.CREATION_DATE")
-}
-
-enum OrderDirection @debug(message: "OrderDirection") {
-  ASC @debug(message: "OrderDirection.ASC")
-  DESC @debug(message: "OrderDirection.DESC")
-}
-
-input ChannelOrder @debug(message: "ChannelOrder") {
-  field: ChannelOrderField! @debug(message: "ChannelOrder.field")
-  direction: OrderDirection! @debug(message: "ChannelOrder.direction")
-  useless: CustomString @debug(message: "ChannelOrder.useless")
-}
-
-enum Field @debug(message: "Field") {
-  FIELD_1 @debug(message: "Field.FIELD_1")
-  FIELD_2 @debug(message: "Field.FIELD_2")
-}
-
-input Filters @debug(message: "Filters") {
-  groups: [String!] @debug(message: "Filters.groups") @error
-  fields: [Field!] @debug(message: "Filters.fields") @error
-}
-
-input Complex @debug(message: "Complex") {
-  filters: Filters! @debug(message: "Complex.filters")
-}
-
-type Channel {
-  id: Int!
-  name: String!
-}
-
-type Query {
-  channelz(
-    orderField: ChannelOrderField!
-    orderDirection: OrderDirection!
-    useless: CustomString
-  ): [Channel]
-
-  channels(
-    order: ChannelOrder! @debug(message: "channels.order")
-  ): [Channel]
-
-  users(input: Complex!): Channel
-}
-"""
-
-
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Query.channelz", schema_name="test_input_directives")
-    @Resolver("Query.channels", schema_name="test_input_directives")
+def bakery(schema_name):
+    @Resolver("Query.channelz", schema_name=schema_name)
+    @Resolver("Query.channels", schema_name=schema_name)
     async def resolve_query_channelsz(parent, args, ctx, info):
         return []
 
-    @Resolver("Query.users", schema_name="test_input_directives")
+    @Resolver("Query.users", schema_name=schema_name)
     async def resolve_query_users(parent, args, ctx, info):
         return None
 
-    @Directive("debug", schema_name="test_input_directives")
+    @Directive("debug", schema_name=schema_name)
     class DebugDirective:
         @staticmethod
         async def on_argument_execution(
@@ -122,7 +58,7 @@ async def ttftt_engine():
         ):
             return await next_directive(value, ctx, info)
 
-    @Directive("error", schema_name="test_input_directives")
+    @Directive("error", schema_name=schema_name)
     class ErrorDirective:
         @staticmethod
         async def on_argument_execution(
@@ -156,7 +92,7 @@ async def ttftt_engine():
         ):
             raise ValueError("on_pre_output_coercion error error")
 
-    @Scalar("CustomString", schema_name="test_input_directives")
+    @Scalar("CustomString", schema_name=schema_name)
     class CustomScalar:
         @staticmethod
         def coerce_output(value):
@@ -178,10 +114,73 @@ async def ttftt_engine():
                 else UNDEFINED_VALUE
             )
 
-    return await create_engine(_SDL, schema_name="test_input_directives")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @debug(message: String) on
+        | FIELD_DEFINITION
+        | ARGUMENT_DEFINITION
+        | INPUT_FIELD_DEFINITION
+        | ENUM
+        | ENUM_VALUE
+        | SCALAR
+        | INPUT_OBJECT
+    directive @error on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM | ENUM_VALUE
+
+    scalar CustomString @debug(message: "CustomString")
+
+    enum ChannelOrderField @debug(message: "ChannelOrderField") {
+      NAME @debug(message: "ChannelOrderField.NAME")
+      CREATION_DATE @debug(message: "ChannelOrderField.CREATION_DATE")
+    }
+
+    enum OrderDirection @debug(message: "OrderDirection") {
+      ASC @debug(message: "OrderDirection.ASC")
+      DESC @debug(message: "OrderDirection.DESC")
+    }
+
+    input ChannelOrder @debug(message: "ChannelOrder") {
+      field: ChannelOrderField! @debug(message: "ChannelOrder.field")
+      direction: OrderDirection! @debug(message: "ChannelOrder.direction")
+      useless: CustomString @debug(message: "ChannelOrder.useless")
+    }
+
+    enum Field @debug(message: "Field") {
+      FIELD_1 @debug(message: "Field.FIELD_1")
+      FIELD_2 @debug(message: "Field.FIELD_2")
+    }
+
+    input Filters @debug(message: "Filters") {
+      groups: [String!] @debug(message: "Filters.groups") @error
+      fields: [Field!] @debug(message: "Filters.fields") @error
+    }
+
+    input Complex @debug(message: "Complex") {
+      filters: Filters! @debug(message: "Complex.filters")
+    }
+
+    type Channel {
+      id: Int!
+      name: String!
+    }
+
+    type Query {
+      channelz(
+        orderField: ChannelOrderField!
+        orderDirection: OrderDirection!
+        useless: CustomString
+      ): [Channel]
+
+      channels(
+        order: ChannelOrder! @debug(message: "channels.order")
+      ): [Channel]
+
+      users(input: Complex!): Channel
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -437,6 +436,6 @@ async def ttftt_engine():
     ],
 )
 async def test_input_directives_object(
-    ttftt_engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await ttftt_engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected

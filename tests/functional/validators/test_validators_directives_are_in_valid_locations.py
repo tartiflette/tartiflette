@@ -1,37 +1,30 @@
 import pytest
 
-from tartiflette import create_engine
-
-
-@pytest.fixture(scope="module", name="ttftt_engine")
-async def ttftt_engine_fixture():
-    SDL = """
-directive @queryDirective on QUERY
-directive @subscriptionDirective on SUBSCRIPTION
-directive @mutationDirective on MUTATION
-directive @fieldDirective on FIELD
-directive @fragmentDirective on FRAGMENT_DEFINITION
-directive @fragmentSpreadDirective on FRAGMENT_SPREAD
-directive @inlineFragmentDirective on INLINE_FRAGMENT
-
-type Query {
-    bob: Int
-}
-
-type Mutation {
-    lol: Int
-}
-
-type Subscription {
-    mdr: Int
-}
-"""
-    return await create_engine(
-        SDL, schema_name="test_validators_directives_are_in_valid_locations"
-    )
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @queryDirective on QUERY
+    directive @subscriptionDirective on SUBSCRIPTION
+    directive @mutationDirective on MUTATION
+    directive @fieldDirective on FIELD
+    directive @fragmentDirective on FRAGMENT_DEFINITION
+    directive @fragmentSpreadDirective on FRAGMENT_SPREAD
+    directive @inlineFragmentDirective on INLINE_FRAGMENT
+
+    type Query {
+      bob: Int
+    }
+
+    type Mutation {
+      lol: Int
+    }
+
+    type Subscription {
+      mdr: Int
+    }
+    """,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -265,6 +258,6 @@ type Subscription {
     ],
 )
 async def test_validators_directives_are_in_valid_locations(
-    query, expected, ttftt_engine
+    schema_stack, query, expected
 ):
-    assert await ttftt_engine.execute(query) == expected
+    assert await schema_stack.execute(query) == expected

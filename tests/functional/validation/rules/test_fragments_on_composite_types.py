@@ -9,7 +9,7 @@ from tests.functional.utils import assert_unordered_lists
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(name="harness")
+@pytest.mark.with_schema_stack(preset="harness")
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -303,11 +303,11 @@ from tests.functional.utils import assert_unordered_lists
         ),
     ],
 )
-async def test_fragments_on_composite_types(engine, query, expected):
+async def test_fragments_on_composite_types(schema_stack, query, expected):
     assert_unordered_lists(
         validate_query(
-            engine._schema,
-            parse_to_document(query, engine._schema),
+            schema_stack.schema,
+            parse_to_document(query),
             rules=[FragmentsOnCompositeTypesRule],
         ),
         expected,

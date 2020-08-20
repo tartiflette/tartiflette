@@ -249,7 +249,7 @@ async def test_unique_input_field_names(sdl, expected):
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(name="harness")
+@pytest.mark.with_schema_stack(preset="harness")
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -374,11 +374,11 @@ async def test_unique_input_field_names(sdl, expected):
         ),
     ],
 )
-async def test_unique_input_field_names_query(engine, query, expected):
+async def test_unique_input_field_names_query(schema_stack, query, expected):
     assert_unordered_lists(
         validate_query(
-            engine._schema,
-            parse_query_to_document(query, engine._schema),
+            schema_stack.schema,
+            parse_query_to_document(query),
             rules=[UniqueInputFieldNamesRule],
         ),
         expected,

@@ -1,13 +1,8 @@
 import pytest
 
-from tests.functional.coercers.common import resolve_list_field
-
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="coercion",
-    resolvers={"Query.listNonNullStringField": resolve_list_field},
-)
+@pytest.mark.with_schema_stack(preset="coercion")
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -689,6 +684,6 @@ from tests.functional.coercers.common import resolve_list_field
     ],
 )
 async def test_coercion_list_non_null_string_field(
-    engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected

@@ -2,9 +2,9 @@ import pytest
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine
-async def test_validators_fragment_same_name(engine):
-    result = await engine.execute(
+@pytest.mark.with_schema_stack(preset="animals")
+async def test_validators_fragment_same_name(schema_stack):
+    result = await schema_stack.execute(
         """
         fragment a on Dog {
             name

@@ -1,37 +1,34 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Mutation.mutateFloat", schema_name="issue270")
+def bakery(schema_name):
+    @Resolver("Mutation.mutateFloat", schema_name=schema_name)
     async def resolver_test(pr, args, ctx, info, **kwargs):
         return {"bingo": f"{args['aFloat']}"}
 
-    return await create_engine(
-        sdl="""
-
-        type Payload {
-            clientMutationId: String,
-            bingo: String
-        }
-
-        type Mutation {
-            mutateFloat(aFloat: Float): Payload
-        }
-
-        type Query {
-            bob: String
-        }
-        """,
-        schema_name="issue270",
-    )
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type Payload {
+        clientMutationId: String,
+        bingo: String
+    }
+
+    type Mutation {
+        mutateFloat(aFloat: Float): Payload
+    }
+
+    type Query {
+        bob: String
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
-    "query, variables, expected",
+    "query,variables,expected",
     [
         (
             "mutation($var: Float!) { mutateFloat(aFloat: $var){ bingo } } ",
@@ -64,5 +61,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue270(query, variables, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query, variables=variables) == expected
+async def test_issue270(schema_stack, query, variables, expected):
+    assert await schema_stack.execute(query, variables=variables) == expected

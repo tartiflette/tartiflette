@@ -3,7 +3,7 @@ import random
 
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver, create_schema_with_operators
 
 _BOOKS = [{"id": i, "title": f"Book #{i}"} for i in range(25)]
 
@@ -35,8 +35,11 @@ async def test_issue_457_sequentially(random_schema_name):
         books_parsing_order.append(parent["id"])
         return parent["id"]
 
-    engine = await create_engine(_SDL, schema_name=random_schema_name)
-    assert await engine.execute("{ books { id title } }") == {
+    _, execute, __ = await create_schema_with_operators(
+        _SDL, name=random_schema_name
+    )
+
+    assert await execute("{ books { id title } }") == {
         "data": {"books": _BOOKS}
     }
     assert books_parsing_order == [book["id"] for book in _BOOKS]
@@ -56,8 +59,11 @@ async def test_issue_457_concurrently(random_schema_name):
         books_parsing_order.append(parent["id"])
         return parent["id"]
 
-    engine = await create_engine(_SDL, schema_name=random_schema_name)
-    assert await engine.execute("{ books { id title } }") == {
+    _, execute, __ = await create_schema_with_operators(
+        _SDL, name=random_schema_name
+    )
+
+    assert await execute("{ books { id title } }") == {
         "data": {"books": _BOOKS}
     }
     assert books_parsing_order != [book["id"] for book in _BOOKS]
@@ -73,10 +79,11 @@ async def test_issue_457_sequentially_schema_level(random_schema_name):
         books_parsing_order.append(parent["id"])
         return parent["id"]
 
-    engine = await create_engine(
-        _SDL, coerce_list_concurrently=False, schema_name=random_schema_name
+    _, execute, __ = await create_schema_with_operators(
+        _SDL, coerce_list_concurrently=False, name=random_schema_name
     )
-    assert await engine.execute(
+
+    assert await execute(
         "{ books { id title } }", initial_value={"books": _BOOKS}
     ) == {"data": {"books": _BOOKS}}
     assert books_parsing_order == [book["id"] for book in _BOOKS]
@@ -92,10 +99,11 @@ async def test_issue_457_concurrently_schema_level(random_schema_name):
         books_parsing_order.append(parent["id"])
         return parent["id"]
 
-    engine = await create_engine(
-        _SDL, coerce_list_concurrently=True, schema_name=random_schema_name
+    _, execute, __ = await create_schema_with_operators(
+        _SDL, coerce_list_concurrently=True, name=random_schema_name
     )
-    assert await engine.execute(
+
+    assert await execute(
         "{ books { id title } }", initial_value={"books": _BOOKS}
     ) == {"data": {"books": _BOOKS}}
     assert books_parsing_order != [book["id"] for book in _BOOKS]

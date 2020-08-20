@@ -2,54 +2,11 @@ from typing import Any, Callable, Dict, Optional
 
 import pytest
 
-from tartiflette import Directive, create_engine
-
-_SDL = """
-directive @error on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM | ENUM_VALUE
-
-enum MyEnum {
-  ENUM_1
-  ENUM_2
-  ENUM_3
-  ENUM_4
-}
-
-input MyInnerInput {
-  booleanField: Boolean @error
-  enumField: MyEnum @error
-  floatField: Float @error
-  intField: Int @error
-  stringField: String @error
-  listBooleanField: [Boolean] @error
-  listEnumField: [MyEnum] @error
-  listFloatField: [Float] @error
-  listIntField: [Int] @error
-  listStringField: [String] @error
-}
-
-input MyInput {
-  booleanField: Boolean @error
-  enumField: MyEnum @error
-  floatField: Float @error
-  intField: Int @error
-  stringField: String @error
-  listBooleanField: [Boolean] @error
-  listEnumField: [MyEnum] @error
-  listFloatField: [Float] @error
-  listIntField: [Int] @error
-  listStringField: [String] @error
-  innerInputField: MyInnerInput @error
-}
-
-type Query {
-  inputObjectField(param: MyInput): String
-}
-"""
+from tartiflette import Directive
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Directive("error", schema_name="test_coercer_input_object_field_error")
+def bakery(schema_name):
+    @Directive("error", schema_name=schema_name)
     class ErrorDirective:
         @staticmethod
         async def on_post_input_coercion(
@@ -61,24 +18,52 @@ async def ttftt_engine():
         ):
             raise ValueError("[ERROR] on_post_input_coercion")
 
-    async def resolve_query_input_object_field(parent, args, ctx, info):
-        if "param" not in args:
-            return "SUCCESS"
-
-        if args["param"] is None:
-            return "SUCCESS-None"
-
-        if not args["param"] and isinstance(args["param"], dict):
-            return "SUCCESS-{}"
-
-        return f"SUCCESS-{args['param']}"
-
-    return await create_engine(
-        _SDL, schema_name="test_coercer_input_object_field_error"
-    )
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @error on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM | ENUM_VALUE
+
+    enum MyEnum {
+      ENUM_1
+      ENUM_2
+      ENUM_3
+      ENUM_4
+    }
+
+    input MyInnerInput {
+      booleanField: Boolean @error
+      enumField: MyEnum @error
+      floatField: Float @error
+      intField: Int @error
+      stringField: String @error
+      listBooleanField: [Boolean] @error
+      listEnumField: [MyEnum] @error
+      listFloatField: [Float] @error
+      listIntField: [Int] @error
+      listStringField: [String] @error
+    }
+
+    input MyInput {
+      booleanField: Boolean @error
+      enumField: MyEnum @error
+      floatField: Float @error
+      intField: Int @error
+      stringField: String @error
+      listBooleanField: [Boolean] @error
+      listEnumField: [MyEnum] @error
+      listFloatField: [Float] @error
+      listIntField: [Int] @error
+      listStringField: [String] @error
+      innerInputField: MyInnerInput @error
+    }
+
+    type Query {
+      inputObjectField(param: MyInput): String
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -354,6 +339,6 @@ async def ttftt_engine():
     ],
 )
 async def test_coercer_input_object_field_error(
-    ttftt_engine, query, variables, expected
+    schema_stack, query, variables, expected
 ):
-    assert await ttftt_engine.execute(query, variables=variables) == expected
+    assert await schema_stack.execute(query, variables=variables) == expected

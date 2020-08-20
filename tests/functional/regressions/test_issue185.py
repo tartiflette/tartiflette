@@ -2,44 +2,14 @@ from typing import Union
 
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver
 from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import StringValueNode
 from tartiflette.scalar.scalar import Scalar
 
-_SDL = """
-scalar CapitalizedString
 
-type Person {
-    name: CapitalizedString
-}
-
-type ComplexPerson {
-    name: CapitalizedString
-    father: Person
-    mother: Person
-}
-
-input PersonInput {
-    name: CapitalizedString
-}
-
-input ComplexInput {
-    name: CapitalizedString
-    father: PersonInput
-    mother: PersonInput
-}
-
-type Query {
-    person(name: CapitalizedString): Person
-    complexPerson(details: ComplexInput): ComplexPerson
-}
-"""
-
-
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Scalar("CapitalizedString", schema_name="test_issue185")
+def bakery(schema_name):
+    @Scalar("CapitalizedString", schema_name=schema_name)
     class CapitalizedString:
         @staticmethod
         def coerce_output(val) -> str:
@@ -57,18 +27,47 @@ async def ttftt_engine():
                 else UNDEFINED_VALUE
             )
 
-    @Resolver("Query.person", schema_name="test_issue185")
+    @Resolver("Query.person", schema_name=schema_name)
     async def the_query_person_resolver(_parents, args, _ctx, _info):
         return args
 
-    @Resolver("Query.complexPerson", schema_name="test_issue185")
+    @Resolver("Query.complexPerson", schema_name=schema_name)
     async def the_query_complexPerson_resolver(_parents, args, _ctx, _info):
         return args["details"]
 
-    return await create_engine(sdl=_SDL, schema_name="test_issue185")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    scalar CapitalizedString
+
+    type Person {
+        name: CapitalizedString
+    }
+
+    type ComplexPerson {
+        name: CapitalizedString
+        father: Person
+        mother: Person
+    }
+
+    input PersonInput {
+        name: CapitalizedString
+    }
+
+    input ComplexInput {
+        name: CapitalizedString
+        father: PersonInput
+        mother: PersonInput
+    }
+
+    type Query {
+        person(name: CapitalizedString): Person
+        complexPerson(details: ComplexInput): ComplexPerson
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -90,5 +89,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue185(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue185(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

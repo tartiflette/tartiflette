@@ -1,13 +1,67 @@
 import pytest
 
-from tartiflette import Directive, Resolver, TypeResolver, create_engine
+from tartiflette import Directive, Resolver, TypeResolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine_union():
-    schema_name = "test_issue381"
+def bakery(schema_name):
+    @Directive(name="run_me_this_object", schema_name=schema_name)
+    class RunMeThisObject:
+        async def on_pre_output_coercion(
+            self, directive_args, next_directive, value, ctx, info
+        ):
+            bob = await next_directive(value, ctx, info)
+            return {"a": f"{bob['a']} obj"}
 
-    sdl = """ schema {
+    @Directive(name="run_me_this_union", schema_name=schema_name)
+    class RunMeThisUnion:
+        async def on_pre_output_coercion(
+            self, directive_args, next_directive, value, ctx, info
+        ):
+            bob = await next_directive(value, ctx, info)
+            return {"a": f"{bob['a']} union"}
+
+    @Directive(name="run_me_this_ifa", schema_name=schema_name)
+    class RunMeThisIfa:
+        async def on_pre_output_coercion(
+            self, directive_args, next_directive, value, ctx, info
+        ):
+            bob = await next_directive(value, ctx, info)
+            return {"a": f"{bob['a']} ifa"}
+
+    @Resolver("Query.aFieldUnionObj", schema_name=schema_name)
+    @Resolver("Query.aFieldObj", schema_name=schema_name)
+    @Resolver("Query.aFieldIfa", schema_name=schema_name)
+    @Resolver("Query.aFieldAnotherIfa", schema_name=schema_name)
+    @Resolver("Query.aFieldIfaNoDir", schema_name=schema_name)
+    async def resolve_root_query_field(pr, args, ctx, info):
+        return {"a": "LOOOL"}
+
+    @TypeResolver("CoupleOfResponses", schema_name=schema_name)
+    @TypeResolver("CoupleOfResponsesNoUnionDir", schema_name=schema_name)
+    def resolve_type_couple_of_responses(result, context, info, abstract_type):
+        if "a" in result:
+            return "ResponseOne"
+        return "ResponseTwo"
+
+    @TypeResolver("AnIfa", schema_name=schema_name)
+    def resolve_type_an_ifa(result, context, info, abstract_type):
+        return "ResponseThree"
+
+    @TypeResolver("AnotherIfa", schema_name=schema_name)
+    def resolve_type_another_ifa(result, context, info, abstract_type):
+        return "ResponseFour"
+
+    @TypeResolver("NoDirOnThisIface", schema_name=schema_name)
+    def resolve_type_no_dir_on_this_iface(
+        result, context, info, abstract_type
+    ):
+        return "ResponseFive"
+
+
+@pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    schema {
         query: Query
     }
 
@@ -57,123 +111,69 @@ async def ttftt_engine_union():
     type ResponseTwo {
         b: Int
     }
-    """
-
-    @Directive(name="run_me_this_object", schema_name=schema_name)
-    class RunMeThisObject:
-        async def on_pre_output_coercion(
-            self, directive_args, next_directive, value, ctx, info
-        ):
-            bob = await next_directive(value, ctx, info)
-            return {"a": f"{bob['a']} obj"}
-
-    @Directive(name="run_me_this_union", schema_name=schema_name)
-    class RunMeThisUnion:
-        async def on_pre_output_coercion(
-            self, directive_args, next_directive, value, ctx, info
-        ):
-            bob = await next_directive(value, ctx, info)
-            return {"a": f"{bob['a']} union"}
-
-    @Directive(name="run_me_this_ifa", schema_name=schema_name)
-    class RunMeThisIfa:
-        async def on_pre_output_coercion(
-            self, directive_args, next_directive, value, ctx, info
-        ):
-            bob = await next_directive(value, ctx, info)
-            return {"a": f"{bob['a']} ifa"}
-
-    @Resolver("Query.aFieldUnionObj", schema_name=schema_name)
-    @Resolver("Query.aFieldObj", schema_name=schema_name)
-    @Resolver("Query.aFieldIfa", schema_name=schema_name)
-    @Resolver("Query.aFieldAnotherIfa", schema_name=schema_name)
-    @Resolver("Query.aFieldIfaNoDir", schema_name=schema_name)
-    async def resolve_root_query_field(pr, args, ctx, info):
-        return {"a": "LOOOL"}
-
-    @TypeResolver("CoupleOfResponses", schema_name=schema_name)
-    @TypeResolver("CoupleOfResponsesNoUnionDir", schema_name=schema_name)
-    def resolve_type_couple_of_responses(result, context, info, abstract_type):
-        if "a" in result:
-            return "ResponseOne"
-        return "ResponseTwo"
-
-    @TypeResolver("AnIfa", schema_name=schema_name)
-    def resolve_type_ifa(result, context, info, abstract_type):
-        return "ResponseThree"
-
-    @TypeResolver("AnotherIfa", schema_name=schema_name)
-    def resolve_type_ifa(result, context, info, abstract_type):
-        return "ResponseFour"
-
-    @TypeResolver("NoDirOnThisIface", schema_name=schema_name)
-    def resolve_type_ifa(result, context, info, abstract_type):
-        return "ResponseFive"
-
-    return await create_engine(sdl=sdl, schema_name=schema_name)
-
-
-@pytest.mark.asyncio
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
         (
             """
-query {
-    aFieldUnionObj {
-        ...on ResponseOne {
-            a
-        }
-    }
-}
-""",
+            query {
+                aFieldUnionObj {
+                    ...on ResponseOne {
+                        a
+                    }
+                }
+            }
+            """,
             {"data": {"aFieldUnionObj": {"a": "LOOOL union obj"}}},
         ),
         (
             """
-query {
-    aFieldObj {
-        ...on ResponseOne {
-            a
-        }
-    }
-}
+            query {
+                aFieldObj {
+                    ...on ResponseOne {
+                        a
+                    }
+                }
+            }
             """,
             {"data": {"aFieldObj": {"a": "LOOOL obj"}}},
         ),
         (
             """
-query {
-    aFieldIfa {
-        ...on ResponseThree { a }
-    }
-}
+            query {
+                aFieldIfa {
+                    ...on ResponseThree { a }
+                }
+            }
             """,
             {"data": {"aFieldIfa": {"a": "LOOOL ifa"}}},
         ),
         (
             """
-query {
-    aFieldAnotherIfa {
-        ...on ResponseFour { a }
-    }
-}
+            query {
+                aFieldAnotherIfa {
+                    ...on ResponseFour { a }
+                }
+            }
             """,
             {"data": {"aFieldAnotherIfa": {"a": "LOOOL ifa obj"}}},
         ),
         (
             """
-query {
-    aFieldIfaNoDir {
-        ...on ResponseFive { a }
-    }
-}
+            query {
+                aFieldIfaNoDir {
+                    ...on ResponseFive { a }
+                }
+            }
             """,
             {"data": {"aFieldIfaNoDir": {"a": "LOOOL obj"}}},
         ),
     ],
 )
 async def test_issue381_output_coercion_on_union(
-    ttftt_engine_union, query, expected
+    schema_stack, query, expected
 ):
-    assert await ttftt_engine_union.execute(query) == expected
+    assert await schema_stack.execute(query) == expected

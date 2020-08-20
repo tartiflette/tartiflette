@@ -1,12 +1,8 @@
 import pytest
 
-from tests.functional.coercers.common import resolve_unwrapped_field
-
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    name="coercion", resolvers={"Query.stringField": resolve_unwrapped_field}
-)
+@pytest.mark.with_schema_stack(preset="coercion")
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -109,5 +105,5 @@ from tests.functional.coercers.common import resolve_unwrapped_field
         ),
     ],
 )
-async def test_coercion_string_field(engine, query, variables, expected):
-    assert await engine.execute(query, variables=variables) == expected
+async def test_coercion_string_field(schema_stack, query, variables, expected):
+    assert await schema_stack.execute(query, variables=variables) == expected

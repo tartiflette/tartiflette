@@ -1,49 +1,48 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
-
-_SDL = """
-interface Sentient {
-  name: String!
-}
-
-interface Pet {
-  name: String!
-}
-
-type Human implements Sentient {
-  name: String!
-}
-
-type Dog implements Pet {
-  name: String!
-  owner: Human
-}
-
-type MutateDogPayload {
-  id: String
-}
-
-type Query {
-  dog: Dog
-}
-
-type Mutation {
-  mutateDog: MutateDogPayload
-}
-"""
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Query.dog", schema_name="test_issue85")
+def bakery(schema_name):
+    @Resolver("Query.dog", schema_name=schema_name)
     async def resolver_query_viewer(*_, **__):
         return {"dog": {"name": "Dog", "owner": {"name": "Human"}}}
 
-    return await create_engine(sdl=_SDL, schema_name="test_issue85")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    interface Sentient {
+      name: String!
+    }
+
+    interface Pet {
+      name: String!
+    }
+
+    type Human implements Sentient {
+      name: String!
+    }
+
+    type Dog implements Pet {
+      name: String!
+      owner: Human
+    }
+
+    type MutateDogPayload {
+      id: String
+    }
+
+    type Query {
+      dog: Dog
+    }
+
+    type Mutation {
+      mutateDog: MutateDogPayload
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -143,5 +142,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue85(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue85(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

@@ -1,11 +1,17 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver, create_schema_with_operationers
+
+
+def bakery(schema_name):
+    @Resolver("Query.enumTest", schema_name=schema_name)
+    async def resolve_query_enum_test(*args, **kwargs):
+        return "Value1"
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_enum_type_output():
-    schema_sdl = """
+@pytest.mark.with_schema_stack(
+    sdl="""
     enum Test {
         Value1
         Value2
@@ -15,29 +21,21 @@ async def test_tartiflette_execute_enum_type_output():
     type Query {
         enumTest: Test
     }
-    """
-
-    @Resolver(
-        "Query.enumTest",
-        schema_name="test_tartiflette_execute_enum_type_output",
-    )
-    async def func_field_resolver(*args, **kwargs):
-        return "Value1"
-
-    ttftt = await create_engine(
-        schema_sdl, schema_name="test_tartiflette_execute_enum_type_output"
-    )
-
-    result = await ttftt.execute(
-        """
-    query Test{
-        enumTest
-    }
     """,
-        operation_name="Test",
+    bakery=bakery,
+)
+async def test_tartiflette_execute_enum_type_output(schema_stack):
+    assert (
+        await schema_stack.execute(
+            """
+            query Test{
+                enumTest
+            }
+            """,
+            operation_name="Test",
+        )
+        == {"data": {"enumTest": "Value1"}}
     )
-
-    assert {"data": {"enumTest": "Value1"}} == result
 
 
 @pytest.mark.asyncio
@@ -54,7 +52,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -69,7 +67,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -83,7 +81,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -100,7 +98,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -114,7 +112,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -128,7 +126,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -148,7 +146,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -167,7 +165,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -182,7 +180,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -196,7 +194,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -210,7 +208,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -230,7 +228,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -250,7 +248,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -264,7 +262,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -278,7 +276,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -292,7 +290,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -307,7 +305,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -321,7 +319,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -340,7 +338,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -354,7 +352,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -368,7 +366,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -382,7 +380,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -396,7 +394,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -411,7 +409,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -425,7 +423,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -444,7 +442,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -458,7 +456,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -472,7 +470,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -486,7 +484,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -500,7 +498,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -514,7 +512,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -528,12 +526,12 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     },
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     },
                 ],
             },
@@ -547,12 +545,12 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     },
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     },
                 ],
             },
@@ -566,12 +564,12 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     },
                     {
                         "message": "Expected Iterable, but did not find one for field Query.testField.",
                         "path": ["testField", 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     },
                 ],
             },
@@ -585,7 +583,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -599,7 +597,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 0, 0],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -614,7 +612,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField", 0, 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -628,7 +626,7 @@ async def test_tartiflette_execute_enum_type_output():
                     {
                         "message": "Expected value of type MyEnum but received <class 'str'>.",
                         "path": ["testField", 0, 1],
-                        "locations": [{"line": 3, "column": 13}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -643,29 +641,31 @@ async def test_tartiflette_execute_enum_type_output():
 async def test_tartiflette_execute_enum_type_advanced(
     input_sdl, resolver_response, expected, random_schema_name
 ):
-    schema_sdl = """
-    enum MyEnum {{ ENUM_1, ENUM_2 }}
-
-    type Query {{
-        testField: {}
-    }}
-    """.format(
-        input_sdl
-    )
-
     @Resolver("Query.testField", schema_name=random_schema_name)
-    async def func_field_resolver(*args, **kwargs):
+    async def resolve_query_test_field(*args, **kwargs):
         return resolver_response
 
-    ttftt = await create_engine(schema_sdl, schema_name=random_schema_name)
-
-    result = await ttftt.execute(
+    _, execute, __ = await create_schema_with_operationers(
         """
-        query Test{
-            testField
-        }
-        """,
-        operation_name="Test",
+        enum MyEnum {{ ENUM_1, ENUM_2 }}
+
+        type Query {{
+            testField: {}
+        }}
+        """.format(
+            input_sdl
+        ),
+        name=random_schema_name,
     )
 
-    assert expected == result
+    assert (
+        await execute(
+            """
+            query Test {
+              testField
+            }
+            """,
+            operation_name="Test",
+        )
+        == expected
+    )
