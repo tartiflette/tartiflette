@@ -1,6 +1,10 @@
 from functools import partial
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.utils.errors import (
     graphql_error_from_nodes as raw_graphql_error_from_nodes,
 )
@@ -34,8 +38,8 @@ class UniqueInputFieldNamesRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_name_stack: List[Dict[str, "NameNode"]] = []
-        self._known_input_fields: Dict[str, "NameNode"] = {}
+        self._known_name_stack: List[UniqueMapping] = []
+        self._known_input_fields = UniqueMapping()
 
     def enter_ObjectValue(  # pylint: disable=invalid-name
         self,
@@ -60,7 +64,7 @@ class UniqueInputFieldNamesRule(ASTValidationRule):
         """
         # pylint: disable=unused-argument
         self._known_name_stack.append(self._known_input_fields)
-        self._known_input_fields: Dict[str, "NameNode"] = {}
+        self._known_input_fields = UniqueMapping()
 
     def leave_ObjectValue(  # pylint: disable=invalid-name
         self,
@@ -84,9 +88,7 @@ class UniqueInputFieldNamesRule(ASTValidationRule):
         :type ancestors: List[Union[Node, List[Node]]]
         """
         # pylint: disable=unused-argument
-        self._known_input_fields: Dict[
-            str, "NameNode"
-        ] = self._known_name_stack.pop()
+        self._known_input_fields = self._known_name_stack.pop()
 
     def enter_ObjectField(  # pylint: disable=invalid-name
         self,
@@ -111,14 +113,13 @@ class UniqueInputFieldNamesRule(ASTValidationRule):
         """
         # pylint: disable=unused-argument
         field_name = node.name.value
-        known_input_field = self._known_input_fields.get(field_name)
-        if known_input_field:
+        try:
+            self._known_input_fields[field_name] = node.name
+        except AlreadyDefinedException:
             self.context.report_error(
                 graphql_error_from_nodes(
                     "There can be only one input field named "
                     f"< {field_name} >.",
-                    nodes=[known_input_field, node.name],
+                    nodes=[self._known_input_fields[field_name], node.name],
                 )
             )
-        else:
-            self._known_input_fields[field_name] = node.name
