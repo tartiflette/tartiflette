@@ -1,6 +1,10 @@
 from functools import partial
 from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.utils.errors import (
     graphql_error_from_nodes as raw_graphql_error_from_nodes,
 )
@@ -34,7 +38,7 @@ class UniqueVariableNamesRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_variable_names = {}
+        self._known_variable_names = UniqueMapping()
 
     def enter_OperationDefinition(  # pylint: disable=invalid-name
         self,
@@ -58,7 +62,7 @@ class UniqueVariableNamesRule(ASTValidationRule):
         :type ancestors: List[Union[Node, List[Node]]]
         """
         # pylint: disable=unused-argument
-        self._known_variable_names = {}
+        self._known_variable_names = UniqueMapping()
 
     def enter_VariableDefinition(  # pylint: disable=invalid-name
         self,
@@ -83,13 +87,16 @@ class UniqueVariableNamesRule(ASTValidationRule):
         """
         # pylint: disable=unused-argument
         variable_name = node.variable.name.value
-        known_variable = self._known_variable_names.get(variable_name)
-        if known_variable:
+        try:
+            self._known_variable_names[variable_name] = node.variable.name
+        except AlreadyDefinedException:
             self.context.report_error(
                 graphql_error_from_nodes(
-                    f"There can be only one variable named < ${variable_name} >.",
-                    nodes=[known_variable, node.variable.name],
+                    "There can be only one variable named "
+                    f"< ${variable_name} >.",
+                    nodes=[
+                        self._known_variable_names[variable_name],
+                        node.variable.name,
+                    ],
                 )
             )
-        else:
-            self._known_variable_names[variable_name] = node.variable.name

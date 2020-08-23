@@ -1,6 +1,10 @@
 from functools import partial
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.visitor.constants import SKIP
 from tartiflette.utils.errors import (
     graphql_error_from_nodes as raw_graphql_error_from_nodes,
@@ -33,7 +37,7 @@ class UniqueArgumentNamesRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_argument_names: Dict[str, "NameNode"] = {}
+        self._known_argument_names = UniqueMapping()
 
     def enter_Field(  # pylint: disable=invalid-name
         self,
@@ -57,7 +61,7 @@ class UniqueArgumentNamesRule(ASTValidationRule):
         :type ancestors: List[Union[Node, List[Node]]]
         """
         # pylint: disable=unused-argument
-        self._known_argument_names: Dict[str, "NameNode"] = {}
+        self._known_argument_names = UniqueMapping()
 
     def enter_Directive(  # pylint: disable=invalid-name
         self,
@@ -81,7 +85,7 @@ class UniqueArgumentNamesRule(ASTValidationRule):
         :type ancestors: List[Union[Node, List[Node]]]
         """
         # pylint: disable=unused-argument
-        self._known_argument_names: Dict[str, "NameNode"] = {}
+        self._known_argument_names = UniqueMapping()
 
     def enter_Argument(  # pylint: disable=invalid-name
         self,
@@ -108,15 +112,18 @@ class UniqueArgumentNamesRule(ASTValidationRule):
         """
         # pylint: disable=unused-argument
         argument_name = node.name.value
-        known_argument = self._known_argument_names.get(argument_name)
-        if known_argument:
+
+        try:
+            self._known_argument_names[argument_name] = node.name
+        except AlreadyDefinedException:
             self.context.report_error(
                 graphql_error_from_nodes(
                     "There can be only one argument named "
                     f"< {argument_name} >.",
-                    nodes=[known_argument, node.name],
+                    nodes=[
+                        self._known_argument_names[argument_name],
+                        node.name,
+                    ],
                 )
             )
-        else:
-            self._known_argument_names[argument_name] = node.name
         return SKIP

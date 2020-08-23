@@ -1,5 +1,10 @@
-from typing import Dict, List, Optional, Union
+from collections import defaultdict
+from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.visitor.constants import SKIP
 from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.validation.rules.base import ASTValidationRule
@@ -19,7 +24,7 @@ class UniqueEnumValueNamesRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_enum_value_names: Dict[str, "NameNode"] = {}
+        self._known_enum_value_names = defaultdict(UniqueMapping)
 
     def _check_enum_value_uniqueness(
         self,
@@ -47,23 +52,23 @@ class UniqueEnumValueNamesRule(ASTValidationRule):
         # pylint: disable=unused-argument
         if node.values:
             enum_type_name = node.name.value
-            enum_value_names = self._known_enum_value_names.setdefault(
-                enum_type_name, {}
-            )
+            enum_value_names = self._known_enum_value_names[enum_type_name]
             for value_definition in node.values:
                 enum_value_name = value_definition.name.value
-                known_enum_value = enum_value_names.get(enum_value_name)
-                if known_enum_value:
+                try:
+                    enum_value_names[enum_value_name] = value_definition.name
+                except AlreadyDefinedException:
                     self.context.report_error(
                         graphql_error_from_nodes(
                             "Enum value "
                             f"< {enum_type_name}.{enum_value_name} > "
                             "can only be defined once.",
-                            nodes=[known_enum_value, value_definition.name],
+                            nodes=[
+                                enum_value_names[enum_value_name],
+                                value_definition.name,
+                            ],
                         )
                     )
-                else:
-                    enum_value_names[enum_value_name] = value_definition.name
         return SKIP
 
     enter_EnumTypeDefinition = _check_enum_value_uniqueness

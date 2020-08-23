@@ -1,5 +1,10 @@
-from typing import Dict, List, Optional, Union
+from collections import defaultdict
+from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.visitor.constants import SKIP
 from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.validation.rules.base import ASTValidationRule
@@ -18,7 +23,7 @@ class UniqueMembersRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_members: Dict[str, Dict[str, "NameNode"]] = {}
+        self._known_members = defaultdict(UniqueMapping)
 
     def _check_member_uniqueness(
         self,
@@ -49,20 +54,19 @@ class UniqueMembersRule(ASTValidationRule):
         # pylint: disable=unused-argument
         if node.types:
             union_name = node.name.value
-            member_names = self._known_members.setdefault(union_name, {})
+            member_names = self._known_members[union_name]
             for member in node.types:
                 member_name = member.name.value
-                known_member = member_names.get(member_name)
-                if known_member:
+                try:
+                    member_names[member_name] = member.name
+                except AlreadyDefinedException:
                     self.context.report_error(
                         graphql_error_from_nodes(
                             f"Union type < {union_name} > can only include "
                             f"type < {member_name} > once.",
-                            nodes=[known_member, member.name],
+                            nodes=[member_names[member_name], member.name],
                         )
                     )
-                else:
-                    member_names[member_name] = member.name
         return SKIP
 
     enter_UnionTypeDefinition = _check_member_uniqueness
