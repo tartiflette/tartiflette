@@ -1,5 +1,10 @@
-from typing import Dict, List, Optional, Union
+from collections import defaultdict
+from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.visitor.constants import SKIP
 from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.validation.rules.base import ASTValidationRule
@@ -19,7 +24,7 @@ class UniqueInterfaceImplementationRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_implements: Dict[str, Dict[str, "NameNode"]] = {}
+        self._known_implements = defaultdict(UniqueMapping)
 
     def _check_implements_unique_interfaces(
         self,
@@ -50,24 +55,23 @@ class UniqueInterfaceImplementationRule(ASTValidationRule):
         # pylint: disable=unused-argument
         if node.interfaces:
             type_name = node.name.value
-            implemented = self._known_implements.setdefault(type_name, {})
+            implemented = self._known_implements[type_name]
 
             for implemented_interface in node.interfaces:
                 interface_name = implemented_interface.name.value
-                known_interface = implemented.get(interface_name)
-                if known_interface:
+                try:
+                    implemented[interface_name] = implemented_interface.name
+                except AlreadyDefinedException:
                     self.context.report_error(
                         graphql_error_from_nodes(
                             f"Type < {type_name} > can only implement "
                             f"< {interface_name} > once.",
                             nodes=[
-                                known_interface,
+                                implemented[interface_name],
                                 implemented_interface.name,
                             ],
                         )
                     )
-                else:
-                    implemented[interface_name] = implemented_interface.name
         return SKIP
 
     enter_ObjectTypeDefinition = _check_implements_unique_interfaces

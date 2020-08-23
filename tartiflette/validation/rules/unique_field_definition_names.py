@@ -1,5 +1,10 @@
-from typing import Dict, List, Optional, Union
+from collections import defaultdict
+from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.visitor.constants import SKIP
 from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.validation.rules.base import ASTValidationRule
@@ -19,7 +24,7 @@ class UniqueFieldDefinitionNamesRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_field_names: Dict[str, Dict[str, "NameNode"]] = {}
+        self._known_field_names = defaultdict(UniqueMapping)
 
     def _check_field_uniqueness(
         self,
@@ -61,20 +66,22 @@ class UniqueFieldDefinitionNamesRule(ASTValidationRule):
         # pylint: disable=unused-argument
         if node.fields:
             type_name = node.name.value
-            field_names = self._known_field_names.setdefault(type_name, {})
+            field_names = self._known_field_names[type_name]
             for field_definition in node.fields:
                 field_name = field_definition.name.value
-                known_field = field_names.get(field_name)
-                if known_field:
+                try:
+                    field_names[field_name] = field_definition.name
+                except AlreadyDefinedException:
                     self.context.report_error(
                         graphql_error_from_nodes(
                             f"Field < {type_name}.{field_name} > can only be "
                             "defined once.",
-                            nodes=[known_field, field_definition.name],
+                            nodes=[
+                                field_names[field_name],
+                                field_definition.name,
+                            ],
                         )
                     )
-                else:
-                    field_names[field_name] = field_definition.name
         return SKIP
 
     enter_InputObjectTypeDefinition = _check_field_uniqueness

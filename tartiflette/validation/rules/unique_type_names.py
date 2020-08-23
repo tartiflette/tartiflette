@@ -1,5 +1,9 @@
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.visitor.constants import SKIP
 from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.validation.rules.base import ASTValidationRule
@@ -19,7 +23,7 @@ class UniqueTypeNamesRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_type_names: Dict[str, "NameNode"] = {}
+        self._known_type_names = UniqueMapping()
 
     def _check_type_name_uniqueness(
         self,
@@ -60,17 +64,15 @@ class UniqueTypeNamesRule(ASTValidationRule):
         """
         # pylint: disable=unused-argument
         type_name = node.name.value
-
-        known_type_name = self._known_type_names.get(type_name)
-        if known_type_name:
+        try:
+            self._known_type_names[type_name] = node.name
+        except AlreadyDefinedException:
             self.context.report_error(
                 graphql_error_from_nodes(
                     f"There can be only one type named < {type_name} >.",
-                    nodes=[known_type_name, node.name],
+                    nodes=[self._known_type_names[type_name], node.name],
                 )
             )
-        else:
-            self._known_type_names[type_name] = node.name
 
         return SKIP
 

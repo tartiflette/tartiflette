@@ -1,6 +1,10 @@
 from functools import partial
 from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.visitor.constants import SKIP
 from tartiflette.utils.errors import (
     graphql_error_from_nodes as raw_graphql_error_from_nodes,
@@ -35,7 +39,7 @@ class UniqueOperationNamesRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_operation_names = {}
+        self._known_operation_names = UniqueMapping()
 
     def enter_OperationDefinition(  # pylint: disable=invalid-name
         self,
@@ -63,20 +67,21 @@ class UniqueOperationNamesRule(ASTValidationRule):
         # pylint: disable=unused-argument
         operation_name = node.name
         if operation_name:
-            known_operation_name = self._known_operation_names.get(
-                operation_name.value
-            )
-            if known_operation_name:
-                self.context.report_error(
-                    graphql_error_from_nodes(
-                        f"There can be only one operation named < {operation_name.value} >.",
-                        nodes=[known_operation_name, operation_name],
-                    )
-                )
-            else:
+            try:
                 self._known_operation_names[
                     operation_name.value
                 ] = operation_name
+            except AlreadyDefinedException:
+                self.context.report_error(
+                    graphql_error_from_nodes(
+                        "There can be only one operation named "
+                        f"< {operation_name.value} >.",
+                        nodes=[
+                            self._known_operation_names[operation_name.value],
+                            operation_name,
+                        ],
+                    )
+                )
         return SKIP
 
     def enter_FragmentDefinition(  # pylint: disable=invalid-name

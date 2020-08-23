@@ -1,7 +1,11 @@
 from collections import defaultdict
 from functools import partial
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.ast import SchemaDefinitionNode, SchemaExtensionNode
 from tartiflette.language.ast.base import TypeDefinitionNode, TypeExtensionNode
 from tartiflette.utils.errors import (
@@ -37,10 +41,8 @@ class UniqueDirectivesPerLocationRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._schema_directives: Dict[str, "DirectiveNode"] = {}
-        self._type_directives_map: Dict[
-            str, Dict[str, "DirectiveNode"]
-        ] = defaultdict(dict)
+        self._schema_directives = UniqueMapping()
+        self._type_directives_map = defaultdict(UniqueMapping)
 
     def enter(
         self,
@@ -74,18 +76,20 @@ class UniqueDirectivesPerLocationRule(ASTValidationRule):
             elif isinstance(node, (TypeDefinitionNode, TypeExtensionNode)):
                 known_directives = self._type_directives_map[node.name.value]
             else:
-                known_directives = {}
+                known_directives = UniqueMapping()
 
             for directive in directives:
                 directive_name = directive.name.value
-                known_directive = known_directives.get(directive_name)
-                if known_directive:
+                try:
+                    known_directives[directive_name] = directive
+                except AlreadyDefinedException:
                     self.context.report_error(
                         graphql_error_from_nodes(
                             f"The directive < @{directive_name} > can only be "
                             "used once at this location.",
-                            nodes=[known_directive, directive],
+                            nodes=[
+                                known_directives[directive_name],
+                                directive,
+                            ],
                         )
                     )
-                else:
-                    known_directives[directive_name] = directive
