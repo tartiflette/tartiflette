@@ -42,11 +42,6 @@ def random_schema_name():
     return uuid4().hex
 
 
-@pytest.fixture
-def random_schema_name():
-    return uuid4().hex
-
-
 def _forge_schema_stack_hash(sdl, options):
     stack_hash = load_sdl(sdl)
     if options:
