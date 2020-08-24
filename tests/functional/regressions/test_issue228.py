@@ -4,7 +4,7 @@ from tartiflette import (
     Directive,
     Resolver,
     create_schema,
-    create_schema_with_operationers,
+    create_schema_with_operators,
 )
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
@@ -16,7 +16,7 @@ async def test_issue228_1():
     async def lol(*_args, **_kwargs):
         return {"ninja": "Ohio"}
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         sdl="""
         type Query {
             a: Lol
@@ -42,7 +42,7 @@ async def test_issue228_2():
     async def lol(*_args, **_kwargs):
         return {"ninja": "Ohio"}
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         sdl="""
         type Query {
             a: Lol

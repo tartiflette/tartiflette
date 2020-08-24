@@ -19,11 +19,11 @@ __all__ = (
     "create_schema",
     "executor_factory",
     "subscriptor_factory",
-    "create_schema_with_operationers",
+    "create_schema_with_operators",
 )
 
 
-async def create_schema_with_operationers(
+async def create_schema_with_operators(
     sdl: Union[str, List[str]],
     name: str = "default",
     modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
@@ -39,7 +39,7 @@ async def create_schema_with_operationers(
     rules: Optional[List["ValidationRule"]] = None,
 ) -> Tuple["GraphQLSchema", Callable, Callable]:
     """
-    Create a GraphQLSchema along with their operationers.
+    Create a GraphQLSchema along with their operators.
     :param sdl: the SDL to related to the schema
     :param name: name of the schema
     :param modules: list Python modules to load
@@ -64,7 +64,7 @@ async def create_schema_with_operationers(
     :type query_cache_decorator: Optional[Callable]
     :type query_parser: Optional[Callable]
     :type rules: Optional[List["ValidationRule"]]
-    :return: a GraphQLSchema along with their operationers
+    :return: a GraphQLSchema along with their operators
     :rtype: Tuple["GraphQLSchema", Callable, Callable]
     """
     # pylint: disable=too-many-arguments
