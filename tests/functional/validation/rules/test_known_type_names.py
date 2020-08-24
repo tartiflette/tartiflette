@@ -103,11 +103,46 @@ from tests.functional.utils import assert_unordered_lists
               query: RootQuery
             }
             """,
+            [],
+        ),
+        (
+            """
+            union SomeUnion = SomeObject | AnotherObject
+
+            type SomeObject implements SomeInterface {
+              someScalar(arg: SomeInputObject): SomeScalar
+            }
+
+            type AnotherObject {
+              foo(arg: SomeInputObject): UnknownScalar
+            }
+
+            type SomeInterface {
+              someScalar(arg: SomeInputObject): SomeScalar
+            }
+
+            input SomeInputObject {
+              someScalar: SomeScalar
+            }
+
+            scalar SomeScalar
+
+            type RootQuery {
+              someInterface: SomeInterface
+              someUnion: SomeUnion
+              someScalar: SomeScalar
+              someObject: SomeObject
+            }
+
+            schema {
+              query: RootQuery
+            }
+            """,
             [
                 TartifletteError(
-                    message="Unknown type < String >.",
+                    message="Unknown type < UnknownScalar >. Did you mean SomeScalar?",
                     locations=[
-                        Location(line=9, column=42, line_end=9, column_end=48)
+                        Location(line=9, column=42, line_end=9, column_end=55)
                     ],
                 )
             ],
@@ -147,7 +182,7 @@ from tests.functional.utils import assert_unordered_lists
                     ],
                 ),
                 TartifletteError(
-                    message="Unknown type < D >.",
+                    message="Unknown type < D >. Did you mean ID?",
                     locations=[
                         Location(line=6, column=20, line_end=6, column_end=21)
                     ],
@@ -179,7 +214,7 @@ from tests.functional.utils import assert_unordered_lists
                     ],
                 ),
                 TartifletteError(
-                    message="Unknown type < I >.",
+                    message="Unknown type < I >. Did you mean ID?",
                     locations=[
                         Location(
                             line=12, column=24, line_end=12, column_end=25
