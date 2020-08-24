@@ -5,7 +5,7 @@ from uuid import uuid4
 
 import pytest
 
-from tartiflette import create_schema_with_operationers
+from tartiflette import create_schema_with_operators
 from tartiflette.schema.registry import SchemaRegistry
 from tests.data.utils import get_path_to_sdl, load_sdl
 from tests.schema_stack import SchemaStack
@@ -93,11 +93,7 @@ async def _build_schema_stack_from_marker(marker):
         if bakery:
             bakery(schema_stack_hash)
 
-        (
-            schema,
-            executor,
-            subscriptor,
-        ) = await create_schema_with_operationers(
+        schema, executor, subscriptor = await create_schema_with_operators(
             loaded_sdl, name=schema_stack_hash, **marker_kwargs
         )
         schema_stack = _KNOWN_SCHEMA_STACKS[schema_stack_hash] = SchemaStack(

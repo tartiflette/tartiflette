@@ -3,7 +3,7 @@ import pytest
 from tartiflette import (
     Resolver,
     create_schema,
-    create_schema_with_operationers,
+    create_schema_with_operators,
     executor_factory,
 )
 
@@ -18,8 +18,8 @@ async def custom_error_coercer(exception, error):
     return {"message": "Oopsie"}
 
 
-async def from_create_schema_with_operationers(schema_name):
-    _, execute, __ = await create_schema_with_operationers(
+async def from_create_schema_with_operators(schema_name):
+    _, execute, __ = await create_schema_with_operators(
         _SDL, name=schema_name, error_coercer=custom_error_coercer,
     )
     return execute
@@ -33,7 +33,7 @@ async def from_executor_factory(schema_name):
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "executor_factory",
-    [from_create_schema_with_operationers, from_executor_factory],
+    [from_create_schema_with_operators, from_executor_factory],
 )
 async def test_error_coercers(random_schema_name, executor_factory):
     @Resolver("Query.name", schema_name=random_schema_name)

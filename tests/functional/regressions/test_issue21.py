@@ -2,7 +2,7 @@ from collections import namedtuple
 
 import pytest
 
-from tartiflette import Resolver, create_schema_with_operationers
+from tartiflette import Resolver, create_schema_with_operators
 
 GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 
@@ -70,7 +70,7 @@ async def test_issue21_okayquery(
     async def a_resolver(_, arguments, __, info: "ResolveInfo"):
         return {"iam": info.field_name, "args": arguments}
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         """
         type Args {
             xid: %s
@@ -182,7 +182,7 @@ async def test_issue21_exceptquery(
     async def a_resolver(_, arguments, __, info: "ResolveInfo"):
         return {"iam": info.field_name, "args": arguments}
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         """
         type Args{
             xid: Int

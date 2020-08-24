@@ -4,11 +4,7 @@ from typing import Any, Callable, Dict, Optional, Union
 
 import pytest
 
-from tartiflette import (
-    Directive,
-    Subscription,
-    create_schema_with_operationers,
-)
+from tartiflette import Directive, Subscription, create_schema_with_operators
 from tartiflette.types.exceptions.tartiflette import MultipleException
 from tests.schema_stack import SchemaStack
 
@@ -78,7 +74,7 @@ async def schema_stack():
             yield {"name": f"Human #{i}"}
             await asyncio.sleep(1)
 
-    schema, execute, subscribe = await create_schema_with_operationers(
+    schema, execute, subscribe = await create_schema_with_operators(
         """
         directive @validateMaxLength(
           limit: Int!
