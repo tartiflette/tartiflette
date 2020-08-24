@@ -140,7 +140,7 @@ async def test_engine_execute_unhandled_exception(clean_registry):
 
 @pytest.mark.asyncio
 async def test_engine_subscribe(clean_registry):
-    from tartiflette import Subscription, Resolver
+    from tartiflette import Resolver, Subscription
 
     @Subscription("Subscription.counter", schema_name="subscribe_counter")
     async def _subscription_counter_subscription(

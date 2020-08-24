@@ -36,7 +36,7 @@ method-rgx=[a-z_][a-z0-9_]{2,50}$
 # R1711: Useless return at end of function or method
 # C0199: First line empty in %s docstring Used when a blank line is found at the beginning of a docstring.
 # W9006: "%s" not documented as being raised Please document exceptions for all raised exception types.
-disable=C0111,E0602,I0011,I0012,R0801,R0903,W0141,W0142,W0223,W0603,W1202,C0303,C0330,C0301,R0401,R1711,C0199,W9006
+disable=C0111,E0602,I0011,I0012,R0801,R0903,W0141,W0142,W0223,W0603,W1202,C0303,C0330,C0301,R0401,R1711,C0199,W9006,W0707
 
 [DESIGN]
 ## Maximum number of arguments for function / method

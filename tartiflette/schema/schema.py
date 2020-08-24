@@ -210,9 +210,9 @@ class GraphQLSchema:
         self.subscriptionType: Optional[  # pylint: disable=invalid-name
             "GraphQLType"
         ] = None
-        self.directives: List[  # pylint: disable=invalid-name
+        self.directives: List[
             "GraphQLDirective"
-        ] = []
+        ] = []  # pylint: disable=invalid-name
 
         self.extensions: List["GraphQLExtension"] = []
         self._schema_directives: List["DirectiveNode"] = []
