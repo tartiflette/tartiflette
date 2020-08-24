@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from tartiflette import Resolver, Scalar, create_schema_with_operationers
+from tartiflette import Resolver, Scalar, create_schema_with_operators
 
 
 def tartiflette_execute_scalar_type_output_bakery(schema_name):
@@ -1779,7 +1779,7 @@ async def test_tartiflette_execute_scalar_type_advanced(
     async def resolve_query_test_field(*args, **kwargs):
         return resolver_response
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         """
         type Query {{
             testField: {}

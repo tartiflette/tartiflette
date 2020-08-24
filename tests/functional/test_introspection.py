@@ -1,11 +1,11 @@
 import pytest
 
-from tartiflette import create_schema_with_operationers
+from tartiflette import create_schema_with_operators
 
 
 @pytest.mark.asyncio
 async def test_tartiflette_execute_basic_type_introspection_output():
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         """
         \"\"\"This is the description\"\"\"
         type Test {
@@ -161,7 +161,7 @@ async def test_tartiflette_execute_basic_type_introspection_output():
 
 @pytest.mark.asyncio
 async def test_tartiflette_execute_schema_introspection_output():
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         """
         schema {
             query: CustomRootQuery
@@ -300,7 +300,7 @@ async def test_tartiflette_execute_schema_introspection_output():
 
 @pytest.mark.asyncio
 async def test_tartiflette_execute_schema_introspection_output_introspecting_args():
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         """
         type lol {
             GGG: String
@@ -754,7 +754,7 @@ async def test_tartiflette_execute_schema_introspection_output_introspecting_arg
 async def test_introspection_type_enum_values_include_deprecated(
     include_deprecated, expected, random_schema_name
 ):
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         '''
         """An amazing enum"""
         enum MyEnum {
@@ -957,7 +957,7 @@ async def test_introspection_type_enum_values_include_deprecated(
 async def test_introspection_type_fields_include_deprecated(
     type_name, include_deprecated, expected, random_schema_name
 ):
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         '''
         """An amazing enum"""
         enum MyEnum {

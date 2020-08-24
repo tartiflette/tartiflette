@@ -4,7 +4,7 @@ from tartiflette import (
     Resolver,
     TypeResolver,
     create_schema,
-    create_schema_with_operationers,
+    create_schema_with_operators,
 )
 from tartiflette.types.exceptions.tartiflette import (
     InvalidType,
@@ -252,7 +252,7 @@ async def test_type_resolvers_default_type_resolver(
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         _SDL,
         name=random_schema_name,
         default_type_resolver=custom_default_type_resolver,
@@ -376,7 +376,7 @@ async def test_union_type_resolvers_default(
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         _SDL, name=random_schema_name
     )
 
@@ -467,7 +467,7 @@ async def test_union_type_resolvers_field_resolver(
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         _SDL, name=random_schema_name
     )
 
@@ -556,7 +556,7 @@ async def test_union_type_resolvers_type_resolver(
     async def resolve_query_mixed(parent, args, ctx, info):
         return result
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         _SDL, name=random_schema_name
     )
 
@@ -610,7 +610,7 @@ async def test_interface_type_resolvers_default(
     async def resolve_query_named(parent, args, ctx, info):
         return result
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         _SDL, name=random_schema_name
     )
 
@@ -673,7 +673,7 @@ async def test_interface_type_resolvers_field_resolver(
     async def resolve_query_named(parent, args, ctx, info):
         return result
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         _SDL, name=random_schema_name
     )
 
@@ -734,7 +734,7 @@ async def test_interface_type_resolvers_type_resolver(
     async def resolve_query_named(parent, args, ctx, info):
         return result
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         _SDL, name=random_schema_name
     )
 

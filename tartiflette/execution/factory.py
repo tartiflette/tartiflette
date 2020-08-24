@@ -21,9 +21,9 @@ from tartiflette.utils.errors import (
 __all__ = ("executor_factory", "subscriptor_factory")
 
 
-class BaseOperationer:
+class BaseOperator:
     """
-    Base class for operationers.
+    Base class for operators.
     """
 
     def __init__(
@@ -87,7 +87,7 @@ class BaseOperationer:
         )
 
 
-class ExecutorOperationer(BaseOperationer):
+class ExecutorOperator(BaseOperator):
     def __init__(
         self,
         schema: Union[str, "GraphQLSchema"],
@@ -128,7 +128,7 @@ class ExecutorOperationer(BaseOperationer):
     ) -> Dict[str, Any]:
         """
         Execute the query if no parsing errors raised.
-        :param schema: the GraphQLSchema linked to the operationer
+        :param schema: the GraphQLSchema linked to the operator
         :param document: DocumentNode parsed query
         :param request_parsing_errors: list of potential parsing errors
         :param operation_name: the operation name to execute
@@ -197,7 +197,7 @@ class ExecutorOperationer(BaseOperationer):
         )
 
 
-class SubscriptorOperationer(BaseOperationer):
+class SubscriptorOperator(BaseOperator):
     def __init__(
         self,
         schema: Union[str, "GraphQLSchema"],
@@ -240,7 +240,7 @@ class SubscriptorOperationer(BaseOperationer):
     ):
         """
         Execute the subscription query if no parsing errors raised.
-        :param schema: the GraphQLSchema linked to the operationer
+        :param schema: the GraphQLSchema linked to the operator
         :param document: DocumentNode parsed query
         :param request_parsing_errors: list of potential parsing errors
         :param operation_name: the operation name to execute
@@ -338,9 +338,9 @@ def executor_factory(
     cache_decorator: Optional[Callable] = None,
     parser: Optional[Callable] = None,
     rules: Optional[List["ValidationRule"]] = None,
-) -> "ExecutorOperationer":
+) -> "ExecutorOperator":
     """
-    Create an executor operationer for the provided schema.
+    Create an executor operator for the provided schema.
     :param schema: the schema name or instance to operate
     :param error_coercer: callable used to transform an exception into an error
     :param cache_decorator: decorator to use over the query parsing
@@ -353,10 +353,10 @@ def executor_factory(
     :type cache_decorator: Optional[Callable]
     :type parser: Optional[Callable]
     :type rules: Optional[List["ValidationRule"]]
-    :return: an executor operationer for the provided schema
-    :rtype: ExecutorOperationer
+    :return: an executor operator for the provided schema
+    :rtype: ExecutorOperator
     """
-    return ExecutorOperationer(
+    return ExecutorOperator(
         schema, error_coercer, cache_decorator, parser, rules
     )
 
@@ -369,9 +369,9 @@ def subscriptor_factory(
     cache_decorator: Optional[Callable] = None,
     parser: Optional[Callable] = None,
     rules: Optional[List["ValidationRule"]] = None,
-) -> "SubscriptorOperationer":
+) -> "SubscriptorOperator":
     """
-    Create a subscriptor operationer for the provided schema.
+    Create a subscriptor operator for the provided schema.
     :param schema: the schema name or instance to operate
     :param error_coercer: callable used to transform an exception into an error
     :param cache_decorator: decorator to use over the query parsing
@@ -384,9 +384,9 @@ def subscriptor_factory(
     :type cache_decorator: Optional[Callable]
     :type parser: Optional[Callable]
     :type rules: Optional[List["ValidationRule"]]
-    :return: a subscriptor operationer for the provided schema
-    :rtype: SubscriptorOperationer
+    :return: a subscriptor operator for the provided schema
+    :rtype: SubscriptorOperator
     """
-    return SubscriptorOperationer(
+    return SubscriptorOperator(
         schema, error_coercer, cache_decorator, parser, rules
     )

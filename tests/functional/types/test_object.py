@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette import Resolver, create_schema_with_operationers
+from tartiflette import Resolver, create_schema_with_operators
 
 
 def tartiflette_execute_object_type_output_bakery(schema_name):
@@ -85,7 +85,7 @@ async def test_tartiflette_execute_object_type_advanced(
     async def resolve_query_test_field(*args, **kwargs):
         return resolver_response
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         schema_sdl, name=random_schema_name
     )
 
@@ -150,7 +150,7 @@ async def test_tartiflette_execute_object_type_unknown_field():
             Post(content=Content(title="Test"), meta_creator="Dailymotion")
         ]
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         schema_sdl, name="test_tartiflette_execute_object_type_unknown_field",
     )
 
@@ -233,7 +233,7 @@ async def test_ttftt_object_with_interfaces():
             ],
         }
 
-    schema, execute, __ = await create_schema_with_operationers(
+    schema, execute, __ = await create_schema_with_operators(
         sdl, name="test_ttftt_object_with_interfaces"
     )
 

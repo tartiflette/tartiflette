@@ -6,7 +6,7 @@ from tartiflette import (
     Resolver,
     Subscription,
     create_schema,
-    create_schema_with_operationers,
+    create_schema_with_operators,
 )
 from tartiflette.types.exceptions.tartiflette import (
     NonAsyncGeneratorSubscription,
@@ -61,7 +61,7 @@ async def schema_stack():
     async def resolver_subscription_custom_search(parent, args, ctx, info):
         return [f"{search} #c" for search in parent["newSearch"]]
 
-    schema, execute, subscribe = await create_schema_with_operationers(
+    schema, execute, subscribe = await create_schema_with_operators(
         _SDL, name="test_subscribe"
     )
     return SchemaStack("test_subscribe", schema, execute, subscribe)

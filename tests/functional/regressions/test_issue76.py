@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Resolver, create_schema_with_operationers
+from tartiflette import Resolver, create_schema_with_operators
 from tests.schema_stack import SchemaStack
 
 
@@ -15,7 +15,7 @@ async def schema_stack():
             }
         }
 
-    schema, execute, subscribe = await create_schema_with_operationers(
+    schema, execute, subscribe = await create_schema_with_operators(
         """
         type UserStatsViews {
           total: Int

@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import Resolver, create_schema_with_operationers
+from tartiflette import Resolver, create_schema_with_operators
 
 
 def bakery(schema_name):
@@ -645,7 +645,7 @@ async def test_tartiflette_execute_enum_type_advanced(
     async def resolve_query_test_field(*args, **kwargs):
         return resolver_response
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         """
         enum MyEnum {{ ENUM_1, ENUM_2 }}
 

@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette import Resolver, create_schema_with_operationers
+from tartiflette import Resolver, create_schema_with_operators
 
 
 @pytest.mark.asyncio
@@ -28,7 +28,7 @@ async def test_tartiflette_execute_basic():
         mock_two()
         return 1
 
-    _, execute, __ = await create_schema_with_operationers(
+    _, execute, __ = await create_schema_with_operators(
         """
         schema {
             query: RootQuery
