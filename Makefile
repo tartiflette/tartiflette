@@ -26,7 +26,7 @@ install: init
 
 .PHONY: format-import
 format-import:
-	isort -rc tartiflette/. tests/. setup.py
+	isort --profile black tartiflette/. tests/. setup.py
 
 .PHONY: format
 format: format-import
@@ -34,7 +34,7 @@ format: format-import
 
 .PHONY: check-import
 check-import:
-	isort --check-only -rc tartiflette/. tests/. setup.py
+	isort --check-only --profile black tartiflette/. tests/. setup.py
 
 .PHONY: check-format
 check-format:

@@ -4,6 +4,7 @@ import pytest
 @pytest.mark.asyncio
 async def test_create_engine_no_loader():
     import json
+
     from tartiflette import create_engine
 
     e = await create_engine(
@@ -33,6 +34,7 @@ async def test_create_engine_loader():
 @pytest.mark.asyncio
 async def test_engine_init_no_loader():
     import json
+
     from tartiflette import Engine
 
     e = Engine(

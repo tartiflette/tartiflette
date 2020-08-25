@@ -53,5 +53,5 @@ class ScalarTypeExtensionNode(TypeExtensionNode):
         """
         return (
             "ScalarTypeExtensionNode(name=%r, directives=%r, location=%r)"
-            % (self.name, self.directives, self.location)
+            % (self.name, self.directives, self.location,)
         )

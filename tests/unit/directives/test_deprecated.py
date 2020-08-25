@@ -3,8 +3,9 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_deprecated_on_introspection():
-    from tartiflette.directive.builtins.deprecated import DeprecatedDirective
     from unittest.mock import Mock
+
+    from tartiflette.directive.builtins.deprecated import DeprecatedDirective
 
     areturn_value = Mock()
     c = Mock(return_value=areturn_value)
