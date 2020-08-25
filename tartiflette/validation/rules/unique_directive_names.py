@@ -1,5 +1,9 @@
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.visitor.constants import SKIP
 from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.validation.rules.base import ASTValidationRule
@@ -19,7 +23,7 @@ class UniqueDirectiveNamesRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_directive_names: Dict[str, "NameNode"] = {}
+        self._known_directive_names = UniqueMapping()
 
     def enter_DirectiveDefinition(  # pylint: disable=invalid-name
         self,
@@ -47,16 +51,18 @@ class UniqueDirectiveNamesRule(ASTValidationRule):
         # pylint: disable=unused-argument
         directive_name = node.name.value
 
-        known_directive_name = self._known_directive_names.get(directive_name)
-        if known_directive_name:
+        try:
+            self._known_directive_names[directive_name] = node.name
+        except AlreadyDefinedException:
             self.context.report_error(
                 graphql_error_from_nodes(
                     "There can be only one directive named "
                     f"< @{directive_name} >.",
-                    nodes=[known_directive_name, node.name],
+                    nodes=[
+                        self._known_directive_names[directive_name],
+                        node.name,
+                    ],
                 )
             )
-        else:
-            self._known_directive_names[directive_name] = node.name
 
         return SKIP

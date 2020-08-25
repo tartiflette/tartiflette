@@ -1,5 +1,9 @@
 from typing import List, Optional, Union
 
+from tartiflette.collections.unique_mapping import (
+    AlreadyDefinedException,
+    UniqueMapping,
+)
 from tartiflette.language.visitor.constants import SKIP
 from tartiflette.utils.errors import graphql_error_from_nodes
 from tartiflette.validation.rules.base import ASTValidationRule
@@ -19,7 +23,7 @@ class UniqueOperationTypesRule(ASTValidationRule):
         :type context: ASTValidationContext
         """
         super().__init__(context)
-        self._known_operation_types = {}
+        self._known_operation_types = UniqueMapping()
 
     def _check_operation_type_uniqueness(
         self,
@@ -51,24 +55,21 @@ class UniqueOperationTypesRule(ASTValidationRule):
         if node.operation_type_definitions:
             for operation_type_definition in node.operation_type_definitions:
                 operation_type = operation_type_definition.operation_type
-                known_operation_type = self._known_operation_types.get(
-                    operation_type
-                )
-                if known_operation_type:
+                try:
+                    self._known_operation_types[
+                        operation_type
+                    ] = operation_type_definition
+                except AlreadyDefinedException:
                     self.context.report_error(
                         graphql_error_from_nodes(
                             f"There can be only one < {operation_type} > type "
                             "in schema.",
                             nodes=[
-                                known_operation_type,
+                                self._known_operation_types[operation_type],
                                 operation_type_definition,
                             ],
                         )
                     )
-                else:
-                    self._known_operation_types[
-                        operation_type
-                    ] = operation_type_definition
         return SKIP
 
     enter_SchemaDefinition = _check_operation_type_uniqueness
