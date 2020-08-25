@@ -1,6 +1,8 @@
 from difflib import get_close_matches
 from typing import List, Optional, Set, Union
 
+from tartiflette.constants.introspection import INTROSPECTION_TYPE_NAMES
+from tartiflette.constants.scalars import BUILTIN_SCALAR_NAMES
 from tartiflette.language.ast.base import (
     TypeDefinitionNode,
     TypeSystemDefinitionNode,
@@ -13,6 +15,8 @@ __all__ = ("KnownTypeNamesRule",)
 
 
 _TYPE_SYSTEM_NODES = (TypeSystemDefinitionNode, TypeSystemExtensionNode)
+
+_BUILTIN_TYPE_NAMES = set(INTROSPECTION_TYPE_NAMES + BUILTIN_SCALAR_NAMES)
 
 
 def _is_sdl_node(node: Optional["Node"]) -> bool:
@@ -28,6 +32,18 @@ def _is_sdl_node(node: Optional["Node"]) -> bool:
         and not isinstance(node, list)
         and isinstance(node, _TYPE_SYSTEM_NODES)
     )
+
+
+def _is_builtin_type_name(type_name: str) -> bool:
+    """
+    Determine whether or not the type name is a builtin one.
+
+    :param type_name: the type name to check
+    :type type_name: str
+    :return: whether or not the type name is a builtin one.
+    :rtype: bool
+    """
+    return type_name in _BUILTIN_TYPE_NAMES
 
 
 class KnownTypeNamesRule(ASTValidationRule):
@@ -83,8 +99,16 @@ class KnownTypeNamesRule(ASTValidationRule):
             except IndexError:
                 definition_node = parent
 
+            is_sdl_node = _is_sdl_node(definition_node)
+            if is_sdl_node and _is_builtin_type_name(type_name):
+                return
+
             suggestions = get_close_matches(
-                type_name, self._known_type_names, n=5
+                type_name,
+                self._known_type_names
+                if not is_sdl_node
+                else self._known_type_names | _BUILTIN_TYPE_NAMES,
+                n=5,
             )
             error_message = f"Unknown type < {type_name} >."
             if suggestions:
