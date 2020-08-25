@@ -4,40 +4,13 @@ from typing import Any, Callable, Dict, Optional, Union
 
 import pytest
 
-from tartiflette import Directive, Subscription, create_engine
+from tartiflette import Directive, Subscription, create_schema_with_operators
 from tartiflette.types.exceptions.tartiflette import MultipleException
-
-_SDL = """
-directive @validateMaxLength(
-  limit: Int!
-) on ARGUMENT_DEFINITION
-
-directive @validateChoices(
-  choices: [String!]
-) on ARGUMENT_DEFINITION
-
-type Human {
-  name: String!
-}
-
-type Query {
-  search(
-     query: String! @validateMaxLength(limit: 5)
-     kind: String! @validateChoices(choices: ["ACTOR", "DIRECTOR"])
-  ): [Human]
-}
-
-type Subscription {
-  newSearch(
-     query: String! @validateMaxLength(limit: 5)
-     kind: String! @validateChoices(choices: ["ACTOR", "DIRECTOR"])
-  ): [Human]
-}
-"""
+from tests.schema_stack import SchemaStack
 
 
 @pytest.fixture(scope="module")
-async def ttftt_engine():
+async def schema_stack():
     @Directive("validateMaxLength", schema_name="test_issue139")
     class ValidateMaxLengthDirective:
         @staticmethod
@@ -101,7 +74,37 @@ async def ttftt_engine():
             yield {"name": f"Human #{i}"}
             await asyncio.sleep(1)
 
-    return await create_engine(sdl=_SDL, schema_name="test_issue139")
+    schema, execute, subscribe = await create_schema_with_operators(
+        """
+        directive @validateMaxLength(
+          limit: Int!
+        ) on ARGUMENT_DEFINITION
+
+        directive @validateChoices(
+          choices: [String!]
+        ) on ARGUMENT_DEFINITION
+
+        type Human {
+          name: String!
+        }
+
+        type Query {
+          search(
+             query: String! @validateMaxLength(limit: 5)
+             kind: String! @validateChoices(choices: ["ACTOR", "DIRECTOR"])
+          ): [Human]
+        }
+
+        type Subscription {
+          newSearch(
+             query: String! @validateMaxLength(limit: 5)
+             kind: String! @validateChoices(choices: ["ACTOR", "DIRECTOR"])
+          ): [Human]
+        }
+        """,
+        name="test_issue139",
+    )
+    return SchemaStack("test_issue139", schema, execute, subscribe)
 
 
 @pytest.mark.asyncio
@@ -134,8 +137,8 @@ async def ttftt_engine():
         )
     ],
 )
-async def test_issue139_query(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue139_query(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected
 
 
 @pytest.mark.asyncio
@@ -161,10 +164,10 @@ async def test_issue139_query(query, expected, ttftt_engine):
     ],
 )
 async def test_issue139_subscription_exceptions(
-    query, exceptions, ttftt_engine
+    schema_stack, query, exceptions
 ):
     with pytest.raises(MultipleException) as excinfo:
-        async for _ in ttftt_engine.subscribe(query):
+        async for _ in schema_stack.subscribe(query):
             pass
 
     for exception, expected in zip(excinfo.value.exceptions, exceptions):

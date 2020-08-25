@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine
+@pytest.mark.with_schema_stack(preset="animals")
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -45,5 +45,5 @@ import pytest
         )
     ],
 )
-async def test_validators_all_variables_used(query, expected, engine):
-    assert await engine.execute(query) == expected
+async def test_validators_all_variables_used(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected

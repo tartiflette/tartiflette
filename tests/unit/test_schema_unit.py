@@ -1,8 +1,8 @@
 import pytest
 
 from tartiflette import Directive, Resolver, Scalar
-from tartiflette.engine import _import_builtins
 from tartiflette.schema.bakery import SchemaBakery
+from tartiflette.schema.factory import _import_builtins
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
     GraphQLSchemaError,

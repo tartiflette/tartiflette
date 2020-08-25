@@ -26,7 +26,7 @@ from tests.functional.utils import assert_unordered_lists
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(name="harness")
+@pytest.mark.with_schema_stack(preset="harness")
 @pytest.mark.parametrize(
     "document_node,expected",
     [
@@ -296,10 +296,12 @@ from tests.functional.utils import assert_unordered_lists
         ),
     ],
 )
-async def test_executable_definitions(engine, document_node, expected):
+async def test_executable_definitions(schema_stack, document_node, expected):
     assert_unordered_lists(
         validate_query(
-            engine._schema, document_node, rules=[ExecutableDefinitionsRule],
+            schema_stack.schema,
+            document_node,
+            rules=[ExecutableDefinitionsRule],
         ),
         expected,
     )

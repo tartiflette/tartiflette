@@ -1,95 +1,96 @@
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.directive.directive import Directive
-from tartiflette.engine import Engine
+from tartiflette.execution.factory import executor_factory, subscriptor_factory
 from tartiflette.resolver.resolver import Resolver
 from tartiflette.resolver.type_resolver import TypeResolver
 from tartiflette.scalar.scalar import Scalar
+from tartiflette.schema.factory import create_schema
 from tartiflette.subscription.subscription import Subscription
 from tartiflette.types.exceptions import TartifletteError
 
 __all__ = (
-    "create_engine",
     "Directive",
-    "Engine",
     "Resolver",
     "TypeResolver",
     "Scalar",
     "Subscription",
     "TartifletteError",
+    "create_schema",
+    "executor_factory",
+    "subscriptor_factory",
+    "create_schema_with_operators",
 )
 
 
-async def create_engine(
+async def create_schema_with_operators(
     sdl: Union[str, List[str]],
-    schema_name: str = "default",
+    name: str = "default",
+    modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
+    default_resolver: Optional[Callable] = None,
+    default_type_resolver: Optional[Callable] = None,
+    default_arguments_coercer: Optional[Callable] = None,
+    sdl_parser: Optional[Callable] = None,
     error_coercer: Callable[
         [Exception, Dict[str, Any]], Dict[str, Any]
     ] = None,
-    custom_default_resolver: Optional[Callable] = None,
-    custom_default_type_resolver: Optional[Callable] = None,
-    modules: Optional[Union[str, List[str], List[Dict[str, Any]]]] = None,
-    query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
-    json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
-    custom_default_arguments_coercer: Optional[Callable] = None,
-) -> "Engine":
+    query_cache_decorator: Optional[Callable] = None,
+    query_parser: Optional[Callable] = None,
+    rules: Optional[List["ValidationRule"]] = None,
+) -> Tuple["GraphQLSchema", Callable, Callable]:
     """
-    Create an engine by analyzing the SDL and connecting it with the imported
-    Resolver, Mutation, Subscription, Directive and Scalar linking them through
-    the `schema_name`.
-    :param sdl: the SDL to work with
-    :param schema_name: the name of the SDL
-    :param error_coercer: callable in charge of transforming a couple
-    Exception/error into an error dictionary
-    :param custom_default_resolver: callable that will replace the tartiflette
-    `default_resolver` (Will be called like a resolver for each UNDECORATED
-    field)
-    :param custom_default_type_resolver: callable that will replace the
-    tartiflette `default_type_resolver` (will be called on abstract types to
-    deduct the type of a result)
-    :param modules: list of string containing the name of the modules you want
-    the engine to import, usually this modules contains your Resolvers,
-    Directives, Scalar or Subscription code
-    :param query_cache_decorator: callable that will replace the tartiflette
-    default lru_cache decorator to cache query parsing
-    :param json_loader: A callable that will replace default python
-    json module.loads for ast_json loading
-    :param custom_default_arguments_coercer: callable that will replace the
-    tartiflette `default_arguments_coercer
+    Create a GraphQLSchema along with their operators.
+    :param sdl: the SDL to related to the schema
+    :param name: name of the schema
+    :param modules: list Python modules to load
+    :param default_resolver: the default resolver to use
+    :param default_type_resolver: the default type resolver to use
+    :param default_arguments_coercer: callable to use to coerce arguments
+    :param sdl_parser: parser to use to parse the SDL into a document
+    :param error_coercer: callable used to transform an exception into an error
+    :param query_cache_decorator: decorator to use over the query parsing
+    :param query_parser: parser to use to parse the query into a document
+    :param rules: validation rules to apply to queries
     :type sdl: Union[str, List[str]]
-    :type schema_name: str
-    :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
-    :type custom_default_resolver: Optional[Callable]
-    :type custom_default_type_resolver: Optional[Callable]
+    :type name: str
     :type modules: Optional[Union[str, List[str], List[Dict[str, Any]]]]
+    :type default_resolver: Optional[Callable]
+    :type default_type_resolver: Optional[Callable]
+    :type default_arguments_coercer: Optional[Callable]
+    :type sdl_parser: Optional[Callable]
+    :type error_coercer: Callable[
+        [Exception, Dict[str, Any]], Dict[str, Any]
+    ]
     :type query_cache_decorator: Optional[Callable]
-    :type json_loader: Optional[Callable[[str], Dict[str, Any]]]
-    :type custom_default_arguments_coercer: Optional[Callable]
-    :return: a Cooked Engine instance
-    :rtype: Engine
-
-    :Example:
-
-    >>> from tartiflette import create_engine
-    >>>
-    >>>
-    >>> engine = await create_engine('''type Query {
-    >>>   hello(name: String!): String!
-    >>> }''')
+    :type query_parser: Optional[Callable]
+    :type rules: Optional[List["ValidationRule"]]
+    :return: a GraphQLSchema along with their operators
+    :rtype: Tuple["GraphQLSchema", Callable, Callable]
     """
-    e = Engine()
-
-    await e.cook(
-        sdl=sdl,
-        error_coercer=error_coercer,
-        custom_default_resolver=custom_default_resolver,
-        custom_default_type_resolver=custom_default_type_resolver,
+    # pylint: disable=too-many-arguments
+    schema = await create_schema(
+        sdl,
+        name=name,
         modules=modules,
-        schema_name=schema_name,
-        query_cache_decorator=query_cache_decorator,
-        json_loader=json_loader,
-        custom_default_arguments_coercer=custom_default_arguments_coercer,
+        default_resolver=default_resolver,
+        default_type_resolver=default_type_resolver,
+        default_arguments_coercer=default_arguments_coercer,
+        parser=sdl_parser,
     )
-
-    return e
+    return (
+        schema,
+        executor_factory(
+            schema,
+            error_coercer=error_coercer,
+            cache_decorator=query_cache_decorator,
+            parser=query_parser,
+            rules=rules,
+        ),
+        subscriptor_factory(
+            schema,
+            error_coercer=error_coercer,
+            cache_decorator=query_cache_decorator,
+            parser=query_parser,
+            rules=rules,
+        ),
+    )

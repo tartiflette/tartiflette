@@ -3,19 +3,7 @@ from typing import Any, Callable, Dict, Optional
 
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
-
-_SDL = """
-directive @actAsPyEnum(name: String!) on ENUM
-
-enum FirstEnum @actAsPyEnum(name: "FirstEnum") { V_1, V_2, V_3 }
-enum SecondEnum @actAsPyEnum(name: "SecondEnum") { V_1, V_2, V_3 }
-
-type Query {
-  anEnum(param: FirstEnum): FirstEnum
-  listEnum(param: [SecondEnum]): [SecondEnum]
-}
-"""
+from tartiflette import Directive, Resolver
 
 
 class FirstEnum(Enum):
@@ -33,9 +21,8 @@ class SecondEnum(Enum):
 _ENUM_MAP = {"FirstEnum": FirstEnum, "SecondEnum": SecondEnum}
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Directive("actAsPyEnum", schema_name="test_issue_233")
+def bakery(schema_name):
+    @Directive("actAsPyEnum", schema_name=schema_name)
     class ActAsPyEnumDirective:
         @staticmethod
         async def on_post_input_coercion(
@@ -85,15 +72,27 @@ async def ttftt_engine():
                 pass
             return value
 
-    @Resolver("Query.anEnum", schema_name="test_issue_233")
-    @Resolver("Query.listEnum", schema_name="test_issue_233")
+    @Resolver("Query.anEnum", schema_name=schema_name)
+    @Resolver("Query.listEnum", schema_name=schema_name)
     async def resolve_query_fields(parent, args, ctx, info):
         return args.get("param")
 
-    return await create_engine(sdl=_SDL, schema_name="test_issue_233")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @actAsPyEnum(name: String!) on ENUM
+
+    enum FirstEnum @actAsPyEnum(name: "FirstEnum") { V_1, V_2, V_3 }
+    enum SecondEnum @actAsPyEnum(name: "SecondEnum") { V_1, V_2, V_3 }
+
+    type Query {
+      anEnum(param: FirstEnum): FirstEnum
+      listEnum(param: [SecondEnum]): [SecondEnum]
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,variables,expected",
     [
@@ -207,5 +206,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue_233(query, variables, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query, variables=variables) == expected
+async def test_issue_233(schema_stack, query, variables, expected):
+    assert await schema_stack.execute(query, variables=variables) == expected

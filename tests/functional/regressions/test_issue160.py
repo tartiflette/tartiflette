@@ -1,6 +1,6 @@
 import pytest
 
-from tartiflette import create_engine
+from tartiflette import create_schema
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
 
@@ -8,7 +8,7 @@ from tests.functional.utils import match_schema_errors
 @pytest.mark.asyncio
 async def test_issue160():
     with pytest.raises(GraphQLSchemaError) as excinfo:
-        await create_engine(
+        await create_schema(
             """
         type R
 
@@ -68,7 +68,7 @@ async def test_issue160():
             b: L
         }
         """,
-            schema_name="test_issue160",
+            name="test_issue160",
         )
 
     match_schema_errors(

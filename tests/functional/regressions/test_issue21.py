@@ -2,14 +2,14 @@ from collections import namedtuple
 
 import pytest
 
-from tartiflette import Resolver
+from tartiflette import Resolver, create_schema_with_operators
 
 GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "query,expected,typee,varis",
+    "query,expected,output_type,variables",
     [
         (
             """
@@ -64,36 +64,34 @@ GQLTypeMock = namedtuple("GQLTypeMock", ["name", "coerce_value"])
     ],
 )
 async def test_issue21_okayquery(
-    query, expected, typee, varis, random_schema_name
+    query, expected, output_type, variables, random_schema_name
 ):
-    from tartiflette import create_engine
-
     @Resolver("Query.a", schema_name=random_schema_name)
     async def a_resolver(_, arguments, __, info: "ResolveInfo"):
         return {"iam": info.field_name, "args": arguments}
 
-    ttftt = await create_engine(
+    _, execute, __ = await create_schema_with_operators(
         """
-    type Args{
-        xid: %s
-    }
+        type Args {
+            xid: %s
+        }
 
-    type Obj {
-        iam: String
-        args: Args
-    }
+        type Obj {
+            iam: String
+            args: Args
+        }
 
-    type Query {
-        a(xid: %s): Obj
-    }
-    """
-        % (typee, typee),
-        schema_name=random_schema_name,
+        type Query {
+            a(xid: %s): Obj
+        }
+        """
+        % (output_type, output_type),
+        name=random_schema_name,
     )
 
     assert (
-        await ttftt.execute(
-            query, context={}, variables=varis, operation_name="LOL"
+        await execute(
+            query, context={}, variables=variables, operation_name="LOL"
         )
         == expected
     )
@@ -101,7 +99,7 @@ async def test_issue21_okayquery(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "query,expected,varis",
+    "query,expected,variables",
     [
         (
             """
@@ -177,29 +175,29 @@ async def test_issue21_okayquery(
         ),
     ],
 )
-async def test_issue21_exceptquery(query, expected, varis, random_schema_name):
-    from tartiflette import create_engine
-
+async def test_issue21_exceptquery(
+    query, expected, variables, random_schema_name
+):
     @Resolver("Query.a", schema_name=random_schema_name)
     async def a_resolver(_, arguments, __, info: "ResolveInfo"):
         return {"iam": info.field_name, "args": arguments}
 
-    ttftt = await create_engine(
+    _, execute, __ = await create_schema_with_operators(
         """
-    type Args{
-        xid: Int
-    }
+        type Args{
+            xid: Int
+        }
 
-    type Obj {
-        iam: String
-        args: Args
-    }
+        type Obj {
+            iam: String
+            args: Args
+        }
 
-    type Query {
-        a(xid: Int): Obj
-    }
-    """,
-        schema_name=random_schema_name,
+        type Query {
+            a(xid: Int): Obj
+        }
+        """,
+        name=random_schema_name,
     )
 
-    assert await ttftt.execute(query, context={}, variables=varis) == expected
+    assert await execute(query, context={}, variables=variables) == expected

@@ -1,13 +1,17 @@
 import pytest
 
+from tartiflette import Resolver
 
-async def _resolver(*args, **kwargs):
-    return {"name": "a", "nickname": "b"}
+
+def bakery(schema_name):
+    @Resolver("Query.dog", schema_name=schema_name)
+    async def resolver_query_dog(*args, **kwargs):
+        return {"name": "a", "nickname": "b"}
 
 
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(resolvers={"Query.dog": _resolver})
-async def test_issue163(engine):
-    assert await engine.execute("query { dog { ... { name nickname }} }") == {
-        "data": {"dog": {"name": "a", "nickname": "b"}}
-    }
+@pytest.mark.with_schema_stack(preset="animals", bakery=bakery)
+async def test_issue163(schema_stack):
+    assert await schema_stack.execute(
+        "query { dog { ... { name nickname }} }"
+    ) == {"data": {"dog": {"name": "a", "nickname": "b"}}}

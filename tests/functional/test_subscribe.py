@@ -2,11 +2,17 @@ import asyncio
 
 import pytest
 
-from tartiflette import Resolver, Subscription, create_engine
+from tartiflette import (
+    Resolver,
+    Subscription,
+    create_schema,
+    create_schema_with_operators,
+)
 from tartiflette.types.exceptions.tartiflette import (
     NonAsyncGeneratorSubscription,
     NotSubscriptionField,
 )
+from tests.schema_stack import SchemaStack
 
 _SDL = """
 type Query {
@@ -34,7 +40,7 @@ _SEARCHS = [
 
 
 @pytest.fixture(scope="module")
-async def ttftt_engine():
+async def schema_stack():
     @Subscription("MySubscription.newSearch", schema_name="test_subscribe")
     async def subscription_new_search(*_, **__):
         for search in _SEARCHS:
@@ -55,14 +61,17 @@ async def ttftt_engine():
     async def resolver_subscription_custom_search(parent, args, ctx, info):
         return [f"{search} #c" for search in parent["newSearch"]]
 
-    return await create_engine(sdl=_SDL, schema_name="test_subscribe")
+    schema, execute, subscribe = await create_schema_with_operators(
+        _SDL, name="test_subscribe"
+    )
+    return SchemaStack("test_subscribe", schema, execute, subscribe)
 
 
 @pytest.mark.asyncio
-async def test_subscribe_error(ttftt_engine):
+async def test_subscribe_error(schema_stack):
     i = 0
 
-    async for result in ttftt_engine.subscribe(
+    async for result in schema_stack.subscribe(
         """
         subscription ($query: String!) {
           newSearch(query: $query)
@@ -85,9 +94,9 @@ async def test_subscribe_error(ttftt_engine):
 
 
 @pytest.mark.asyncio
-async def test_subscribe(ttftt_engine):
+async def test_subscribe(schema_stack):
     i = 0
-    async for result in ttftt_engine.subscribe(
+    async for result in schema_stack.subscribe(
         """
         subscription {
           newSearch(query: "A query")
@@ -101,9 +110,9 @@ async def test_subscribe(ttftt_engine):
 
 
 @pytest.mark.asyncio
-async def test_subscribe_aliases(ttftt_engine):
+async def test_subscribe_aliases(schema_stack):
     i = 0
-    async for result in ttftt_engine.subscribe(
+    async for result in schema_stack.subscribe(
         """
         subscription {
           aSearch: newSearch(query: "A query")
@@ -117,9 +126,9 @@ async def test_subscribe_aliases(ttftt_engine):
 
 
 @pytest.mark.asyncio
-async def test_subscribe_custom_search(ttftt_engine):
+async def test_subscribe_custom_search(schema_stack):
     i = 0
-    async for result in ttftt_engine.subscribe(
+    async for result in schema_stack.subscribe(
         """
         subscription {
           customSearch(query: "A query")
@@ -133,9 +142,9 @@ async def test_subscribe_custom_search(ttftt_engine):
 
 
 @pytest.mark.asyncio
-async def test_subscribe_custom_search_aliases(ttftt_engine):
+async def test_subscribe_custom_search_aliases(schema_stack):
     i = 0
-    async for result in ttftt_engine.subscribe(
+    async for result in schema_stack.subscribe(
         """
         subscription {
           aSearch: customSearch(query: "A query")
@@ -162,9 +171,7 @@ async def test_subscribe_non_async_generator_implementation():
             "Query.search", schema_name="test_subscribe_non_subscription_field"
         )(subscription_search)
 
-        await create_engine(
-            _SDL, schema_name="test_subscribe_non_subscription_field"
-        )
+        await create_schema(_SDL, name="test_subscribe_non_subscription_field")
 
 
 @pytest.mark.asyncio
@@ -181,6 +188,4 @@ async def test_subscribe_non_subscription_field():
             "Query.search", schema_name="test_subscribe_non_subscription_field"
         )(subscription_query_search)
 
-        await create_engine(
-            _SDL, schema_name="test_subscribe_non_subscription_field"
-        )
+        await create_schema(_SDL, name="test_subscribe_non_subscription_field")

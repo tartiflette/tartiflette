@@ -1,37 +1,11 @@
 import pytest
 
-from tartiflette import Resolver, create_engine
-
-_SDL = """
-type One {
-    aField: String
-    bField: Int
-}
-
-type Two {
-    cField: Int
-    dField: String
-}
-
-type Three {
-    eField: Float
-    fField: String
-}
-
-union Mixed = One | Two | Three
-
-type Query {
-    test(choose: Int!): Mixed
-}
-"""
+from tartiflette import Resolver
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Resolver("Query.test", schema_name="test_typename")
-    async def func_field_resolver(
-        parent, arguments, request_ctx, info: "ResolveInfo"
-    ):
+def bakery(schema_name):
+    @Resolver("Query.test", schema_name=schema_name)
+    async def func_field_resolver(parent, arguments, request_ctx, info):
         chosen = arguments.get("choose", 0)
         if chosen == 1:
             return {"aField": "aValue", "bField": 1, "_typename": "One"}
@@ -55,36 +29,59 @@ async def ttftt_engine():
 
         return None
 
-    return await create_engine(sdl=_SDL, schema_name="test_typename")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type One {
+        aField: String
+        bField: Int
+    }
+
+    type Two {
+        cField: Int
+        dField: String
+    }
+
+    type Three {
+        eField: Float
+        fField: String
+    }
+
+    union Mixed = One | Two | Three
+
+    type Query {
+        test(choose: Int!): Mixed
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
         (
             """
-        query aquery {
-            test(choose:1){
-                ... on One {
-                    __typename
-                    aField
-                    bField
+            query aquery {
+                test(choose:1){
+                    ... on One {
+                        __typename
+                        aField
+                        bField
+                    }
+                    ... on Two {
+                        __typename
+                        cField
+                        dField
+                    }
+                    ... on Three {
+                        __typename
+                        eField
+                        fField
+                    }
                 }
-                ... on Two {
-                    __typename
-                    cField
-                    dField
-                }
-                ... on Three {
-                    __typename
-                    eField
-                    fField
-                }
+                __typename
             }
-            __typename
-        }
-        """,
+            """,
             {
                 "data": {
                     "test": {
@@ -98,27 +95,27 @@ async def ttftt_engine():
         ),
         (
             """
-        query aquery {
-            test(choose:2){
-                ... on One {
-                    __typename
-                    aField
-                    bField
+            query aquery {
+                test(choose:2){
+                    ... on One {
+                        __typename
+                        aField
+                        bField
+                    }
+                    ... on Two {
+                        __typename
+                        cField
+                        dField
+                    }
+                    ... on Three {
+                        __typename
+                        eField
+                        fField
+                    }
                 }
-                ... on Two {
-                    __typename
-                    cField
-                    dField
-                }
-                ... on Three {
-                    __typename
-                    eField
-                    fField
-                }
+                __typename
             }
-            __typename
-        }
-        """,
+            """,
             {
                 "data": {
                     "test": {
@@ -132,27 +129,27 @@ async def ttftt_engine():
         ),
         (
             """
-        query aquery {
-            test(choose:3){
-                ... on One {
-                    __typename
-                    aField
-                    bField
+            query aquery {
+                test(choose:3){
+                    ... on One {
+                        __typename
+                        aField
+                        bField
+                    }
+                    ... on Two {
+                        __typename
+                        cField
+                        dField
+                    }
+                    ... on Three {
+                        __typename
+                        eField
+                        fField
+                    }
                 }
-                ... on Two {
-                    __typename
-                    cField
-                    dField
-                }
-                ... on Three {
-                    __typename
-                    eField
-                    fField
-                }
+                __typename
             }
-            __typename
-        }
-        """,
+            """,
             {
                 "data": {
                     "test": {
@@ -166,7 +163,7 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_tartiflette_typename(query, expected, ttftt_engine):
+async def test_tartiflette_typename(schema_stack, query, expected):
     assert (
-        await ttftt_engine.execute(query, operation_name="aquery") == expected
+        await schema_stack.execute(query, operation_name="aquery") == expected
     )

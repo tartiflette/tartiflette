@@ -3,44 +3,42 @@ from unittest.mock import Mock
 
 import pytest
 
-from tartiflette import Resolver, create_engine
+from tartiflette import Resolver, create_schema_with_operators
+
+
+def tartiflette_execute_object_type_output_bakery(schema_name):
+    @Resolver("Query.objectTest", schema_name=schema_name)
+    async def resolve_query_object_test(*args, **kwargs):
+        return {"field1": "Test"}
 
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_object_type_output():
-    schema_sdl = """
+@pytest.mark.with_schema_stack(
+    sdl="""
     type Test {
-        field1: String
+      field1: String
     }
 
     type Query {
-        objectTest: Test
-    }
-    """
-
-    @Resolver(
-        "Query.objectTest",
-        schema_name="test_tartiflette_execute_object_type_output",
-    )
-    async def func_field_resolver(*args, **kwargs):
-        return {"field1": "Test"}
-
-    ttftt = await create_engine(
-        schema_sdl, schema_name="test_tartiflette_execute_object_type_output"
-    )
-
-    result = await ttftt.execute(
-        """
-    query Test{
-        objectTest {
-            field1
-        }
+      objectTest: Test
     }
     """,
-        operation_name="Test",
+    bakery=tartiflette_execute_object_type_output_bakery,
+)
+async def test_tartiflette_execute_object_type_output(schema_stack):
+    assert (
+        await schema_stack.execute(
+            """
+            query Test{
+              objectTest {
+                field1
+              }
+            }
+            """,
+            operation_name="Test",
+        )
+        == {"data": {"objectTest": {"field1": "Test"}}}
     )
-
-    assert {"data": {"objectTest": {"field1": "Test"}}} == result
 
 
 @pytest.mark.asyncio
@@ -61,7 +59,7 @@ async def test_tartiflette_execute_object_type_output():
                     {
                         "message": "Cannot return null for non-nullable field Query.testField.",
                         "path": ["testField"],
-                        "locations": [{"line": 3, "column": 9}],
+                        "locations": [{"line": 3, "column": 15}],
                     }
                 ],
             },
@@ -73,50 +71,53 @@ async def test_tartiflette_execute_object_type_advanced(
 ):
     schema_sdl = """
     type Test {{
-        field1: String
+      field1: String
     }}
 
     type Query {{
-        testField: {}
+      testField: {}
     }}
     """.format(
         input_sdl
     )
 
     @Resolver("Query.testField", schema_name=random_schema_name)
-    async def func_field_resolver(*args, **kwargs):
+    async def resolve_query_test_field(*args, **kwargs):
         return resolver_response
 
-    ttftt = await create_engine(schema_sdl, schema_name=random_schema_name)
-
-    result = await ttftt.execute(
-        """
-    query Test{
-        testField {
-            field1
-        }
-    }
-    """,
-        operation_name="Test",
+    _, execute, __ = await create_schema_with_operators(
+        schema_sdl, name=random_schema_name
     )
 
-    assert expected == result
+    assert (
+        await execute(
+            """
+            query Test{
+              testField {
+                field1
+              }
+            }
+            """,
+            operation_name="Test",
+        )
+        == expected
+    )
 
 
 @pytest.mark.asyncio
 async def test_tartiflette_execute_object_type_unknown_field():
     schema_sdl = """
     type Post {
-        content: Content
-        meta_creator: String
+      content: Content
+      meta_creator: String
     }
 
     type Content {
-        title: String
+      title: String
     }
 
     type Query {
-        posts: [Post!]
+      posts: [Post!]
     }
     """
 
@@ -149,25 +150,26 @@ async def test_tartiflette_execute_object_type_unknown_field():
             Post(content=Content(title="Test"), meta_creator="Dailymotion")
         ]
 
-    ttftt = await create_engine(
-        schema_sdl,
-        schema_name="test_tartiflette_execute_object_type_unknown_field",
+    _, execute, __ = await create_schema_with_operators(
+        schema_sdl, name="test_tartiflette_execute_object_type_unknown_field",
     )
 
-    result = await ttftt.execute(
-        """
-    query Test{
-        posts {
-            content {
-                title
+    assert (
+        await execute(
+            """
+            query Test{
+              posts {
+                content {
+                  title
+                }
+              }
             }
-        }
-    }
-    """,
-        operation_name="Test",
+            """,
+            operation_name="Test",
+        )
+        == {"data": {"posts": [{"content": {"title": "Test"}}]}}
     )
 
-    assert result == {"data": {"posts": [{"content": {"title": "Test"}}]}}
     assert mock_call.called is True
 
 
@@ -231,16 +233,16 @@ async def test_ttftt_object_with_interfaces():
             ],
         }
 
-    ttftt_engine = await create_engine(
-        sdl, schema_name="test_ttftt_object_with_interfaces"
+    schema, execute, __ = await create_schema_with_operators(
+        sdl, name="test_ttftt_object_with_interfaces"
     )
 
-    user_type = ttftt_engine._schema.find_type("User")
-    repository_type = ttftt_engine._schema.find_type("Repository")
+    user_type = schema.find_type("User")
+    repository_type = schema.find_type("Repository")
 
     user_interfaces = ["Identifiable", "Nameable", "Subscribeable"]
     for user_interface in user_interfaces:
-        interface = ttftt_engine._schema.find_type(user_interface)
+        interface = schema.find_type(user_interface)
         assert user_interface in user_type.interfaces_names
         assert interface in user_type.interfaces
         assert user_type in interface.possibleTypes
@@ -253,44 +255,45 @@ async def test_ttftt_object_with_interfaces():
         "Starrable",
     ]
     for repository_interface in repository_interfaces:
-        interface = ttftt_engine._schema.find_type(repository_interface)
+        interface = schema.find_type(repository_interface)
         assert repository_interface in repository_type.interfaces_names
         assert interface in repository_type.interfaces
         assert repository_type in interface.possibleTypes
     assert len(repository_interfaces) == len(repository_type.interfaces_names)
 
-    url_interface = ttftt_engine._schema.find_type("UniformResourceLocatable")
+    url_interface = schema.find_type("UniformResourceLocatable")
     assert url_interface.possibleTypes == []
 
-    result = await ttftt_engine.execute(
-        """
-    query {
-      user(id: 1) {
-        id
-        name
-        subscribers {
-          id
-          name
-        }
-        repositories {
-          id
-          title
-          nbOfStars
-        }
-      }
-    }
-    """
-    )
-
-    assert result == {
-        "data": {
-            "user": {
-                "id": "1",
-                "name": "Hooman",
-                "subscribers": [],
-                "repositories": [
-                    {"id": "1", "title": "Repoo", "nbOfStars": 2}
-                ],
+    assert (
+        await execute(
+            """
+            query {
+              user(id: 1) {
+                id
+                name
+                subscribers {
+                  id
+                  name
+                }
+                repositories {
+                  id
+                  title
+                  nbOfStars
+                }
+              }
+            }
+            """
+        )
+        == {
+            "data": {
+                "user": {
+                    "id": "1",
+                    "name": "Hooman",
+                    "subscribers": [],
+                    "repositories": [
+                        {"id": "1", "title": "Repoo", "nbOfStars": 2}
+                    ],
+                }
             }
         }
-    }
+    )

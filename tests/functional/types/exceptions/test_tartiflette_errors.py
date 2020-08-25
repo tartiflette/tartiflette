@@ -2,37 +2,16 @@ from datetime import datetime
 
 import pytest
 
-from tartiflette import Resolver, TartifletteError, create_engine
+from tartiflette import Resolver, TartifletteError
 
 
-@pytest.mark.asyncio
-async def test_tartiflette_execute_nested_error():
-    schema_sdl = """
-
-    type Obj {
-        deep: Nested
-    }
-
-    type Nested {
-        lastUpdate: [Float!]
-    }
-
-    type Query {
-        test: Obj
-    }
-    """
-
-    @Resolver(
-        "Query.test", schema_name="test_tartiflette_execute_nested_error"
-    )
-    @Resolver("Obj.deep", schema_name="test_tartiflette_execute_nested_error")
+def tartiflette_execute_nested_error_bakery(schema_name):
+    @Resolver("Query.test", schema_name=schema_name)
+    @Resolver("Obj.deep", schema_name=schema_name)
     async def resolver_x(*_args, **_kwargs):
         return {}
 
-    @Resolver(
-        "Nested.lastUpdate",
-        schema_name="test_tartiflette_execute_nested_error",
-    )
+    @Resolver("Nested.lastUpdate", schema_name=schema_name)
     async def func_field_resolver(*args, **kwargs):
         return [
             datetime(
@@ -41,39 +20,10 @@ async def test_tartiflette_execute_nested_error():
             None,
         ]
 
-    ttftt = await create_engine(
-        schema_sdl, schema_name="test_tartiflette_execute_nested_error"
-    )
-
-    result = await ttftt.execute(
-        """
-    query Test{
-        test {
-            deep {
-                lastUpdate
-            }
-        }
-    }
-    """,
-        operation_name="Test",
-    )
-
-    assert {
-        "data": {"test": {"deep": {"lastUpdate": None}}},
-        "errors": [
-            {
-                "message": "Cannot return null for non-nullable field Nested.lastUpdate.",
-                "path": ["test", "deep", "lastUpdate", 1],
-                "locations": [{"line": 5, "column": 17}],
-            }
-        ],
-    } == result
-
 
 @pytest.mark.asyncio
-async def test_tartiflette_execute_tartifletteerror_custom():
-    schema_sdl = """
-
+@pytest.mark.with_schema_stack(
+    sdl="""
     type Obj {
         deep: Nested
     }
@@ -85,58 +35,93 @@ async def test_tartiflette_execute_tartifletteerror_custom():
     type Query {
         test: Obj
     }
-    """
+    """,
+    bakery=tartiflette_execute_nested_error_bakery,
+)
+async def test_tartiflette_execute_nested_error(schema_stack):
+    assert (
+        await schema_stack.execute(
+            """
+            query Test{
+                test {
+                    deep {
+                        lastUpdate
+                    }
+                }
+            }
+            """,
+            operation_name="Test",
+        )
+        == {
+            "data": {"test": {"deep": {"lastUpdate": None}}},
+            "errors": [
+                {
+                    "message": "Cannot return null for non-nullable field Nested.lastUpdate.",
+                    "path": ["test", "deep", "lastUpdate", 1],
+                    "locations": [{"line": 5, "column": 25}],
+                }
+            ],
+        }
+    )
 
+
+def tartiflette_execute_tartifletteerror_custom_bakery(schema_name):
     class CustomException(TartifletteError):
         def __init__(self, code, message):
             super().__init__(message)
             self.code = code
             self.extensions = {"code": code}
 
-    @Resolver(
-        "Query.test",
-        schema_name="test_tartiflette_execute_tartifletteerror_custom",
-    )
-    @Resolver(
-        "Obj.deep",
-        schema_name="test_tartiflette_execute_tartifletteerror_custom",
-    )
+    @Resolver("Query.test", schema_name=schema_name)
+    @Resolver("Obj.deep", schema_name=schema_name)
     async def resolver_x(*_args, **_kwargs):
         return {}
 
-    @Resolver(
-        "Nested.lastUpdate",
-        schema_name="test_tartiflette_execute_tartifletteerror_custom",
-    )
+    @Resolver("Nested.lastUpdate", schema_name=schema_name)
     async def func_field_resolver(*args, **kwargs):
         raise CustomException("my_error", "There is an error")
 
-    ttftt = await create_engine(
-        schema_sdl,
-        schema_name="test_tartiflette_execute_tartifletteerror_custom",
-    )
 
-    result = await ttftt.execute(
-        """
-    query Test{
-        test {
-            deep {
-                lastUpdate
-            }
-        }
+@pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    type Obj {
+        deep: Nested
+    }
+
+    type Nested {
+        lastUpdate: [Float!]
+    }
+
+    type Query {
+        test: Obj
     }
     """,
-        operation_name="Test",
-    )
-
-    assert {
-        "data": {"test": {"deep": {"lastUpdate": None}}},
-        "errors": [
-            {
-                "message": "There is an error",
-                "path": ["test", "deep", "lastUpdate"],
-                "locations": [{"line": 5, "column": 17}],
-                "extensions": {"code": "my_error"},
+    bakery=tartiflette_execute_tartifletteerror_custom_bakery,
+)
+async def test_tartiflette_execute_tartifletteerror_custom(schema_stack):
+    assert (
+        await schema_stack.execute(
+            """
+            query Test{
+                test {
+                    deep {
+                        lastUpdate
+                    }
+                }
             }
-        ],
-    } == result
+            """,
+            operation_name="Test",
+        )
+        == {
+            "data": {"test": {"deep": {"lastUpdate": None}}},
+            "errors": [
+                {
+                    "message": "There is an error",
+                    "path": ["test", "deep", "lastUpdate"],
+                    "locations": [{"line": 5, "column": 25}],
+                    "extensions": {"code": "my_error"},
+                }
+            ],
+        }
+    )

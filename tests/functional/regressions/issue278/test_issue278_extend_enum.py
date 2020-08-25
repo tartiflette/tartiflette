@@ -2,43 +2,13 @@ from typing import Any, Callable, Dict, Optional
 
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import Directive, Resolver, create_schema
 from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
 
 
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    schema_sdl = """
-        enum Test {
-            Value1
-            Value2
-            Value3
-        }
-
-        type Query {
-            enumTest1: Test
-            enumTest2: Test
-            enumTest3: Test
-        }
-
-        directive @switchValue(oldValue: Test, newValue: Test) on ENUM | ENUM_VALUE
-
-        extend enum Test @switchValue(oldValue: Value2, newValue: ExtendedValue5) {
-            ExtendedValue4 @switchValue(newValue: EXTENDEDVALUE7)
-            ExtendedValue5
-            ExtendedValue6
-            EXTENDEDVALUE7
-        }
-
-        enum anEnum {
-            A
-        }
-
-        extend enum anEnum @switchValue
-    """
-
-    @Directive(name="switchValue", schema_name="test_issue_278_enum_extend")
+def bakery(schema_name):
+    @Directive(name="switchValue", schema_name=schema_name)
     class SwitchValue:
         @staticmethod
         async def on_pre_output_coercion(
@@ -51,30 +21,55 @@ async def ttftt_engine():
             value = await next_directive(value, ctx, info)
             if value == directive_args.get("oldValue"):
                 return directive_args["newValue"]
-
             if not directive_args.get("oldValue"):
                 return directive_args["newValue"]
-
             return value
 
-    @Resolver("Query.enumTest1", schema_name="test_issue_278_enum_extend")
+    @Resolver("Query.enumTest1", schema_name=schema_name)
     async def resolver_enum_test_1(*args, **kwargs):
         return "Value2"
 
-    @Resolver("Query.enumTest2", schema_name="test_issue_278_enum_extend")
+    @Resolver("Query.enumTest2", schema_name=schema_name)
     async def resolver_enum_test_2(*args, **kwargs):
         return "ExtendedValue4"
 
-    @Resolver("Query.enumTest3", schema_name="test_issue_278_enum_extend")
+    @Resolver("Query.enumTest3", schema_name=schema_name)
     async def resolver_enum_test_3(*args, **kwargs):
         return "ExtendedValue6"
 
-    return await create_engine(
-        schema_sdl, schema_name="test_issue_278_enum_extend"
-    )
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    enum Test {
+        Value1
+        Value2
+        Value3
+    }
+
+    type Query {
+        enumTest1: Test
+        enumTest2: Test
+        enumTest3: Test
+    }
+
+    directive @switchValue(oldValue: Test, newValue: Test) on ENUM | ENUM_VALUE
+
+    extend enum Test @switchValue(oldValue: Value2, newValue: ExtendedValue5) {
+        ExtendedValue4 @switchValue(newValue: EXTENDEDVALUE7)
+        ExtendedValue5
+        ExtendedValue6
+        EXTENDEDVALUE7
+    }
+
+    enum anEnum {
+        A
+    }
+
+    extend enum anEnum @switchValue
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -130,15 +125,15 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue_278_enum_extend(query, expected, ttftt_engine):
-    assert await ttftt_engine.execute(query) == expected
+async def test_issue_278_enum_extend(schema_stack, query, expected):
+    assert await schema_stack.execute(query) == expected
 
 
 @pytest.mark.asyncio
 async def test_issue_278_extend_enum_invalid_sdl():
     with pytest.raises(GraphQLSchemaError) as excinfo:
-        await create_engine(
-            sdl="""
+        await create_schema(
+            """
                 directive @C on ENUM
 
                 enum bob @C {
@@ -165,7 +160,7 @@ async def test_issue_278_extend_enum_invalid_sdl():
                     D
                 }
             """,
-            schema_name="test_issue_278_invalid_sdl",
+            name="test_issue_278_invalid_sdl",
         )
 
     match_schema_errors(

@@ -2,39 +2,12 @@ from typing import Any, Callable, Dict, Optional
 
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import Directive, Resolver
 from tests.functional.utils import is_expected
 
-_SDL = """
-directive @testdire(
-  if: Boolean! = false
-  ifs: [Boolean!]
-  conditions: [Boolean!]!
-  list: [Boolean]!
-) on FIELD
 
-type Cat {
-  name: String!
-  doesKnowCommand(catCommand: String!): Boolean!
-}
-
-type Query {
-  cat(
-    id: Int!
-    name: String
-    isSold: Boolean! = false
-  ) : Cat
-  cats(
-    ids: [Int!]!
-    names: [String!]
-  ) : [Cat]
-}
-"""
-
-
-@pytest.fixture(scope="module")
-async def ttftt_engine():
-    @Directive("testdire", schema_name="test_issue101")
+def bakery(schema_name):
+    @Directive("testdire", schema_name=schema_name)
     class Test101Directive:
         @staticmethod
         async def on_field_execution(
@@ -47,22 +20,48 @@ async def ttftt_engine():
         ) -> Any:
             return await next_resolver(parent, args, ctx, info)
 
-    @Resolver("Query.cat", schema_name="test_issue101")
+    @Resolver("Query.cat", schema_name=schema_name)
     async def resolve_query_cat(parent, args, ctx, info):
         return {"name": "Cat"}
 
-    @Resolver("Query.cats", schema_name="test_issue101")
+    @Resolver("Query.cats", schema_name=schema_name)
     async def resolve_query_cats(parent, args, ctx, info):
         return [{"name": "Cat"}]
 
-    @Resolver("Cat.doesKnowCommand", schema_name="test_issue101")
+    @Resolver("Cat.doesKnowCommand", schema_name=schema_name)
     async def resolve_cat_does_know_command(parent, args, ctx, info):
         return True
 
-    return await create_engine(_SDL, schema_name="test_issue101")
-
 
 @pytest.mark.asyncio
+@pytest.mark.with_schema_stack(
+    sdl="""
+    directive @testdire(
+      if: Boolean! = false
+      ifs: [Boolean!]
+      conditions: [Boolean!]!
+      list: [Boolean]!
+    ) on FIELD
+
+    type Cat {
+      name: String!
+      doesKnowCommand(catCommand: String!): Boolean!
+    }
+
+    type Query {
+      cat(
+        id: Int!
+        name: String
+        isSold: Boolean! = false
+      ) : Cat
+      cats(
+        ids: [Int!]!
+        names: [String!]
+      ) : [Cat]
+    }
+    """,
+    bakery=bakery,
+)
 @pytest.mark.parametrize(
     "query,expected",
     [
@@ -801,5 +800,5 @@ async def ttftt_engine():
         ),
     ],
 )
-async def test_issue101(ttftt_engine, query, expected):
-    is_expected(await ttftt_engine.execute(query), expected)
+async def test_issue101(schema_stack, query, expected):
+    is_expected(await schema_stack.execute(query), expected)

@@ -118,7 +118,7 @@ class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
     def bake(self, schema: "GraphQLSchema") -> None:
         """
         Bakes the GraphQLInputObject and computes all the necessary stuff for execution.
-        :param schema: the GraphQLSchema schema instance linked to the engine
+        :param schema: the GraphQLSchema schema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         # Directives
@@ -153,7 +153,7 @@ class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
     async def bake_input_fields(self, schema: "GraphQLSchema") -> None:
         """
         Bakes input object's input fields.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         if self.input_fields:

@@ -108,7 +108,7 @@ class GraphQLInputField:
         """
         Bakes the GraphQLInputField and computes all the necessary stuff for
         execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         self.graphql_type = get_graphql_type(schema, self.gql_type)

@@ -107,7 +107,7 @@ class GraphQLScalarType(GraphQLInputType, GraphQLType):
         """
         Bakes the GraphQLScalarType and computes all the necessary stuff for
         execution.
-        :param schema: the GraphQLSchema instance linked to the engine
+        :param schema: the GraphQLSchema instance linked to the SDL
         :type schema: GraphQLSchema
         """
         # Directives

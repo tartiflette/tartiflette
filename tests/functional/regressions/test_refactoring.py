@@ -1,44 +1,6 @@
 import pytest
 
-
-async def resolve_query_dog(parent, args, ctx, info):
-    return {"name": "Dog", "nickname": "Doggo", "barkVolume": 2}
-
-
-async def resolve_dog_does_know_command(parent, args, ctx, info):
-    return True
-
-
-async def resolve_dog_is_housetrained(parent, args, ctx, info):
-    return False
-
-
-async def resolve_dog_owner(parent, args, ctx, info):
-    return {"name": "Hooman"}
-
-
-async def resolve_query_cat(parent, args, ctx, info):
-    return {"name": "Cat", "nickname": "Catto", "meowVolume": 1}
-
-
-async def resolve_cat_does_know_command(parent, args, ctx, info):
-    return False
-
-
-async def resolve_query_human(parent, args, ctx, info):
-    return {"name": "Hooman"}
-
-
-async def resolve_query_cat_or_dog(parent, args, ctx, info):
-    return {"_typename": "Dog", "name": "Dog", "nickname": "Doggo"}
-
-
-async def resolve_dog_friends(parent, args, ctx, info):
-    return [
-        {"_typename": "Dog", "name": "Dog", "nickname": "Doggo"},
-        {"_typename": "Cat", "name": "Cat", "nickname": "Catto"},
-    ]
-
+from tartiflette import Resolver
 
 _EXPECTED = {
     "data": {
@@ -54,20 +16,49 @@ _EXPECTED = {
 }
 
 
+def bakery(schema_name):
+    @Resolver("Query.dog", schema_name=schema_name)
+    async def resolve_query_dog(parent, args, ctx, info):
+        return {"name": "Dog", "nickname": "Doggo", "barkVolume": 2}
+
+    @Resolver("Dog.doesKnowCommand", schema_name=schema_name)
+    async def resolve_dog_does_know_command(parent, args, ctx, info):
+        return True
+
+    @Resolver("Dog.isHousetrained", schema_name=schema_name)
+    async def resolve_dog_is_housetrained(parent, args, ctx, info):
+        return False
+
+    @Resolver("Dog.owner", schema_name=schema_name)
+    async def resolve_dog_owner(parent, args, ctx, info):
+        return {"name": "Hooman"}
+
+    @Resolver("Dog.friends", schema_name=schema_name)
+    async def resolve_dog_friends(parent, args, ctx, info):
+        return [
+            {"_typename": "Dog", "name": "Dog", "nickname": "Doggo"},
+            {"_typename": "Cat", "name": "Cat", "nickname": "Catto"},
+        ]
+
+    @Resolver("Query.cat", schema_name=schema_name)
+    async def resolve_query_cat(parent, args, ctx, info):
+        return {"name": "Cat", "nickname": "Catto", "meowVolume": 1}
+
+    @Resolver("Cat.doesKnowCommand", schema_name=schema_name)
+    async def resolve_cat_does_know_command(parent, args, ctx, info):
+        return False
+
+    @Resolver("Query.human", schema_name=schema_name)
+    async def resolve_query_human(parent, args, ctx, info):
+        return {"name": "Hooman"}
+
+    @Resolver("Query.catOrDog", schema_name=schema_name)
+    async def resolve_query_cat_or_dog(parent, args, ctx, info):
+        return {"_typename": "Dog", "name": "Dog", "nickname": "Doggo"}
+
+
 @pytest.mark.asyncio
-@pytest.mark.ttftt_engine(
-    resolvers={
-        "Query.dog": resolve_query_dog,
-        "Dog.doesKnowCommand": resolve_dog_does_know_command,
-        "Dog.isHousetrained": resolve_dog_is_housetrained,
-        "Dog.owner": resolve_dog_owner,
-        "Dog.friends": resolve_dog_friends,
-        "Query.cat": resolve_query_cat,
-        "Cat.doesKnowCommand": resolve_cat_does_know_command,
-        "Query.human": resolve_query_human,
-        "Query.catOrDog": resolve_query_cat_or_dog,
-    }
-)
+@pytest.mark.with_schema_stack(preset="animals", bakery=bakery)
 @pytest.mark.parametrize(
     "operation_name,query,variables,expected",
     [
@@ -392,9 +383,11 @@ _EXPECTED = {
         ),
     ],
 )
-async def test_refactoring(engine, operation_name, query, variables, expected):
+async def test_refactoring(
+    schema_stack, operation_name, query, variables, expected
+):
     assert (
-        await engine.execute(
+        await schema_stack.execute(
             query, operation_name=operation_name, variables=variables
         )
         == expected

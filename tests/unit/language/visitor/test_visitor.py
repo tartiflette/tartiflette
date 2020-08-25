@@ -1,11 +1,8 @@
-import json
 import os
-
-from unittest.mock import Mock
 
 import pytest
 
-from tartiflette import UNDEFINED_VALUE
+from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.language.ast import (
     DocumentNode,
     FieldNode,
@@ -24,11 +21,9 @@ from tartiflette.language.visitor.constants import (
 )
 from tartiflette.language.visitor.visit import visit
 from tartiflette.language.visitor.visitor import MultipleVisitor, Visitor
+from tests.data.utils import get_path_to_query
 
 _BASE_DIR = os.path.dirname(__file__)
-
-_SCHEMA_MOCK = Mock()
-_SCHEMA_MOCK.json_loader = json.loads
 
 
 def check_visitor_fn_args(
@@ -166,7 +161,7 @@ def test_validates_path_argument():
             check_visitor_fn_args(self.ast, node, key, parent, path, ancestors)
             self.visited.append(("leave", path[:]))
 
-    ast = parse_to_document("{ a }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, visitor)
@@ -211,7 +206,7 @@ def test_validates_ancestors_argument():
                 self.visited.pop()
             self.visited.pop()
 
-    ast = parse_to_document("{ a }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a }")
     visit(ast, MyVisitor(ast))
 
 
@@ -229,7 +224,7 @@ def test_allows_visiting_only_specified_nodes():
             check_visitor_fn_args(self.ast, node, key, parent, path, ancestors)
             self.visited.append(("leave", node.__class__.__name__))
 
-    ast = parse_to_document("{ a }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, visitor)
@@ -267,7 +262,7 @@ def test_allows_editing_a_node_both_on_enter_and_on_leave():
             self.visited.append(("leave", node.__class__.__name__))
             return node
 
-    ast = parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b, c { a, b, c } }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     edited_ast = visit(ast, visitor)
@@ -302,7 +297,7 @@ def test_allows_editing_the_root_node_on_enter_and_on_leave():
             self.visited.append(("leave", node.__class__.__name__))
             return node
 
-    ast = parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b, c { a, b, c } }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     edited_ast = visit(ast, visitor)
@@ -326,13 +321,11 @@ def test_allows_for_editing_on_enter():
                 else OK
             )
 
-    ast = parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b, c { a, b, c } }")
     visitor = MyVisitor(ast)
     edited_ast = visit(ast, visitor)
-    assert ast == parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
-    assert edited_ast == parse_to_document(
-        "{ a,    c { a,    c } }", _SCHEMA_MOCK
-    )
+    assert ast == parse_to_document("{ a, b, c { a, b, c } }")
+    assert edited_ast == parse_to_document("{ a,    c { a,    c } }")
 
 
 def test_allows_for_editing_on_leave():
@@ -350,13 +343,11 @@ def test_allows_for_editing_on_leave():
                 else OK
             )
 
-    ast = parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b, c { a, b, c } }")
     visitor = MyVisitor(ast)
     edited_ast = visit(ast, visitor)
-    assert ast == parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
-    assert edited_ast == parse_to_document(
-        "{ a,    c { a,    c } }", _SCHEMA_MOCK
-    )
+    assert ast == parse_to_document("{ a, b, c { a, b, c } }")
+    assert edited_ast == parse_to_document("{ a,    c { a,    c } }")
 
 
 def test_ignores_false_returned_on_leave():
@@ -368,7 +359,7 @@ def test_ignores_false_returned_on_leave():
             check_visitor_fn_args(self.ast, node, key, parent, path, ancestors)
             return SKIP
 
-    ast = parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b, c { a, b, c } }")
     visitor = MyVisitor(ast)
     edited_ast = visit(ast, visitor)
     assert edited_ast == ast
@@ -397,7 +388,7 @@ def test_visits_edited_node():
             if node is added_field:
                 self.did_visit_added_field = True
 
-    ast = parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b, c { a, b, c } }")
     visitor = MyVisitor(ast)
     assert not visitor.did_visit_added_field
     visit(ast, visitor)
@@ -424,7 +415,7 @@ def test_allows_skipping_a_sub_tree():
                 ("leave", node.__class__.__name__, get_value(node))
             )
 
-    ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b { x }, c }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, visitor)
@@ -467,7 +458,7 @@ def test_allows_early_exit_while_visiting():
                 ("leave", node.__class__.__name__, get_value(node))
             )
 
-    ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b { x }, c }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, visitor)
@@ -508,7 +499,7 @@ def test_allows_early_exit_while_leaving():
             if isinstance(node, NameNode) and node.value == "x":
                 return BREAK
 
-    ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b { x }, c }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, visitor)
@@ -554,7 +545,7 @@ def test_allows_a_named_functions_visitor_api():
                 ("leave", node.__class__.__name__, get_value(node))
             )
 
-    ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b { x }, c }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, visitor)
@@ -616,12 +607,10 @@ def tests_visits_kitchen_sink():
             )
 
     kitchen_sink_query = ""
-    with open(
-        os.path.join(_BASE_DIR, "fixtures", "kitchen-sink.graphql")
-    ) as query_file:
+    with open(get_path_to_query("kitchen-sink.graphql")) as query_file:
         kitchen_sink_query = query_file.read()
 
-    ast = parse_to_document(kitchen_sink_query, _SCHEMA_MOCK)
+    ast = parse_to_document(kitchen_sink_query)
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, visitor)
@@ -1037,7 +1026,7 @@ def test_does_not_traverse_unknown_node_kinds():
             self.name = name
             self.selection_set = selection_set
 
-    ast = parse_to_document("{ a }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a }")
     ast.definitions[0].selection_set.selections.append(
         CustomFieldNode(
             name=NameNode(value="b"),
@@ -1089,7 +1078,7 @@ def test_does_traverse_unknown_node_kinds_with_visitor_keys():
             self.name = name
             self.selection_set = selection_set
 
-    ast = parse_to_document("{ a }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a }")
     ast.definitions[0].selection_set.selections.append(
         CustomFieldNode(
             name=NameNode(value="b"),
@@ -1170,7 +1159,7 @@ def test_visit_in_parallel_allows_skipping_a_sub_tree():
                 ("leave", node.__class__.__name__, get_value(node))
             )
 
-    ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b { x }, c }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, MultipleVisitor([visitor]))
@@ -1229,7 +1218,7 @@ def test_visit_in_parallel_allows_skipping_different_sub_trees():
             parallel_visited.append(describe)
             self.visited.append(describe)
 
-    ast = parse_to_document("{ a { x }, b { y} }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a { x }, b { y} }")
     visitor_a = MyVisitor(ast, "a")
     visitor_b = MyVisitor(ast, "b")
     assert parallel_visited == []
@@ -1332,7 +1321,7 @@ def test_visit_in_parallel_allows_early_exit_while_visiting():
                 ("leave", node.__class__.__name__, get_value(node))
             )
 
-    ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b { x }, c }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, MultipleVisitor([visitor]))
@@ -1386,7 +1375,7 @@ def test_visit_in_parallel_allows_early_exit_from_different_points():
             parallel_visited.append(describe)
             self.visited.append(describe)
 
-    ast = parse_to_document("{ a { y }, b { x } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a { y }, b { x } }")
     visitor_a = MyVisitor(ast, "a")
     visitor_b = MyVisitor(ast, "b")
     assert parallel_visited == []
@@ -1461,7 +1450,7 @@ def test_visit_in_parallel_allows_early_exit_while_leaving():
             if isinstance(node, NameNode) and node.value == "x":
                 return BREAK
 
-    ast = parse_to_document("{ a, b { x }, c }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b { x }, c }")
     visitor = MyVisitor(ast)
     assert visitor.visited == []
     visit(ast, MultipleVisitor([visitor]))
@@ -1519,7 +1508,7 @@ def test_visit_in_parallel_allows_early_exit_from_leaving_different_points():
             ):
                 return BREAK
 
-    ast = parse_to_document("{ a { y }, b { x } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a { y }, b { x } }")
     visitor_a = MyVisitor(ast, "a")
     visitor_b = MyVisitor(ast, "b")
     assert parallel_visited == []
@@ -1640,15 +1629,13 @@ def test_visit_in_parallel_allows_for_editing_on_enter():
                 ("leave", node.__class__.__name__, get_value(node))
             )
 
-    ast = parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b, c { a, b, c } }")
     visitor_1 = MyVisitor1(ast)
     visitor_2 = MyVisitor2(ast)
     assert visitor_2.visited == []
     edited_ast = visit(ast, MultipleVisitor([visitor_1, visitor_2]))
-    assert ast == parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
-    assert edited_ast == parse_to_document(
-        "{ a,    c { a,    c } }", _SCHEMA_MOCK
-    )
+    assert ast == parse_to_document("{ a, b, c { a, b, c } }")
+    assert edited_ast == parse_to_document("{ a,    c { a,    c } }")
     assert visitor_2.visited == [
         ("enter", "DocumentNode", UNDEFINED_VALUE),
         ("enter", "OperationDefinitionNode", UNDEFINED_VALUE),
@@ -1711,15 +1698,13 @@ def test_visit_in_parallel_allows_for_editing_on_leave():
                 ("leave", node.__class__.__name__, get_value(node))
             )
 
-    ast = parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, b, c { a, b, c } }")
     visitor_1 = MyVisitor1(ast)
     visitor_2 = MyVisitor2(ast)
     assert visitor_2.visited == []
     edited_ast = visit(ast, MultipleVisitor([visitor_1, visitor_2]))
-    assert ast == parse_to_document("{ a, b, c { a, b, c } }", _SCHEMA_MOCK)
-    assert edited_ast == parse_to_document(
-        "{ a,    c { a,    c } }", _SCHEMA_MOCK
-    )
+    assert ast == parse_to_document("{ a, b, c { a, b, c } }")
+    assert edited_ast == parse_to_document("{ a,    c { a,    c } }")
     assert visitor_2.visited == [
         ("enter", "DocumentNode", UNDEFINED_VALUE),
         ("enter", "OperationDefinitionNode", UNDEFINED_VALUE),
@@ -1840,7 +1825,7 @@ def test_visit_in_parallel_allows_editing_a_node_both_on_enter_and_on_leave():
             parallel_visited.append(describe)
             self.visited.append(describe)
 
-    ast = parse_to_document("{ a, y, c { a, b, c } }", _SCHEMA_MOCK)
+    ast = parse_to_document("{ a, y, c { a, b, c } }")
     visitor_1 = MyVisitor1(ast)
     visitor_2 = MyVisitor2(ast)
     assert parallel_visited == []

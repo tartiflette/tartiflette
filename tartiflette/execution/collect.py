@@ -28,7 +28,7 @@ def collect_executable_variable_definitions(
     """
     Go recursively through all variable definition AST nodes to convert them as
     executable variable definition.
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :param operation: the AST operation definition node to execute
     :type schema: GraphQLSchema
     :type operation: OperationDefinitionNode

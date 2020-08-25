@@ -1,6 +1,12 @@
 import pytest
 
-from tartiflette import Directive, Resolver, create_engine
+from tartiflette import (
+    Directive,
+    Resolver,
+    create_schema,
+    create_schema_with_operators,
+)
+from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 from tests.functional.utils import match_schema_errors
 
 
@@ -10,22 +16,22 @@ async def test_issue228_1():
     async def lol(*_args, **_kwargs):
         return {"ninja": "Ohio"}
 
-    _engine = await create_engine(
+    _, execute, __ = await create_schema_with_operators(
         sdl="""
-
-            type Query {
-                a: Lol
-            }""",
+        type Query {
+            a: Lol
+        }
+        """,
         modules=[
             {
                 "name": "tests.functional.regressions.issue228.a_module",
                 "config": {"val": "Blah!!"},
             }
         ],
-        schema_name="issue228_1",
+        name="issue228_1",
     )
 
-    assert await _engine.execute("query aquery { a { ninja } }") == {
+    assert await execute("query aquery { a { ninja } }") == {
         "data": {"a": {"ninja": "Ohio Ninja Blah!!GO !"}}
     }
 
@@ -36,35 +42,28 @@ async def test_issue228_2():
     async def lol(*_args, **_kwargs):
         return {"ninja": "Ohio"}
 
-    _engine = await create_engine(
+    _, execute, __ = await create_schema_with_operators(
         sdl="""
-
-            type Query {
-                a: Lol
-            }""",
+        type Query {
+            a: Lol
+        }
+        """,
         modules=[
             {
                 "name": "tests.functional.regressions.issue228.b_module",
                 "config": {"val": "Blah!!"},
             }
         ],
-        schema_name="issue228_2",
+        name="issue228_2",
     )
 
-    assert await _engine.execute("query aquery { a { ninja } }") == {
+    assert await execute("query aquery { a { ninja } }") == {
         "data": {"a": {"ninja": "Ohio NinjaB BBlah!!GO !B"}}
     }
 
 
 @pytest.mark.asyncio
 async def test_issue228_3():
-    from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
-
-    sdl = """
-
-    directive @tartifyMe on FIELD_DEFINITION
-    """
-
     @Directive("tartifyMe", schema_name="issue228_3")
     class TartifyYourself:
         @staticmethod
@@ -94,6 +93,11 @@ async def test_issue228_3():
             pass
 
     with pytest.raises(GraphQLSchemaError) as excinfo:
-        await create_engine(sdl=sdl, schema_name="issue228_3")
+        await create_schema(
+            """
+            directive @tartifyMe on FIELD_DEFINITION
+            """,
+            name="issue228_3",
+        )
 
     match_schema_errors(excinfo.value, ["Query root type must be provided."])

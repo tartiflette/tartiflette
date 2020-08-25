@@ -6,7 +6,7 @@ def get_field_definition(
 ) -> "GraphQLField":
     """
     Returns the field corresponding to the parent type and field name.
-    :param schema: the GraphQLSchema instance linked to the engine
+    :param schema: the GraphQLSchema instance linked to the SDL
     :param parent_type: GraphQLObjectType of the field's parent
     :param field_name: field name to retrieve
     :type schema: GraphQLSchema
