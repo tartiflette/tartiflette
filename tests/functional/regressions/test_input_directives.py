@@ -20,21 +20,16 @@ def bakery(schema_name):
     @Directive("debug", schema_name=schema_name)
     class DebugDirective:
         @staticmethod
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ):
             result = await next_directive(
-                parent_node,
-                argument_definition_node,
-                argument_node,
-                value,
-                ctx,
+                parent_node, argument_definition_node, value, ctx,
             )
             return result
 
@@ -43,10 +38,13 @@ def bakery(schema_name):
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node,
+            input_definition_node,
             value: Any,
             ctx: Optional[Any],
         ):
-            return await next_directive(parent_node, value, ctx)
+            return await next_directive(
+                parent_node, input_definition_node, value, ctx
+            )
 
         @staticmethod
         async def on_pre_output_coercion(
@@ -61,22 +59,22 @@ def bakery(schema_name):
     @Directive("error", schema_name=schema_name)
     class ErrorDirective:
         @staticmethod
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ):
-            raise ValueError("on_argument_execution error")
+            raise ValueError("on_post_argument_coercion error")
 
         @staticmethod
         async def on_post_input_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node,
+            input_definition_node,
             value: Any,
             ctx: Optional[Any],
         ):

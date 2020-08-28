@@ -81,7 +81,7 @@ async def should_include_node(
                 node.directives,
                 execution_context.variable_values,
             ),
-            directive_hook=hook_name,
+            directive_hooks=[hook_name],
             with_default=True,
         )(
             node,

@@ -29,10 +29,13 @@ def bakery(schema_name):
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node,
+            input_definition_node,
             value: Any,
             ctx: Optional[Any],
         ):
-            value = await next_directive(parent_node, value, ctx)
+            value = await next_directive(
+                parent_node, input_definition_node, value, ctx
+            )
             if value is None:
                 return value
 

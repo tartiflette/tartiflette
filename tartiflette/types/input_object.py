@@ -21,7 +21,10 @@ from tartiflette.types.type import (
     GraphQLInputType,
     GraphQLType,
 )
-from tartiflette.utils.directives import wraps_with_directives
+from tartiflette.utils.directives import (
+    default_post_input_coercion_directive,
+    wraps_with_directives,
+)
 
 __all__ = ("GraphQLInputObjectType",)
 
@@ -38,21 +41,25 @@ class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
         self,
         name: str,
         fields: Dict[str, "GraphQLInputField"],
+        definition: "InputObjectTypeDefinitionNode",
         description: Optional[str] = None,
         directives: Optional[List["DirectiveNode"]] = None,
     ) -> None:
         """
         :param name: name of the input object
         :param fields: map of fields linked to the input object
+        :param definition: the input object definition AST node
         :param description: description of the input object
         :param directives: list of directives linked to the input object
         :type name: str
         :type fields: Dict[str, GraphQLInputField]
+        :type definition: InputObjectTypeDefinitionNode
         :type description: Optional[str]
         :type directives: Optional[List[DirectiveNode]]
         """
         self.name = name
         self.input_fields = fields or {}
+        self.definition = definition
         self.description = description
 
         # Directives
@@ -127,11 +134,15 @@ class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
         )
         self.introspection_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_introspection",
+            directive_hooks=["on_introspection"],
         )
         post_input_coercion_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_post_input_coercion",
+            directive_hooks=[
+                "on_post_input_object_coercion",
+                "on_post_input_coercion",
+            ],
+            func=default_post_input_coercion_directive,
         )
 
         # Coercers
@@ -141,6 +152,7 @@ class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
                 input_input_object_coercer, input_object_type=self
             ),
             directives=post_input_coercion_directives,
+            definition_node=self.definition,
         )
         self.literal_coercer = partial(
             literal_directives_coercer,
@@ -148,6 +160,7 @@ class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
                 literal_input_object_coercer, input_object_type=self
             ),
             directives=post_input_coercion_directives,
+            definition_node=self.definition,
         )
 
     async def bake_input_fields(self, schema: "GraphQLSchema") -> None:

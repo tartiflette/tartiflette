@@ -7,19 +7,17 @@ def bakery(schema_name):
     @Directive("appendArgumentName", schema_name=schema_name)
     class AppendArgumentNameDirective:
         @staticmethod
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             directive_args,
             next_directive,
             parent_node,
             argument_definition_node,
-            argument_node,
             value,
             ctx,
         ):
             return await next_directive(
                 parent_node,
                 argument_definition_node,
-                argument_node,
                 f"{value}.{argument_definition_node.name.value}",
                 ctx,
             )
@@ -27,19 +25,17 @@ def bakery(schema_name):
     @Directive("prependArgumentName", schema_name=schema_name)
     class PrependArgumentNameDirective:
         @staticmethod
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             directive_args,
             next_directive,
             parent_node,
             argument_definition_node,
-            argument_node,
             value,
             ctx,
         ):
             return await next_directive(
                 parent_node,
                 argument_definition_node,
-                argument_node,
                 f"{argument_definition_node.name.value}.{value}",
                 ctx,
             )

@@ -256,20 +256,15 @@ def parse_input_value_definition(
     if not input_value_definition_node:
         return None
 
-    init_kwargs = {
-        "name": parse_name(input_value_definition_node.name, schema),
-        "description": parse_name(
+    return (GraphQLArgument if as_argument_definition else GraphQLInputField)(
+        name=parse_name(input_value_definition_node.name, schema),
+        description=parse_name(
             input_value_definition_node.description, schema
         ),
-        "gql_type": parse_type(input_value_definition_node.type, schema),
-        "default_value": input_value_definition_node.default_value,
-        "directives": input_value_definition_node.directives,
-    }
-
-    if not as_argument_definition:
-        return GraphQLInputField(**init_kwargs)
-    return GraphQLArgument(
-        **init_kwargs, definition=input_value_definition_node
+        gql_type=parse_type(input_value_definition_node.type, schema),
+        default_value=input_value_definition_node.default_value,
+        directives=input_value_definition_node.directives,
+        definition=input_value_definition_node,
     )
 
 
@@ -384,6 +379,7 @@ def parse_scalar_type_definition(
             scalar_type_definition_node.description, schema
         ),
         directives=scalar_type_definition_node.directives,
+        definition=scalar_type_definition_node,
     )
     schema.add_scalar_definition(scalar_type)
     return scalar_type
@@ -596,6 +592,7 @@ def parse_enum_value_definition(
         value=parse_name(enum_value_definition_node.name, schema),
         description=parse_name(enum_value_definition_node.description, schema),
         directives=enum_value_definition_node.directives,
+        definition=enum_value_definition_node,
     )
 
 
@@ -645,6 +642,7 @@ def parse_enum_type_definition(
             enum_type_definition_node.values, schema
         ),
         directives=enum_type_definition_node.directives,
+        definition=enum_type_definition_node,
     )
     schema.add_enum_definition(enum_type)
     return enum_type
@@ -705,6 +703,7 @@ def parse_input_object_type_definition(
             input_object_type_definition_node.fields, schema
         ),
         directives=input_object_type_definition_node.directives,
+        definition=input_object_type_definition_node,
     )
     schema.add_type_definition(input_object_type)
     return input_object_type

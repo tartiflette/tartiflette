@@ -8,7 +8,10 @@ from tartiflette.types.helpers.get_directive_instances import (
 )
 from tartiflette.types.helpers.type import get_graphql_type
 from tartiflette.types.type import GraphQLType
-from tartiflette.utils.directives import wraps_with_directives
+from tartiflette.utils.directives import (
+    default_post_input_coercion_directive,
+    wraps_with_directives,
+)
 
 __all__ = ("GraphQLArgument",)
 
@@ -127,7 +130,7 @@ class GraphQLArgument:
         )
         self.introspection_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_introspection",
+            directive_hooks=["on_introspection"],
         )
 
         # Coercers
@@ -136,6 +139,10 @@ class GraphQLArgument:
             argument_coercer,
             directives=wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hook="on_argument_execution",
+                directive_hooks=[
+                    "on_post_argument_coercion",
+                    "on_post_input_coercion",
+                ],
+                func=default_post_input_coercion_directive,
             ),
         )

@@ -14,7 +14,10 @@ from tartiflette.types.helpers.get_directive_instances import (
 )
 from tartiflette.types.helpers.type import get_graphql_type
 from tartiflette.types.type import GraphQLType
-from tartiflette.utils.directives import wraps_with_directives
+from tartiflette.utils.directives import (
+    default_post_input_coercion_directive,
+    wraps_with_directives,
+)
 
 __all__ = ("GraphQLInputField",)
 
@@ -28,6 +31,7 @@ class GraphQLInputField:
         self,
         name: str,
         gql_type: Union["GraphQLList", "GraphQLNonNull", str],
+        definition: "InputValueDefinitionNode",
         default_value: Optional["ValueNode"] = None,
         description: Optional[str] = None,
         directives: Optional[List["DirectiveNode"]] = None,
@@ -35,6 +39,7 @@ class GraphQLInputField:
         """
         :param name: name of the input field
         :param gql_type: GraphQL type of the input field
+        :param definition: the input value definition AST node
         :param default_value: AST node which represents the default value
         :param description: description of the input field
         :param directives: list of directives linked to the input field
@@ -43,9 +48,11 @@ class GraphQLInputField:
         :type default_value: Optional[ValueNode]
         :type description: Optional[str]
         :type directives: Optional[List[DirectiveNode]]
+        :type definition: Optional[InputValueDefinitionNode]
         """
         self.name = name
         self.gql_type = gql_type
+        self.definition = definition
         self.default_value = default_value
         self.description = description
         self.graphql_type: Optional["GraphQLType"] = None
@@ -129,11 +136,15 @@ class GraphQLInputField:
         )
         self.introspection_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_introspection",
+            directive_hooks=["on_introspection"],
         )
         post_input_coercion_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_post_input_coercion",
+            directive_hooks=[
+                "on_post_input_field_coercion",
+                "on_post_input_coercion",
+            ],
+            func=default_post_input_coercion_directive,
         )
 
         # Coercers
@@ -141,10 +152,12 @@ class GraphQLInputField:
             input_directives_coercer,
             coercer=get_input_coercer(self.graphql_type),
             directives=post_input_coercion_directives,
+            definition_node=self.definition,
         )
         self.literal_coercer = partial(
             literal_directives_coercer,
             coercer=get_literal_coercer(self.graphql_type),
             directives=post_input_coercion_directives,
             is_input_field=True,
+            definition_node=self.definition,
         )
