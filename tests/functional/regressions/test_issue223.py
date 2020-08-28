@@ -32,12 +32,15 @@ def bakery(schema_name):
         async def on_pre_output_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            output_definition_node,
             value: Any,
             ctx: Optional[Any],
             info: "ResolveInfo",
         ):
             value["value"] = value["value"] + directive_args["value"]
-            return await next_directive(value, ctx, info)
+            return await next_directive(
+                output_definition_node, value, ctx, info
+            )
 
     @Directive("mapToValue", schema_name=schema_name)
     class MapToValue:
@@ -47,12 +50,15 @@ def bakery(schema_name):
         async def on_pre_output_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            output_definition_node,
             value: Any,
             ctx: Optional[Any],
             info: "ResolveInfo",
         ):
             value = MapToValue.my_map.get(value, value)
-            return await next_directive(value, ctx, info)
+            return await next_directive(
+                output_definition_node, value, ctx, info
+            )
 
         @staticmethod
         async def on_post_input_coercion(
@@ -97,11 +103,14 @@ def bakery(schema_name):
         async def on_pre_output_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            output_definition_node,
             value: Any,
             ctx: Optional[Any],
             info: "ResolveInfo",
         ):
-            return await next_directive(value.capitalize(), ctx, info)
+            return await next_directive(
+                output_definition_node, value.capitalize(), ctx, info
+            )
 
     @Directive("lower", schema_name=schema_name)
     @Directive("lower2", schema_name=schema_name)
@@ -110,11 +119,14 @@ def bakery(schema_name):
         async def on_pre_output_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            output_definition_node,
             value: Any,
             ctx: Optional[Any],
             info: "ResolveInfo",
         ):
-            return await next_directive(value.lower(), ctx, info)
+            return await next_directive(
+                output_definition_node, value.lower(), ctx, info
+            )
 
     @Directive("upper", schema_name=schema_name)
     class Upper:
@@ -122,11 +134,14 @@ def bakery(schema_name):
         async def on_pre_output_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            output_definition_node,
             value: Any,
             ctx: Optional[Any],
             info: "ResolveInfo",
         ):
-            return await next_directive(value.upper(), ctx, info)
+            return await next_directive(
+                output_definition_node, value.upper(), ctx, info
+            )
 
     @Resolver("Query.wardrobe", schema_name=schema_name)
     async def wardrobe_resolver(_pr, _args, _ctx, _info):

@@ -37,6 +37,7 @@ async def enum_coercer(
     try:
         enum_value = enum_type.get_value(result)
         coerced_result = await enum_value.output_coercer(
+            enum_value.definition,
             result,
             execution_context.context,
             info,

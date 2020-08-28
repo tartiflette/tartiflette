@@ -108,6 +108,7 @@ async def abstract_coercer(
 
     return await complete_object_value(
         await runtime_type.pre_output_coercion_directives(
+            runtime_type.definition,
             result,
             execution_context.context,
             info,

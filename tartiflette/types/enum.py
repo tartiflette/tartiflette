@@ -27,6 +27,7 @@ from tartiflette.types.type import (
 )
 from tartiflette.utils.directives import (
     default_post_input_coercion_directive,
+    default_pre_output_coercion_directive,
     wraps_with_directives,
 )
 
@@ -156,8 +157,11 @@ class GraphQLEnumValue:
         self.literal_coercer = post_input_coercion_directives
         self.output_coercer = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hooks=["on_pre_output_coercion"],
-            with_default=True,
+            directive_hooks=[
+                "on_pre_enum_value_output_coercion",
+                "on_pre_output_coercion",
+            ],
+            func=default_pre_output_coercion_directive,
         )
 
 
@@ -316,9 +320,13 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
             coercer=partial(enum_coercer, enum_type=self),
             directives=wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hooks=["on_pre_output_coercion"],
-                with_default=True,
+                directive_hooks=[
+                    "on_pre_enum_type_output_coercion",
+                    "on_pre_output_coercion",
+                ],
+                func=default_pre_output_coercion_directive,
             ),
+            definition_node=self.definition,
         )
 
     async def bake_enum_values(self, schema: "GraphQLSchema") -> None:
