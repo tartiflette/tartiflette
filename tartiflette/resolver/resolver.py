@@ -2,6 +2,7 @@ from typing import Callable, Optional
 
 from tartiflette.schema.registry import SchemaRegistry
 from tartiflette.types.exceptions.tartiflette import (
+    ImproperlyConfigured,
     MissingImplementation,
     NonAwaitableResolver,
     NonCallable,
@@ -9,6 +10,7 @@ from tartiflette.types.exceptions.tartiflette import (
 )
 from tartiflette.types.helpers.definition import get_wrapped_type
 from tartiflette.types.helpers.type import get_graphql_type
+from tartiflette.types.interface import GraphQLInterfaceType
 from tartiflette.utils.callables import is_valid_coroutine
 
 __all__ = ("Resolver",)
@@ -72,10 +74,26 @@ class Resolver:
             field.raw_resolver = self._implementation
             field.query_arguments_coercer = self._arguments_coercer
 
+            parent_name, _ = self.name.split(".")
+            parent_type = schema.find_type(parent_name)
+            if self._type_resolver and isinstance(
+                parent_type, GraphQLInterfaceType
+            ):
+                raise ImproperlyConfigured(
+                    "< type_resolver > parameter shouldn't be defined on "
+                    f"< {parent_name} > interface type."
+                )
+
             field_wrapped_type = get_wrapped_type(
                 get_graphql_type(schema, field.gql_type)
             )
-            if self._type_resolver and field_wrapped_type.is_abstract_type:
+            if self._type_resolver:
+                if not field_wrapped_type.is_abstract_type:
+                    raise ImproperlyConfigured(
+                        "< type_resolver > parameter shouldn't be defined on "
+                        f"non abastract < {self.name} > field."
+                    )
+
                 field_wrapped_type.add_field_type_resolver(
                     self.name, self._type_resolver
                 )
