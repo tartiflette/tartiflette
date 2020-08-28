@@ -28,21 +28,16 @@ def bakery(schema_name):
     @Directive("validateLimit", schema_name=schema_name)
     class ValidateLimitDirective:
         @staticmethod
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ):
             value = await next_directive(
-                parent_node,
-                argument_definition_node,
-                argument_node,
-                value,
-                ctx,
+                parent_node, argument_definition_node, value, ctx,
             )
             if value > directive_args["limit"]:
                 raise LimitReachedException("Limit has been reached")

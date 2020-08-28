@@ -160,7 +160,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         )
         self.introspection_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_introspection",
+            directive_hooks=["on_introspection"],
         )
 
         # Coercers
@@ -169,7 +169,7 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
             coercer=partial(abstract_coercer, abstract_type=self),
             directives=wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hook="on_pre_output_coercion",
+                directive_hooks=["on_pre_output_coercion"],
                 with_default=True,
             ),
         )

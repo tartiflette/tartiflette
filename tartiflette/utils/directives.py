@@ -6,10 +6,14 @@ from typing import Any, AsyncGenerator, Callable, Dict, List, Optional, Union
 from tartiflette.constants import UNDEFINED_VALUE
 from tartiflette.utils.values import is_invalid_value
 
-__all__ = ("introspection_directives_executor", "wraps_with_directives")
+__all__ = (
+    "introspection_directives_executor",
+    "default_post_input_coercion_directive",
+    "wraps_with_directives",
+)
 
 
-async def execute_introspection_directive(
+async def _execute_introspection_directive(
     element: Any,
     ctx: Optional[Any],
     info: "ResolveInfo",
@@ -63,7 +67,7 @@ async def introspection_directives_executor(
     :rtype: Any
     """
     if not isinstance(element, list):
-        computed_element = await execute_introspection_directive(
+        computed_element = await _execute_introspection_directive(
             element, ctx, info, context_coercer=context_coercer
         )
         if not is_invalid_value(computed_element):
@@ -72,7 +76,7 @@ async def introspection_directives_executor(
 
     results = await asyncio.gather(
         *[
-            execute_introspection_directive(
+            _execute_introspection_directive(
                 item, ctx, info, context_coercer=context_coercer
             )
             for item in element
@@ -81,34 +85,20 @@ async def introspection_directives_executor(
     return [result for result in results if not is_invalid_value(result)]
 
 
-async def default_argument_execution_directive(
-    parent_node: Union["FieldNode", "DirectiveNode"],
-    argument_definition_node: "InputValueDefinitionNode",
-    argument_node: Optional["ArgumentNode"],
-    value: Any,
-    *args,
-    **kwargs,
-) -> Any:
-    """
-    Default callable to use to wrap with directives on `on_argument_execution`
-    hook name.
-    :param parent_node: the parent AST node related to the executed argument
-    :param argument_definition_node: the input value definition AST node
-    :param argument_node: the AST argument node executed
-    :param value: the coerced value of the argument
-    :type parent_node: Union[FieldNode, DirectiveNode]
-    :type argument_definition_node: InputValueDefinitionNode
-    :type argument_node: ArgumentNode
-    :type value: Any
-    :return: the coerced value of the argument
-    :rtype: Any
-    """
-    # pylint: disable=unused-argument
-    return value
-
-
 async def default_post_input_coercion_directive(
-    parent_node: Union["VariableDefinitionNode", "InputValueDefinitionNode"],
+    parent_node: Union[
+        "FieldNode",
+        "DirectiveNode",
+        "VariableDefinitionNode",
+        "InputValueDefinitionNode",
+    ],
+    input_definition_node: Union[
+        "InputObjectTypeDefinitionNode",
+        "InputValueDefinitionNode",
+        "EnumTypeDefinitionNode",
+        "EnumValueDefinitionNode",
+        "ScalarTypeDefinitionNode",
+    ],
     value: Any,
     *args,
     **kwargs,
@@ -117,17 +107,30 @@ async def default_post_input_coercion_directive(
     Default callable to use to wrap with directives on `on_post_input_coercion`
     hook name.
     :param parent_node: the root parent AST node
+    :param input_definition_node: the input definition AST node
     :param value: the coerced value of the argument
-    :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
+    :type parent_node: Union[
+        FieldNode,
+        DirectiveNode,
+        VariableDefinitionNode,
+        InputValueDefinitionNode,
+    ]
+    :type input_definition_node: Union[
+        InputObjectTypeDefinitionNode,
+        InputValueDefinitionNode,
+        EnumTypeDefinitionNode,
+        EnumValueDefinitionNode,
+        ScalarTypeDefinitionNode,
+    ]
     :type value: Any
-    :return: the coerced value of the argument
+    :return: the coerced value of the input
     :rtype: Any
     """
     # pylint: disable=unused-argument
     return value
 
 
-async def default_directive_callable(value: Any, *args, **kwargs) -> Any:
+async def _default_directive_callable(value: Any, *args, **kwargs) -> Any:
     """
     Default callable to use to wrap with directives when the hook doesn't
     implements a specific callable.
@@ -140,13 +143,7 @@ async def default_directive_callable(value: Any, *args, **kwargs) -> Any:
     return value
 
 
-_HOOK_CALLABLES_MAP = {
-    "on_argument_execution": default_argument_execution_directive,
-    "on_post_input_coercion": default_post_input_coercion_directive,
-}
-
-
-async def directive_executor(
+async def _directive_executor(
     directive_func: Callable,
     directive_arguments_coercer: Callable,
     wrapped_func: Callable,
@@ -178,7 +175,7 @@ async def directive_executor(
     )
 
 
-async def directive_generator(
+async def _directive_generator(
     directive_func: AsyncGenerator,
     directive_arguments_coercer: Callable,
     wrapped_func: Callable,
@@ -195,7 +192,7 @@ async def directive_generator(
         yield payload
 
 
-async def resolver_executor(resolver: Callable, *args, **kwargs) -> Any:
+async def _resolver_executor(resolver: Callable, *args, **kwargs) -> Any:
     """
     Wraos the execution of the raw resolver in order to pop the
     `context_coercer` keyword arguments to avoid exception.
@@ -216,7 +213,7 @@ async def subscription_generator(generator: AsyncGenerator, *args, **kwargs):
 
 def wraps_with_directives(
     directives_definition: List[Dict[str, Any]],
-    directive_hook: str,
+    directive_hooks: List[str],
     func: Optional[Callable] = None,
     is_resolver: bool = False,
     with_default: bool = False,
@@ -225,15 +222,16 @@ def wraps_with_directives(
     """
     Wraps a callable with directives.
     :param directives_definition: directives to wrap with
-    :param directive_hook: name of the hook to wrap with
+    :param directive_hooks: name(s) of the hook to wrap with
     :param func: callable to wrap
     :param is_resolver: determines whether or not the wrapped func is a
     resolver
     :param with_default: determines whether or not if there is no directives
-    :param is_async_generator: determines whether or not the wrapped func is a generator
+    :param is_async_generator: determines whether or not the wrapped func is a
+    generator
     definition we should return or not a callable
     :type directives_definition: List[Dict[str, Any]]
-    :type directive_hook: str
+    :type directive_hooks: List[str]
     :type func: Optional[Callable]
     :type is_resolver: bool
     :type with_default: bool
@@ -241,29 +239,29 @@ def wraps_with_directives(
     :return: wrapped callable
     :rtype: Optional[Callable]
     """
-    directive_wrapper = directive_executor
+    directive_wrapper = _directive_executor
 
     if func is None:
         if not with_default and not directives_definition:
             return None
 
-        func = _HOOK_CALLABLES_MAP.get(
-            directive_hook, default_directive_callable
-        )
+        func = _default_directive_callable
 
     if is_resolver and not isinstance(func, partial):
-        func = partial(resolver_executor, func)
+        func = partial(_resolver_executor, func)
 
     if is_async_generator and not isinstance(func, partial):
         func = partial(subscription_generator, func)
-        directive_wrapper = directive_generator
+        directive_wrapper = _directive_generator
 
     for directive in reversed(directives_definition):
-        if directive_hook in directive["callables"]:
-            func = partial(
-                directive_wrapper,
-                directive["callables"][directive_hook],
-                directive["arguments_coercer"],
-                func,
-            )
+        for directive_hook in directive_hooks:
+            if directive_hook in directive["callables"]:
+                func = partial(
+                    directive_wrapper,
+                    directive["callables"][directive_hook],
+                    directive["arguments_coercer"],
+                    func,
+                )
+                break
     return func

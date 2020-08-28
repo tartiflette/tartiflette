@@ -25,7 +25,10 @@ from tartiflette.types.type import (
     GraphQLInputType,
     GraphQLType,
 )
-from tartiflette.utils.directives import wraps_with_directives
+from tartiflette.utils.directives import (
+    default_post_input_coercion_directive,
+    wraps_with_directives,
+)
 
 __all__ = ("GraphQLEnumValue", "GraphQLEnumType")
 
@@ -38,18 +41,22 @@ class GraphQLEnumValue:
     def __init__(
         self,
         value: str,
+        definition: "EnumValueDefinitionNode",
         description: Optional[str] = None,
         directives: Optional[List["DirectiveNode"]] = None,
     ) -> None:
         """
         :param value: value of the enum value
+        :param definition: the enum value definition AST node
         :param description: description of the enum value
         :param directives: list of directives linked to the enum value
         :type value: str
+        :type definition: EnumValueDefinitionNode
         :type description: Optional[str]
         :type directives: Optional[List[DirectiveNode]]
         """
         self.value = value
+        self.definition = definition
         self.description = description
 
         # Directives
@@ -126,19 +133,22 @@ class GraphQLEnumValue:
         self.on_post_bake = partial(
             wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hook="on_post_bake",
+                directive_hooks=["on_post_bake"],
                 with_default=True,
             ),
             self,
         )
         self.introspection_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_introspection",
+            directive_hooks=["on_introspection"],
         )
         post_input_coercion_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_post_input_coercion",
-            with_default=True,
+            directive_hooks=[
+                "on_post_enum_value_input_coercion",
+                "on_post_input_coercion",
+            ],
+            func=default_post_input_coercion_directive,
         )
 
         # Coercers
@@ -146,7 +156,7 @@ class GraphQLEnumValue:
         self.literal_coercer = post_input_coercion_directives
         self.output_coercer = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_pre_output_coercion",
+            directive_hooks=["on_pre_output_coercion"],
             with_default=True,
         )
 
@@ -163,21 +173,25 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
         self,
         name: str,
         values: List["GraphQLEnumValue"],
+        definition: "EnumTypeDefinitionNode",
         description: Optional[str] = None,
         directives: Optional[List["DirectiveNode"]] = None,
     ) -> None:
         """
         :param name: name of the enum
         :param values: list of values linked to the enum
+        :param definition: the enum type definition AST node
         :param description: description of the enum
         :param directives: list of directives linked to the enum
         :type name: str
         :type values: List[GraphQLEnumValue]
+        :type definition: EnumTypeDefinitionNode
         :type description: Optional[str]
         :type directives: Optional[List[DirectiveNode]]
         """
         self.name = name
         self.values = values
+        self.definition = definition
         self.description = description
         self._value_map: Dict[str, "GraphQLEnumValue"] = {}
 
@@ -273,11 +287,15 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
         )
         self.introspection_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_introspection",
+            directive_hooks=["on_introspection"],
         )
         post_input_coercion_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_post_input_coercion",
+            directive_hooks=[
+                "on_post_enum_type_input_coercion",
+                "on_post_input_coercion",
+            ],
+            func=default_post_input_coercion_directive,
         )
 
         # Coercers
@@ -285,18 +303,20 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
             input_directives_coercer,
             coercer=partial(input_enum_coercer, enum_type=self),
             directives=post_input_coercion_directives,
+            definition_node=self.definition,
         )
         self.literal_coercer = partial(
             literal_directives_coercer,
             coercer=partial(literal_enum_coercer, enum_type=self),
             directives=post_input_coercion_directives,
+            definition_node=self.definition,
         )
         self.output_coercer = partial(
             output_directives_coercer,
             coercer=partial(enum_coercer, enum_type=self),
             directives=wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hook="on_pre_output_coercion",
+                directive_hooks=["on_pre_output_coercion"],
                 with_default=True,
             ),
         )
