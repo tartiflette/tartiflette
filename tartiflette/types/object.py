@@ -13,7 +13,10 @@ from tartiflette.types.type import (
     GraphQLExtension,
     GraphQLType,
 )
-from tartiflette.utils.directives import wraps_with_directives
+from tartiflette.utils.directives import (
+    default_pre_output_coercion_directive,
+    wraps_with_directives,
+)
 
 __all__ = ("GraphQLObjectType",)
 
@@ -30,6 +33,7 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
         self,
         name: str,
         fields: Dict[str, "GraphQLField"],
+        definition: "ObjectTypeDefinitionNode",
         interfaces: Optional[List[str]] = None,
         description: Optional[str] = None,
         directives: Optional[List["DirectiveNode"]] = None,
@@ -37,17 +41,20 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
         """
         :param name: name of the object
         :param fields: map of fields linked to the object
+        :param definition: the object type definition AST node
         :param interfaces: list of interface names implemented by the object
         :param description: description of the object
         :param directives: list of directives linked to the object
         :type name: str
         :type fields: Dict[str, GraphQLField]
+        :type definition: ObjectTypeDefinitionNode
         :type interfaces: Optional[List[str]]
         :type description: Optional[str]
         :type directives: Optional[List[DirectiveNode]]
         """
         self.name = name
         self.implemented_fields = fields or {}
+        self.definition = definition
         self.interfaces_names = interfaces or []
         self.description = description
 
@@ -159,8 +166,11 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
 
         self.pre_output_coercion_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hooks=["on_pre_output_coercion"],
-            with_default=True,
+            directive_hooks=[
+                "on_pre_object_output_coercion",
+                "on_pre_output_coercion",
+            ],
+            func=default_pre_output_coercion_directive,
         )
 
         # Coercers
@@ -168,6 +178,7 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
             output_directives_coercer,
             coercer=partial(object_coercer, object_type=self),
             directives=self.pre_output_coercion_directives,
+            definition_node=self.definition,
         )
 
     async def bake_fields(

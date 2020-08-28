@@ -50,11 +50,14 @@ def bakery(schema_name):
         async def on_pre_output_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            output_definition_node,
             value: Any,
             ctx: Optional[Any],
             info: "ResolveInfo",
         ):
-            return await next_directive(value, ctx, info)
+            return await next_directive(
+                output_definition_node, value, ctx, info
+            )
 
     @Directive("error", schema_name=schema_name)
     class ErrorDirective:
@@ -84,6 +87,7 @@ def bakery(schema_name):
         async def on_pre_output_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            output_definition_node,
             value: Any,
             ctx: Optional[Any],
             info: "ResolveInfo",

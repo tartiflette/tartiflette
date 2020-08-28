@@ -14,11 +14,14 @@ def bakery(schema_name):
         async def on_pre_output_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
+            output_definition_node,
             value: Any,
             ctx: Optional[Any],
             info: "ResolveInfo",
         ):
-            value = await next_directive(value, ctx, info)
+            value = await next_directive(
+                output_definition_node, value, ctx, info
+            )
             if value == directive_args.get("oldValue"):
                 return directive_args["newValue"]
             if not directive_args.get("oldValue"):

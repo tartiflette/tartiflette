@@ -14,7 +14,10 @@ from tartiflette.types.type import (
     GraphQLExtension,
     GraphQLType,
 )
-from tartiflette.utils.directives import wraps_with_directives
+from tartiflette.utils.directives import (
+    default_pre_output_coercion_directive,
+    wraps_with_directives,
+)
 
 __all__ = ("GraphQLInterfaceType",)
 
@@ -31,22 +34,26 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
         self,
         name: str,
         fields: Dict[str, "GraphQLField"],
+        definition: "InterfaceTypeDefinitionNode",
         description: Optional[str] = None,
         directives: Optional[List["DirectiveNode"]] = None,
     ) -> None:
         """
         :param name: name of the interface
         :param fields: map of fields linked to the interface
+        :param definition: the interface type definition AST node
         :param description: description of the interface
         :param directives: list of directives linked to the interface
         :type name: str
         :type fields: Dict[str, GraphQLField]
+        :type definition: InterfaceTypeDefinitionNode
         :type description: Optional[str]
         :type directives: Optional[List[DirectiveNode]]
         """
         super().__init__()
         self.name = name
         self.implemented_fields = fields or {}
+        self.definition = definition
         self.description = description
         self.possible_types: List["GraphQLType"] = []
         self._possible_types_set: Set[str] = set()
@@ -190,9 +197,13 @@ class GraphQLInterfaceType(GraphQLAbstractType, GraphQLCompositeType):
             coercer=partial(abstract_coercer, abstract_type=self),
             directives=wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hooks=["on_pre_output_coercion"],
-                with_default=True,
+                directive_hooks=[
+                    "on_pre_interface_output_coercion",
+                    "on_pre_output_coercion",
+                ],
+                func=default_pre_output_coercion_directive,
             ),
+            definition_node=self.definition,
         )
 
     async def bake_fields(

@@ -27,6 +27,7 @@ from tartiflette.types.type import (
 )
 from tartiflette.utils.directives import (
     default_post_input_coercion_directive,
+    default_pre_output_coercion_directive,
     wraps_with_directives,
 )
 
@@ -152,9 +153,13 @@ class GraphQLScalarType(GraphQLInputType, GraphQLType):
             coercer=partial(scalar_coercer, scalar_type=self),
             directives=wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hooks=["on_pre_output_coercion"],
-                with_default=True,
+                directive_hooks=[
+                    "on_pre_scalar_output_coercion",
+                    "on_pre_output_coercion",
+                ],
+                func=default_pre_output_coercion_directive,
             ),
+            definition_node=self.definition,
         )
 
 

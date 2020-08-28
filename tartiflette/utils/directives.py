@@ -9,6 +9,7 @@ from tartiflette.utils.values import is_invalid_value
 __all__ = (
     "introspection_directives_executor",
     "default_post_input_coercion_directive",
+    "default_pre_output_coercion_directive",
     "wraps_with_directives",
 )
 
@@ -124,6 +125,40 @@ async def default_post_input_coercion_directive(
     ]
     :type value: Any
     :return: the coerced value of the input
+    :rtype: Any
+    """
+    # pylint: disable=unused-argument
+    return value
+
+
+async def default_pre_output_coercion_directive(
+    output_definition_node: Union[
+        "InterfaceTypeDefinitionNode",
+        "ObjectTypeDefinitionNode",
+        "UnionTypeDefinitionNode",
+        "EnumTypeDefinitionNode",
+        "EnumValueDefinitionNode",
+        "ScalarTypeDefinitionNode",
+    ],
+    value: Any,
+    *args,
+    **kwargs,
+) -> Any:
+    """
+    Default callable to use to wrap with directives on `on_pre_output_coercion`
+    hook name.
+    :param output_definition_node: the input definition AST node
+    :param value: the coerced value of the argument
+    :type output_definition_node: Union[
+        InterfaceTypeDefinitionNode,
+        ObjectTypeDefinitionNode,
+        UnionTypeDefinitionNode,
+        EnumTypeDefinitionNode,
+        EnumValueDefinitionNode,
+        ScalarTypeDefinitionNode,
+    ]
+    :type value: Any
+    :return: the coerced value of the output
     :rtype: Any
     """
     # pylint: disable=unused-argument
