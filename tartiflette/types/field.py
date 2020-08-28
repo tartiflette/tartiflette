@@ -179,14 +179,14 @@ class GraphQLField:
         self.on_post_bake = partial(
             wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hook="on_post_bake",
+                directive_hooks=["on_post_bake"],
                 with_default=True,
             ),
             self,
         )
         self.introspection_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_introspection",
+            directive_hooks=["on_introspection"],
         )
 
         # Resolvers
@@ -195,7 +195,7 @@ class GraphQLField:
             field_definition=self,
             resolver=wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hook="on_field_execution",
+                directive_hooks=["on_field_execution"],
                 func=(
                     self.raw_resolver
                     or custom_default_resolver

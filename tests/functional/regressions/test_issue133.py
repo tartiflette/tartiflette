@@ -9,29 +9,24 @@ from tartiflette.constants import UNDEFINED_VALUE
 def bakery(schema_name):
     @Directive("maxLength", schema_name=schema_name)
     class MaxLengthDirective:
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             self,
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ) -> Any:
             result = await next_directive(
-                parent_node,
-                argument_definition_node,
-                argument_node,
-                value,
-                ctx,
+                parent_node, argument_definition_node, value, ctx,
             )
             if len(result) > directive_args["limit"]:
                 raise Exception(
                     "Value of argument < %s > on field < %s > is too long ("
                     "%s/%s)."
                     % (
-                        argument_node.name.value,
+                        argument_definition_node.name.value,
                         parent_node.name.value,
                         len(result),
                         directive_args["limit"],
@@ -44,10 +39,13 @@ def bakery(schema_name):
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node,
+            input_definition_node,
             value: Any,
             ctx: Optional[Any],
         ):
-            result = await next_directive(parent_node, value, ctx)
+            result = await next_directive(
+                parent_node, input_definition_node, value, ctx
+            )
             if len(result) > directive_args["limit"]:
                 raise Exception(
                     "Value on < %s > is too long (%s/%s)."
@@ -61,29 +59,24 @@ def bakery(schema_name):
 
     @Directive("validateChoices", schema_name=schema_name)
     class ValidateChoicesDirective:
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             self,
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ) -> Any:
             result = await next_directive(
-                parent_node,
-                argument_definition_node,
-                argument_node,
-                value,
-                ctx,
+                parent_node, argument_definition_node, value, ctx,
             )
             if result not in directive_args["choices"]:
                 raise Exception(
                     "Value of argument < %s > on field < %s > is invalid. "
                     "Valid options are < %s >."
                     % (
-                        argument_node.name.value,
+                        argument_definition_node.name.value,
                         parent_node.name.value,
                         ", ".join(directive_args["choices"]),
                     )
@@ -95,10 +88,13 @@ def bakery(schema_name):
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node,
+            input_definition_node,
             value: Any,
             ctx: Optional[Any],
         ):
-            result = await next_directive(parent_node, value, ctx)
+            result = await next_directive(
+                parent_node, input_definition_node, value, ctx
+            )
             if result not in directive_args["choices"]:
                 raise Exception(
                     "Value on < %s > is invalid. Valid options are < %s >."
@@ -111,22 +107,17 @@ def bakery(schema_name):
 
     @Directive("debug", schema_name=schema_name)
     class DebugDirective:
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             self,
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ) -> Any:
             return await next_directive(
-                parent_node,
-                argument_definition_node,
-                argument_node,
-                value,
-                ctx,
+                parent_node, argument_definition_node, value, ctx,
             )
 
         async def on_post_input_coercion(
@@ -134,20 +125,22 @@ def bakery(schema_name):
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node,
+            input_definition_node,
             value: Any,
             ctx: Optional[Any],
         ):
-            return await next_directive(parent_node, value, ctx)
+            return await next_directive(
+                parent_node, input_definition_node, value, ctx
+            )
 
     @Directive("stop", schema_name=schema_name)
     class StopDirective:
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             self,
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ) -> Any:
@@ -158,6 +151,7 @@ def bakery(schema_name):
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node,
+            input_definition_node,
             value: Any,
             ctx: Optional[Any],
         ):

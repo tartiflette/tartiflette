@@ -436,39 +436,49 @@ type Query {
 def bakery(schema_name):
     @Directive("internalCoercionError", schema_name=schema_name)
     class InternalCoercionError:
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             self,
             directive_args,
             next_directive,
             parent_node,
             argument_definition_node,
-            argument_node,
             value,
             ctx,
         ):
             raise CoercionError("Oopsie")
 
         async def on_post_input_coercion(
-            self, directive_args, next_directive, parent_node, value, ctx
+            self,
+            directive_args,
+            next_directive,
+            parent_node,
+            input_definition_node,
+            value,
+            ctx,
         ):
             raise CoercionError("Oopsie")
 
     @Directive("customCoercionError", schema_name=schema_name)
     class CustomCoercionError:
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             self,
             directive_args,
             next_directive,
             parent_node,
             argument_definition_node,
-            argument_node,
             value,
             ctx,
         ):
             raise ValueError("Oopsie")
 
         async def on_post_input_coercion(
-            self, directive_args, next_directive, parent_node, value, ctx
+            self,
+            directive_args,
+            next_directive,
+            parent_node,
+            input_definition_node,
+            value,
+            ctx,
         ):
             raise ValueError("Oopsie")
 

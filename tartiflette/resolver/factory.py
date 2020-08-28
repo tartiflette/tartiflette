@@ -54,7 +54,7 @@ async def resolve_field_value_or_error(
         if computed_directives:
             resolver = wraps_with_directives(
                 directives_definition=computed_directives,
-                directive_hook="on_field_execution",
+                directive_hooks=["on_field_execution"],
                 func=resolver,
                 is_resolver=True,
                 with_default=True,

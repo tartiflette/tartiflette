@@ -25,7 +25,10 @@ from tartiflette.types.type import (
     GraphQLInputType,
     GraphQLType,
 )
-from tartiflette.utils.directives import wraps_with_directives
+from tartiflette.utils.directives import (
+    default_post_input_coercion_directive,
+    wraps_with_directives,
+)
 
 __all__ = ("GraphQLScalarType",)
 
@@ -41,18 +44,22 @@ class GraphQLScalarType(GraphQLInputType, GraphQLType):
     def __init__(
         self,
         name: str,
+        definition: "ScalarTypeDefinitionNode",
         description: Optional[str] = None,
         directives: Optional[List["DirectiveNode"]] = None,
     ) -> None:
         """
         :param name: name of the scalar
+        :param definition: the scalar definition AST node
         :param description: description of the scalar
         :param directives: list of directives linked to the scalar
         :type name: str
+        :type definition: ScalarTypeDefinitionNode
         :type description: Optional[str]
         :type directives: Optional[List[DirectiveNode]]
         """
         self.name = name
+        self.definition = definition
         self.description = description
 
         # Directives
@@ -116,11 +123,15 @@ class GraphQLScalarType(GraphQLInputType, GraphQLType):
         )
         self.introspection_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_introspection",
+            directive_hooks=["on_introspection"],
         )
         post_input_coercion_directives = wraps_with_directives(
             directives_definition=directives_definition,
-            directive_hook="on_post_input_coercion",
+            directive_hooks=[
+                "on_post_scalar_input_coercion",
+                "on_post_input_coercion",
+            ],
+            func=default_post_input_coercion_directive,
         )
 
         # Coercers
@@ -128,18 +139,20 @@ class GraphQLScalarType(GraphQLInputType, GraphQLType):
             input_directives_coercer,
             coercer=partial(input_scalar_coercer, scalar_type=self),
             directives=post_input_coercion_directives,
+            definition_node=self.definition,
         )
         self.literal_coercer = partial(
             literal_directives_coercer,
             coercer=partial(literal_scalar_coercer, scalar_type=self),
             directives=post_input_coercion_directives,
+            definition_node=self.definition,
         )
         self.output_coercer = partial(
             output_directives_coercer,
             coercer=partial(scalar_coercer, scalar_type=self),
             directives=wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hook="on_pre_output_coercion",
+                directive_hooks=["on_pre_output_coercion"],
                 with_default=True,
             ),
         )

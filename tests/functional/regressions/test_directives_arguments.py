@@ -8,22 +8,17 @@ from tartiflette import Directive, Resolver
 def bakery(schema_name):
     @Directive("maxValue", schema_name=schema_name)
     class MaxValueDirective:
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             self,
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ):
             result = await next_directive(
-                parent_node,
-                argument_definition_node,
-                argument_node,
-                value,
-                ctx,
+                parent_node, argument_definition_node, value, ctx,
             )
             if isinstance(result, (int, float)):
                 if result > directive_args["limit"]:
@@ -46,22 +41,17 @@ def bakery(schema_name):
 
     @Directive("increment", schema_name=schema_name)
     class IncrementDirective:
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             self,
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ):
             result = await next_directive(
-                parent_node,
-                argument_definition_node,
-                argument_node,
-                value,
-                ctx,
+                parent_node, argument_definition_node, value, ctx,
             )
             if isinstance(result, (int, float)):
                 return result + directive_args["step"]
