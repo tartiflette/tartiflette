@@ -14,7 +14,10 @@ from tartiflette.types.type import (
     GraphQLExtension,
     GraphQLType,
 )
-from tartiflette.utils.directives import wraps_with_directives
+from tartiflette.utils.directives import (
+    default_pre_output_coercion_directive,
+    wraps_with_directives,
+)
 
 __all__ = ("GraphQLUnionType",)
 
@@ -31,22 +34,26 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
         self,
         name: str,
         types: List[str],
+        definition: "UnionTypeDefinitionNode",
         description: Optional[str] = None,
         directives: Optional[List["DirectiveNode"]] = None,
     ) -> None:
         """
         :param name: name of the union
         :param types: list of types which compose the union
+        :param definition: the union type definition AST node
         :param description: description of the union
         :param directives: list of directives linked to the union
         :type name: str
         :type types: List[str]
+        :type definition: UnionTypeDefinitionNode
         :type description: Optional[str]
         :type directives: Optional[List[DirectiveNode]]
         """
         super().__init__()
         self.name = name
         self.types = types
+        self.definition = definition
         self.description = description
         self.possible_types: List["GraphQLType"] = []
         self._possible_types_set: Set[str] = set()
@@ -169,9 +176,13 @@ class GraphQLUnionType(GraphQLAbstractType, GraphQLCompositeType):
             coercer=partial(abstract_coercer, abstract_type=self),
             directives=wraps_with_directives(
                 directives_definition=directives_definition,
-                directive_hooks=["on_pre_output_coercion"],
-                with_default=True,
+                directive_hooks=[
+                    "on_pre_union_output_coercion",
+                    "on_pre_output_coercion",
+                ],
+                func=default_pre_output_coercion_directive,
             ),
+            definition_node=self.definition,
         )
 
     async def bake_fields(

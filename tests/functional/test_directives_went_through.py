@@ -154,10 +154,77 @@ def bakery(schema_name):
             return result
 
         @staticmethod
-        async def on_pre_output_coercion(
-            directive_args, next_directive, value, ctx, info,
+        async def on_pre_interface_output_coercion(
+            directive_args, next_directive, definition_node, value, ctx, info,
         ):
-            result = await next_directive(value, ctx, info)
+            result = await next_directive(definition_node, value, ctx, info)
+            ctx["went_through"].append(
+                f"wentThrough.on_pre_interface_output_coercion {directive_args['over']}"
+            )
+            return result
+
+        @staticmethod
+        async def on_pre_object_output_coercion(
+            directive_args, next_directive, definition_node, value, ctx, info,
+        ):
+            result = await next_directive(definition_node, value, ctx, info)
+            ctx["went_through"].append(
+                f"wentThrough.on_pre_object_output_coercion {directive_args['over']}"
+            )
+            return result
+
+        @staticmethod
+        async def on_pre_union_output_coercion(
+            directive_args, next_directive, definition_node, value, ctx, info,
+        ):
+            result = await next_directive(definition_node, value, ctx, info)
+            ctx["went_through"].append(
+                f"wentThrough.on_pre_union_output_coercion {directive_args['over']}"
+            )
+            return result
+
+        @staticmethod
+        async def on_pre_enum_type_output_coercion(
+            directive_args, next_directive, definition_node, value, ctx, info,
+        ):
+            result = await next_directive(definition_node, value, ctx, info)
+            ctx["went_through"].append(
+                f"wentThrough.on_pre_enum_type_output_coercion {directive_args['over']}"
+            )
+            return result
+
+        @staticmethod
+        async def on_pre_enum_value_output_coercion(
+            directive_args, next_directive, definition_node, value, ctx, info,
+        ):
+            result = await next_directive(definition_node, value, ctx, info)
+            ctx["went_through"].append(
+                f"wentThrough.on_pre_enum_value_output_coercion {directive_args['over']}"
+            )
+            return result
+
+        @staticmethod
+        async def on_pre_scalar_output_coercion(
+            directive_args, next_directive, definition_node, value, ctx, info,
+        ):
+            result = await next_directive(definition_node, value, ctx, info)
+            ctx["went_through"].append(
+                f"wentThrough.on_pre_scalar_output_coercion {directive_args['over']}"
+            )
+            return result
+
+        @staticmethod
+        async def on_pre_output_coercion(
+            directive_args,
+            next_directive,
+            output_definition_node,
+            value,
+            ctx,
+            info,
+        ):
+            result = await next_directive(
+                output_definition_node, value, ctx, info
+            )
             ctx["went_through"].append(
                 f"wentThrough.on_pre_output_coercion {directive_args['over']}"
             )
@@ -166,6 +233,19 @@ def bakery(schema_name):
     @Resolver("Query.human", schema_name=schema_name)
     async def resolver_query_human(parent, args, ctx, info):
         return {"id": "1", "name": "Human", "gender": "FEMALE"}
+
+    @Resolver("Query.identifiable", schema_name=schema_name)
+    async def resolver_query_identifiable(parent, args, ctx, info):
+        return {"_typename": "Human", "id": "1"}
+
+    @Resolver("Query.individual", schema_name=schema_name)
+    async def resolver_query_individual(parent, args, ctx, info):
+        return {
+            "_typename": "Human",
+            "id": "1",
+            "name": "Human",
+            "gender": "FEMALE",
+        }
 
     Scalar("DefaultRawString", schema_name=schema_name)(StringScalar())
 
@@ -209,6 +289,11 @@ def bakery(schema_name):
       gender: Gender! @wentThrough(over: "Human.gender")
     }
 
+    type Alien implements Identifiable & Named @wentThrough(over: "Alien") {
+      id: ID! @wentThrough(over: "Alien.id")
+      name: String! @wentThrough(over: "Alien.name")
+    }
+
     input TextFilter @wentThrough(over: "TextFilter") {
       startsWith: String @wentThrough(over: "TextFilter.startsWith")
       equals: String @wentThrough(over: "TextFilter.equals")
@@ -220,10 +305,16 @@ def bakery(schema_name):
       gender: Gender @wentThrough(over: "HumanFilter.gender")
     }
 
+    union Individual @wentThrough(over: "Individual") = Alien | Human
+
     type Query @wentThrough(over: "Query") {
       human(
         filter: HumanFilter @wentThrough(over: "Query.human(filter:)")
       ): Human @wentThrough(over: "Query.human")
+
+      identifiable(id: ID!): Identifiable
+
+      individual(id: ID!): Individual
     }
 
     schema @wentThrough(over: "Schema") {
@@ -260,11 +351,11 @@ def bakery(schema_name):
                 }
             },
             [
-                "wentThrough.on_post_scalar_input_coercion ID",
                 "wentThrough.on_post_enum_value_input_coercion Gender.FEMALE",
+                "wentThrough.on_post_scalar_input_coercion ID",
                 "wentThrough.on_post_scalar_input_coercion String",
-                "wentThrough.on_post_input_field_coercion HumanFilter.id",
                 "wentThrough.on_post_enum_type_input_coercion Gender",
+                "wentThrough.on_post_input_field_coercion HumanFilter.id",
                 "wentThrough.on_post_input_field_coercion TextFilter.equals",
                 "wentThrough.on_post_input_field_coercion HumanFilter.gender",
                 "wentThrough.on_post_input_object_coercion TextFilter",
@@ -272,14 +363,14 @@ def bakery(schema_name):
                 "wentThrough.on_post_input_object_coercion HumanFilter",
                 "wentThrough.on_post_argument_coercion Query.human(filter:)",
                 "wentThrough.on_field_execution Query.human",
-                "wentThrough.on_pre_output_coercion Human",
+                "wentThrough.on_pre_object_output_coercion Human",
                 "wentThrough.on_field_execution Human.id",
-                "wentThrough.on_field_execution Human.gender",
                 "wentThrough.on_field_execution Human.name",
-                "wentThrough.on_pre_output_coercion ID",
-                "wentThrough.on_pre_output_coercion Gender",
-                "wentThrough.on_pre_output_coercion String",
-                "wentThrough.on_pre_output_coercion Gender.FEMALE",
+                "wentThrough.on_field_execution Human.gender",
+                "wentThrough.on_pre_scalar_output_coercion ID",
+                "wentThrough.on_pre_scalar_output_coercion String",
+                "wentThrough.on_pre_enum_type_output_coercion Gender",
+                "wentThrough.on_pre_enum_value_output_coercion Gender.FEMALE",
                 "wentThrough.on_schema_execution Schema",
             ],
         ),
@@ -318,14 +409,78 @@ def bakery(schema_name):
                 "wentThrough.on_post_input_object_coercion HumanFilter",
                 "wentThrough.on_post_argument_coercion Query.human(filter:)",
                 "wentThrough.on_field_execution Query.human",
-                "wentThrough.on_pre_output_coercion Human",
+                "wentThrough.on_pre_object_output_coercion Human",
                 "wentThrough.on_field_execution Human.name",
                 "wentThrough.on_field_execution Human.gender",
                 "wentThrough.on_field_execution Human.id",
-                "wentThrough.on_pre_output_coercion String",
-                "wentThrough.on_pre_output_coercion Gender",
-                "wentThrough.on_pre_output_coercion ID",
-                "wentThrough.on_pre_output_coercion Gender.FEMALE",
+                "wentThrough.on_pre_scalar_output_coercion String",
+                "wentThrough.on_pre_enum_type_output_coercion Gender",
+                "wentThrough.on_pre_scalar_output_coercion ID",
+                "wentThrough.on_pre_enum_value_output_coercion Gender.FEMALE",
+                "wentThrough.on_schema_execution Schema",
+            ],
+        ),
+        (
+            """
+            {
+              identifiable(id: "1") {
+                __typename
+                id
+              }
+            }
+            """,
+            {},
+            {"data": {"identifiable": {"__typename": "Human", "id": "1"}}},
+            [
+                "wentThrough.on_post_scalar_input_coercion ID",
+                "wentThrough.on_pre_interface_output_coercion Interface",
+                "wentThrough.on_pre_object_output_coercion Human",
+                "wentThrough.on_field_execution Human.id",
+                "wentThrough.on_pre_scalar_output_coercion String",
+                "wentThrough.on_pre_scalar_output_coercion ID",
+                "wentThrough.on_schema_execution Schema",
+            ],
+        ),
+        (
+            """
+            {
+              individual(id: "1") {
+                __typename
+                ... on Alien {
+                  id
+                  name
+                }
+                ... on Human {
+                  id
+                  name
+                  gender
+                }
+              }
+            }
+            """,
+            {},
+            {
+                "data": {
+                    "individual": {
+                        "__typename": "Human",
+                        "id": "1",
+                        "name": "Human",
+                        "gender": "FEMALE",
+                    }
+                }
+            },
+            [
+                "wentThrough.on_post_scalar_input_coercion ID",
+                "wentThrough.on_pre_union_output_coercion Individual",
+                "wentThrough.on_pre_object_output_coercion Human",
+                "wentThrough.on_pre_scalar_output_coercion String",
+                "wentThrough.on_field_execution Human.name",
+                "wentThrough.on_field_execution Human.gender",
+                "wentThrough.on_field_execution Human.id",
+                "wentThrough.on_pre_scalar_output_coercion String",
+                "wentThrough.on_pre_enum_type_output_coercion Gender",
+                "wentThrough.on_pre_scalar_output_coercion ID",
+                "wentThrough.on_pre_enum_value_output_coercion Gender.FEMALE",
                 "wentThrough.on_schema_execution Schema",
             ],
         ),

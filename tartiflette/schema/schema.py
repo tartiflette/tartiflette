@@ -44,6 +44,12 @@ _DEFAULT_SUBSCRIPTION_OPERATION_NAME = "Subscription"
 
 _IMPLEMENTABLE_DIRECTIVE_FUNCTION_HOOKS = (
     "on_post_bake",
+    "on_pre_interface_output_coercion",
+    "on_pre_object_output_coercion",
+    "on_pre_union_output_coercion",
+    "on_pre_enum_type_output_coercion",
+    "on_pre_enum_value_output_coercion",
+    "on_pre_scalar_output_coercion",
     "on_pre_output_coercion",
     "on_introspection",
     "on_post_input_object_coercion",

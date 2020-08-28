@@ -11,6 +11,7 @@ async def output_directives_coercer(
     path: "Path",
     coercer: Callable,
     directives: Callable,
+    definition_node: "Node",
 ) -> Any:
     """
     Executes the directives on the resolved value.
@@ -21,6 +22,7 @@ async def output_directives_coercer(
     :param path: the path traveled until this resolver
     :param coercer: pre-computed coercer to use on the value
     :param directives: the directives to execute
+    :param definition_node: the definition AST node to coerce
     :type result: Any
     :type info: ResolveInfo
     :type execution_context: ExecutionContext
@@ -28,11 +30,13 @@ async def output_directives_coercer(
     :type path: Path
     :type coercer: Callable
     :type directives: Callable
+    :type definition_node: Node
     :return: the coerced result
     :rtype: Any
     """
     return await coercer(
         await directives(
+            definition_node,
             result,
             execution_context.context,
             info,
