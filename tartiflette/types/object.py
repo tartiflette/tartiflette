@@ -185,7 +185,9 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
         """
         if self.implemented_fields:
             for field in self.implemented_fields.values():
-                field.bake(schema, custom_default_resolver)
+                field.bake(
+                    schema, custom_default_resolver, self.interfaces_names
+                )
                 field = await field.on_post_bake()
 
                 if not field.name.startswith("__"):

@@ -146,6 +146,7 @@ class GraphQLField:
         self,
         schema: "GraphQLSchema",
         custom_default_resolver: Optional[Callable],
+        interface_names: Optional[List[str]] = None,
     ) -> None:
         """
         Bakes the GraphQLField and computes all the necessary stuff for
@@ -153,8 +154,10 @@ class GraphQLField:
         :param schema: the GraphQLSchema instance linked to the SDL
         :param custom_default_resolver: callable that will replace the builtin
         default_resolver
+        :param interface_names: interfaces which parent object type implements
         :type schema: GraphQLSchema
         :type custom_default_resolver: Optional[Callable]
+        :type interface_names: Optional[List[str]]
         """
         self.graphql_type = get_graphql_type(schema, self.gql_type)
 
@@ -189,6 +192,16 @@ class GraphQLField:
             directive_hooks=["on_introspection"],
         )
 
+        for interface_name in interface_names or []:
+            interface = schema.find_type(interface_name)
+            if interface.has_field(self.name):
+                raw_resolver = interface.find_field(self.name).raw_resolver
+                if raw_resolver:
+                    interface_resolver = raw_resolver
+                    break
+        else:
+            interface_resolver = None
+
         # Resolvers
         self.resolver = partial(
             resolve_field,
@@ -198,6 +211,7 @@ class GraphQLField:
                 directive_hooks=["on_field_execution"],
                 func=(
                     self.raw_resolver
+                    or interface_resolver
                     or custom_default_resolver
                     or default_field_resolver
                 ),
