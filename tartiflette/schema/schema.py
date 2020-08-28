@@ -46,8 +46,13 @@ _IMPLEMENTABLE_DIRECTIVE_FUNCTION_HOOKS = (
     "on_post_bake",
     "on_pre_output_coercion",
     "on_introspection",
+    "on_post_input_object_coercion",
+    "on_post_input_field_coercion",
+    "on_post_enum_type_input_coercion",
+    "on_post_enum_value_input_coercion",
+    "on_post_scalar_input_coercion",
     "on_post_input_coercion",
-    "on_argument_execution",
+    "on_post_argument_coercion",
     "on_field_execution",
     "on_field_collection",
     "on_fragment_spread_collection",
@@ -490,17 +495,21 @@ class GraphQLSchema:
 
     def bake_executor(self, executor):
         return wraps_with_directives(
-            compute_directive_nodes(self, self._schema_directives),
-            "on_schema_execution",
-            executor,
+            directives_definition=compute_directive_nodes(
+                self, self._schema_directives
+            ),
+            directive_hooks=["on_schema_execution"],
+            func=executor,
             is_resolver=True,
         )
 
     def bake_subscriptor(self, subscriptor):
         return wraps_with_directives(
-            compute_directive_nodes(self, self._schema_directives),
-            "on_schema_subscription",
-            subscriptor,
+            directives_definition=compute_directive_nodes(
+                self, self._schema_directives
+            ),
+            directive_hooks=["on_schema_subscription"],
+            func=subscriptor,
             is_async_generator=True,
         )
 

@@ -79,7 +79,7 @@ async def test_issue228_3():
             pass
 
         @staticmethod
-        def on_argument_execution(*_, **_kwargs):
+        def on_post_argument_coercion(*_, **_kwargs):
             pass
 
         @staticmethod

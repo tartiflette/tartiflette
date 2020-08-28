@@ -17,6 +17,7 @@ async def input_directives_coercer(
     ctx: Optional[Any],
     coercer: Callable,
     directives: Optional[Callable],
+    definition_node: "Node",
     path: Optional["Path"] = None,
 ) -> "CoercionResult":
     """
@@ -27,6 +28,7 @@ async def input_directives_coercer(
     :param ctx: context passed to the query execution
     :param coercer: pre-computed coercer to use on the value
     :param directives: the directives to execute
+    :param definition_node: the definition AST node to coerce
     :param path: the path traveled until this coercer
     :type parent_node: Union[VariableDefinitionNode, InputValueDefinitionNode]
     :type node: Node
@@ -34,6 +36,7 @@ async def input_directives_coercer(
     :type ctx: Optional[Any]
     :type coercer: Callable
     :type directives: Optional[Callable]
+    :type definition_node: Node
     :type path: Optional[Path]
     :return: the coercion result
     :rtype: CoercionResult
@@ -50,7 +53,7 @@ async def input_directives_coercer(
     try:
         return CoercionResult(
             value=await directives(
-                parent_node, value, ctx, context_coercer=ctx
+                parent_node, definition_node, value, ctx, context_coercer=ctx
             )
         )
     except Exception as raw_exception:  # pylint: disable=broad-except

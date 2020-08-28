@@ -44,7 +44,7 @@ async def enum_coercer(
         enum_value = enum_type.get_value(node.value)
         return CoercionResult(
             value=await enum_value.literal_coercer(
-                parent_node, node.value, ctx
+                parent_node, enum_value.definition, node.value, ctx
             )
         )
     except KeyError:

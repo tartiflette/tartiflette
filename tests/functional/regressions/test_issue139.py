@@ -14,28 +14,24 @@ async def schema_stack():
     @Directive("validateMaxLength", schema_name="test_issue139")
     class ValidateMaxLengthDirective:
         @staticmethod
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ):
             limit = directive_args["limit"]
             value = await next_directive(
-                parent_node,
-                argument_definition_node,
-                argument_node,
-                value,
-                ctx,
+                parent_node, argument_definition_node, value, ctx,
             )
             argument_length = len(value)
             if argument_length > limit:
                 raise Exception(
-                    f"Value of argument < {argument_node.name.value} > on "
-                    f"field < {parent_node.name.value} > is too long "
+                    "Value of argument "
+                    f"< {argument_definition_node.name.value} > on field "
+                    f"< {parent_node.name.value} > is too long "
                     f"({argument_length}/{limit})."
                 )
             return value
@@ -43,28 +39,24 @@ async def schema_stack():
     @Directive("validateChoices", schema_name="test_issue139")
     class ValidateChoicesDirective:
         @staticmethod
-        async def on_argument_execution(
+        async def on_post_argument_coercion(
             directive_args: Dict[str, Any],
             next_directive: Callable,
             parent_node: Union["FieldNode", "DirectiveNode"],
             argument_definition_node: "InputValueDefinitionNode",
-            argument_node: Optional["ArgumentNode"],
             value: Any,
             ctx: Optional[Any],
         ):
             choices = directive_args["choices"]
             value = await next_directive(
-                parent_node,
-                argument_definition_node,
-                argument_node,
-                value,
-                ctx,
+                parent_node, argument_definition_node, value, ctx,
             )
             if value not in choices:
                 raise Exception(
-                    f"Value of argument < {argument_node.name.value} > on "
-                    f"field < {parent_node.name.value} > is not a valid "
-                    f"option < {value} >. Allowed values are {choices}."
+                    f"Value of argument "
+                    f"< {argument_definition_node.name.value} > on field "
+                    f"< {parent_node.name.value} > is not a valid option "
+                    f"< {value} >. Allowed values are {choices}."
                 )
             return value
 

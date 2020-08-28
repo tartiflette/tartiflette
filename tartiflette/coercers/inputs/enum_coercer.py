@@ -37,7 +37,9 @@ async def enum_coercer(
     try:
         enum_value = enum_type.get_value(value)
         return CoercionResult(
-            value=await enum_value.input_coercer(parent_node, value, ctx)
+            value=await enum_value.input_coercer(
+                parent_node, enum_value.definition, value, ctx
+            )
         )
     except Exception:  # pylint: disable=broad-except
         return CoercionResult(

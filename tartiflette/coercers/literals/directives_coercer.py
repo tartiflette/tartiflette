@@ -18,6 +18,7 @@ async def literal_directives_coercer(
     ctx: Optional[Any],
     coercer: Callable,
     directives: Optional[Callable],
+    definition_node: "Node",
     variables: Optional[Dict[str, Any]] = None,
     path: Optional["Path"] = None,
     is_input_field: bool = False,
@@ -30,6 +31,7 @@ async def literal_directives_coercer(
     :param ctx: context passed to the query execution
     :param coercer: pre-computed coercer to use on the value
     :param directives: the directives to execute
+    :param definition_node: the definition AST node to coerce
     :param variables: the variables provided in the GraphQL request
     :param path: the path traveled until this coercer
     :param is_input_field: determines whether or not the node is an InputField
@@ -39,6 +41,7 @@ async def literal_directives_coercer(
     :type ctx: Optional[Any]
     :type coercer: Callable
     :type directives: Optional[Callable]
+    :type definition_node: Node
     :type variables: Optional[Dict[str, Any]]
     :type path: Optional[Path]
     :type is_input_field: bool
@@ -68,7 +71,7 @@ async def literal_directives_coercer(
     try:
         return CoercionResult(
             value=await directives(
-                parent_node, value, ctx, context_coercer=ctx
+                parent_node, definition_node, value, ctx, context_coercer=ctx
             )
         )
     except Exception as raw_exception:  # pylint: disable=broad-except
