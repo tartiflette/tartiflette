@@ -1,6 +1,9 @@
 from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeDefinitionNode
+from tartiflette.language.ast.union_type_extension import (
+    UnionTypeExtensionNode,
+)
 
 __all__ = ("UnionTypeDefinitionNode",)
 
@@ -34,8 +37,8 @@ class UnionTypeDefinitionNode(TypeDefinitionNode):
         """
         self.name = name
         self.description = description
-        self.directives = directives
-        self.types = types
+        self.directives = directives or []
+        self.types = types or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:
@@ -54,6 +57,25 @@ class UnionTypeDefinitionNode(TypeDefinitionNode):
             and self.types == other.types
             and self.location == other.location
         )
+
+    def __or__(self, extension: Any) -> "UnionTypeDefinitionNode":
+        """
+        Return a new union definition with elements from extension.
+
+        :param extension: instance with which extend the union
+        :type extension: Any
+        :return: a new union definition with elements from extension
+        :rtype: UnionTypeDefinitionNode
+        """
+        if isinstance(extension, UnionTypeExtensionNode):
+            return UnionTypeDefinitionNode(
+                name=self.name,
+                description=self.description,
+                directives=self.directives + extension.directives,
+                types=self.types + extension.types,
+                location=self.location,
+            )
+        return self
 
     def __repr__(self) -> str:
         """

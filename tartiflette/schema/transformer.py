@@ -263,7 +263,7 @@ def parse_input_value_definition(
         ),
         gql_type=parse_type(input_value_definition_node.type, schema),
         default_value=input_value_definition_node.default_value,
-        directives=input_value_definition_node.directives,
+        directives=list(input_value_definition_node.directives),
         definition=input_value_definition_node,
     )
 
@@ -352,7 +352,7 @@ def parse_schema_definition(
     parse_operation_type_definitions(
         schema_definition_node.operation_type_definitions, schema
     )
-    schema.add_schema_directives(schema_definition_node.directives)
+    schema.add_schema_directives(list(schema_definition_node.directives))
 
 
 def parse_scalar_type_definition(
@@ -378,7 +378,7 @@ def parse_scalar_type_definition(
         description=parse_name(
             scalar_type_definition_node.description, schema
         ),
-        directives=scalar_type_definition_node.directives,
+        directives=list(scalar_type_definition_node.directives),
         definition=scalar_type_definition_node,
     )
     schema.add_scalar_definition(scalar_type)
@@ -435,7 +435,7 @@ def parse_object_type_definition(
         fields=parse_fields_definition(
             object_type_definition_node.fields, schema
         ),
-        directives=object_type_definition_node.directives,
+        directives=list(object_type_definition_node.directives),
         definition=object_type_definition_node,
     )
     schema.add_type_definition(object_type)
@@ -464,7 +464,7 @@ def parse_field_definition(
         arguments=parse_arguments_definition(
             field_definition_node.arguments, schema
         ),
-        directives=field_definition_node.directives,
+        directives=list(field_definition_node.directives),
     )
 
 
@@ -517,7 +517,7 @@ def parse_interface_type_definition(
         fields=parse_fields_definition(
             interface_type_definition_node.fields, schema
         ),
-        directives=interface_type_definition_node.directives,
+        directives=list(interface_type_definition_node.directives),
         definition=interface_type_definition_node,
     )
     schema.add_type_definition(interface_type)
@@ -568,7 +568,7 @@ def parse_union_type_definition(
         types=parse_union_member_types(
             union_type_definition_node.types, schema
         ),
-        directives=union_type_definition_node.directives,
+        directives=list(union_type_definition_node.directives),
         definition=union_type_definition_node,
     )
     schema.add_type_definition(union_type)
@@ -594,7 +594,7 @@ def parse_enum_value_definition(
     return GraphQLEnumValue(
         value=parse_name(enum_value_definition_node.name, schema),
         description=parse_name(enum_value_definition_node.description, schema),
-        directives=enum_value_definition_node.directives,
+        directives=list(enum_value_definition_node.directives),
         definition=enum_value_definition_node,
     )
 
@@ -644,7 +644,7 @@ def parse_enum_type_definition(
         values=parse_enum_values_definition(
             enum_type_definition_node.values, schema
         ),
-        directives=enum_type_definition_node.directives,
+        directives=list(enum_type_definition_node.directives),
         definition=enum_type_definition_node,
     )
     schema.add_enum_definition(enum_type)
@@ -705,7 +705,7 @@ def parse_input_object_type_definition(
         fields=parse_input_fields_definition(
             input_object_type_definition_node.fields, schema
         ),
-        directives=input_object_type_definition_node.directives,
+        directives=list(input_object_type_definition_node.directives),
         definition=input_object_type_definition_node,
     )
     schema.add_type_definition(input_object_type)
@@ -776,10 +776,11 @@ def parse_enum_type_extension(
 
     enum_extension = GraphQLEnumTypeExtension(
         name=parse_name(enum_type_extension_node.name, schema),
-        directives=enum_type_extension_node.directives,
+        directives=list(enum_type_extension_node.directives),
         values=parse_enum_values_definition(
             enum_type_extension_node.values, schema
         ),
+        definition=enum_type_extension_node,
     )
 
     schema.add_extension(enum_extension)
@@ -794,10 +795,11 @@ def parse_input_object_type_extension(
 
     input_object_extenstion = GraphQLInputObjectTypeExtension(
         name=parse_name(input_object_type_extension_node.name, schema),
-        directives=input_object_type_extension_node.directives,
+        directives=list(input_object_type_extension_node.directives),
         input_fields=parse_input_fields_definition(
             input_object_type_extension_node.fields, schema
         ),
+        definition=input_object_type_extension_node,
     )
 
     schema.add_extension(input_object_extenstion)
@@ -815,10 +817,11 @@ def parse_object_type_extension(
         fields=parse_fields_definition(
             object_type_extension_node.fields, schema
         ),
-        directives=object_type_extension_node.directives,
+        directives=list(object_type_extension_node.directives),
         interfaces=parse_implements_interfaces(
             object_type_extension_node.interfaces, schema
         ),
+        definition=object_type_extension_node,
     )
 
     schema.add_extension(object_extension)
@@ -836,7 +839,8 @@ def parse_interface_type_extension(
         fields=parse_fields_definition(
             interface_type_extension_node.fields, schema
         ),
-        directives=interface_type_extension_node.directives,
+        directives=list(interface_type_extension_node.directives),
+        definition=interface_type_extension_node,
     )
 
     schema.add_extension(interface_extension)
@@ -851,7 +855,8 @@ def parse_scalar_type_extension(
 
     scalar_extension = GraphQLScalarTypeExtension(
         name=parse_name(scalar_type_extension_node.name, schema),
-        directives=scalar_type_extension_node.directives,
+        directives=list(scalar_type_extension_node.directives),
+        definition=scalar_type_extension_node,
     )
 
     schema.add_extension(scalar_extension)
@@ -866,10 +871,11 @@ def parse_union_type_extension(
 
     union_extension = GraphQLUnionTypeExtension(
         name=parse_name(union_type_extension_node.name, schema),
-        directives=union_type_extension_node.directives,
+        directives=list(union_type_extension_node.directives),
         types=parse_union_member_types(
             union_type_extension_node.types, schema
         ),
+        definition=union_type_extension_node,
     )
 
     schema.add_extension(union_extension)
@@ -881,7 +887,7 @@ def parse_schema_extension(
     schema_extension_node: "SchemaExtensionNode", schema: "GraphQLSchema"
 ) -> "GraphQLSchemaExtension":
     schema_extension = GraphQLSchemaExtension(
-        directives=schema_extension_node.directives,
+        directives=list(schema_extension_node.directives),
         operations={
             x.operation_type: parse_named_type(x.type, schema)
             for x in schema_extension_node.operation_type_definitions

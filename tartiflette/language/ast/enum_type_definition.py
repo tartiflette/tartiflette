@@ -1,6 +1,7 @@
 from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeDefinitionNode
+from tartiflette.language.ast.enum_type_extension import EnumTypeExtensionNode
 
 __all__ = ("EnumTypeDefinitionNode",)
 
@@ -34,8 +35,8 @@ class EnumTypeDefinitionNode(TypeDefinitionNode):
         """
         self.name = name
         self.description = description
-        self.directives = directives
-        self.values = values
+        self.directives = directives or []
+        self.values = values or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:
@@ -54,6 +55,25 @@ class EnumTypeDefinitionNode(TypeDefinitionNode):
             and self.values == other.values
             and self.location == other.location
         )
+
+    def __or__(self, extension: Any) -> "EnumTypeDefinitionNode":
+        """
+        Return a new enum definition with elements from extension.
+
+        :param extension: instance with which extend the enum
+        :type extension: Any
+        :return: a new enum definition with elements from extension
+        :rtype: EnumTypeDefinitionNode
+        """
+        if isinstance(extension, EnumTypeExtensionNode):
+            return EnumTypeDefinitionNode(
+                name=self.name,
+                description=self.description,
+                directives=self.directives + extension.directives,
+                values=self.values + extension.values,
+                location=self.location,
+            )
+        return self
 
     def __repr__(self) -> str:
         """

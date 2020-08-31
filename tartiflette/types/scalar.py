@@ -164,13 +164,15 @@ class GraphQLScalarType(GraphQLInputType, GraphQLType):
 
 
 class GraphQLScalarTypeExtension(GraphQLType, GraphQLExtension):
-    def __init__(self, name, directives):
+    def __init__(self, name, directives, definition):
         self.name = name
         self.directives = directives
+        self.definition = definition
 
     def bake(self, schema):
         extended = schema.find_type(self.name)
         extended.directives.extend(self.directives)
+        extended.definition |= self.definition
 
     def __eq__(self, other: Any) -> bool:
         """

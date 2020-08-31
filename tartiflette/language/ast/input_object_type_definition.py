@@ -1,6 +1,9 @@
 from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeDefinitionNode
+from tartiflette.language.ast.input_object_type_extension import (
+    InputObjectTypeExtensionNode,
+)
 
 __all__ = ("InputObjectTypeDefinitionNode",)
 
@@ -35,8 +38,8 @@ class InputObjectTypeDefinitionNode(TypeDefinitionNode):
         """
         self.name = name
         self.description = description
-        self.directives = directives
-        self.fields = fields
+        self.directives = directives or []
+        self.fields = fields or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:
@@ -55,6 +58,25 @@ class InputObjectTypeDefinitionNode(TypeDefinitionNode):
             and self.fields == other.fields
             and self.location == other.location
         )
+
+    def __or__(self, extension: Any) -> "InputObjectTypeDefinitionNode":
+        """
+        Return a new input definition with elements from extension.
+
+        :param extension: instance with which extend the input
+        :type extension: Any
+        :return: a new input definition with elements from extension
+        :rtype: InputObjectTypeDefinitionNode
+        """
+        if isinstance(extension, InputObjectTypeExtensionNode):
+            return InputObjectTypeDefinitionNode(
+                name=self.name,
+                description=self.description,
+                directives=self.directives + extension.directives,
+                fields=self.fields + extension.fields,
+                location=self.location,
+            )
+        return self
 
     def __repr__(self) -> str:
         """
