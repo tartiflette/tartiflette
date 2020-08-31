@@ -30,8 +30,8 @@ class UnionTypeExtensionNode(TypeExtensionNode):
         :type location: Optional[Location]
         """
         self.name = name
-        self.directives = directives
-        self.types = types
+        self.directives = directives or []
+        self.types = types or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:

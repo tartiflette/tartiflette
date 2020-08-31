@@ -27,7 +27,7 @@ class ScalarTypeExtensionNode(TypeExtensionNode):
         :type location: Optional[Location]
         """
         self.name = name
-        self.directives = directives
+        self.directives = directives or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:

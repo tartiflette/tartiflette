@@ -1,6 +1,9 @@
 from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeDefinitionNode
+from tartiflette.language.ast.object_type_extension import (
+    ObjectTypeExtensionNode,
+)
 
 __all__ = ("ObjectTypeDefinitionNode",)
 
@@ -45,9 +48,9 @@ class ObjectTypeDefinitionNode(TypeDefinitionNode):
         """
         self.name = name
         self.description = description
-        self.interfaces = interfaces
-        self.directives = directives
-        self.fields = fields
+        self.interfaces = interfaces or []
+        self.directives = directives or []
+        self.fields = fields or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:
@@ -67,6 +70,26 @@ class ObjectTypeDefinitionNode(TypeDefinitionNode):
             and self.fields == other.fields
             and self.location == other.location
         )
+
+    def __or__(self, extension: Any) -> "ObjectTypeDefinitionNode":
+        """
+        Return a new object definition with elements from extension.
+
+        :param extension: instance with which extend the object
+        :type extension: Any
+        :return: a new object definition with elements from extension
+        :rtype: ObjectTypeDefinitionNode
+        """
+        if isinstance(extension, ObjectTypeExtensionNode):
+            return ObjectTypeDefinitionNode(
+                name=self.name,
+                description=self.description,
+                interfaces=self.interfaces + extension.interfaces,
+                directives=self.directives + extension.directives,
+                fields=self.fields + extension.fields,
+                location=self.location,
+            )
+        return self
 
     def __repr__(self) -> str:
         """

@@ -210,17 +210,19 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
 
 
 class GraphQLObjectTypeExtension(GraphQLType, GraphQLExtension):
-    def __init__(self, name, fields, directives, interfaces):
+    def __init__(self, name, fields, directives, interfaces, definition):
         self.name = name
         self.fields = fields or {}
         self.directives = directives
         self.interfaces = interfaces or []
+        self.definition = definition
 
     def bake(self, schema):
         extended = schema.find_type(self.name)
         extended.directives.extend(self.directives)
         extended.implemented_fields.update(self.fields)
         extended.interfaces_names.extend(self.interfaces)
+        extended.definition |= self.definition
 
     def __eq__(self, other: Any) -> bool:
         """
