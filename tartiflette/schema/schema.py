@@ -73,7 +73,7 @@ def _format_schema_error_message(errors: List["TartifletteError"]) -> str:
     result = "\n"
     for index, err in enumerate(errors):
         result = "{result}\n{index}: {err}".format(
-            result=result, index=index, err=str(err),
+            result=result, index=index, err=str(err)
         )
     return result
 

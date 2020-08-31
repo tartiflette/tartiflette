@@ -311,10 +311,10 @@ def _collect_conflicts_between_fragments(
         return None
 
     field_map_1, fragment_names_1 = _get_referenced_fields_and_fragment_names(
-        context, cached_fields_and_fragment_names, fragment_1,
+        context, cached_fields_and_fragment_names, fragment_1
     )
     field_map_2, fragment_names_2 = _get_referenced_fields_and_fragment_names(
-        context, cached_fields_and_fragment_names, fragment_2,
+        context, cached_fields_and_fragment_names, fragment_2
     )
 
     _collect_conflicts_between(
@@ -741,7 +741,7 @@ def _get_fields_and_fragment_names(
         node_and_defs = {}
         fragment_names = set()
         _collect_fields_and_fragment_names(
-            context, parent_type, selection_set, node_and_defs, fragment_names,
+            context, parent_type, selection_set, node_and_defs, fragment_names
         )
         cached = (node_and_defs, sorted(fragment_names))
         cached_fields_and_fragment_names[id(selection_set)] = cached

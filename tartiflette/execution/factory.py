@@ -70,7 +70,7 @@ class BaseOperator:
             )
 
         prepared_parse_and_validate_query = partial(
-            parse_and_validate_query, parser=parser, rules=rules,
+            parse_and_validate_query, parser=parser, rules=rules
         )
 
         self._schema: "GraphQLSchema" = schema

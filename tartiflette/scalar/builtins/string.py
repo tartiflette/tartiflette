@@ -63,7 +63,7 @@ class ScalarString:
             return ast.value
 
         raise graphql_error_from_nodes(
-            f"String cannot represent a non string value: {ast}.", nodes=[ast],
+            f"String cannot represent a non string value: {ast}.", nodes=[ast]
         )
 
 

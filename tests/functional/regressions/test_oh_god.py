@@ -83,7 +83,7 @@ def bakery(schema_name):
             ctx: Optional[Any],
         ) -> Any:
             result = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             if len(result) > directive_args["limit"]:
                 raise Exception(
@@ -120,7 +120,7 @@ def bakery(schema_name):
             ctx: Optional[Any],
         ) -> Any:
             result = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             return (
                 f'{result}+{directive_args["with"]}'

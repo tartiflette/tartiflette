@@ -155,7 +155,7 @@ def full_mutation_execute_alias_bakery(schema_name):
 
 @pytest.mark.asyncio
 @pytest.mark.with_schema_stack(
-    preset="libraries", bakery=full_mutation_execute_alias_bakery,
+    preset="libraries", bakery=full_mutation_execute_alias_bakery
 )
 async def test_full_mutation_execute_alias(schema_stack):
     assert len(data_store) == 1

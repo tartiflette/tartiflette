@@ -31,7 +31,7 @@ class ValidMemberTypesRule(ASTValidationRule):
 
     def _check_member_uniqueness(
         self,
-        node: Union["UnionTypeDefinition", "UnionTypeExtension",],
+        node: Union["UnionTypeDefinition", "UnionTypeExtension"],
         key: Optional[Union[int, str]],
         parent: Optional[Union["Node", List["Node"]]],
         path: List[Union[int, str]],

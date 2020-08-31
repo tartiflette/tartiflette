@@ -43,9 +43,8 @@ async def schema_stack():
 
 @pytest.mark.asyncio
 async def test_issue76_raw(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
+    assert await schema_stack.execute(
+        """
             query {
               viewer {
                 name
@@ -61,64 +60,61 @@ async def test_issue76_raw(schema_stack):
               unknownField1
             }
             """
-        )
-        == {
-            "data": None,
-            "errors": [
-                {
-                    "message": "Cannot query field < unknownField4 > on type < UserStatsViews >.",
-                    "path": None,
-                    "locations": [{"line": 8, "column": 21}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+    ) == {
+        "data": None,
+        "errors": [
+            {
+                "message": "Cannot query field < unknownField4 > on type < UserStatsViews >.",
+                "path": None,
+                "locations": [{"line": 8, "column": 21}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-                {
-                    "message": "Cannot query field < unknownField3 > on type < UserStats >.",
-                    "path": None,
-                    "locations": [{"line": 10, "column": 19}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+            },
+            {
+                "message": "Cannot query field < unknownField3 > on type < UserStats >.",
+                "path": None,
+                "locations": [{"line": 10, "column": 19}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-                {
-                    "message": "Cannot query field < unknownField2 > on type < User >.",
-                    "path": None,
-                    "locations": [{"line": 12, "column": 17}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+            },
+            {
+                "message": "Cannot query field < unknownField2 > on type < User >.",
+                "path": None,
+                "locations": [{"line": 12, "column": 17}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-                {
-                    "message": "Cannot query field < unknownField1 > on type < Query >.",
-                    "path": None,
-                    "locations": [{"line": 14, "column": 15}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+            },
+            {
+                "message": "Cannot query field < unknownField1 > on type < Query >.",
+                "path": None,
+                "locations": [{"line": 14, "column": 15}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-            ],
-        }
-    )
+            },
+        ],
+    }
 
 
 @pytest.mark.asyncio
 async def test_issue76_fragment(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
+    assert await schema_stack.execute(
+        """
             fragment UserStatsViewsFields on UserStatsViews {
               total
               unknownField4
@@ -146,64 +142,61 @@ async def test_issue76_fragment(schema_stack):
               unknownField1
             }
             """
-        )
-        == {
-            "data": None,
-            "errors": [
-                {
-                    "message": "Cannot query field < unknownField4 > on type < UserStatsViews >.",
-                    "path": None,
-                    "locations": [{"line": 4, "column": 15}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+    ) == {
+        "data": None,
+        "errors": [
+            {
+                "message": "Cannot query field < unknownField4 > on type < UserStatsViews >.",
+                "path": None,
+                "locations": [{"line": 4, "column": 15}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-                {
-                    "message": "Cannot query field < unknownField3 > on type < UserStats >.",
-                    "path": None,
-                    "locations": [{"line": 11, "column": 15}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+            },
+            {
+                "message": "Cannot query field < unknownField3 > on type < UserStats >.",
+                "path": None,
+                "locations": [{"line": 11, "column": 15}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-                {
-                    "message": "Cannot query field < unknownField2 > on type < User >.",
-                    "path": None,
-                    "locations": [{"line": 19, "column": 15}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+            },
+            {
+                "message": "Cannot query field < unknownField2 > on type < User >.",
+                "path": None,
+                "locations": [{"line": 19, "column": 15}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-                {
-                    "message": "Cannot query field < unknownField1 > on type < Query >.",
-                    "path": None,
-                    "locations": [{"line": 26, "column": 15}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+            },
+            {
+                "message": "Cannot query field < unknownField1 > on type < Query >.",
+                "path": None,
+                "locations": [{"line": 26, "column": 15}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-            ],
-        }
-    )
+            },
+        ],
+    }
 
 
 @pytest.mark.asyncio
 async def test_issue76_another_order(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
+    assert await schema_stack.execute(
+        """
             query {
               viewer {
                 name
@@ -223,54 +216,52 @@ async def test_issue76_another_order(schema_stack):
               unknownField1
             }
             """
-        )
-        == {
-            "data": None,
-            "errors": [
-                {
-                    "message": "Cannot query field < unknownField3 > on type < UserStats >.",
-                    "path": None,
-                    "locations": [{"line": 6, "column": 19}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+    ) == {
+        "data": None,
+        "errors": [
+            {
+                "message": "Cannot query field < unknownField3 > on type < UserStats >.",
+                "path": None,
+                "locations": [{"line": 6, "column": 19}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-                {
-                    "message": "Cannot query field < unknownField4 > on type < UserStatsViews >.",
-                    "path": None,
-                    "locations": [{"line": 9, "column": 21}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+            },
+            {
+                "message": "Cannot query field < unknownField4 > on type < UserStatsViews >.",
+                "path": None,
+                "locations": [{"line": 9, "column": 21}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-                {
-                    "message": "Cannot query field < unknownField2 > on type < User >.",
-                    "path": None,
-                    "locations": [{"line": 14, "column": 17}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+            },
+            {
+                "message": "Cannot query field < unknownField2 > on type < User >.",
+                "path": None,
+                "locations": [{"line": 14, "column": 17}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-                {
-                    "message": "Cannot query field < unknownField1 > on type < Query >.",
-                    "path": None,
-                    "locations": [{"line": 18, "column": 15}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
+            },
+            {
+                "message": "Cannot query field < unknownField1 > on type < Query >.",
+                "path": None,
+                "locations": [{"line": 18, "column": 15}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
                 },
-            ],
-        }
-    )
+            },
+        ],
+    }

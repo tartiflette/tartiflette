@@ -24,7 +24,7 @@ async def schema_stack():
         ):
             limit = directive_args["limit"]
             value = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             argument_length = len(value)
             if argument_length > limit:
@@ -49,7 +49,7 @@ async def schema_stack():
         ):
             choices = directive_args["choices"]
             value = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             if value not in choices:
                 raise Exception(

@@ -20,7 +20,11 @@ async def test_create_schema_without_sdl(sdl, random_schema_name):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "modules", ["tests.unit.schema.modules", ["tests.unit.schema.modules"],],
+    "modules",
+    [
+        "tests.unit.schema.modules",
+        ["tests.unit.schema.modules"],
+    ],
 )
 async def test_create_schema_with_modules(random_schema_name, modules):
     schema = await create_schema(
@@ -34,16 +38,17 @@ async def test_create_schema_with_modules(random_schema_name, modules):
         modules=modules,
     )
     execute = executor_factory(schema)
-    assert (
-        await execute(
-            """
+    assert await execute(
+        """
             {
               hello(name: "John")
             }
             """
-        )
-        == {"data": {"hello": "Hello John!",},}
-    )
+    ) == {
+        "data": {
+            "hello": "Hello John!",
+        },
+    }
 
 
 @pytest.mark.asyncio
@@ -86,17 +91,19 @@ async def test_create_schema_with_default_resolver(random_schema_name):
         default_resolver=my_default_resolver,
     )
     execute = executor_factory(schema)
-    assert (
-        await execute(
-            """
+    assert await execute(
+        """
             {
               hello(name: "John")
               bye(name: "John")
             }
             """
-        )
-        == {"data": {"hello": "Hello John!", "bye": "DefaultResolverValue",},}
-    )
+    ) == {
+        "data": {
+            "hello": "Hello John!",
+            "bye": "DefaultResolverValue",
+        },
+    }
 
 
 @pytest.mark.asyncio
@@ -150,9 +157,8 @@ async def test_create_schema_with_default_type_resolver(random_schema_name):
         default_type_resolver=my_default_type_resolver,
     )
     execute = executor_factory(schema)
-    assert (
-        await execute(
-            """
+    assert await execute(
+        """
             {
               named(id: 1) {
                 __typename
@@ -160,9 +166,14 @@ async def test_create_schema_with_default_type_resolver(random_schema_name):
               }
             }
             """
-        )
-        == {"data": {"named": {"__typename": "Person", "name": "John",},},}
-    )
+    ) == {
+        "data": {
+            "named": {
+                "__typename": "Person",
+                "name": "John",
+            },
+        },
+    }
 
 
 @pytest.mark.asyncio
@@ -208,16 +219,17 @@ async def test_create_schema_with_default_arguments_coercer(
         default_arguments_coercer=my_default_arguments_coercer,
     )
     execute = executor_factory(schema)
-    assert (
-        await execute(
-            """
+    assert await execute(
+        """
             {
               hello(firstname: "John", lastname: "Doe")
             }
             """
-        )
-        == {"data": {"hello": "Hello 0 1!",},}
-    )
+    ) == {
+        "data": {
+            "hello": "Hello 0 1!",
+        },
+    }
 
 
 @pytest.mark.asyncio

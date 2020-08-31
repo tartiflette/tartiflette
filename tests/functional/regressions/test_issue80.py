@@ -23,9 +23,8 @@ def bakery(schema_name):
     bakery=bakery,
 )
 async def test_issue80(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
+    assert await schema_stack.execute(
+        """
             fragment UserFields on User {
                 name
             }
@@ -36,21 +35,19 @@ async def test_issue80(schema_stack):
                 }
             }
             """
-        )
-        == {
-            "data": None,
-            "errors": [
-                {
-                    "message": "Fragment < UserFields > is never used.",
-                    "path": None,
-                    "locations": [{"line": 2, "column": 13}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.5.1.4",
-                        "tag": "fragment-must-be-used",
-                        "details": "https://spec.graphql.org/June2018/#sec-Fragments-Must-Be-Used",
-                    },
-                }
-            ],
-        }
-    )
+    ) == {
+        "data": None,
+        "errors": [
+            {
+                "message": "Fragment < UserFields > is never used.",
+                "path": None,
+                "locations": [{"line": 2, "column": 13}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.5.1.4",
+                    "tag": "fragment-must-be-used",
+                    "details": "https://spec.graphql.org/June2018/#sec-Fragments-Must-Be-Used",
+                },
+            }
+        ],
+    }

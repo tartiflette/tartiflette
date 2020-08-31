@@ -28,7 +28,7 @@ class UniqueInterfaceImplementationRule(ASTValidationRule):
 
     def _check_implements_unique_interfaces(
         self,
-        node: Union["ObjectTypeDefinitionNode", "ObjectTypeExtensionNode",],
+        node: Union["ObjectTypeDefinitionNode", "ObjectTypeExtensionNode"],
         key: Optional[Union[int, str]],
         parent: Optional[Union["Node", List["Node"]]],
         path: List[Union[int, str]],

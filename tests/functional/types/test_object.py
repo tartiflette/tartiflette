@@ -151,7 +151,7 @@ async def test_tartiflette_execute_object_type_unknown_field():
         ]
 
     _, execute, __ = await create_schema_with_operators(
-        schema_sdl, name="test_tartiflette_execute_object_type_unknown_field",
+        schema_sdl, name="test_tartiflette_execute_object_type_unknown_field"
     )
 
     assert (

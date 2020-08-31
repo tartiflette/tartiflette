@@ -101,7 +101,7 @@ def test_visit_invalid_node():
     assert visitor.visited == []
 
     with pytest.raises(
-        Exception, match=f"Invalid AST node: < Sorry, I'm not a node. >.",
+        Exception, match=f"Invalid AST node: < Sorry, I'm not a node. >."
     ):
         visit(
             DocumentNode(

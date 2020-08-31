@@ -572,7 +572,7 @@ async def test_fields_on_correct_type_custom_schema(sdl, query, expected):
     schema = await create_schema(sdl, name=str(hash(sdl)))
     assert_unordered_lists(
         validate_query(
-            schema, parse_to_document(query), rules=[FieldsOnCorrectTypeRule],
+            schema, parse_to_document(query), rules=[FieldsOnCorrectTypeRule]
         ),
         expected,
     )

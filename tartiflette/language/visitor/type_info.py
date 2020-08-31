@@ -259,7 +259,7 @@ class TypeInfo(Visitor):
         )
 
     def _enter_inline_or_definition_fragment(
-        self, node: Union["InlineFragmentNode", "FragmentDefinitionNode"],
+        self, node: Union["InlineFragmentNode", "FragmentDefinitionNode"]
     ) -> None:
         """
         Visit a InlineFragmentNode or FragmentDefinitionNode to update

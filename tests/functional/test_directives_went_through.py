@@ -44,7 +44,7 @@ def bakery(schema_name):
             ctx,
         ):
             result = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             ctx["went_through"].append(
                 f"wentThrough.on_post_argument_coercion {directive_args['over']}"
@@ -145,7 +145,7 @@ def bakery(schema_name):
 
         @staticmethod
         async def on_field_execution(
-            directive_args, next_resolver, parent, args, ctx, info,
+            directive_args, next_resolver, parent, args, ctx, info
         ):
             result = await next_resolver(parent, args, ctx, info)
             ctx["went_through"].append(
@@ -155,7 +155,7 @@ def bakery(schema_name):
 
         @staticmethod
         async def on_pre_interface_output_coercion(
-            directive_args, next_directive, definition_node, value, ctx, info,
+            directive_args, next_directive, definition_node, value, ctx, info
         ):
             result = await next_directive(definition_node, value, ctx, info)
             ctx["went_through"].append(
@@ -165,7 +165,7 @@ def bakery(schema_name):
 
         @staticmethod
         async def on_pre_object_output_coercion(
-            directive_args, next_directive, definition_node, value, ctx, info,
+            directive_args, next_directive, definition_node, value, ctx, info
         ):
             result = await next_directive(definition_node, value, ctx, info)
             ctx["went_through"].append(
@@ -175,7 +175,7 @@ def bakery(schema_name):
 
         @staticmethod
         async def on_pre_union_output_coercion(
-            directive_args, next_directive, definition_node, value, ctx, info,
+            directive_args, next_directive, definition_node, value, ctx, info
         ):
             result = await next_directive(definition_node, value, ctx, info)
             ctx["went_through"].append(
@@ -185,7 +185,7 @@ def bakery(schema_name):
 
         @staticmethod
         async def on_pre_enum_type_output_coercion(
-            directive_args, next_directive, definition_node, value, ctx, info,
+            directive_args, next_directive, definition_node, value, ctx, info
         ):
             result = await next_directive(definition_node, value, ctx, info)
             ctx["went_through"].append(
@@ -195,7 +195,7 @@ def bakery(schema_name):
 
         @staticmethod
         async def on_pre_enum_value_output_coercion(
-            directive_args, next_directive, definition_node, value, ctx, info,
+            directive_args, next_directive, definition_node, value, ctx, info
         ):
             result = await next_directive(definition_node, value, ctx, info)
             ctx["went_through"].append(
@@ -205,7 +205,7 @@ def bakery(schema_name):
 
         @staticmethod
         async def on_pre_scalar_output_coercion(
-            directive_args, next_directive, definition_node, value, ctx, info,
+            directive_args, next_directive, definition_node, value, ctx, info
         ):
             result = await next_directive(definition_node, value, ctx, info)
             ctx["went_through"].append(
@@ -387,7 +387,9 @@ def bakery(schema_name):
             {
                 "filter": {
                     "id": "1",
-                    "name": {"equals": "Human",},
+                    "name": {
+                        "equals": "Human",
+                    },
                     "gender": "FEMALE",
                 },
             },

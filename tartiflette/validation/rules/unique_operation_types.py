@@ -27,7 +27,7 @@ class UniqueOperationTypesRule(ASTValidationRule):
 
     def _check_operation_type_uniqueness(
         self,
-        node: ["SchemaDefinitionNode", "SchemaExtensionNode",],
+        node: ["SchemaDefinitionNode", "SchemaExtensionNode"],
         key: Optional[Union[int, str]],
         parent: Optional[Union["Node", List["Node"]]],
         path: List[Union[int, str]],
