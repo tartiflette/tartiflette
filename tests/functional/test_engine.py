@@ -59,7 +59,7 @@ async def test_tartiflette_engine_initialization_with_sdl_file_list():
     ],
 )
 @pytest.mark.asyncio
-async def test_tartiflette_engine_initialization_with_sdl_folder(path,):
+async def test_tartiflette_engine_initialization_with_sdl_folder(path):
     schema_name = (
         f"{path}_test_tartiflette_engine_initialization_with_sdl_folder"
     )

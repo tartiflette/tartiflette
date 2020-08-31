@@ -183,7 +183,9 @@ class GraphQLSchema:
         # Operation type names
         self.query_operation_name: str = _DEFAULT_QUERY_OPERATION_NAME
         self.mutation_operation_name: str = _DEFAULT_MUTATION_OPERATION_NAME
-        self.subscription_operation_name: str = _DEFAULT_SUBSCRIPTION_OPERATION_NAME
+        self.subscription_operation_name: str = (
+            _DEFAULT_SUBSCRIPTION_OPERATION_NAME
+        )
 
         # Type, directive, enum, scalar & input type definitions
         self.type_definitions: Dict[str, "GraphQLType"] = {}

@@ -158,22 +158,19 @@ async def test_empty_values_1(query, expected, ttftt_engine):
 
 @pytest.mark.asyncio
 async def test_empty_values_2(ttftt_engine):
-    assert (
-        await ttftt_engine.execute(
-            """
+    assert await ttftt_engine.execute(
+        """
         query {
             anObject { a {b { c}}}
         }
         """
-        )
-        == {
-            "data": {"anObject": {"a": None}},
-            "errors": [
-                {
-                    "message": "Cannot return null for non-nullable field boby.b.",
-                    "path": ["anObject", "a", "b"],
-                    "locations": [{"line": 3, "column": 27}],
-                }
-            ],
-        }
-    )
+    ) == {
+        "data": {"anObject": {"a": None}},
+        "errors": [
+            {
+                "message": "Cannot return null for non-nullable field boby.b.",
+                "path": ["anObject", "a", "b"],
+                "locations": [{"line": 3, "column": 27}],
+            }
+        ],
+    }

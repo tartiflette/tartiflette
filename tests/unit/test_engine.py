@@ -117,25 +117,22 @@ async def test_engine_execute_syntax_error(clean_registry):
 async def test_engine_execute_unhandled_exception(clean_registry):
     e = await create_engine("type Query { a: Ninja } type Ninja { a: String }")
 
-    assert (
-        await e.execute(
-            """
+    assert await e.execute(
+        """
         fragment AFragment on Ninja { a }
         fragment AFragment on Ninja { a }
         query { a {} }
     """
-        )
-        == {
-            "data": None,
-            "errors": [
-                {
-                    "message": "4.20: syntax error, unexpected }",
-                    "path": None,
-                    "locations": [],
-                }
-            ],
-        }
-    )
+    ) == {
+        "data": None,
+        "errors": [
+            {
+                "message": "4.20: syntax error, unexpected }",
+                "path": None,
+                "locations": [],
+            }
+        ],
+    }
 
 
 @pytest.mark.asyncio
