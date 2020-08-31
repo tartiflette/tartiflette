@@ -38,7 +38,6 @@ def handle_field_error(
     # Otherwise, error protection is applied, logging the error and resolving
     # a null value for this field if one is encountered.
     execution_context.add_error(error)
-    return None
 
 
 async def complete_value_catching_error(
