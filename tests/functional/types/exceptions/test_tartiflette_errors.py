@@ -39,9 +39,8 @@ def tartiflette_execute_nested_error_bakery(schema_name):
     bakery=tartiflette_execute_nested_error_bakery,
 )
 async def test_tartiflette_execute_nested_error(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
+    assert await schema_stack.execute(
+        """
             query Test{
                 test {
                     deep {
@@ -50,19 +49,17 @@ async def test_tartiflette_execute_nested_error(schema_stack):
                 }
             }
             """,
-            operation_name="Test",
-        )
-        == {
-            "data": {"test": {"deep": {"lastUpdate": None}}},
-            "errors": [
-                {
-                    "message": "Cannot return null for non-nullable field Nested.lastUpdate.",
-                    "path": ["test", "deep", "lastUpdate", 1],
-                    "locations": [{"line": 5, "column": 25}],
-                }
-            ],
-        }
-    )
+        operation_name="Test",
+    ) == {
+        "data": {"test": {"deep": {"lastUpdate": None}}},
+        "errors": [
+            {
+                "message": "Cannot return null for non-nullable field Nested.lastUpdate.",
+                "path": ["test", "deep", "lastUpdate", 1],
+                "locations": [{"line": 5, "column": 25}],
+            }
+        ],
+    }
 
 
 def tartiflette_execute_tartifletteerror_custom_bakery(schema_name):
@@ -100,9 +97,8 @@ def tartiflette_execute_tartifletteerror_custom_bakery(schema_name):
     bakery=tartiflette_execute_tartifletteerror_custom_bakery,
 )
 async def test_tartiflette_execute_tartifletteerror_custom(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
+    assert await schema_stack.execute(
+        """
             query Test{
                 test {
                     deep {
@@ -111,17 +107,15 @@ async def test_tartiflette_execute_tartifletteerror_custom(schema_stack):
                 }
             }
             """,
-            operation_name="Test",
-        )
-        == {
-            "data": {"test": {"deep": {"lastUpdate": None}}},
-            "errors": [
-                {
-                    "message": "There is an error",
-                    "path": ["test", "deep", "lastUpdate"],
-                    "locations": [{"line": 5, "column": 25}],
-                    "extensions": {"code": "my_error"},
-                }
-            ],
-        }
-    )
+        operation_name="Test",
+    ) == {
+        "data": {"test": {"deep": {"lastUpdate": None}}},
+        "errors": [
+            {
+                "message": "There is an error",
+                "path": ["test", "deep", "lastUpdate"],
+                "locations": [{"line": 5, "column": 25}],
+                "extensions": {"code": "my_error"},
+            }
+        ],
+    }

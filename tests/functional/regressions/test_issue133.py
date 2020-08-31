@@ -19,7 +19,7 @@ def bakery(schema_name):
             ctx: Optional[Any],
         ) -> Any:
             result = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             if len(result) > directive_args["limit"]:
                 raise Exception(
@@ -69,7 +69,7 @@ def bakery(schema_name):
             ctx: Optional[Any],
         ) -> Any:
             result = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             if result not in directive_args["choices"]:
                 raise Exception(
@@ -117,7 +117,7 @@ def bakery(schema_name):
             ctx: Optional[Any],
         ) -> Any:
             return await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
 
         async def on_post_input_coercion(

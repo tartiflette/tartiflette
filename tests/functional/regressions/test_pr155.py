@@ -35,51 +35,45 @@ def bakery(schema_name):
 @pytest.mark.asyncio
 @pytest.mark.with_schema_stack(sdl=SDL, bakery=bakery)
 async def test_pr155_custom(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
+    assert await schema_stack.execute(
+        """
             query {
                 viewer {
                     name
                 }
             }
             """
-        )
-        == {
-            "data": {"viewer": None},
-            "errors": [
-                {
-                    "message": "this is an error message",
-                    "path": ["viewer"],
-                    "locations": [{"line": 3, "column": 17}],
-                    "extensions": {"code": "custom code"},
-                }
-            ],
-        }
-    )
+    ) == {
+        "data": {"viewer": None},
+        "errors": [
+            {
+                "message": "this is an error message",
+                "path": ["viewer"],
+                "locations": [{"line": 3, "column": 17}],
+                "extensions": {"code": "custom code"},
+            }
+        ],
+    }
 
 
 @pytest.mark.asyncio
 @pytest.mark.with_schema_stack(sdl=SDL, bakery=bakery)
 async def test_pr155_normal(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
+    assert await schema_stack.execute(
+        """
             query {
                 admin {
                     name
                 }
             }
             """
-        )
-        == {
-            "data": {"admin": None},
-            "errors": [
-                {
-                    "message": "this is another error message",
-                    "path": ["admin"],
-                    "locations": [{"line": 3, "column": 17}],
-                }
-            ],
-        }
-    )
+    ) == {
+        "data": {"admin": None},
+        "errors": [
+            {
+                "message": "this is another error message",
+                "path": ["admin"],
+                "locations": [{"line": 3, "column": 17}],
+            }
+        ],
+    }

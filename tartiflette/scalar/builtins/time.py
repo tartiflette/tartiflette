@@ -63,7 +63,7 @@ class ScalarTime(ScalarString):
                 pass
 
         raise graphql_error_from_nodes(
-            f"Time cannot represent value: {ast}.", nodes=[ast],
+            f"Time cannot represent value: {ast}.", nodes=[ast]
         )
 
 

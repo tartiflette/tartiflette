@@ -67,7 +67,7 @@ class ScalarDateTime(ScalarString):
                 pass
 
         raise graphql_error_from_nodes(
-            f"DateTime cannot represent value: {ast}.", nodes=[ast],
+            f"DateTime cannot represent value: {ast}.", nodes=[ast]
         )
 
 

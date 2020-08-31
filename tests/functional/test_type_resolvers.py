@@ -272,7 +272,7 @@ async def test_type_resolvers_type_resolver_unknown_type_0():
         )(lambda result, context, info, abstract_type: "Unknown")
 
         await create_schema(
-            _SDL, name="test_type_resolvers_type_resolver_unknown_type_0",
+            _SDL, name="test_type_resolvers_type_resolver_unknown_type_0"
         )
 
 
@@ -287,7 +287,7 @@ async def test_type_resolvers_type_resolver_unknown_type_1():
         )(lambda result, context, info, abstract_type: "Unknown")
 
         await create_schema(
-            _SDL, name="test_type_resolvers_type_resolver_unknown_type_1",
+            _SDL, name="test_type_resolvers_type_resolver_unknown_type_1"
         )
 
 

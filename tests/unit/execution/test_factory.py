@@ -99,16 +99,20 @@ async def test_executor_factory_with_error_coercer(random_schema_name):
         name=random_schema_name,
     )
     execute = executor_factory(schema, error_coercer=my_error_coercer)
-    assert (
-        await execute(
-            """
+    assert await execute(
+        """
             {
               hello(name: "John")
             }
             """
-        )
-        == {"data": None, "errors": [{"message": "Oopsie",},],}
-    )
+    ) == {
+        "data": None,
+        "errors": [
+            {
+                "message": "Oopsie",
+            },
+        ],
+    }
 
 
 @pytest.mark.asyncio
@@ -148,7 +152,9 @@ async def test_executor_factory_with_cache_decorator(random_schema_name):
     assert not cached
     execute = executor_factory(schema, cache_decorator=my_cache_decorator)
     assert await execute(query) == {
-        "data": {"hello": "Hello John!",},
+        "data": {
+            "hello": "Hello John!",
+        },
     }
     assert cached
     assert isinstance(cached[hash(query)], tuple)
@@ -216,31 +222,28 @@ async def test_executor_factory_with_invalid_query(random_schema_name):
         name=random_schema_name,
     )
     execute = executor_factory(schema)
-    assert (
-        await execute(
-            """
+    assert await execute(
+        """
             {
               unknown
             }
             """
-        )
-        == {
-            "data": None,
-            "errors": [
-                {
-                    "message": "Cannot query field < unknown > on type < Query >.",
-                    "path": None,
-                    "locations": [{"line": 3, "column": 15}],
-                    "extensions": {
-                        "spec": "June 2018",
-                        "rule": "5.3.1",
-                        "tag": "field-selections-on-objects-interfaces-and-unions-types",
-                        "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
-                    },
-                }
-            ],
-        }
-    )
+    ) == {
+        "data": None,
+        "errors": [
+            {
+                "message": "Cannot query field < unknown > on type < Query >.",
+                "path": None,
+                "locations": [{"line": 3, "column": 15}],
+                "extensions": {
+                    "spec": "June 2018",
+                    "rule": "5.3.1",
+                    "tag": "field-selections-on-objects-interfaces-and-unions-types",
+                    "details": "https://spec.graphql.org/June2018/#sec-Field-Selections-on-Objects-Interfaces-and-Unions-Types",
+                },
+            }
+        ],
+    }
 
 
 def test_subscriptor_factory_with_unknown_schema():
@@ -385,7 +388,9 @@ async def test_subscriptor_factory_with_cache_decorator(random_schema_name):
     subscribe = subscriptor_factory(schema, cache_decorator=my_cache_decorator)
     async for result in subscribe(query):
         assert result == {
-            "data": {"countdown": 0,},
+            "data": {
+                "countdown": 0,
+            },
         }
     assert cached
     assert isinstance(cached[hash(query)], tuple)
@@ -424,7 +429,9 @@ async def test_subscriptor_factory_with_parser(random_schema_name):
         """
     ):
         assert result == {
-            "data": {"countdown": 0,},
+            "data": {
+                "countdown": 0,
+            },
         }
     mocked_parser.assert_called_once()
 
@@ -459,7 +466,9 @@ async def test_subscriptor_factory_with_rules(random_schema_name):
         """
     ):
         assert result == {
-            "data": {"countdown": 0,},
+            "data": {
+                "countdown": 0,
+            },
         }
     mocked_rule.assert_called_once()
 

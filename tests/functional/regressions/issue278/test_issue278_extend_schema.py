@@ -99,5 +99,5 @@ async def test_issue_278_schema_extend_invalid_sdl():
         )
 
     match_schema_errors(
-        excinfo.value, ["There can be only one < query > type in schema."],
+        excinfo.value, ["There can be only one < query > type in schema."]
     )

@@ -18,7 +18,7 @@ def bakery(schema_name):
             ctx: Optional[Any],
         ):
             result = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             if isinstance(result, (int, float)):
                 if result > directive_args["limit"]:
@@ -51,7 +51,7 @@ def bakery(schema_name):
             ctx: Optional[Any],
         ):
             result = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             if isinstance(result, (int, float)):
                 return result + directive_args["step"]

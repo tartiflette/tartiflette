@@ -89,23 +89,20 @@ def directive_on_schema_execute_bakery(schema_name):
 
 @pytest.mark.asyncio
 @pytest.mark.with_schema_stack(
-    sdl=SDL, bakery=directive_on_schema_execute_bakery,
+    sdl=SDL, bakery=directive_on_schema_execute_bakery
 )
 async def test_directive_on_schema_execute(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
-            query {
-              a
-            }
-            """,
-            operation_name="",
-        )
-        == {
-            "data": {"a": "{'Modified by the directive': {'t': 'Loll'}}"},
-            "extensions": {"AddedByTheDirective": "OhYeah"},
+    assert await schema_stack.execute(
+        """
+        query {
+          a
         }
-    )
+        """,
+        operation_name="",
+    ) == {
+        "data": {"a": "{'Modified by the directive': {'t': 'Loll'}}"},
+        "extensions": {"AddedByTheDirective": "OhYeah"},
+    }
 
 
 def directive_on_schema_execute_extended_bakery(schema_name):
@@ -116,25 +113,22 @@ def directive_on_schema_execute_extended_bakery(schema_name):
 
 @pytest.mark.asyncio
 @pytest.mark.with_schema_stack(
-    sdl=SDL + SDL_EXTEND, bakery=directive_on_schema_execute_extended_bakery,
+    sdl=SDL + SDL_EXTEND, bakery=directive_on_schema_execute_extended_bakery
 )
 async def test_directive_on_schema_execute_extended(schema_stack):
-    assert (
-        await schema_stack.execute(
-            """
-            query {
-              a
-            }
-            """,
-            operation_name="",
-        )
-        == {
-            "data": {
-                "a": "{'Modified by the directive': {'t': 'Loll'}, 's': 'extended'}"
-            },
-            "extensions": {
-                "AddedByBBBBBBBTheDirective": "OhYeah",
-                "AddedByTheDirective": "OhYeah",
-            },
+    assert await schema_stack.execute(
+        """
+        query {
+          a
         }
-    )
+        """,
+        operation_name="",
+    ) == {
+        "data": {
+            "a": "{'Modified by the directive': {'t': 'Loll'}, 's': 'extended'}"
+        },
+        "extensions": {
+            "AddedByBBBBBBBTheDirective": "OhYeah",
+            "AddedByTheDirective": "OhYeah",
+        },
+    }

@@ -37,7 +37,7 @@ def bakery(schema_name):
             ctx: Optional[Any],
         ):
             value = await next_directive(
-                parent_node, argument_definition_node, value, ctx,
+                parent_node, argument_definition_node, value, ctx
             )
             if value > directive_args["limit"]:
                 raise LimitReachedException("Limit has been reached")

@@ -91,7 +91,7 @@ class ScalarInt:
             )
 
         raise graphql_error_from_nodes(
-            f"Int cannot represent non-integer value: {ast}.", nodes=[ast],
+            f"Int cannot represent non-integer value: {ast}.", nodes=[ast]
         )
 
 

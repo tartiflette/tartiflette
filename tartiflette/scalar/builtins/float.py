@@ -70,7 +70,7 @@ class ScalarFloat:
             return float(ast.value)
 
         raise graphql_error_from_nodes(
-            f"Float cannot represent non numeric value: {ast}.", nodes=[ast],
+            f"Float cannot represent non numeric value: {ast}.", nodes=[ast]
         )
 
 

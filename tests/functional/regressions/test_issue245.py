@@ -14,7 +14,7 @@ def bakery(schema_name):
 
 @pytest.mark.asyncio
 @pytest.mark.with_schema_stack(
-    sdl=get_path_to_sdl("issue245.sdl"), bakery=bakery,
+    sdl=get_path_to_sdl("issue245.sdl"), bakery=bakery
 )
 async def test_issue245(schema_stack):
     assert await schema_stack.execute("query { test }") == {

@@ -20,7 +20,7 @@ async def custom_error_coercer(exception, error):
 
 async def from_create_schema_with_operators(schema_name):
     _, execute, __ = await create_schema_with_operators(
-        _SDL, name=schema_name, error_coercer=custom_error_coercer,
+        _SDL, name=schema_name, error_coercer=custom_error_coercer
     )
     return execute
 
