@@ -31,8 +31,8 @@ class InputObjectTypeExtensionNode(TypeExtensionNode):
         :type location: Optional[Location]
         """
         self.name = name
-        self.directives = directives
-        self.fields = fields
+        self.directives = directives or []
+        self.fields = fields or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:

@@ -30,8 +30,8 @@ class EnumTypeExtensionNode(TypeExtensionNode):
         :type location: Optional[Location]
         """
         self.name = name
-        self.directives = directives
-        self.values = values
+        self.directives = directives or []
+        self.values = values or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:

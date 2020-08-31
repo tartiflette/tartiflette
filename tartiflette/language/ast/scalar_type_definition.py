@@ -1,6 +1,9 @@
 from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeDefinitionNode
+from tartiflette.language.ast.scalar_type_extension import (
+    ScalarTypeExtensionNode,
+)
 
 __all__ = ("ScalarTypeDefinitionNode",)
 
@@ -32,7 +35,7 @@ class ScalarTypeDefinitionNode(TypeDefinitionNode):
         """
         self.name = name
         self.description = description
-        self.directives = directives
+        self.directives = directives or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:
@@ -50,6 +53,24 @@ class ScalarTypeDefinitionNode(TypeDefinitionNode):
             and self.directives == other.directives
             and self.location == other.location
         )
+
+    def __or__(self, extension: Any) -> "ScalarTypeDefinitionNode":
+        """
+        Return a new scalar definition with elements from extension.
+
+        :param extension: instance with which extend the scalar
+        :type extension: Any
+        :return: a new scalar definition with elements from extension
+        :rtype: ScalarTypeDefinitionNode
+        """
+        if isinstance(extension, ScalarTypeExtensionNode):
+            return ScalarTypeDefinitionNode(
+                name=self.name,
+                description=self.description,
+                directives=self.directives + extension.directives,
+                location=self.location,
+            )
+        return self
 
     def __repr__(self) -> str:
         """

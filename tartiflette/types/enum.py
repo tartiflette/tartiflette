@@ -194,7 +194,7 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
         :type directives: Optional[List[DirectiveNode]]
         """
         self.name = name
-        self.values = values
+        self.values = values or []
         self.definition = definition
         self.description = description
         self._value_map: Dict[str, "GraphQLEnumValue"] = {}
@@ -342,15 +342,17 @@ class GraphQLEnumType(GraphQLInputType, GraphQLType):
 
 
 class GraphQLEnumTypeExtension(GraphQLType, GraphQLExtension):
-    def __init__(self, name, directives, values):
+    def __init__(self, name, directives, values, definition):
         self.name = name
         self.directives = directives
         self.values = values or []
+        self.definition = definition
 
     def bake(self, schema):
         enum = schema.find_type(self.name)
         enum.directives.extend(self.directives)
         enum.values.extend(self.values)
+        enum.definition |= self.definition
 
     def __eq__(self, other: Any) -> bool:
         """

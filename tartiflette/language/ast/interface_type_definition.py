@@ -1,6 +1,9 @@
 from typing import Any, List, Optional
 
 from tartiflette.language.ast.base import TypeDefinitionNode
+from tartiflette.language.ast.interface_type_extension import (
+    InterfaceTypeExtensionNode,
+)
 
 __all__ = ("InterfaceTypeDefinitionNode",)
 
@@ -35,8 +38,8 @@ class InterfaceTypeDefinitionNode(TypeDefinitionNode):
         """
         self.name = name
         self.description = description
-        self.directives = directives
-        self.fields = fields
+        self.directives = directives or []
+        self.fields = fields or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:
@@ -55,6 +58,25 @@ class InterfaceTypeDefinitionNode(TypeDefinitionNode):
             and self.fields == other.fields
             and self.location == other.location
         )
+
+    def __or__(self, extension: Any) -> "InterfaceTypeDefinitionNode":
+        """
+        Return a new interface definition with elements from extension.
+
+        :param extension: instance with which extend the interface
+        :type extension: Any
+        :return: a new interface definition with elements from extension
+        :rtype: InterfaceTypeDefinitionNode
+        """
+        if isinstance(extension, InterfaceTypeExtensionNode):
+            return InterfaceTypeDefinitionNode(
+                name=self.name,
+                description=self.description,
+                directives=self.directives + extension.directives,
+                fields=self.fields + extension.fields,
+                location=self.location,
+            )
+        return self
 
     def __repr__(self) -> str:
         """

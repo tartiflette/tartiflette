@@ -33,9 +33,9 @@ class ObjectTypeExtensionNode(TypeExtensionNode):
         :type location: Optional[Location]
         """
         self.name = name
-        self.interfaces = interfaces
-        self.directives = directives
-        self.fields = fields
+        self.interfaces = interfaces or []
+        self.directives = directives or []
+        self.fields = fields or []
         self.location = location
 
     def __eq__(self, other: Any) -> bool:

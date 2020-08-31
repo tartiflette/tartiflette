@@ -176,15 +176,17 @@ class GraphQLInputObjectType(GraphQLInputType, GraphQLType):
 
 
 class GraphQLInputObjectTypeExtension(GraphQLType, GraphQLExtension):
-    def __init__(self, name, input_fields, directives):
+    def __init__(self, name, input_fields, directives, definition):
         self.name = name
         self.input_fields = input_fields or {}
         self.directives = directives
+        self.definition = definition
 
     def bake(self, schema):
         extended = schema.find_type(self.name)
         extended.input_fields.update(self.input_fields)
         extended.directives.extend(self.directives)
+        extended.definition |= self.definition
 
     def __eq__(self, other: Any) -> bool:
         """
