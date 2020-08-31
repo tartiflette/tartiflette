@@ -57,7 +57,7 @@ def parse_and_validate_query(
 
 
 def collect_executable_variable_definitions(
-    schema: "GraphQLSchema", operation: "OperationDefinitionNode",
+    schema: "GraphQLSchema", operation: "OperationDefinitionNode"
 ) -> List["ExecutableVariableDefinition"]:
     """
     Go recursively through all variable definition AST nodes to convert them as

@@ -268,11 +268,9 @@ from tartiflette.types.exceptions.tartiflette import GraphQLSchemaError
 async def test_issue372(sdl, should_except, match, random_schema_name):
     if not should_except:
         assert (
-            await create_engine(sdl, schema_name=random_schema_name,)
+            await create_engine(sdl, schema_name=random_schema_name)
             is not None
         )
     else:
         with pytest.raises(GraphQLSchemaError, match=match):
-            await create_engine(
-                sdl, schema_name=random_schema_name,
-            )
+            await create_engine(sdl, schema_name=random_schema_name)
