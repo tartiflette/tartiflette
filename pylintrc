@@ -1,9 +1,8 @@
 # -*- mode: conf -*-
 [MASTER]
-load-plugins=pylint.extensions.docparams,pylint.extensions.docstyle,pylint.extensions.mccabe
-
-[GENERAL]
-init-hook='import sys; sys.path.append("/usr/src/app")'
+load-plugins=pylint.extensions.docparams,
+             pylint.extensions.docstyle,
+             pylint.extensions.mccabe
 
 [BASIC]
 # Good variable names which should always be accepted, separated by a comma
@@ -19,24 +18,16 @@ function-rgx=[a-z_][a-z0-9_]{2,50}$
 method-rgx=[a-z_][a-z0-9_]{2,50}$
 
 [MESSAGE CONTROL]
-# CHANGED:
-# C0111: Missing docstring
-# E0602: Undefined variable %r
-# I0011: Locally disabled messages
-# I0012: Locally enabled messages
-# R0801: Similar lines in files
-# R0903: Too few public methods
-# W0141: Bad-builtins
-# W0142: Use of * or ** magic
-# W0223: Abstract method not overridden
-# W0603: Using the global statement
-# W1202: Logging with '{}' formating instead of '%'
-# C0330: Wrong hanging indentation before block (add 4 spaces).
-# "bad-continuation" is currently disabled because of that issue -> https://github.com/PyCQA/pylint/issues/289
-# R1711: Useless return at end of function or method
-# C0199: First line empty in %s docstring Used when a blank line is found at the beginning of a docstring.
-# W9006: "%s" not documented as being raised Please document exceptions for all raised exception types.
-disable=C0111,E0602,I0011,I0012,R0801,R0903,W0141,W0142,W0223,W0603,W1202,C0303,C0330,C0301,R0401,R1711,C0199,W9006,W0707
+disable=abstract-method,
+        docstring-first-line-empty,
+        duplicate-code,
+        line-too-long,
+        missing-class-docstring,
+        missing-function-docstring,
+        missing-module-docstring,
+        missing-raises-doc,
+        raise-missing-from,
+        too-few-public-methods
 
 [DESIGN]
 ## Maximum number of arguments for function / method
@@ -71,7 +62,3 @@ indent-string='    '
 [MISCELLANEOUS]
 # List of note tags to take in consideration, separated by a comma. One of our guys uses qballs when he wants to flag something for himself.
 notes=FIXME,NINJA
-
-[TYPECHECK]
-# Ignore some modules which don't work well with rapidjons
-ignored-modules=rapidjson
