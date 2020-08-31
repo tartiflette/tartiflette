@@ -436,6 +436,7 @@ def parse_object_type_definition(
             object_type_definition_node.fields, schema
         ),
         directives=object_type_definition_node.directives,
+        definition=object_type_definition_node,
     )
     schema.add_type_definition(object_type)
     return object_type
@@ -517,6 +518,7 @@ def parse_interface_type_definition(
             interface_type_definition_node.fields, schema
         ),
         directives=interface_type_definition_node.directives,
+        definition=interface_type_definition_node,
     )
     schema.add_type_definition(interface_type)
     return interface_type
@@ -567,6 +569,7 @@ def parse_union_type_definition(
             union_type_definition_node.types, schema
         ),
         directives=union_type_definition_node.directives,
+        definition=union_type_definition_node,
     )
     schema.add_type_definition(union_type)
     return union_type

@@ -7,25 +7,49 @@ def bakery(schema_name):
     @Directive(name="run_me_this_object", schema_name=schema_name)
     class RunMeThisObject:
         async def on_pre_output_coercion(
-            self, directive_args, next_directive, value, ctx, info
+            self,
+            directive_args,
+            next_directive,
+            output_definition_node,
+            value,
+            ctx,
+            info,
         ):
-            bob = await next_directive(value, ctx, info)
+            bob = await next_directive(
+                output_definition_node, value, ctx, info
+            )
             return {"a": f"{bob['a']} obj"}
 
     @Directive(name="run_me_this_union", schema_name=schema_name)
     class RunMeThisUnion:
         async def on_pre_output_coercion(
-            self, directive_args, next_directive, value, ctx, info
+            self,
+            directive_args,
+            next_directive,
+            output_definition_node,
+            value,
+            ctx,
+            info,
         ):
-            bob = await next_directive(value, ctx, info)
+            bob = await next_directive(
+                output_definition_node, value, ctx, info
+            )
             return {"a": f"{bob['a']} union"}
 
     @Directive(name="run_me_this_ifa", schema_name=schema_name)
     class RunMeThisIfa:
         async def on_pre_output_coercion(
-            self, directive_args, next_directive, value, ctx, info
+            self,
+            directive_args,
+            next_directive,
+            output_definition_node,
+            value,
+            ctx,
+            info,
         ):
-            bob = await next_directive(value, ctx, info)
+            bob = await next_directive(
+                output_definition_node, value, ctx, info
+            )
             return {"a": f"{bob['a']} ifa"}
 
     @Resolver("Query.aFieldUnionObj", schema_name=schema_name)
