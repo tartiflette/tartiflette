@@ -52,7 +52,7 @@ _TEST_REQUIRE = [
     "pytest==6.0.1",
     "pytest-cov==2.10.0",
     "pytest-asyncio==0.14.0",
-    "pytest-xdist==1.34.0",
+    "pytest-xdist==2.1.0",
     "pylint==2.6.0",
     "black==20.8b1",
     "isort==5.5.1",
