@@ -25,6 +25,7 @@ from tartiflette.types.exceptions.tartiflette import (
     ImproperlyConfigured,
     NonCallable,
     NonCoroutine,
+    TartifletteError,
 )
 from tartiflette.utils.callables import is_valid_coroutine
 from tartiflette.utils.errors import (
@@ -424,16 +425,26 @@ class Engine:
         )
 
         # Goes through potential schema directives and finish in self._perform_query
-        return await self._query_executor(
-            self._schema,
-            document,
-            errors,
-            operation_name,
-            context,
-            variables,
-            initial_value,
-            context_coercer=context,
-        )
+        try:
+            return await self._query_executor(
+                self._schema,
+                document,
+                errors,
+                operation_name,
+                context,
+                variables,
+                initial_value,
+                context_coercer=context,
+            )
+        # pylint: disable=broad-except
+        except Exception as e:
+            if not isinstance(e, TartifletteError):
+                e = TartifletteError(
+                    message=str(e),
+                    path=[self._schema.query_operation_name],
+                    original_error=e,
+                )
+            return await self._build_response(errors=[e])
 
     async def subscribe(
         self,
