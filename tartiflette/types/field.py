@@ -64,6 +64,11 @@ class GraphQLField:
         self.query_arguments_coercer: Optional[Callable] = None
         self.subscription_arguments_coercer: Optional[Callable] = None
 
+        # Concurrently
+        self.concurrently: Optional[bool] = None
+        self.query_concurrently: Optional[bool] = None
+        self.subscription_concurrently: Optional[bool] = None
+
         # Introspection attributes
         self.isDeprecated: bool = False  # pylint: disable=invalid-name
         self.args: List["GraphQLArgument"] = []
@@ -160,6 +165,13 @@ class GraphQLField:
         else:
             self.arguments_coercer = schema.default_arguments_coercer
 
+        if self.subscription_concurrently is not None:
+            self.concurrently = self.subscription_concurrently
+        elif self.query_concurrently is not None:
+            self.concurrently = self.query_concurrently
+        else:  # TODO: handle a default value at schema level
+            self.concurrently = True
+
         # Directives
         directives_definition = compute_directive_nodes(
             schema, self.directives
@@ -192,7 +204,9 @@ class GraphQLField:
                 is_resolver=True,
                 with_default=True,
             ),
-            output_coercer=get_output_coercer(self.graphql_type),
+            output_coercer=get_output_coercer(
+                self.graphql_type, self.concurrently
+            ),
         )
 
         for argument in self.arguments.values():
