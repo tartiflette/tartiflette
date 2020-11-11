@@ -139,6 +139,8 @@ class Engine:
     Tartiflette GraphQL engine.
     """
 
+    # pylint: disable=too-many-instance-attributes
+
     def __init__(
         self,
         sdl=None,
@@ -150,6 +152,7 @@ class Engine:
         query_cache_decorator=UNDEFINED_VALUE,
         json_loader=None,
         custom_default_arguments_coercer=None,
+        coerce_list_concurrently=None,
     ) -> None:
         """
         Creates an uncooked Engine instance.
@@ -163,6 +166,7 @@ class Engine:
         self._custom_default_arguments_coercer = (
             custom_default_arguments_coercer
         )
+        self._coerce_list_concurrently = coerce_list_concurrently
         self._modules = modules
         self._query_cache_decorator = (
             query_cache_decorator
@@ -189,6 +193,7 @@ class Engine:
         query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
         json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
         custom_default_arguments_coercer: Optional[Callable] = None,
+        coerce_list_concurrently: Optional[bool] = None,
         schema_name: Optional[str] = None,
     ) -> None:
         """
@@ -213,6 +218,8 @@ class Engine:
         json module.loads for ast_json loading
         :param custom_default_arguments_coercer: callable that will replace the
         tartiflette `default_arguments_coercer`
+        :param coerce_list_concurrently: whether or not list will be coerced
+        concurrently
         :param schema_name: name of the SDL
         :type sdl: Union[str, List[str]]
         :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
@@ -222,6 +229,7 @@ class Engine:
         :type query_cache_decorator: Optional[Callable]
         :type json_loader: Optional[Callable[[str], Dict[str, Any]]]
         :type custom_default_arguments_coercer: Optional[Callable]
+        :type coerce_list_concurrently: Optional[bool]
         :type schema_name: Optional[str]
         """
         # pylint: disable=too-many-arguments,too-many-locals
@@ -294,6 +302,11 @@ class Engine:
             custom_default_resolver,
             custom_default_type_resolver,
             custom_default_arguments_coercer,
+            (
+                coerce_list_concurrently
+                if coerce_list_concurrently is not None
+                else self._coerce_list_concurrently
+            ),
         )
         self._build_response = partial(
             build_response, error_coercer=self._error_coercer

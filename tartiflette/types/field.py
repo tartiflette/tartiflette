@@ -169,8 +169,8 @@ class GraphQLField:
             self.concurrently = self.subscription_concurrently
         elif self.query_concurrently is not None:
             self.concurrently = self.query_concurrently
-        else:  # TODO: handle a default value at schema level
-            self.concurrently = True
+        else:
+            self.concurrently = schema.coerce_list_concurrently
 
         # Directives
         directives_definition = compute_directive_nodes(
