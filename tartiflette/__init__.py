@@ -33,6 +33,7 @@ async def create_engine(
     query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
     json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
     custom_default_arguments_coercer: Optional[Callable] = None,
+    coerce_list_concurrently: Optional[bool] = None,
 ) -> "Engine":
     """
     Create an engine by analyzing the SDL and connecting it with the imported
@@ -56,6 +57,8 @@ async def create_engine(
     :param json_loader: A callable that will replace default python
     json module.loads for ast_json loading
     :param custom_default_arguments_coercer: callable that will replace the
+    :param coerce_list_concurrently: whether or not list will be coerced
+    concurrently
     tartiflette `default_arguments_coercer
     :type sdl: Union[str, List[str]]
     :type schema_name: str
@@ -66,6 +69,7 @@ async def create_engine(
     :type query_cache_decorator: Optional[Callable]
     :type json_loader: Optional[Callable[[str], Dict[str, Any]]]
     :type custom_default_arguments_coercer: Optional[Callable]
+    :type coerce_list_concurrently: Optional[bool]
     :return: a Cooked Engine instance
     :rtype: Engine
 
@@ -90,6 +94,7 @@ async def create_engine(
         query_cache_decorator=query_cache_decorator,
         json_loader=json_loader,
         custom_default_arguments_coercer=custom_default_arguments_coercer,
+        coerce_list_concurrently=coerce_list_concurrently,
     )
 
     return e

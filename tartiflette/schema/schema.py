@@ -179,6 +179,7 @@ class GraphQLSchema:
         self.name = name
         self.default_type_resolver: Optional[Callable] = None
         self.default_arguments_coercer: Optional[Callable] = None
+        self.coerce_list_concurrently: Optional[bool] = None
 
         # Operation type names
         self.query_operation_name: str = _DEFAULT_QUERY_OPERATION_NAME
@@ -1115,6 +1116,7 @@ class GraphQLSchema:
         custom_default_resolver: Optional[Callable] = None,
         custom_default_type_resolver: Optional[Callable] = None,
         custom_default_arguments_coercer: Optional[Callable] = None,
+        coerce_list_concurrently: Optional[bool] = None,
     ) -> None:
         """
         Bake the final schema (it should not change after this) used for
@@ -1126,15 +1128,23 @@ class GraphQLSchema:
         to deduct the type of a result)
         :param custom_default_arguments_coercer: callable that will replace the
         tartiflette `default_arguments_coercer`
+        :param coerce_list_concurrently: whether or not list will be coerced
+        concurrently
         :type custom_default_resolver: Optional[Callable]
         :type custom_default_type_resolver: Optional[Callable]
         :type custom_default_arguments_coercer: Optional[Callable]
+        :type coerce_list_concurrently: Optional[bool]
         """
         self.default_type_resolver = (
             custom_default_type_resolver or default_type_resolver
         )
         self.default_arguments_coercer = (
             custom_default_arguments_coercer or gather_arguments_coercer
+        )
+        self.coerce_list_concurrently = (
+            coerce_list_concurrently
+            if coerce_list_concurrently is not None
+            else True
         )
         self._inject_introspection_fields()
 

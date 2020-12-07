@@ -33,6 +33,7 @@ class SchemaBakery:
         custom_default_resolver: Optional[Callable] = None,
         custom_default_type_resolver: Optional[Callable] = None,
         custom_default_arguments_coercer: Optional[Callable] = None,
+        coerce_list_concurrently: Optional[bool] = None,
     ) -> "GraphQLSchema":
         """
         Bakes and returns a GraphQLSchema instance.
@@ -44,10 +45,13 @@ class SchemaBakery:
         to deduct the type of a result)
         :param custom_default_arguments_coercer: callable that will replace the
         tartiflette `default_arguments_coercer`
+        :param coerce_list_concurrently: whether or not list will be coerced
+        concurrently
         :type schema_name: str
         :type custom_default_resolver: Optional[Callable]
         :type custom_default_type_resolver: Optional[Callable]
         :type custom_default_arguments_coercer: Optional[Callable]
+        :type coerce_list_concurrently: Optional[bool]
         :return: a baked GraphQLSchema instance
         :rtype: GraphQLSchema
         """
@@ -56,5 +60,6 @@ class SchemaBakery:
             custom_default_resolver,
             custom_default_type_resolver,
             custom_default_arguments_coercer,
+            coerce_list_concurrently,
         )
         return schema
