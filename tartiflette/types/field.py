@@ -66,8 +66,11 @@ class GraphQLField:
 
         # Concurrently
         self.list_concurrently: Optional[bool] = None
+        self.parent_concurrently: Optional[bool] = None
         self.query_list_concurrently: Optional[bool] = None
+        self.query_parent_concurrently: Optional[bool] = None
         self.subscription_list_concurrently: Optional[bool] = None
+        self.subscription_parent_concurrently: Optional[bool] = None
 
         # Introspection attributes
         self.isDeprecated: bool = False  # pylint: disable=invalid-name
@@ -171,6 +174,13 @@ class GraphQLField:
             self.list_concurrently = self.query_list_concurrently
         else:
             self.list_concurrently = schema.coerce_list_concurrently
+
+        if self.subscription_parent_concurrently is not None:
+            self.parent_concurrently = self.subscription_parent_concurrently
+        elif self.query_parent_concurrently is not None:
+            self.parent_concurrently = self.query_parent_concurrently
+        else:
+            self.parent_concurrently = schema.coerce_parent_concurrently
 
         # Directives
         directives_definition = compute_directive_nodes(

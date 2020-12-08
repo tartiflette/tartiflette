@@ -34,6 +34,7 @@ async def create_engine(
     json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
     custom_default_arguments_coercer: Optional[Callable] = None,
     coerce_list_concurrently: Optional[bool] = None,
+    coerce_parent_concurrently: Optional[bool] = None,
 ) -> "Engine":
     """
     Create an engine by analyzing the SDL and connecting it with the imported
@@ -59,6 +60,8 @@ async def create_engine(
     :param custom_default_arguments_coercer: callable that will replace the
     :param coerce_list_concurrently: whether or not list will be coerced
     concurrently
+    :param coerce_parent_concurrently: whether or not field will be coerced
+    concurrently
     tartiflette `default_arguments_coercer
     :type sdl: Union[str, List[str]]
     :type schema_name: str
@@ -70,6 +73,7 @@ async def create_engine(
     :type json_loader: Optional[Callable[[str], Dict[str, Any]]]
     :type custom_default_arguments_coercer: Optional[Callable]
     :type coerce_list_concurrently: Optional[bool]
+    :type coerce_parent_concurrently: Optional[bool]
     :return: a Cooked Engine instance
     :rtype: Engine
 
@@ -82,6 +86,7 @@ async def create_engine(
     >>>   hello(name: String!): String!
     >>> }''')
     """
+    # pylint: disable=too-many-arguments
     e = Engine()
 
     await e.cook(
@@ -95,6 +100,7 @@ async def create_engine(
         json_loader=json_loader,
         custom_default_arguments_coercer=custom_default_arguments_coercer,
         coerce_list_concurrently=coerce_list_concurrently,
+        coerce_parent_concurrently=coerce_parent_concurrently,
     )
 
     return e
