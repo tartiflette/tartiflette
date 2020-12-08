@@ -38,7 +38,7 @@ class Resolver:
         schema_name: str = "default",
         type_resolver: Optional[Callable] = None,
         arguments_coercer: Optional[Callable] = None,
-        concurrently: Optional[bool] = None,
+        list_concurrently: Optional[bool] = None,
     ) -> None:
         """
         :param name: name of the field to wrap
@@ -46,19 +46,20 @@ class Resolver:
         :param type_resolver: callable to use to resolve the type of an
         abstract type
         :param arguments_coercer: the callable to use to coerce field arguments
-        :param concurrently: whether or not list will be coerced concurrently
+        :param list_concurrently: whether or not list will be coerced
+        concurrently
         :type name: str
         :type schema_name: str
         :type type_resolver: Optional[Callable]
         :type arguments_coercer: Optional[Callable]
-        :type concurrently: Optional[bool]
+        :type list_concurrently: Optional[bool]
         """
         self.name = name
         self._type_resolver = type_resolver
         self._implementation = None
         self._schema_name = schema_name
         self._arguments_coercer = arguments_coercer
-        self._concurrently = concurrently
+        self._list_concurrently = list_concurrently
 
     def bake(self, schema: "GraphQLSchema") -> None:
         """
@@ -75,7 +76,7 @@ class Resolver:
             field = schema.get_field_by_name(self.name)
             field.raw_resolver = self._implementation
             field.query_arguments_coercer = self._arguments_coercer
-            field.query_concurrently = self._concurrently
+            field.query_list_concurrently = self._list_concurrently
 
             field_wrapped_type = get_wrapped_type(
                 get_graphql_type(schema, field.gql_type)
