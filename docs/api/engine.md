@@ -80,6 +80,7 @@ The `create_engine` function provides an advanced interface for initialization. 
 * `query_cache_decorator` _(Optional[Callable])_: callable that will replace the tartiflette default lru_cache decorator to cache query parsing
 * `json_loader` _(Optional[Callable[[str], Dict[str, Any]]])_: a Callable that will replace python built-in `json.loads` when Tartiflette will transform the json-ast of the query into a dict useable by the execution algorithm. ([more detail here](#parameter-json_loader))
 * `custom_default_arguments_coercer` _(Optional[Callable])_: callable that will replace the tartiflette `default_arguments_coercer`
+* `coerce_list_concurrently` _(Optional[bool])_: determine whether or not output list are coerced concurrently by default
 
 #### Parameter: `error_coercer`
 
@@ -365,6 +366,7 @@ async def cook(
     query_cache_decorator: Optional[Callable] = UNDEFINED_VALUE,
     json_loader: Optional[Callable[[str], Dict[str, Any]]] = None,
     custom_default_arguments_coercer: Optional[Callable] = None,
+    coerce_list_concurrently: Optional[bool] = None,
     schema_name: str = None,
 ) -> None:
     pass
@@ -378,4 +380,5 @@ async def cook(
 * `query_cache_decorator` _(Optional[Callable])_: callable that will replace the tartiflette default lru_cache decorator to cache query parsing
 * `json_loader` _(Optional[Callable[[str], Dict[str, Any]]])_: a Callable that will replace python built-in `json.loads` when Tartiflette will transform the json-ast of the query into a dict useable by the execution algorithm. ([more detail here](#parameter-json_loader))
 * `custom_default_arguments_coercer` _(Optional[Callable])_: callable that will replace the tartiflette `default_arguments_coercer`
+* `coerce_list_concurrently` _(Optional[bool])_: determine whether or not output list are coerced concurrently by default
 * `schema_name` _(str = "default")_: name of the schema represented by the provided SDL ([more detail here](./schema-registry.md))

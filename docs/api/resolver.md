@@ -21,6 +21,7 @@ async def my_hello_resolver(parent, args, context, info):
 * `schema_name` _(str = "default")_: name of the schema to which link the resolver
 * `type_resolver` _(Optional[Callable] = None)_: the callable to use to resolve the type of an abstract type
 * `arguments_coercer` _(Optional[Callable] = None)_: callable to use to coerce field arguments
+* `concurrently` _(Optional[bool] = None)_: determine whether or not the output list of the decorated field should be coerced concurrently
 
 The `arguments_coercer` parameter is here to provide an easy way to override the default callable used internaly by Tartiflette to coerce the arguments of the field. It has the same behaviour as the `custom_default_arguments_coercer` parameter at engine initialisation but impact only the field.
 
