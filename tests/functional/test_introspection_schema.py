@@ -115,7 +115,7 @@ import pytest
                                 "__typename": "__Directive",
                                 "name": "nonIntrospectable",
                                 "description": "Directs the executor to hide the element on introspection queries.",
-                                "locations": ["FIELD_DEFINITION"],
+                                "locations": ["FIELD_DEFINITION", "SCHEMA"],
                                 "args": [],
                             },
                             {

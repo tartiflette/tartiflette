@@ -2,6 +2,7 @@ from functools import partial
 from typing import Any, Dict, Optional
 
 from tartiflette.types.argument import GraphQLArgument
+from tartiflette.types.exceptions.tartiflette import TartifletteError
 from tartiflette.types.field import GraphQLField
 from tartiflette.types.non_null import GraphQLNonNull
 
@@ -32,8 +33,10 @@ async def __schema_resolver(
     :rtype: Any
     """
     # pylint: disable=unused-argument
-    info.is_introspection = True
-    return info.schema
+    if info.schema.is_introspectable:
+        info.is_introspection = True
+        return info.schema
+    raise TartifletteError("Introspection is disabled for this schema")
 
 
 SCHEMA_ROOT_FIELD_DEFINITION = partial(
@@ -65,6 +68,9 @@ async def __type_resolver(
     :rtype: GraphQLType
     """
     # pylint: disable=unused-argument
+    if not info.schema.is_introspectable:
+        raise TartifletteError("Introspection is disabled for this schema")
+
     info.is_introspection = True
     try:
         return info.schema.find_type(args["name"])

@@ -36,6 +36,30 @@ class NonIntrospectableDirective:
         # pylint: disable=unused-argument
         return None
 
+    @staticmethod
+    async def on_schema_execution(
+        directive_args,
+        next_directive,
+        schema,
+        document,
+        parsing_errors,
+        operation_name,
+        context,
+        variables,
+        initial_value,
+    ):
+        # pylint: disable=unused-argument
+        schema.is_introspectable = False
+        return await next_directive(
+            schema,
+            document,
+            parsing_errors,
+            operation_name,
+            context,
+            variables,
+            initial_value,
+        )
+
 
 def bake(schema_name: str, config: Optional[Dict[str, Any]] = None) -> str:
     """
@@ -54,5 +78,5 @@ def bake(schema_name: str, config: Optional[Dict[str, Any]] = None) -> str:
     )
     return '''
     """Directs the executor to hide the element on introspection queries."""
-    directive @nonIntrospectable on FIELD_DEFINITION
+    directive @nonIntrospectable on FIELD_DEFINITION | SCHEMA
     '''

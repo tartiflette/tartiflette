@@ -515,7 +515,7 @@ async def test_issue92_fragment_inordered(ttftt_engine):
                     },
                     {
                         "name": "nonIntrospectable",
-                        "locations": ["FIELD_DEFINITION"],
+                        "locations": ["FIELD_DEFINITION", "SCHEMA"],
                         "args": [],
                     },
                     {
