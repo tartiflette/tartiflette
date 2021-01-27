@@ -1011,3 +1011,73 @@ async def test_introspection_type_fields_include_deprecated(
     )
 
     assert result == expected
+
+
+@pytest.mark.asyncio
+async def test_tartiflette_execute_schema_introspection_non_introspectable_output():
+    schema_sdl = """
+    schema @nonIntrospectable {
+        query: CustomRootQuery
+        mutation: CustomRootMutation
+        subscription: CustomRootSubscription
+    }
+
+    type CustomRootQuery {
+        test: String
+    }
+
+    type CustomRootMutation {
+        test: Int
+    }
+
+    type CustomRootSubscription {
+        test: String
+    }
+    """
+
+    ttftt = await create_engine(
+        schema_sdl,
+        schema_name="test_tartiflette_execute_schema_introspection_non_introspectable_output",
+    )
+
+    result = await ttftt.execute(
+        """
+    query Test{
+        __schema {
+            queryType { name }
+            mutationType { name }
+            subscriptionType { name }
+            types {
+                kind
+                name
+            }
+            directives {
+                name
+                description
+                locations
+                args {
+                    name
+                    description
+                    type {
+                        kind
+                        name
+                    }
+                    defaultValue
+                }
+            }
+        }
+    }
+    """,
+        operation_name="Test",
+    )
+
+    assert {
+        "data": None,
+        "errors": [
+            {
+                "message": "Introspection is disabled for this schema",
+                "path": ["__schema"],
+                "locations": [{"line": 3, "column": 9}],
+            }
+        ],
+    } == result
