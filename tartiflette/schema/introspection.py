@@ -32,8 +32,10 @@ async def __schema_resolver(
     :rtype: Any
     """
     # pylint: disable=unused-argument
-    info.is_introspection = True
-    return info.schema
+    if info.schema.is_introspectable:
+        info.is_introspection = True
+        return info.schema
+    return None
 
 
 SCHEMA_ROOT_FIELD_DEFINITION = partial(
@@ -65,6 +67,9 @@ async def __type_resolver(
     :rtype: GraphQLType
     """
     # pylint: disable=unused-argument
+    if not info.schema.is_introspectable:
+        return None
+
     info.is_introspection = True
     try:
         return info.schema.find_type(args["name"])
@@ -114,6 +119,8 @@ async def __typename_resolver(
     :rtype: GraphQLType
     """
     # pylint: disable=unused-argument
+    if not info.schema.is_introspectable:
+        return None
     return info.parent_type.name
 
 
