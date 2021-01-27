@@ -220,6 +220,7 @@ class GraphQLSchema:
         self.extensions: List["GraphQLExtension"] = []
         self._schema_directives: List["DirectiveNode"] = []
         self._json_loader = None
+        self.is_introspectable = True
 
     @property
     def json_loader(self):

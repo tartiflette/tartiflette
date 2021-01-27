@@ -254,7 +254,7 @@ async def test_tartiflette_execute_schema_introspection_output():
                     {
                         "name": "nonIntrospectable",
                         "description": "Directs the executor to hide the element on introspection queries.",
-                        "locations": ["FIELD_DEFINITION"],
+                        "locations": ["FIELD_DEFINITION", "SCHEMA"],
                         "args": [],
                     },
                     {
@@ -617,7 +617,7 @@ fragment TypeRef on __Type {
                     },
                     {
                         "name": "nonIntrospectable",
-                        "locations": ["FIELD_DEFINITION"],
+                        "locations": ["FIELD_DEFINITION", "SCHEMA"],
                         "args": [],
                     },
                     {
