@@ -1042,7 +1042,7 @@ async def test_tartiflette_execute_schema_introspection_non_introspectable_outpu
 
     result = await ttftt.execute(
         """
-    query Test{
+    query Test {
         __schema {
             queryType { name }
             mutationType { name }
@@ -1066,6 +1066,12 @@ async def test_tartiflette_execute_schema_introspection_non_introspectable_outpu
                 }
             }
         }
+        __typename
+        __type(name: "CustomRootMutation") {
+            __typename
+            kind
+            name
+        }
     }
     """,
         operation_name="Test",
@@ -1075,9 +1081,14 @@ async def test_tartiflette_execute_schema_introspection_non_introspectable_outpu
         "data": None,
         "errors": [
             {
+                "message": "Introspection is disabled for this type",
+                "path": ["__type"],
+                "locations": [{"line": 27, "column": 9}],
+            },
+            {
                 "message": "Introspection is disabled for this schema",
                 "path": ["__schema"],
                 "locations": [{"line": 3, "column": 9}],
-            }
+            },
         ],
     } == result

@@ -69,7 +69,7 @@ async def __type_resolver(
     """
     # pylint: disable=unused-argument
     if not info.schema.is_introspectable:
-        raise TartifletteError("Introspection is disabled for this schema")
+        raise TartifletteError("Introspection is disabled for this type")
 
     info.is_introspection = True
     try:
