@@ -1081,7 +1081,7 @@ async def test_tartiflette_execute_schema_introspection_non_introspectable_outpu
         "data": None,
         "errors": [
             {
-                "message": "Introspection is disabled for this type",
+                "message": "Introspection is disabled for this schema",
                 "path": ["__type"],
                 "locations": [{"line": 27, "column": 9}],
             },
