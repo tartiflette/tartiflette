@@ -58,6 +58,10 @@ async def resolve_field(
     if field_definition is None:
         return UNDEFINED_VALUE
 
+    if field_definition.resolver is None:
+        print(f"{field_definition.name} seems to miss a resolver")
+        return UNDEFINED_VALUE
+
     return await field_definition.resolver(
         execution_context,
         parent_type,
