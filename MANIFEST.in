@@ -19,3 +19,4 @@ recursive-include tartiflette/schema/builtins *.sdl
 include libgraphqlparser/CMakeLists.txt
 include libgraphqlparser/.clang-tidy
 include libgraphqlparser/LICENSE
+include tartiflette/py.typed
