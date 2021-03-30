@@ -19,4 +19,5 @@ Contributors
 * [@florimondmanca](https://github.com/florimondmanca)
 * [@garyd203](https://github.com/garyd203)
 * [@mkniewallner](https://github.com/mkniewallner)
+* [tbekolay](https://github.com/tbekolay)
 * [@ultrabug](https://github.com/ultrabug)
