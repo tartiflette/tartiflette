@@ -1,33 +1,42 @@
 name: Build'n'Release
+
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
+
 jobs:
   Style:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@master
-      - name: style
-        uses: ./
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
+      - name: Setup Python 3.9.6
+        uses: actions/setup-python@v2
         with:
-          args: make style
+          python-version: 3.9.6
+      - name: Install Python dependencies
+        run: pip install -e .[test]
+      - run: make style
   Tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@master
-      - name: functional test
-        uses: ./
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
+      - name: Setup Python 3.9.6
+        uses: actions/setup-python@v2
         with:
-          args: make test-functional
-      - name: unit test
-        uses: ./
-        with:
-          args: make test-unit
+          python-version: 3.9.6
+      - name: Install Python dependencies
+        run: pip install -e .[test]
+      - name: Functional Tests
+        run: make test-functional
+      - name: Unit Tests
+        run: make test-unit
   SonarCloud:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
       - name: Unshallow
         run: git fetch --unshallow
       - name: SonarCloud Scan
@@ -36,13 +45,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   PublishAndRelease:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs:
       - Tests
       - Style
       - SonarCloud
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Publish to Pypi
         uses: ./.github/actions/pypi/
         if: github.ref == 'refs/heads/master'
