@@ -1,58 +1,44 @@
 name: Validate PullRequest
-on: [pull_request]
+
+on: pull_request
+
 jobs:
   Style:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@master
-      - name: style
-        uses: ./
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
+      - name: Setup Python 3.9.6
+        uses: actions/setup-python@v2
         with:
-          args: make style
-  TestsUbuntu:
+          python-version: 3.9.6
+      - name: Install Python dependencies
+        run: pip install -e .[test]
+      - run: make style
+  Tests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9]
-      fail-fast: true
+        os: [ ubuntu-20.04, macos-10.15 ]
+        python-version: [ 3.6, 3.7, 3.8, 3.9 ]
     steps:
-      - uses: actions/checkout@master
-      - name: Set Python Version ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Deps
-        run: sudo apt update && sudo apt install cmake && make init && pip install -e .[test]
-      - name: Functional Tests
-        run: make test-functional
-      - name: Unit Tests
-        run: make test-unit
-  TestsMacos:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9]
-      fail-fast: true
-    steps:
-      - uses: actions/checkout@master
-      - name: Set Python Version ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install Deps
-        run: brew install cmake
-      - name: Install Python deps
-        run: make init && pip install -e .[test]
+      - name: Install Python dependencies
+        run: pip install -e .[test]
       - name: Functional Tests
         run: make test-functional
       - name: Unit Tests
         run: make test-unit
   SonarCloud:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
       - name: Unshallow
         run: git fetch --unshallow
       - name: SonarCloud Scan
@@ -62,14 +48,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   PublishToPypiDev:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs:
-      - TestsUbuntu
-      - TestsMacos
+      - Tests
       - Style
       - SonarCloud
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: build and publish to pypi
         uses: ./.github/actions/pypi/
         if: github.ref != 'refs/heads/master'
