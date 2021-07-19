@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-from setuptools import find_packages, setup
+from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
 from setuptools.command.build_py import build_py
 
@@ -31,21 +31,24 @@ def _build_libgraphqlparser():
 
     os.rename(
         artifact_path,
-        "tartiflette/language/parsers/libgraphqlparser/cffi/%s"
-        % os.path.basename(artifact_path),
+        f"tartiflette/language/parsers/libgraphqlparser/cffi/{os.path.basename(artifact_path)}",
     )
 
 
 class BuildExtCmd(build_ext):
     def run(self):
         _build_libgraphqlparser()
-        build_ext.run(self)
 
 
 class BuildPyCmd(build_py):
     def run(self):
         _build_libgraphqlparser()
-        build_py.run(self)
+        super().run()
+
+
+class LibGraphQLParserExtension(Extension):
+    def __init__(self):
+        super().__init__("libgraphqlparser", sources=[])
 
 
 _TEST_REQUIRE = [
@@ -92,5 +95,6 @@ setup(
     tests_require=_TEST_REQUIRE,
     extras_require={"test": _TEST_REQUIRE, "benchmark": _BENCHMARK_REQUIRE},
     cmdclass={"build_ext": BuildExtCmd, "build_py": BuildPyCmd},
+    ext_modules=[LibGraphQLParserExtension()],
     include_package_data=True,
 )

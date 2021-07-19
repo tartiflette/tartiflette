@@ -64,7 +64,7 @@ clean:
 .PHONY: set-version
 set-version:
 ifneq ($(SET_ALPHA_VERSION), 0)
-	bash -c "sed -i \"s@_VERSION[ ]*=[ ]*[\\\"\'][0-9]\+\\.[0-9]\+\\.[0-9]\+\(rc[0-9]\+\)\?[\\\"\'].*@_VERSION = \\\"$(PKG_VERSION)\\\"@\" setup.py"
+	bash -c "sed -i -e 's!^\(\s*_VERSION = \).*!\1\"$(PKG_VERSION)\"!' setup.py"
 endif
 
 .PHONY: run-docs
