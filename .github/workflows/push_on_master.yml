@@ -44,7 +44,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  PublishAndRelease:
+  PublishWheels:
+    name: Build and publish wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs:
+      - Tests
+      - Style
+      - SonarCloud
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04, macos-10.15 ]
+    steps:
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.0.1
+        env:
+          CIBW_ARCHS: native
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: pip install twine==3.4.*
+      - name: Publish wheels to pypi
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+        run: twine upload wheelhouse/*
+  PublishSdist:
+    name: Build and publish sdist
     runs-on: ubuntu-20.04
     needs:
       - Tests
@@ -52,22 +79,24 @@ jobs:
       - SonarCloud
     steps:
       - uses: actions/checkout@v2
-      - name: Publish to Pypi
-        uses: ./.github/actions/pypi/
-        if: github.ref == 'refs/heads/master'
-        env:
-          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      - name: Set Version and Changelog
-        uses: ./.github/actions/shell/
-        if: github.ref == 'refs/heads/master'
+      - run: git submodule update --init
+      - uses: actions/setup-python@v2
         with:
-          entrypoint: make
-          args: github-action-version-and-changelog
-      - name: Creates Github Release
-        uses: ./.github/actions/release/
-        if: github.ref == 'refs/heads/master'
+          python-version: 3.9
+      - run: python setup.py sdist
+      - run: pip install twine==3.4.*
+      - name: Publish package to pypi
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+        run: twine upload dist/*
+      - name: Set PKG_VERSION environment variable
+        run: echo "PKG_VERSION=$(make -s get-version)" >> $GITHUB_ENV
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ env.PKG_VERSION }}
+          tag_name: ${{ env.PKG_VERSION }}
+          body_path: changelogs/${{ env.PKG_VERSION }}.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPOSITORY: tartiflette
-          USERNAME: tartiflette

@@ -60,9 +60,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: git submodule update --init
-      - run: make set-version
+      - run: make set-dev-version
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.0.0a4
+        uses: pypa/cibuildwheel@v2.0.1
         env:
           CIBW_ARCHS: native
       - uses: actions/setup-python@v2
@@ -85,7 +85,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: git submodule update --init
-      - run: make set-version
+      - run: make set-dev-version
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9

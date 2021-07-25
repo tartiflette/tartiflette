@@ -1,1 +1,0 @@
-Fork of https://github.com/mariamrf/py-package-publish-action
