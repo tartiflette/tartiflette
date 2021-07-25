@@ -1,3 +1,0 @@
-.PHONY: run
-run:
-	true
