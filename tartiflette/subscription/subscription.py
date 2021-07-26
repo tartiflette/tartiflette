@@ -40,23 +40,29 @@ class Subscription:
         name: str,
         schema_name: str = "default",
         arguments_coercer: Optional[Callable] = None,
-        concurrently: Optional[bool] = None,
+        list_concurrently: Optional[bool] = None,
+        parent_concurrently: Optional[bool] = True,
     ) -> None:
         """
         :param name: name of the subscription field
         :param schema_name: name of the schema to which link the subscription
         :param arguments_coercer: callable to use to coerce field arguments
-        :param concurrently: whether list should be coerced concurrently
+        :param list_concurrently: whether or not list will be coerced
+        concurrently
+        :param parent_concurrently: whether or not field will be coerced
+        concurrently
         :type name: str
         :type schema_name: str
         :type arguments_coercer: Optional[Callable]
-        :type concurrently: Optional[bool]
+        :type list_concurrently: Optional[bool]
+        :type parent_concurrently: Optional[bool]
         """
         self.name = name
         self._implementation = None
         self._schema_name = schema_name
         self._arguments_coercer = arguments_coercer
-        self._concurrently = concurrently
+        self._list_concurrently = list_concurrently
+        self._parent_concurrently = parent_concurrently
 
     def bake(self, schema: "GraphQLSchema") -> None:
         """
@@ -85,7 +91,8 @@ class Subscription:
 
         field.subscribe = self._implementation
         field.subscription_arguments_coercer = self._arguments_coercer
-        field.subscription_concurrently = self._concurrently
+        field.subscription_list_concurrently = self._list_concurrently
+        field.subscription__parent_concurrently = self._parent_concurrently
 
     def __call__(self, implementation: Callable) -> Callable:
         """

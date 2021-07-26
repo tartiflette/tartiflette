@@ -65,9 +65,12 @@ class GraphQLField:
         self.subscription_arguments_coercer: Optional[Callable] = None
 
         # Concurrently
-        self.concurrently: Optional[bool] = None
-        self.query_concurrently: Optional[bool] = None
-        self.subscription_concurrently: Optional[bool] = None
+        self.list_concurrently: Optional[bool] = None
+        self.parent_concurrently: Optional[bool] = None
+        self.query_list_concurrently: Optional[bool] = None
+        self.query_parent_concurrently: Optional[bool] = None
+        self.subscription_list_concurrently: Optional[bool] = None
+        self.subscription_parent_concurrently: Optional[bool] = None
 
         # Introspection attributes
         self.isDeprecated: bool = False  # pylint: disable=invalid-name
@@ -165,12 +168,19 @@ class GraphQLField:
         else:
             self.arguments_coercer = schema.default_arguments_coercer
 
-        if self.subscription_concurrently is not None:
-            self.concurrently = self.subscription_concurrently
-        elif self.query_concurrently is not None:
-            self.concurrently = self.query_concurrently
+        if self.subscription_list_concurrently is not None:
+            self.list_concurrently = self.subscription_list_concurrently
+        elif self.query_list_concurrently is not None:
+            self.list_concurrently = self.query_list_concurrently
         else:
-            self.concurrently = schema.coerce_list_concurrently
+            self.list_concurrently = schema.coerce_list_concurrently
+
+        if self.subscription_parent_concurrently is not None:
+            self.parent_concurrently = self.subscription_parent_concurrently
+        elif self.query_parent_concurrently is not None:
+            self.parent_concurrently = self.query_parent_concurrently
+        else:
+            self.parent_concurrently = schema.coerce_parent_concurrently
 
         # Directives
         directives_definition = compute_directive_nodes(
@@ -205,7 +215,7 @@ class GraphQLField:
                 with_default=True,
             ),
             output_coercer=get_output_coercer(
-                self.graphql_type, self.concurrently
+                self.graphql_type, self.list_concurrently
             ),
         )
 

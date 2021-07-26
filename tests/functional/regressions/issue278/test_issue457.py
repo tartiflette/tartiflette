@@ -22,7 +22,7 @@ type Query {
 @pytest.mark.asyncio
 async def test_issue_457_sequentially(random_schema_name):
     @Resolver(
-        "Query.books", concurrently=False, schema_name=random_schema_name
+        "Query.books", list_concurrently=False, schema_name=random_schema_name
     )
     async def test_query_books(parent, args, ctx, info):
         return _BOOKS
@@ -44,7 +44,9 @@ async def test_issue_457_sequentially(random_schema_name):
 
 @pytest.mark.asyncio
 async def test_issue_457_concurrently(random_schema_name):
-    @Resolver("Query.books", concurrently=True, schema_name=random_schema_name)
+    @Resolver(
+        "Query.books", list_concurrently=True, schema_name=random_schema_name
+    )
     async def test_query_books(parent, args, ctx, info):
         return _BOOKS
 

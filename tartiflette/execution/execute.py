@@ -132,20 +132,37 @@ async def execute_fields(
     :return: the computed fields value
     :rtype: Dict[str, Any]
     """
-    results = await asyncio.gather(
-        *[
-            resolve_field(
-                execution_context,
-                parent_type,
-                source_value,
-                field_nodes,
-                Path(path, entry_key),
-                is_introspection_context,
-            )
-            for entry_key, field_nodes in fields.items()
-        ],
-        return_exceptions=True,
-    )
+    results = []
+    to_await = {}
+    for index, (entry_key, field_nodes) in enumerate(fields.items()):
+        field_definition = get_field_definition(
+            execution_context.schema, parent_type, field_nodes[0].name.value
+        )
+        if field_definition is None:
+            results.append(UNDEFINED_VALUE)
+            continue
+
+        result = field_definition.resolver(
+            execution_context,
+            parent_type,
+            source_value,
+            field_nodes,
+            Path(path, entry_key),
+            is_introspection_context,
+        )
+
+        if field_definition.parent_concurrently:
+            to_await[index] = result
+            results.append(None)
+        else:
+            results.append(await result)
+
+    if to_await:
+        awaited = await asyncio.gather(
+            *list(to_await.values()), return_exceptions=True
+        )
+        for index, result in zip(to_await, awaited):
+            results[index] = result
 
     exceptions = extract_exceptions_from_results(results)
     if exceptions:
