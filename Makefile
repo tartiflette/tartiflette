@@ -1,14 +1,3 @@
-SET_ALPHA_VERSION = 0
-PKG_VERSION := $(shell cat setup.py | grep "_VERSION =" | egrep -o '[0-9]+\.[0-9]+\.[0-9]+(rc[0-9]+)?')
-
-REF := $(shell cat /github/workflow/event.json | jq ".ref")
-
-ifneq ($(REF),"refs/heads/master")
-PKG_VERSION := $(shell echo | awk -v pkg_version="$(PKG_VERSION)" -v build_number="$(shell date +\"%s\")" '{print pkg_version "dev" build_number}')
-SET_ALPHA_VERSION = 1
-endif
-
-
 .PHONY: init
 init:
 	git submodule init
@@ -61,11 +50,9 @@ clean:
 	find . -name '*.pyo' -exec rm -fv {} +
 	find . -name '__pycache__' -exec rm -frv {} +
 
-.PHONY: set-version
-set-version:
-ifneq ($(SET_ALPHA_VERSION), 0)
-	bash -c "sed -i -e 's!^\(\s*_VERSION = \).*!\1\"$(PKG_VERSION)\"!' setup.py"
-endif
+.PHONY: set-dev-version
+set-dev-version:
+	bash -c "sed -i -e 's!^\(\s*_VERSION = \).*!\1\"$(shell $(MAKE) get-version).dev$(shell date +\"%s\")\"!' setup.py"
 
 .PHONY: run-docs
 run-docs:
@@ -73,7 +60,7 @@ run-docs:
 
 .PHONY: get-version
 get-version:
-	@echo $(PKG_VERSION)
+	@echo $(shell cat setup.py | grep "_VERSION =" | egrep -o '[0-9]+\.[0-9]+\.[0-9]+(rc[0-9]+)?')
 
 .PHONY: get-last-released-changelog-entry
 get-last-released-changelog-entry:
