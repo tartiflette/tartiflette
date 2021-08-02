@@ -44,32 +44,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  PublishWheels:
-    name: Build and publish wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    needs:
-      - Tests
-      - Style
-      - SonarCloud
-    strategy:
-      matrix:
-        os: [ ubuntu-20.04, macos-10.15 ]
-    steps:
-      - uses: actions/checkout@v2
-      - run: git submodule update --init
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.0.1
-        env:
-          CIBW_ARCHS: native
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - run: pip install twine==3.4.*
-      - name: Publish wheels to pypi
-        env:
-          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-        run: twine upload wheelhouse/*
   PublishSdist:
     name: Build and publish sdist
     runs-on: ubuntu-20.04
@@ -100,3 +74,30 @@ jobs:
           body_path: changelogs/${{ env.PKG_VERSION }}.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PublishWheels:
+    name: Build and publish wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs:
+      - Tests
+      - Style
+      - SonarCloud
+      - PublishSdist
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04, macos-10.15 ]
+    steps:
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.0.1
+        env:
+          CIBW_ARCHS: native
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: pip install twine==3.4.*
+      - name: Publish wheels to pypi
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+        run: twine upload wheelhouse/*
