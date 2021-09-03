@@ -1,4 +1,5 @@
 import json as default_json_module
+import locale
 import logging
 
 from functools import lru_cache, partial
@@ -155,6 +156,7 @@ class Engine:
         custom_default_arguments_coercer=None,
         coerce_list_concurrently=None,
         coerce_parent_concurrently=None,
+        sdl_file_encoding=None,
     ) -> None:
         """
         Creates an uncooked Engine instance.
@@ -183,6 +185,7 @@ class Engine:
         self._subscription_executor = None
         self._cached_parse_and_validate_query = None
         self._json_loader = json_loader or default_json_module.loads
+        self._sdl_file_encoding = sdl_file_encoding
 
     async def cook(
         self,
@@ -199,6 +202,7 @@ class Engine:
         coerce_list_concurrently: Optional[bool] = None,
         coerce_parent_concurrently: Optional[bool] = None,
         schema_name: Optional[str] = None,
+        sdl_file_encoding: str = None,
     ) -> None:
         """
         Cook the tartiflette, basically prepare the engine by binding it to
@@ -227,6 +231,8 @@ class Engine:
         :param coerce_parent_concurrently: whether or not field will be coerced
         concurrently
         :param schema_name: name of the SDL
+        :param sdl_file_encoding: allow for specify the file encoding of the SDL if
+        != from local.getpreferedencoding(false)
         :type sdl: Union[str, List[str]]
         :type error_coercer: Callable[[Exception, Dict[str, Any]], Dict[str, Any]]
         :type custom_default_resolver: Optional[Callable]
@@ -238,6 +244,7 @@ class Engine:
         :type coerce_list_concurrently: Optional[bool]
         :type coerce_parent_concurrently: Optional[bool]
         :type schema_name: Optional[str]
+        :type sdl_file_encodign: Optional[str]
         """
         # pylint: disable=too-many-arguments,too-many-locals
         if self._cooked:
@@ -303,7 +310,12 @@ class Engine:
             modules, schema_name
         )
 
-        SchemaRegistry.register_sdl(schema_name, sdl, modules_sdl)
+        sfe = (
+            sdl_file_encoding
+            or self._sdl_file_encoding
+            or locale.getpreferredencoding(False)
+        )
+        SchemaRegistry.register_sdl(schema_name, sdl, sfe, modules_sdl)
         self._schema = await SchemaBakery.bake(
             schema_name,
             custom_default_resolver,

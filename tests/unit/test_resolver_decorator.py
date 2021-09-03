@@ -69,7 +69,7 @@ async def test_resolver_decorator(clean_registry):
 
     _, schema_sdl = await _import_builtins([], schema_sdl, "default")
 
-    clean_registry.register_sdl("default", schema_sdl)
+    clean_registry.register_sdl("default", schema_sdl, "UTF-8")
 
     mock_one = Mock()
     mock_two = Mock()
