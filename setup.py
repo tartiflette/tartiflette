@@ -91,7 +91,7 @@ setup(
     ],
     keywords="api graphql protocol api rest relay tartiflette dailymotion",
     packages=_PACKAGES,
-    install_requires=["cffi>=1.0.0,<2.0.0", "lark-parser==0.11.3", "pytz"],
+    install_requires=["cffi>=1.0.0,<2.0.0", "lark-parser==0.12.0", "pytz"],
     tests_require=_TEST_REQUIRE,
     extras_require={"test": _TEST_REQUIRE, "benchmark": _BENCHMARK_REQUIRE},
     cmdclass={"build_ext": BuildExtCmd, "build_py": BuildPyCmd},
