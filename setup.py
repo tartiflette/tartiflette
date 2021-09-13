@@ -52,7 +52,7 @@ class LibGraphQLParserExtension(Extension):
 
 
 _TEST_REQUIRE = [
-    "pytest==6.2.4",
+    "pytest==6.2.5",
     "pytest-cov==2.12.1",
     "pytest-asyncio==0.15.1",
     "pytest-xdist==2.3.0",
