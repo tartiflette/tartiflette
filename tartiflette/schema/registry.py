@@ -161,6 +161,7 @@ class SchemaRegistry:
     def register_sdl(
         schema_name: str,
         sdl: Union[str, List[str], "GraphQLSchema"],
+        sdl_file_encoding: str,
         modules_sdl: Optional[str] = None,
     ) -> None:
         """
@@ -168,9 +169,11 @@ class SchemaRegistry:
         :param schema_name: name of the schema
         :param sdl: path(s) to the SDL or raw string representing the SDL
         :param modules_sdl: extra SDL from the imported modules
+        :param sdl_file_encoding: sdl file encoding
         :type schema_name: str
         :type sdl: Union[str, List[str], GraphQLSchema]
         :type modules_sdl: Optional[str]
+        :type sdl_file_encoding: str
         """
         SchemaRegistry._schemas.setdefault(schema_name, {})
 
@@ -190,7 +193,9 @@ class SchemaRegistry:
 
         # Convert SDL files into big schema and parse it
         for filepath in sdl_files_list:
-            with open(filepath, mode="r") as sdl_file:
+            with open(
+                filepath, mode="r", encoding=sdl_file_encoding
+            ) as sdl_file:
                 full_sdl += "\n" + sdl_file.read()
 
         if modules_sdl:

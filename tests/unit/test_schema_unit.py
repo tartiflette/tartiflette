@@ -58,7 +58,7 @@ async def test_schema_object_get_field_name(clean_registry):
     """
 
     _, schema_sdl = await _import_builtins([], schema_sdl, "default")
-    clean_registry.register_sdl("A", schema_sdl)
+    clean_registry.register_sdl("A", schema_sdl, "UTF-8")
     generated_schema = SchemaBakery._preheat("A")
 
     with pytest.raises(ImproperlyConfigured):
@@ -162,7 +162,7 @@ async def test_schema_validate_named_types(
 ):
 
     _, full_sdl = await _import_builtins([], full_sdl, "A")
-    clean_registry.register_sdl("A", full_sdl)
+    clean_registry.register_sdl("A", full_sdl, "UTF-8")
     generated_schema = SchemaBakery._preheat("A")
 
     if expected_error:
@@ -324,7 +324,7 @@ async def test_schema_validate_object_follow_interfaces(
     full_sdl, expected_error, clean_registry
 ):
     _, full_sdl = await _import_builtins([], full_sdl, "A")
-    clean_registry.register_sdl("A", full_sdl)
+    clean_registry.register_sdl("A", full_sdl, "UTF-8")
     generated_schema = SchemaBakery._preheat("A")
 
     try:
@@ -447,7 +447,7 @@ async def test_schema_validate_root_types_exist(
     full_sdl, expected_error, clean_registry
 ):
     _, full_sdl = await _import_builtins([], full_sdl, "a")
-    clean_registry.register_sdl("a", full_sdl)
+    clean_registry.register_sdl("a", full_sdl, "UTF-8")
     generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
@@ -484,7 +484,7 @@ async def test_schema_validate_non_empty_object(
     full_sdl, expected_error, clean_registry
 ):
     _, full_sdl = await _import_builtins([], full_sdl, "a")
-    clean_registry.register_sdl("a", full_sdl)
+    clean_registry.register_sdl("a", full_sdl, "UTF-8")
     generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
@@ -534,7 +534,7 @@ async def test_schema_validate_union_is_acceptable(
     full_sdl, expected_error, clean_registry
 ):
     _, full_sdl = await _import_builtins([], full_sdl, "a")
-    clean_registry.register_sdl("a", full_sdl)
+    clean_registry.register_sdl("a", full_sdl, "UTF-8")
     generated_schema = SchemaBakery._preheat("a")
 
     if expected_error:
@@ -554,7 +554,7 @@ async def test_schema_bake_schema(clean_registry):
         }""",
         "a",
     )
-    clean_registry.register_sdl("a", full_sdl)
+    clean_registry.register_sdl("a", full_sdl, "UTF-8")
     assert await SchemaBakery.bake("a") is not None
 
 
@@ -576,7 +576,7 @@ async def test_schema_has_type(clean_registry, type_name, expected):
         """,
         "a",
     )
-    clean_registry.register_sdl("a", full_sdl)
+    clean_registry.register_sdl("a", full_sdl, "UTF-8")
     schema = await SchemaBakery.bake("a")
     assert schema.has_type(type_name) is expected
 

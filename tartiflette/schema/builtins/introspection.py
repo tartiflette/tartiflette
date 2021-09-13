@@ -86,6 +86,7 @@ def bake(schema_name: str, config: Optional[Dict[str, Any]] = None) -> str:
     )
     Resolver("__Type.fields", schema_name=schema_name)(resolve_type_fields)
     with open(
-        os.path.join(os.path.dirname(__file__), "introspection.sdl")
+        os.path.join(os.path.dirname(__file__), "introspection.sdl"),
+        encoding="UTF-8",
     ) as file:
         return file.read()
