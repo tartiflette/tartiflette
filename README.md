@@ -18,7 +18,6 @@
 - [Roadmaps](#roadmaps)
 - [How to contribute to the documentation?](#how-to-contribute-to-the-documentation)
   - [How to run the website locally?](#how-to-run-the-website-locally)
-- [Known issues](#known-issues)
 
 ## Motivation
 
@@ -179,7 +178,3 @@ make run-docs
 ```
 
 Every change you will make in the `/docs` folder will be automatically hot reloaded. :tada:
-
-## Known issues
-
-* [Schema directives aren't executed](https://github.com/tartiflette/tartiflette/issues/134)
