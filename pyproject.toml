@@ -1,0 +1,9 @@
+[tool.isort]
+line_length = 79
+indent = "    "
+known_first_party = [
+    "tartiflette",
+    "tests"
+]
+combine_as_imports = true
+lines_between_types = 1
