@@ -43,7 +43,6 @@ test: test-unit test-functional
 .PHONY: clean
 clean:
 	find . -name '*.pyc' -exec rm -fv {} +
-	find . -name '*.pyo' -exec rm -fv {} +
 	find . -name '__pycache__' -exec rm -frv {} +
 
 .PHONY: set-dev-version
