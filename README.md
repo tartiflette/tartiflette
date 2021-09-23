@@ -13,7 +13,7 @@
 - [Status](#status)
 - [Usage](#usage)
 - [Installation](#installation)
-  - [Installation dependencies](#installation-dependencies)
+  - [Building from source](#building-from-source)
 - [Tartiflette over HTTP](#tartiflette-over-http)
 - [Roadmaps](#roadmaps)
 - [How to contribute to the documentation?](#how-to-contribute-to-the-documentation)
@@ -80,43 +80,29 @@ More details on the [API Documentation](https://tartiflette.io/docs/api/engine/)
 
 Tartiflette is available on [pypi.org](https://pypi.org/project/tartiflette/).
 
+While the project depends on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*,
+wheels are provided since version 1.4.0, ensuring that no system dependency is required.
+
+To install the library:
+
 ```bash
 pip install tartiflette
 ```
 
-### Installation dependencies
+### Building from source
 
-#### 1.2.0+
+If you use a platform incompatible with the provided wheels, you'll need to install `cmake` to build `libgraphqlparser`
+in order to install the library.
 
-As Tartiflette based its Executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*. You'll need these following commands on your environment to use the library. `cmake`
-
-*MacOSX*
+*macOS*
 ```bash
 brew install cmake
 ```
 
-*Ubuntu*
+*Debian/Ubuntu*
 ```bash
 apt-get install cmake
 ```
-
-#### Before 1.2.0
-
-As Tartiflette based its Executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*. You'll need these following commands on your environment to use the library. `cmake`, `bison` and `flex`.
-
-*MacOSX*
-```bash
-brew install cmake flex bison
-```
-
-*Ubuntu*
-```bash
-apt-get install cmake flex bison
-```
-
-Make sure you have `bison` in version 3
->Note to Mac OS users: Make sure bison in your path is really Bison 3, look [here](https://stackoverflow.com/questions/10778905/why-does-my-mac-os-x-10-7-3-have-an-old-version-2-3-of-gnu-bison/30844621#30844621) for details.
-The `LIBGRAPHQLPARSER_DIR` environmental variable is available to specify where the `libgraphqlparser.so` file is located.
 
 ## Tartiflette over HTTP
 
