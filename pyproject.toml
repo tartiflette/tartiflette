@@ -1,6 +1,6 @@
 [tool.isort]
+profile = "black"
 line_length = 79
-indent = "    "
 known_first_party = [
     "tartiflette",
     "tests"
