@@ -46,7 +46,7 @@ clean:
 
 .PHONY: set-dev-version
 set-dev-version:
-	bash -c "sed -i -e 's!^\(\s*_VERSION = \).*!\1\"$(shell $(MAKE) get-version).dev$(shell date +\"%s\")\"!' setup.py"
+	@bash -c "sed -i -e 's!^\(\s*version = \).*!\1$(shell $(MAKE) get-version).dev$(shell date +\"%s\")!' setup.cfg"
 
 .PHONY: run-docs
 run-docs:
@@ -54,4 +54,4 @@ run-docs:
 
 .PHONY: get-version
 get-version:
-	@echo $(shell cat setup.py | grep "_VERSION =" | egrep -o '[0-9]+\.[0-9]+\.[0-9]+(rc[0-9]+)?')
+	@echo $(shell cat setup.cfg | grep "version =" | egrep -o '[0-9]+\.[0-9]+\.[0-9]+(rc[0-9]+)?')
