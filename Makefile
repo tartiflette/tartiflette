@@ -13,7 +13,7 @@ format-import:
 
 .PHONY: format
 format: format-import
-	black -l 79 --target-version py36 tartiflette tests setup.py
+	black tartiflette tests setup.py
 
 .PHONY: check-import
 check-import:
@@ -21,7 +21,7 @@ check-import:
 
 .PHONY: check-format
 check-format:
-	black -l 79 --target-version py36 --check tartiflette tests setup.py
+	black --check tartiflette tests setup.py
 
 .PHONY: style
 style: check-format check-import
