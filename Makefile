@@ -1,7 +1,6 @@
 .PHONY: init
 init:
-	git submodule init
-	git submodule update
+	git submodule update --init
 
 .PHONY: install
 install: init
