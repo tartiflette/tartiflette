@@ -1,5 +1,10 @@
 ![Tartiflette](docs/github-landing.png)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=tartiflette_tartiflette&metric=alert_status)](https://sonarcloud.io/dashboard?id=tartiflette_tartiflette)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/context:python)
+
+
 **Tartiflette** is a GraphQL Server implementation built with **Python 3.6+**.
 
 **Summary**
@@ -14,7 +19,6 @@
 - [How to contribute to the documentation?](#how-to-contribute-to-the-documentation)
   - [How to run the website locally?](#how-to-run-the-website-locally)
 - [Known issues](#known-issues)
-- [Badges](#badges)
 
 ## Motivation
 
@@ -179,8 +183,3 @@ Every change you will make in the `/docs` folder will be automatically hot reloa
 ## Known issues
 
 * [Schema directives aren't executed](https://github.com/tartiflette/tartiflette/issues/134)
-
-## Badges
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=tartiflette_tartiflette)](https://sonarcloud.io/dashboard?id=tartiflette_tartiflette)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/context:python)
