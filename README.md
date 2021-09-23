@@ -14,7 +14,7 @@
 - [Usage](#usage)
 - [Installation](#installation)
   - [Building from source](#building-from-source)
-- [Tartiflette over HTTP](#tartiflette-over-http)
+- [HTTP server implementations](#http-server-implementations)
 - [Roadmaps](#roadmaps)
 - [How to contribute to the documentation?](#how-to-contribute-to-the-documentation)
   - [How to run the website locally?](#how-to-run-the-website-locally)
@@ -104,40 +104,13 @@ brew install cmake
 apt-get install cmake
 ```
 
-## Tartiflette over HTTP
+## HTTP server implementations
 
-Discover our implementation of tartiflette over HTTP called [tartiflette-aiohttp](https://github.com/tartiflette/tartiflette-aiohttp).
+`tartiflette` library itself is transport agnostic, but to simplify integration with existing HTTP servers, two
+different libraries are available:
 
-**Overview**
-```bash
-pip install tartiflette-aiohttp
-```
-
-```python
-from aiohttp import web
-from tartiflette_aiohttp import register_graphql_handlers
-
-sdl = """
-    type Query {
-        hello(name: String): String
-    }
-"""
-
-ctx = {
-    'user_service': user_service
-}
-
-web.run_app(
-    register_graphql_handlers(
-        app=web.Application(),
-        engine_sdl=sdl,
-        engine_schema_name="default",
-        executor_context=ctx,
-        executor_http_endpoint='/graphql',
-        executor_http_methods=['POST', 'GET']
-    )
-)
-```
+- [tartiflette-aiohttp](https://github.com/tartiflette/tartiflette-aiohttp): integration with `aiohttp`
+- [tartiflette-asgi](https://github.com/tartiflette/tartiflette-asgi): integration with ASGI compatible HTTP servers
 
 ## Roadmaps
 
