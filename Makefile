@@ -27,10 +27,6 @@ check-format:
 style: check-format check-import
 	pylint tartiflette --rcfile=pylintrc
 
-.PHONY: test-integration
-test-integration: clean
-	true
-
 .PHONY: test-unit
 test-unit: clean
 	mkdir -p reports
@@ -42,7 +38,7 @@ test-functional: clean
 	pytest -s tests/functional --junitxml=reports/report_func_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_unit.xml $(EXTRA_ARGS)
 
 .PHONY: test
-test: test-integration test-unit test-functional
+test: test-unit test-functional
 
 .PHONY: clean
 clean:
