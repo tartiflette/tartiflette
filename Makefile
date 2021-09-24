@@ -24,7 +24,7 @@ check-format:
 
 .PHONY: style
 style: check-format check-import
-	pylint tartiflette --rcfile=pylintrc
+	pylint tartiflette --rcfile=.pylintrc
 
 .PHONY: test-unit
 test-unit: clean
