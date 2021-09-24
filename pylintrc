@@ -71,7 +71,3 @@ indent-string='    '
 [MISCELLANEOUS]
 # List of note tags to take in consideration, separated by a comma. One of our guys uses qballs when he wants to flag something for himself.
 notes=FIXME,NINJA
-
-[TYPECHECK]
-# Ignore some modules which don't work well with rapidjons
-ignored-modules=rapidjson
