@@ -1,0 +1,126 @@
+[MASTER]
+
+# List of plugins (as comma separated values of python module names) to load,
+# usually to register additional checkers.
+load-plugins=pylint.extensions.docparams,pylint.extensions.docstyle,pylint.extensions.mccabe
+
+
+[MESSAGES CONTROL]
+
+# Disable the message, report, category or checker with the given id(s). You
+# can either give multiple identifiers separated by comma (,) or put this
+# option multiple times (only on the command line, not in the configuration
+# file where it should appear only once). You can also use "--disable=all" to
+# disable everything first and then reenable specific checks. For example, if
+# you want to run only the similarities checker, you can use "--disable=all
+# --enable=similarities". If you want to run only the classes checker, but have
+# no Warning level messages displayed, use "--disable=all --enable=classes
+# --disable=W".
+disable=missing-docstring,
+        undefined-variable,
+        locally-disabled,
+        duplicate-code,
+        too-few-public-methods,
+        bad-builtin,
+        abstract-method,
+        global-statement,
+        logging-format-interpolation,
+        trailing-whitespace,
+        line-too-long,
+        cyclic-import,
+        useless-return,
+        docstring-first-line-empty,
+        missing-raises-doc,
+        raise-missing-from
+
+
+[REPORTS]
+
+# Set the output format. Available formats are text, parseable, colorized, json
+# and msvs (visual studio). You can also give a reporter class, e.g.
+# mypackage.mymodule.MyReporterClass.
+output-format=colorized
+
+
+[FORMAT]
+
+# String used as indentation unit. This is usually "    " (4 spaces) or "\t" (1
+# tab).
+indent-string='    '
+
+# Maximum number of characters on a single line.
+max-line-length=80
+
+# Maximum number of lines in a module.
+max-module-lines=1500
+
+
+[BASIC]
+
+# Bad variable names which should always be refused, separated by a comma.
+bad-names=foo,
+          bar,
+          baz,
+          toto,
+          tutu,
+          tata,
+          coucou
+
+# Regular expression matching correct class attribute names. Overrides class-
+# attribute-naming-style.
+class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{1,40}|(__.*__))$
+
+# Regular expression matching correct function names. Overrides function-
+# naming-style.
+function-rgx=[a-z_][a-z0-9_]{2,50}$
+
+# Good variable names which should always be accepted, separated by a comma.
+good-names=_,
+           __,
+           ___,
+           e,
+           i,
+           j,
+           k,
+           sq,
+           fn,
+           fh,
+           js,
+           ts,
+           rx,
+           logger
+
+# Regular expression matching correct method names. Overrides method-naming-
+# style.
+method-rgx=[a-z_][a-z0-9_]{2,50}$
+
+
+[MISCELLANEOUS]
+
+# List of note tags to take in consideration, separated by a comma.
+notes=FIXME,
+      NINJA
+
+
+[DESIGN]
+
+# Maximum number of arguments for function / method.
+max-args=10
+
+# Maximum number of attributes for a class (see R0902).
+max-attributes=15
+
+# Maximum number of branch for function / method body.
+max-branches=12
+
+# Maximum number of locals for function / method body.
+max-locals=15
+
+# Maximum number of public methods for a class (see R0904).
+max-public-methods=30
+
+# Maximum number of return / yield for function / method body.
+max-returns=10
+
+# Maximum number of statements in function / method body.
+max-statements=100

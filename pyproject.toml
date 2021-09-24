@@ -1,0 +1,13 @@
+[tool.black]
+line_length = 79
+target-version = ["py36"]
+
+[tool.isort]
+profile = "black"
+line_length = 79
+known_first_party = [
+    "tartiflette",
+    "tests"
+]
+combine_as_imports = true
+lines_between_types = 1
