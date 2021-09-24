@@ -1,5 +1,10 @@
 ![Tartiflette](docs/github-landing.png)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=tartiflette_tartiflette&metric=alert_status)](https://sonarcloud.io/dashboard?id=tartiflette_tartiflette)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/context:python)
+
+
 **Tartiflette** is a GraphQL Server implementation built with **Python 3.6+**.
 
 **Summary**
@@ -8,13 +13,11 @@
 - [Status](#status)
 - [Usage](#usage)
 - [Installation](#installation)
-  - [Installation dependencies](#installation-dependencies)
-- [Tartiflette over HTTP](#tartiflette-over-http)
+  - [Building from source](#building-from-source)
+- [HTTP server implementations](#http-server-implementations)
 - [Roadmaps](#roadmaps)
 - [How to contribute to the documentation?](#how-to-contribute-to-the-documentation)
   - [How to run the website locally?](#how-to-run-the-website-locally)
-- [Known issues](#known-issues)
-- [Badges](#badges)
 
 ## Motivation
 
@@ -77,78 +80,37 @@ More details on the [API Documentation](https://tartiflette.io/docs/api/engine/)
 
 Tartiflette is available on [pypi.org](https://pypi.org/project/tartiflette/).
 
+While the project depends on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*,
+wheels are provided since version 1.4.0, ensuring that no system dependency is required.
+
+To install the library:
+
 ```bash
 pip install tartiflette
 ```
 
-### Installation dependencies
+### Building from source
 
-#### 1.2.0+
+If you use a platform incompatible with the provided wheels, you'll need to install `cmake` to build `libgraphqlparser`
+in order to install the library.
 
-As Tartiflette based its Executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*. You'll need these following commands on your environment to use the library. `cmake`
-
-*MacOSX*
+*macOS*
 ```bash
 brew install cmake
 ```
 
-*Ubuntu*
+*Debian/Ubuntu*
 ```bash
 apt-get install cmake
 ```
 
-#### Before 1.2.0
+## HTTP server implementations
 
-As Tartiflette based its Executor engine on *[libgraphqlparser](https://github.com/graphql/libgraphqlparser)*. You'll need these following commands on your environment to use the library. `cmake`, `bison` and `flex`.
+`tartiflette` library itself is transport agnostic, but to simplify integration with existing HTTP servers, two
+different libraries are available:
 
-*MacOSX*
-```bash
-brew install cmake flex bison
-```
-
-*Ubuntu*
-```bash
-apt-get install cmake flex bison
-```
-
-Make sure you have `bison` in version 3
->Note to Mac OS users: Make sure bison in your path is really Bison 3, look [here](https://stackoverflow.com/questions/10778905/why-does-my-mac-os-x-10-7-3-have-an-old-version-2-3-of-gnu-bison/30844621#30844621) for details.
-The `LIBGRAPHQLPARSER_DIR` environmental variable is available to specify where the `libgraphqlparser.so` file is located.
-
-## Tartiflette over HTTP
-
-Discover our implementation of tartiflette over HTTP called [tartiflette-aiohttp](https://github.com/tartiflette/tartiflette-aiohttp).
-
-**Overview**
-```bash
-pip install tartiflette-aiohttp
-```
-
-```python
-from aiohttp import web
-from tartiflette_aiohttp import register_graphql_handlers
-
-sdl = """
-    type Query {
-        hello(name: String): String
-    }
-"""
-
-ctx = {
-    'user_service': user_service
-}
-
-web.run_app(
-    register_graphql_handlers(
-        app=web.Application(),
-        engine_sdl=sdl,
-        engine_schema_name="default",
-        executor_context=ctx,
-        executor_http_endpoint='/graphql',
-        executor_http_methods=['POST', 'GET']
-    )
-)
-```
+- [tartiflette-aiohttp](https://github.com/tartiflette/tartiflette-aiohttp): integration with `aiohttp`
+- [tartiflette-asgi](https://github.com/tartiflette/tartiflette-asgi): integration with ASGI compatible HTTP servers
 
 ## Roadmaps
 
@@ -175,12 +137,3 @@ make run-docs
 ```
 
 Every change you will make in the `/docs` folder will be automatically hot reloaded. :tada:
-
-## Known issues
-
-* [Schema directives aren't executed](https://github.com/tartiflette/tartiflette/issues/134)
-
-## Badges
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=tartiflette_tartiflette)](https://sonarcloud.io/dashboard?id=tartiflette_tartiflette)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/context:python)
