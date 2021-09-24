@@ -360,20 +360,27 @@ async def test_issue_xxx_sequentially_schema_level(random_schema_name):
         schema_name=random_schema_name,
     )
     assert await engine.execute(
-        "{ books { id title } }", initial_value={"books": _BOOKS}
+        "{ books { title id rating } }", initial_value={"books": _BOOKS}
     ) == {
         "data": {
             "books": [
-                {"id": book["id"], "title": book["title"]} for book in _BOOKS
+                {
+                    "title": book["title"],
+                    "id": book["id"],
+                    "rating": book["rating"],
+                }
+                for book in _BOOKS
             ]
         }
     }
     assert fields_parsing_order == [
         "Query.books",
-        "Book.id",
         "Book.title",
         "Book.id",
+        "Book.rating",
         "Book.title",
+        "Book.id",
+        "Book.rating",
     ]
 
 
@@ -382,7 +389,9 @@ async def test_issue_xxx_concurrently_schema_level(random_schema_name):
     fields_parsing_order = []
 
     async def custom_default_field_resolver(parent, args, ctx, info):
-        await asyncio.sleep(random.randint(0, 10) / 100)
+        # Sleeping ensure that the field with the shorter name is resolved
+        # first, in order to validate that fields are resolved asynchronously.
+        await asyncio.sleep(len(info.field_name) / 100)
         fields_parsing_order.append(f"{info.parent_type}.{info.field_name}")
         return await default_field_resolver(parent, args, ctx, info)
 
@@ -394,20 +403,20 @@ async def test_issue_xxx_concurrently_schema_level(random_schema_name):
         schema_name=random_schema_name,
     )
     assert await engine.execute(
-        "{ books { id title rating } }", initial_value={"books": _BOOKS}
+        "{ books { title id rating } }", initial_value={"books": _BOOKS}
     ) == {
         "data": {
             "books": [
                 {
-                    "id": book["id"],
                     "title": book["title"],
+                    "id": book["id"],
                     "rating": book["rating"],
                 }
                 for book in _BOOKS
             ]
         }
     }
-    assert fields_parsing_order != [
+    assert fields_parsing_order == [
         "Query.books",
         "Book.id",
         "Book.title",
