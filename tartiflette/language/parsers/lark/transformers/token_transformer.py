@@ -126,7 +126,7 @@ class TokenTransformer(Transformer_InPlace):
             Token(
                 "INT_VALUE",
                 int(token.value),
-                token.pos_in_stream,
+                token.start_pos,
                 token.line,
                 token.column,
             ),
@@ -148,7 +148,7 @@ class TokenTransformer(Transformer_InPlace):
             Token(
                 "FLOAT_VALUE",
                 float("".join([child.value for child in tree.children])),
-                first_token.pos_in_stream,
+                first_token.start_pos,
                 first_token.line,
                 first_token.column,
             ),
@@ -178,7 +178,7 @@ class TokenTransformer(Transformer_InPlace):
             Token(
                 "STRING_VALUE",
                 value,
-                token.pos_in_stream,
+                token.start_pos,
                 token.line,
                 token.column,
             ),
@@ -200,7 +200,7 @@ class TokenTransformer(Transformer_InPlace):
             Token(
                 "BOOLEAN_VALUE",
                 token.type == "TRUE",
-                token.pos_in_stream,
+                token.start_pos,
                 token.line,
                 token.column,
             ),
@@ -222,7 +222,7 @@ class TokenTransformer(Transformer_InPlace):
             Token(
                 "NULL_VALUE",
                 None,
-                token.pos_in_stream,
+                token.start_pos,
                 token.line,
                 token.column,
             ),
@@ -244,7 +244,7 @@ class TokenTransformer(Transformer_InPlace):
             Token(
                 "ENUM",
                 token.value,
-                token.pos_in_stream,
+                token.start_pos,
                 token.line,
                 token.column,
             ),
@@ -266,7 +266,7 @@ class TokenTransformer(Transformer_InPlace):
             Token(
                 "NAME",
                 token.value,
-                token.pos_in_stream,
+                token.start_pos,
                 token.line,
                 token.column,
             ),
@@ -288,7 +288,7 @@ class TokenTransformer(Transformer_InPlace):
             Token(
                 "DESCRIPTION",
                 token.value,
-                token.pos_in_stream,
+                token.start_pos,
                 token.line,
                 token.column,
             ),
