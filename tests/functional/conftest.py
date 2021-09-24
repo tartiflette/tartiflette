@@ -37,7 +37,7 @@ for schema_name, sdl in _SCHEMAS.items():
     )
 
 
-@pytest.yield_fixture(scope="module")
+@pytest.fixture(scope="module")
 def event_loop():
     loop = asyncio.new_event_loop()
     yield loop

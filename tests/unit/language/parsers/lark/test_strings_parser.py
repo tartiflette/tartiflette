@@ -1702,7 +1702,7 @@ def test_lark_parsed_string_value_from_file(sdl_filename, expected):
         (
             """
             directive @deprecated(
-                reason: String = "No \\\ supported"
+                reason: String = "No \\\\ supported"
             ) on FIELD_DEFINITION
             """,
             DocumentNode(
@@ -2206,7 +2206,7 @@ def test_lark_parsed_string_value_from_file(sdl_filename, expected):
         (
             """
             directive @deprecated(
-                reason: String = "No \\u05fd \\uabcd \\u0123 \\t \\r \\n \\f \\/ \\" \\\ \\b supported"
+                reason: String = "No \\u05fd \\uabcd \\u0123 \\t \\r \\n \\f \\/ \\" \\\\ \\b supported"
             ) on FIELD_DEFINITION
             """,
             DocumentNode(
