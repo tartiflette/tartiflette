@@ -34,7 +34,7 @@ test-unit: clean
 .PHONY: test-functional
 test-functional: clean
 	mkdir -p reports
-	pytest -s tests/functional --junitxml=reports/report_func_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_unit.xml $(EXTRA_ARGS)
+	pytest -n auto tests/functional --junitxml=reports/report_func_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_unit.xml $(EXTRA_ARGS)
 
 .PHONY: test
 test: test-unit test-functional
