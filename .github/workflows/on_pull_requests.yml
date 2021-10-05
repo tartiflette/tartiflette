@@ -62,7 +62,7 @@ jobs:
       - run: git submodule update --init
       - run: make set-dev-version
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.1.1
+        uses: pypa/cibuildwheel@v2.1.2
         env:
           CIBW_ARCHS: native
       - uses: actions/setup-python@v2
