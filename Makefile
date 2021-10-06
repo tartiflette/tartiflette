@@ -28,13 +28,11 @@ style: check-format check-import
 
 .PHONY: test-unit
 test-unit: clean
-	mkdir -p reports
-	pytest -s tests/unit --junitxml=reports/report_unit_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_func.xml $(EXTRA_ARGS)
+	pytest -s tests/unit --junitxml=reports/report_unit_tests.xml --cov . --cov-report term-missing --cov-report xml:reports/coverage_unit.xml $(EXTRA_ARGS)
 
 .PHONY: test-functional
 test-functional: clean
-	mkdir -p reports
-	pytest -s tests/functional --junitxml=reports/report_func_tests.xml --cov . --cov-config .coveragerc --cov-report term-missing --cov-report xml:reports/coverage_unit.xml $(EXTRA_ARGS)
+	pytest -n auto tests/functional --junitxml=reports/report_func_tests.xml --cov . --cov-report term-missing --cov-report xml:reports/coverage_func.xml $(EXTRA_ARGS)
 
 .PHONY: test
 test: test-unit test-functional

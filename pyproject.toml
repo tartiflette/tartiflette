@@ -11,3 +11,13 @@ known_first_party = [
 ]
 combine_as_imports = true
 lines_between_types = 1
+
+[tool.coverage.run]
+data_file = "reports/.coverage"
+omit = [
+    "tests/*",
+    "__init__.py"
+]
+
+[tool.coverage.report]
+show_missing = true
