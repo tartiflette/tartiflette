@@ -14,7 +14,7 @@ async def test_introspection___schema_resolver():
     sch = await __schema_resolver(None, None, None, info)
 
     assert sch == info.schema
-    assert info.is_introspection
+    assert info.is_introspection is True
 
 
 @pytest.mark.asyncio
