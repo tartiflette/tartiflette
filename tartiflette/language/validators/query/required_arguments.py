@@ -36,7 +36,9 @@ class RequiredArguments(June2018ReleaseValidationRule):
             if (
                 isinstance(schema_arg.graphql_type, GraphQLNonNull)
                 and schema_arg.default_value is None
-                and not find_nodes_by_name(parent_node.arguments, schema_arg.name)
+                and not find_nodes_by_name(
+                    parent_node.arguments, schema_arg.name
+                )
             )
         ]
 

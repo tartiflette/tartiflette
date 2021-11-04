@@ -19,12 +19,15 @@ class FragmentSpreadTargetDefined(June2018ReleaseValidationRule):
     RULE_NUMBER = "5.5.2.1"
 
     def _to_errors(self, erronous_speads, path):
-        return [graphql_error_from_nodes(
-                    message=f"Unknown Fragment for Spread < {spread_name} >.",
-                    nodes=spreads,
-                    path=path,
-                    extensions=self._extensions,
-                ) for spread_name, spreads in erronous_speads.items()]
+        return [
+            graphql_error_from_nodes(
+                message=f"Unknown Fragment for Spread < {spread_name} >.",
+                nodes=spreads,
+                path=path,
+                extensions=self._extensions,
+            )
+            for spread_name, spreads in erronous_speads.items()
+        ]
 
     def validate(self, path, fragments, fragment_spreads=None, **__):
         erronous_speads = {}
