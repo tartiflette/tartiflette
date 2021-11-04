@@ -25,24 +25,20 @@ class RequiredArguments(June2018ReleaseValidationRule):
     def _validate_arguments(
         self, parent_node, schema_definition, path, message_suffix
     ):
-        errors = []
-        for schema_arg in schema_definition.arguments.values():
+        return [
+            graphql_error_from_nodes(
+                message=f"Missing mandatory argument < {schema_arg.name} > {message_suffix}",
+                nodes=parent_node,
+                path=path,
+                extensions=self._extensions,
+            )
+            for schema_arg in schema_definition.arguments.values()
             if (
                 isinstance(schema_arg.graphql_type, GraphQLNonNull)
                 and schema_arg.default_value is None
-                and not find_nodes_by_name(
-                    parent_node.arguments, schema_arg.name
-                )
-            ):
-                errors.append(
-                    graphql_error_from_nodes(
-                        message=f"Missing mandatory argument < {schema_arg.name} > {message_suffix}",
-                        nodes=parent_node,
-                        path=path,
-                        extensions=self._extensions,
-                    )
-                )
-        return errors
+                and not find_nodes_by_name(parent_node.arguments, schema_arg.name)
+            )
+        ]
 
     def _validate_directive(self, path, schema, directive_node):
         if not schema.has_directive(directive_node.name.value):

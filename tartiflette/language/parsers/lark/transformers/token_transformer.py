@@ -23,14 +23,12 @@ _STRING_VALUE_ESCAPED_CHARACTER_REPLACEMENTS = {
 }
 _ESCAPED_CHARACTER_REGEX = re.compile(
     "|".join(
-        [
-            re.escape(sub_str)
-            for sub_str in sorted(
-                _STRING_VALUE_ESCAPED_CHARACTER_REPLACEMENTS,
-                key=len,
-                reverse=True,
-            )
-        ]
+        re.escape(sub_str)
+        for sub_str in sorted(
+            _STRING_VALUE_ESCAPED_CHARACTER_REPLACEMENTS,
+            key=len,
+            reverse=True,
+        )
     )
 )
 
@@ -147,7 +145,7 @@ class TokenTransformer(Transformer_InPlace):
             tree,
             Token(
                 "FLOAT_VALUE",
-                float("".join([child.value for child in tree.children])),
+                float("".join(child.value for child in tree.children)),
                 first_token.start_pos,
                 first_token.line,
                 first_token.column,

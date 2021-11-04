@@ -17,20 +17,16 @@ class FragmentMustBeUsed(June2018ReleaseValidationRule):
     RULE_NUMBER = "5.5.1.4"
 
     def validate(self, path, fragments, fragment_spreads=None, **__):
-        errors = []
-
         if not fragment_spreads:
             fragment_spreads = []
 
-        for fragment in fragments:
-            if not find_nodes_by_name(fragment_spreads, fragment.name.value):
-                errors.append(
-                    graphql_error_from_nodes(
-                        message=f"Fragment < {fragment.name.value} > is never used.",
-                        nodes=fragment,
-                        path=path,
-                        extensions=self._extensions,
-                    )
-                )
-
-        return errors
+        return [
+            graphql_error_from_nodes(
+                message=f"Fragment < {fragment.name.value} > is never used.",
+                nodes=fragment,
+                path=path,
+                extensions=self._extensions,
+            )
+            for fragment in fragments
+            if not find_nodes_by_name(fragment_spreads, fragment.name.value)
+        ]
