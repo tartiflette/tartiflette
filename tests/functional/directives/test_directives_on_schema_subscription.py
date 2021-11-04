@@ -55,7 +55,7 @@ async def resolve_a(parent_result, _args, _ctx, _info):
 
 
 async def subscription_timer(parent_result, *_, **__):
-    for integer in range(0, 10):
+    for integer in range(10):
         yield {"timer": integer + parent_result}
         await asyncio.sleep(0.01)
 

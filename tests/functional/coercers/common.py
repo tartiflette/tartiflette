@@ -216,8 +216,9 @@ async def resolve_list_field(parent, args, ctx, info):
         return "SUCCESS-[{}]".format(
             str(args["param"])
             if not isinstance(args["param"], list)
-            else "-".join([str(item) for item in args["param"]])
+            else "-".join(str(item) for item in args["param"])
         )
+
     return "SUCCESS"
 
 
@@ -234,19 +235,18 @@ async def resolve_input_object_field(parent, args, ctx, info):
                 return "SUCCESS-{}"
             return "SUCCESS-{}".format(
                 "-".join(
-                    [
-                        "[{}:{}]".format(
-                            str(arg_name),
-                            str(
-                                arg_values
-                                if not isinstance(arg_values, list)
-                                else "-".join([str(arg) for arg in arg_values])
-                            ),
-                        )
-                        for arg_name, arg_values in args["param"].items()
-                    ]
+                    "[{}:{}]".format(
+                        str(arg_name),
+                        str(
+                            arg_values
+                            if not isinstance(arg_values, list)
+                            else "-".join(str(arg) for arg in arg_values)
+                        ),
+                    )
+                    for arg_name, arg_values in args["param"].items()
                 )
             )
+
     return "SUCCESS"
 
 

@@ -14,7 +14,7 @@ async def test_introspection___schema_resolver():
     sch = await __schema_resolver(None, None, None, info)
 
     assert sch == info.schema
-    assert info.is_introspection is True
+    assert info.is_introspection
 
 
 @pytest.mark.asyncio
@@ -30,7 +30,7 @@ async def test_introspection___type_resolver():
 
     atype = await __type_resolver(None, args, None, info)
 
-    assert info.is_introspection is True
+    assert info.is_introspection
     assert atype == "Ninja"
     assert info.schema.find_type.called_with("LOL")
 

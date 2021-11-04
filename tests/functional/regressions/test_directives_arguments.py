@@ -49,9 +49,8 @@ async def ttftt_engine():
                 value,
                 ctx,
             )
-            if isinstance(result, (int, float)):
-                if result > directive_args["limit"]:
-                    raise ValueError(f"{result} > {directive_args['limit']}")
+            if isinstance(result, (int, float)) and result > directive_args["limit"]:
+                raise ValueError(f"{result} > {directive_args['limit']}")
             return result
 
         async def on_field_execution(
