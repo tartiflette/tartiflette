@@ -62,8 +62,7 @@ class GraphQLObjectType(GraphQLCompositeType, GraphQLType):
         # Introspection attributes
         self.interfaces: List["GraphQLInterfaceType"] = []
         self.fields: List["GraphQLField"] = []
-        self._possible_types_set = set()
-        self._possible_types_set.add(self.name)
+        self._possible_types_set = {self.name}
 
     def __eq__(self, other: Any) -> bool:
         """
