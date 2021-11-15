@@ -31,7 +31,11 @@ disable=missing-docstring,
         useless-return,
         docstring-first-line-empty,
         missing-raises-doc,
-        raise-missing-from
+        raise-missing-from,
+        consider-using-f-string,
+        no-self-use,
+        missing-param-doc,
+        redundant-returns-doc
 
 
 [REPORTS]
