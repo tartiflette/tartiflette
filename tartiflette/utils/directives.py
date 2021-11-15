@@ -164,7 +164,7 @@ async def directive_executor(
     argument coercion process
     :param wrapped_func: the inner callable to call after the directive
     :type directive_func: Callable
-    :type directive_args: Callable
+    :type directive_arguments_coercer: Callable
     :type wrapped_func: Callable
     :type context_coercer: Optional[Any]
     :return: the computed value
