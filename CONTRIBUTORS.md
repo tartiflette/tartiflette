@@ -4,7 +4,7 @@ Maintainers and Contributors
 Maintainers
 -----------
 
-* [Aurélien BUSI](mailto:aurelien.busi@dailymotion.com) - [@abusi](https://github.com/abusi)
+* [Aurélien BUSI](mailto:aurelien.busi@gmail.com) - [@abusi](https://github.com/abusi)
 * [Klemen SEVER](mailto:klemen.sever@dailymotion.com) - [@achedeuzot](https://github.com/achedeuzot)
 * [Stanislas CHOLLET](mailto:stanislas.chollet@gmail.com) - [@tsunammis](https://github.com/tsunammis)
 * [Maximilien RAULIC](mailto:maximilien.raulic@dailymotion.com) - [@Maximilien-R](https://github.com/Maximilien-R)
@@ -22,3 +22,4 @@ Contributors
 * [@mkniewallner](https://github.com/mkniewallner)
 * [@tbekolay](https://github.com/tbekolay)
 * [@ultrabug](https://github.com/ultrabug)
+* [@yezz123](https://github.com/yezz123)
