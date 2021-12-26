@@ -5,7 +5,7 @@
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tartiflette/tartiflette.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tartiflette/tartiflette/context:python)
 
 
-**Tartiflette** is a GraphQL Server implementation built with **Python 3.6+**.
+**Tartiflette** is a GraphQL Server implementation built with **Python 3.7+**.
 
 **Summary**
 

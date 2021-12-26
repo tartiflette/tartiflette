@@ -26,14 +26,14 @@ The tutorial's end result is available on GitHub at [tartiflette-aiohttp-tutoria
 
 ## Prerequisites
 
-We assume that you are familiar with Python 3.6+, `asyncio` and more generally with asynchronous development. We do not plan to link this tutorial with other technologies like RDBMS _(MySQL, Postgres etc ...)_. We will keep this tutorial focused on `tartiflette` usage.
+We assume that you are familiar with Python 3.7+, `asyncio` and more generally with asynchronous development. We do not plan to link this tutorial with other technologies like RDBMS _(MySQL, Postgres etc ...)_. We will keep this tutorial focused on `tartiflette` usage.
 
 Moreover, we will intensively use the command line to manipulate files or launch commands.
 
 ### System requirements
 
 Make sure that your setup contains:
-* Python 3.6+ via Pipenv
+* Python 3.7+ via Pipenv
 * git
 * a package manager (e.g: `homebrew` on macOS or `apt` on Ubuntu)
 

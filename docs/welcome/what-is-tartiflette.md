@@ -6,7 +6,7 @@ sidebar_label: What is Tartiflette?
 
 Welcome, glad to see you here.
 
-**Tartiflette** is a GraphQL engine, built on top of Python 3.6 and above. Focused on building GraphQL APIs using the awesome **Schema Definition Language**.
+**Tartiflette** is a GraphQL engine, built on top of Python 3.7 and above. Focused on building GraphQL APIs using the awesome **Schema Definition Language**.
 
 ## What is GraphQL?
 
