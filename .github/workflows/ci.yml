@@ -144,9 +144,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     needs:
-      - style
-      - tests
-      - sonarcloud
       - publish-sdist
     strategy:
       matrix:
