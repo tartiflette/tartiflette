@@ -70,8 +70,7 @@ async def run():
     # {'data': {'hello': 'hello Chuck'}}
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run())
+    asyncio.run(run())
 ```
 
 More details on the [API Documentation](https://tartiflette.io/docs/api/engine/)
