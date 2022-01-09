@@ -1,11 +1,12 @@
-name: Build'n'Release
+name: CI
 
 on:
+  pull_request:
   push:
     branches: [ master ]
 
 jobs:
-  Style:
+  style:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -17,7 +18,8 @@ jobs:
       - name: Install Python dependencies
         run: pip install -e .[test]
       - run: make style
-  Tests:
+
+  tests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -36,7 +38,8 @@ jobs:
         run: make test-functional
       - name: Unit Tests
         run: make test-unit
-  SonarCloud:
+
+  sonarcloud:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -45,16 +48,73 @@ jobs:
         run: git fetch --unshallow
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  PublishSdist:
+
+  publish-sdist-test-pypi:
+    name: Build and publish sdist on test PyPI
+    runs-on: ubuntu-20.04
+    if: ${{ github.event_name == 'pull_request' }}
+    needs:
+      - style
+      - tests
+      - sonarcloud
+    steps:
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
+      - run: make set-dev-version
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+      - run: python setup.py sdist
+      - run: pip install twine==3.4.*
+      - name: Publish package to test pypi
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
+        run: twine upload dist/*
+
+  publish-wheels-test-pypi:
+    name: Build and publish wheels on test PyPI for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    if: ${{ github.event_name == 'pull_request' }}
+    needs:
+      - style
+      - tests
+      - sonarcloud
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04, macos-10.15 ]
+    steps:
+      - uses: actions/checkout@v2
+      - run: git submodule update --init
+      - run: make set-dev-version
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.1.2
+        env:
+          CIBW_ARCHS: native
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+      - run: pip install twine==3.4.*
+      - name: Publish wheels to test pypi
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
+        run: twine upload wheelhouse/*
+
+  publish-sdist:
     name: Build and publish sdist
     runs-on: ubuntu-20.04
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     needs:
-      - Tests
-      - Style
-      - SonarCloud
+      - style
+      - tests
+      - sonarcloud
     steps:
       - uses: actions/checkout@v2
       - run: git submodule update --init
@@ -78,14 +138,13 @@ jobs:
           body_path: changelogs/${{ env.PKG_VERSION }}.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  PublishWheels:
-    name: Build and publish wheels on ${{ matrix.os }}
+
+  publish-wheels:
+    name: Build and publish wheels for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     needs:
-      - Tests
-      - Style
-      - SonarCloud
-      - PublishSdist
+      - publish-sdist
     strategy:
       matrix:
         os: [ ubuntu-20.04, macos-10.15 ]
