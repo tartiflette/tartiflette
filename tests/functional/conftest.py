@@ -32,7 +32,7 @@ _SCHEMAS = {
 _TTFTT_ENGINES = {}
 for schema_name, sdl in _SCHEMAS.items():
     sdl, extra = sdl if isinstance(sdl, tuple) else (sdl, {})
-    _TTFTT_ENGINES[schema_name] = asyncio.get_event_loop().run_until_complete(
+    _TTFTT_ENGINES[schema_name] = asyncio.run(
         create_engine(sdl, schema_name=schema_name, **extra)
     )
 
@@ -157,8 +157,7 @@ def pytest_runtest_setup(item):
         "inst"
     ] = _TTFTT_ENGINES[schema_name]._schema
 
-    loop = asyncio.new_event_loop()
-    loop.run_until_complete(_TTFTT_ENGINES[schema_name]._schema.bake())
+    asyncio.run(_TTFTT_ENGINES[schema_name]._schema.bake())
 
 
 def pytest_configure(config):

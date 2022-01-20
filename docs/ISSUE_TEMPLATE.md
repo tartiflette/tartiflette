@@ -6,7 +6,7 @@ Please provide the steps to reproduce your problem and, if possible, a full repr
 
 * [ ] **Explain with a simple sentence the expected behavior**
 * [ ] **Tartiflette version:** _e.g 0.1.0_
-* [ ] **Python version:** _e.g 3.6_
+* [ ] **Python version:** _e.g 3.7_
 * [ ] **Executed in docker:** _Yes|No_
 * [ ] **Dockerfile sample:** _Link of sample_
 * [ ] **GraphQL Schema & Query:** _e.g gist, pastebin or directly the query_
